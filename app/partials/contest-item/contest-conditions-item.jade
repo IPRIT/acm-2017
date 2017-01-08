@@ -1,0 +1,47 @@
+div.contest
+  div.contest__content.contest__min-width
+    div.contest__inner
+      div.task
+        div.task__title
+          a.task__title-link(ui-sref='^.conditions') Условия задач
+          div.task__title-delimiter
+            span >
+          div.task__title-index
+            span(ng-bind='condition.internal_index + ". " + condition.title + ""')
+
+        div.task__own(ng-if='condition.attachments')
+          div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')
+            div
+              h4 Файлы: {{condition.attachments.files.length}}
+            include ./contest-conditions/files
+            div.markdown__divider(ng-if='!condition.attachments.config.replaced || !!condition.attachments.content.text')
+
+        div.task__problem(ng-if='!condition.attachments.config.replaced',
+        ng-class='{"task__problem-timus": condition.system_type === "timus", \
+        "task__problem-sgu": condition.system_type === "sgu", \
+        "task__problem-cf": condition.system_type === "cf", \
+        "task__problem-acmp": condition.system_type === "acmp", \
+        "task__problem-ejudge": condition.system_type === "ejudge", \
+        "task__problem-cf_type_gym": condition.system_problem_number.indexOf("gym") >= 0 }')
+          div(ng-bind-html='condition.formatted_text')
+
+        div.task__own(ng-if='condition.attachments')
+          div(ng-if='condition.attachments.content.text')
+            div(ng-switch='condition.attachments.config.markup')
+              div(ng-switch-when='markdown')
+                div.markdown(marked='condition.attachments.content.text')
+              div(ng-switch-default)
+                p Not implemented
+
+          div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && (!condition.attachments.config.files_location || condition.attachments.config.files_location === "bottom")')
+            div.markdown__divider
+            div
+              h4 Файлы: {{condition.attachments.files.length}}
+            include ./contest-conditions/files
+
+
+        div.task__send-layer
+          div.task__send
+            md-button.md-primary(ui-sref='^.send-item({problemIndex: condition.internal_index})') Отправить решение
+
+  page-footer

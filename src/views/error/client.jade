@@ -1,0 +1,15 @@
+html
+  head
+    title= message
+    link(href="https://fonts.googleapis.com/css?family=Comfortaa|Monoton|Poiret+One&subset=cyrillic", rel="stylesheet")
+    meta(name="theme-color", content="#00897B")
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+    style
+      include style.css
+  body.body-gradient
+    .error
+      .error__alert
+        .error__header MISIS&nbsp;&nbsp;&nbsp;ACM
+        .error__message=message
+        a.error__action(href='/')
+          span Home

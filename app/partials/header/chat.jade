@@ -1,0 +1,9 @@
+div.header__profile.inbox(ng-if='isAuth && !!headerMenu.contest && allMessagesNumber > 0')
+  div(flex, layout='row', layout-fill, layout-align='center center')
+    md-button.md-icon-button(aria-label='Inbox', ng-click='openInbox($event)', ng-class='{"inbox__no-new-messages": !unreadMessagesNumber}')
+      md-tooltip(ng-if='unreadMessagesNumber > 0', md-direction='bottom') Есть непрочитанные сообщения
+      div.inbox__messages(
+      ng-if='unreadMessagesNumber > 0',
+      ng-class='{"inbox__unread-messages": unreadMessagesNumber}',
+      ng-bind='unreadMessagesNumber')
+      md-icon(md-svg-icon='/img/icons/ic_mail_48px.svg')

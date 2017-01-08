@@ -1,0 +1,10 @@
+logs/*
+!.gitkeep
+node_modules/
+app/bower_components/
+app/prod
+tmp
+.DS_Store
+.idea
+config.development.json
+/cdn

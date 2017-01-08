@@ -1,0 +1,61 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.monitor-content
+      md-content
+        div.rating-table-settings(layout='row')
+          div.contest-creation__row(flex)
+            div.contest-creation__row-title Балл за задачу на контесте
+            md-input-container
+              label Баллов за задачу на контесте
+              input(type="number", ng-model='scoreInTime')
+
+          div.contest-creation__row(flex)
+            div.contest-creation__row-title Балл за задачу на дорешивании
+            md-input-container
+              label Баллов за задачу на дорешивании
+              input(type="number", ng-model='scoreInPractice')
+
+          div.contest-creation__row(flex='3')
+            md-input-container
+              md-button.md-primary.md-raised(aria-label='Create rating', ng-click='updateRatingTable()') Обновить рейтинг
+
+        div.monitor-content__table.rating-table
+          div.monitor-content__row.monitor-content__row_type_header
+            div.monitor-content__cell
+              span Место
+            div.monitor-content__cell.monitor-content__cell-participant
+              span Участник
+            div.monitor-content__cell.monitor-content__cell-result.rating-table__header-cell(
+            ng-repeat='headerCell in table.header.row', title='{{headerCell.name}}', layout="column")
+              div.rating-table__top-cell
+                a.link(target='_blank', ui-sref='contest.item({contestId: headerCell.id})', ng-bind='"#" + headerCell.id', title='{{headerCell.name}}')
+              div.rating-table__subheader-cells(layout='row', layout-fill)
+                div(flex, title='Во время контеста') Во время
+                div(flex, title='После контеста') После
+            div.monitor-content__cell.monitor-content__cell-solutions.rating-table__header-cell(layout='column')
+              div.rating-table__top-cell
+                span Общее
+              div.rating-table__subheader-cells(layout='row', layout-fill)
+                div(flex, title='Во время контеста (сумма)') Во время
+                div(flex, title='После контеста (сумма)') После
+                div(flex, title='Сумма за все контесты') Сумма
+
+          div.monitor-content__row(ng-repeat='row in table.rows',
+          ng-class='{"monitor-content__row_group_even": row.group % 2 === 0}')
+            div.monitor-content__cell
+              span(ng-bind='$index + 1')
+            div.monitor-content__cell.monitor-content__cell-participant
+              span(ng-bind='row.user.full_name')
+            div.monitor-content__cell.rating-table__results(ng-repeat='cell in row.row')
+              div.monitor-content__cell
+                span(ng-bind='cell[0]')
+              div.monitor-content__cell
+                span(ng-bind='cell[1]')
+            div.monitor-content__cell.rating-table__results.rating-table__results-sum
+              div.monitor-content__cell
+                span(ng-bind='row.scoreInTime | mathRound')
+              div.monitor-content__cell
+                span(ng-bind='row.scoreInPractice | mathRound')
+              div.monitor-content__cell
+                span(ng-bind='row.scoreSum | mathRound')

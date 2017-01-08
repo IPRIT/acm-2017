@@ -1,0 +1,75 @@
+CACHE MANIFEST
+
+# 38
+
+CACHE:
+
+# Templates
+/partials/contests/index.html
+/partials/user/auth-form.html
+/partials/contest-item/contest-info.html
+/partials/contest-item/contest-monitor.html
+/partials/contest-item/contest-conditions.html
+/partials/contest-item/contest-conditions-item.html
+/partials/contest-item/contest-send.html
+/partials/contest-item/contest-status.html
+/partials/contest-item/contest-source.html
+/partials/admin/admin-base.html
+/partials/admin/contests/index.html
+/partials/admin/contests/edit.html
+/partials/admin/contests/create.html
+/partials/admin/users/list.html
+/partials/admin/users/create.html
+# /partials/admin/users/create-into-group.html
+/partials/admin/admin-problems.html
+/partials/admin/users/edit.html
+/partials/admin/admin-server.html
+/partials/admin/ratings/create.html
+/partials/admin/ratings/table.html
+/partials/admin/groups/index.html
+/partials/admin/groups/create.html
+/partials/admin/groups/edit.html
+/partials/index/index.html
+/partials/header/index.html
+/partials/page/wrapper.html
+/partials/page/loading-layer.html
+/partials/contests/contest-list-item.html
+/vendor/math-tex/dist/math-tex.html
+
+# js
+/socket.io/socket.io.js
+http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
+/bower_components/angular/angular.min.js
+/bower_components/angular-route/angular-route.min.js
+/bower_components/angular-sanitize/angular-sanitize.min.js
+/bower_components/angular-ui-router/release/angular-ui-router.min.js
+/bower_components/angular-material/angular-material.min.js
+/bower_components/angular-animate/angular-animate.min.js
+/bower_components/angular-aria/angular-aria.min.js
+/bower_components/angular-messages/angular-messages.js
+/bower_components/marked/marked.min.js
+/bower_components/angular-marked/dist/angular-marked.min.js
+/bower_components/angular-bindonce/bindonce.min.js
+/vendor/katex/katex.min.js
+/prod/js/build.min.js?0.2.8
+
+# CSS
+http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin
+/bower_components/angular-material/angular-material.min.css
+/vendor/katex/katex.min.css
+/prod/css/style.css?0.2.8
+
+# Images
+/img/acm-logo-small.png
+
+# fonts
+http://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2
+http://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2
+http://fonts.gstatic.com/s/roboto/v15/mErvLBYg_cXG3rLvUsKT_fesZW2xOQ-xsNqO47m55DA.woff2
+http://fonts.gstatic.com/s/roboto/v15/RxZJdnzeo3R5zSexge8UUVtXRa8TVwTICgirnJhmVJw.woff2
+http://fonts.gstatic.com/s/roboto/v15/isZ-wbCXNKAbnjo6_TwHThJtnKITppOI_IvcXXDNrsc.woff2
+
+
+# Resources that require the user to be online.
+NETWORK:
+*

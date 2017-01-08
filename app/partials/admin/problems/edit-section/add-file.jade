@@ -1,0 +1,44 @@
+md-dialog(aria-label='Add file', ng-cloak)
+  form
+    md-toolbar
+      .md-toolbar-tools
+        h2 Добавить файл
+        span(flex)
+        md-button.md-icon-button(ng-click='close()')
+          md-icon(md-svg-src='/img/icons/ic_close_48px.svg', aria-label='Close dialog')
+    md-dialog-content(style='min-width: 500px;')
+      .md-dialog-content
+        h2 Информация о файле
+
+        form.contest-creation__form(name='fileForm')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Ссылка на файл
+            md-input-container
+              label URL файла
+              input(required, name='url', ng-model='file.url')
+              div(ng-messages='fileForm.url.$error')
+                div(ng-message='required') Поле не может быть пустым.
+
+          div.contest-creation__row
+            div.contest-creation__row-title Имя файла (необязательно)
+            md-input-container
+              label Заголовок файла
+              input(name='title', ng-model='file.title')
+              div(ng-messages='fileForm.title.$error')
+                div(ng-message='required') Поле не может быть пустым.
+
+          div.contest-creation__row
+            div.contest-creation__row-title Тип файла
+            span.sublabel Выберите тип файла
+            div(layout, layout-sm="column")
+              md-input-container.contest-creation__field-inline-fix(flex='4')
+                Label Тип
+                md-select(ng-model='file.type')
+                  md-option(ng-repeat='type in types', value='{{type}}', ng-bind='type')
+
+    md-dialog-actions(layout='row')
+      md-button(ng-click="close()")
+        | Отмена
+      md-button(ng-click="save()")
+        | Добавить

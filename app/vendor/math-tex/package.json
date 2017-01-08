@@ -1,0 +1,96 @@
+{
+  "_args": [
+    [
+      "math-tex",
+      "C:\\Users\\Александр\\WebstormProjects\\misis-acm-server"
+    ]
+  ],
+  "_from": "math-tex@latest",
+  "_id": "math-tex@1.0.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/math-tex",
+  "_npmUser": {
+    "email": "mathias@qiwi.be",
+    "name": "mathias"
+  },
+  "_npmVersion": "2.0.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "math-tex",
+    "raw": "math-tex",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/math-tex/-/math-tex-1.0.0.tgz",
+  "_shasum": "b5b58811bf1aeac4ce0bea3b56fdb9a1978ae343",
+  "_shrinkwrap": null,
+  "_spec": "math-tex",
+  "_where": "C:\\Users\\Александр\\WebstormProjects\\misis-acm-server",
+  "author": {
+    "name": "Mathias Bynens",
+    "url": "https://mathiasbynens.be/"
+  },
+  "bugs": {
+    "url": "https://github.com/mathiasbynens/math-tex/issues"
+  },
+  "dependencies": {},
+  "description": "A web component for mathematical typesetting using TeX notation.",
+  "devDependencies": {
+    "bower": "^1.3.12",
+    "gulp": "^3.8.8",
+    "gulp-connect": "^2.0.4",
+    "gulp-load-plugins": "^0.7.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-replace": "^0.4.0",
+    "gulp-uglify": "^1.0.1",
+    "qunitjs": "^1.15.0"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "dist": {
+    "shasum": "b5b58811bf1aeac4ce0bea3b56fdb9a1978ae343",
+    "tarball": "https://registry.npmjs.org/math-tex/-/math-tex-1.0.0.tgz"
+  },
+  "files": [
+    "LICENSE-MIT.txt",
+    "dist/"
+  ],
+  "gitHead": "86dff387245f26d64de196670d639c69b0a0b5f2",
+  "homepage": "https://mths.be/math-tex",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "tex",
+    "latex",
+    "katex",
+    "math",
+    "typesetting"
+  ],
+  "license": "MIT",
+  "main": "math-tex.html",
+  "maintainers": [
+    {
+      "email": "mathias@qiwi.be",
+      "name": "mathias"
+    }
+  ],
+  "name": "math-tex",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathiasbynens/math-tex.git"
+  },
+  "scripts": {
+    "prepublish": "./node_modules/bower/bin/bower install && cd bower_components/katex/ && make && cd ../.. && gulp build",
+    "test": "gulp build && open 'http://localhost:9001/tests/' && gulp connect"
+  },
+  "version": "1.0.0"
+}

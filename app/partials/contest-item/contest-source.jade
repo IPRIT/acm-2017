@@ -1,0 +1,19 @@
+div.contest
+  div.contest__content.contest__min-width
+    div.contest__inner
+      div.contest__title-section
+        h2 Исходный код #
+          span(ng-bind='source.sent_id')
+
+      div.source-content
+        a.link(target='_blank', href='/api/contest/getSourceCodeRaw?contest_id={{source.contest_id}}&source_id={{source.sent_id}}') Открыть чистый код
+        br
+        br
+        md-content
+          link(href='/js/lib/rainbow/themes/monokai.css', rel='stylesheet', type='text/css')
+          link(href='/js/lib/rainbow/themes/theme.css', rel='stylesheet', type='text/css')
+          div.source-content__code(ng-if='source.sent_id')
+            pre
+              code(data-language='{{source.language_family}}') {{source.source_code}}
+
+  page-footer

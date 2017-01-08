@@ -1,0 +1,38 @@
+div.contests-list__item-layer(style='width: 100%;')
+  div.contests-list__item-disabled(ng-if='contest.status === "NOT_ENABLED" || contest.status === "REMOVED"', onclick='event.stopPropagation()')
+  div.contests-list__item-disabled.contests-list__item-loading(ng-if='loadingData', onclick='event.stopPropagation()')
+    div.content-spin__layer
+      div.search-spin-layer_
+        div.search-spin
+
+  div
+    md-checkbox(ng-checked="existsContest(contest, selectedContests)" ng-click="toggleContest(contest, selectedContests)", style='width: 100%;')
+      div.contests-list__item.contest-item
+        div.contest-item__title {{contest.name}}
+        div.contest-item__groups
+          div.contest-item__groups-for Доступно для:
+          div.contests-list__groups-item(ng-if='!contest.allowedGroups.length', style='background-color: #75BB88')
+            span Все категории
+          div.contests-list__groups-item(ng-repeat='group in contest.allowedGroups', style='background-color: {{group.color || "#ccc"}}')
+            span {{group.name}}
+        div.contest-item__info
+          div.contest-item__status-layer
+            div.contest-item__status(ng-switch='contest.status')
+              div(ng-switch-when='NOT_ENABLED')
+                span.contests-list__item_status_removed Не доступен
+              div(ng-switch-when='REMOVED')
+                span.contests-list__item_status_removed Удален
+              div(ng-switch-when='FINISHED')
+                span.contests-list__item_status_success Завершён
+              div(ng-switch-when='FROZEN')
+                span.contests-list__item_status_neutral Заморозка. Осталось
+                  my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTime')
+              div(ng-switch-when='WAITING')
+                span Начало через
+                  my-timer-element.contest-item__status-time(finish='contest.startTime')
+              div(ng-switch-when='RUNNING')
+                span.contests-list__item_status_success Контест идет. Осталось
+                  my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTime')
+              div(ng-switch-when='PRACTICE')
+                span.contests-list__item_status_success Дорешивание. Осталось
+                  my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTime')

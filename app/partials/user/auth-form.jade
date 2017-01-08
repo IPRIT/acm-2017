@@ -1,0 +1,26 @@
+div
+  div.auth-form
+    div.auth-form__inner
+      div.auth-form__title
+        span.auth-form__title-text Авторизация
+      div.auth-form__form
+        form.form(ng-submit='submitForm()', name='authForm')
+
+          div.auth-form__row
+            md-input-container
+              label Логин
+              input(required, name="username", ng-model="form.username")
+              div(ng-messages="authForm.username.$error")
+                div(ng-message="required") Обязательное поле
+
+          div.auth-form__row
+            md-input-container
+              label Пароль
+              input(required, type='password', name="password", ng-model="form.password")
+              div(ng-messages="authForm.password.$error")
+                div(ng-message="required") Обязательное поле
+
+          div.auth-form__row(style='text-align: right;')
+            md-button.md-primary(type='submit', ng-disabled='form.username.length === 0 || form.password.length === 0') Войти
+
+  page-footer

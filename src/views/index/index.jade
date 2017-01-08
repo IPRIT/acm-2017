@@ -1,0 +1,23 @@
+extends ../_layout
+
+block content
+  page-header.header(ng-cloak)
+  page-content.page(ng-cloak)
+    div.content(ui-view)
+
+  +js_list([
+    '//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js',
+    'bower_components/angular/angular.min.js',
+    'bower_components/angular-route/angular-route.min.js',
+    'bower_components/angular-sanitize/angular-sanitize.min.js',
+    'bower_components/angular-ui-router/release/angular-ui-router.min.js',
+    'bower_components/angular-material/angular-material.min.js',
+    'bower_components/angular-animate/angular-animate.min.js',
+    'bower_components/angular-aria/angular-aria.min.js',
+    'bower_components/angular-messages/angular-messages.min.js',
+    'bower_components/marked/marked.min.js',
+    'bower_components/angular-marked/dist/angular-marked.min.js',
+    'bower_components/ng-file-upload/ng-file-upload-all.min.js',
+    'vendor/katex/katex.min.js',
+    'prod/js/build.min.js?0.2.8'
+  ])

@@ -1,0 +1,147 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Создать контест
+
+      div.contest-creation__inner
+        form.contest-creation__form(name='contestForm')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Введите название
+            md-input-container
+              label Название контеста
+              input(md-maxlength='200', required, name='contestName', ng-model='form.contestName')
+              div(ng-messages='contestForm.contestName.$error')
+                div(ng-message='required') Поле не может быть пустым.
+                div(ng-message='md-maxlength') Введите не больше 200 символов
+
+          div.contest-creation__row
+            div.contest-creation__row-title Выберите дату начала контеста (по серверному времени)
+            div.contest-creation__datepicker
+              md-datepicker(ng-model='form.contestStartDate', name='contestStartDate', md-placeholder='Выберите дату начала', required)
+
+              div.contest-creation__second-field-inline
+                md-input-container
+                  Label Час
+                  md-select(ng-model='form.contestStartTime', name='contestStartTime', required)
+                    md-option(ng-repeat='time in startTimes', value='{{time.time}}', ng-bind='time.name')
+                  div(ng-messages="contestForm.contestStartTime.$error")
+                    div(ng-message="required") Поле не может быть пустым.
+
+              div.contest-creation__second-field-inline
+                md-input-container
+                  Label Минута
+                  md-select(ng-model='form.contestStartTimeMinutes', name='contestStartTimeMinutes', required)
+                    md-option(ng-repeat='time in startTimesMinutes', value='{{time.time}}', ng-bind='time.name')
+                  div(ng-messages="contestForm.contestStartTimeMinutes.$error")
+                    div(ng-message="required") Поле не может быть пустым.
+
+          div.contest-creation__row
+            div.contest-creation__row-title Длительность контеста (часов)
+            md-input-container
+              label Длительность
+              input(required, type="number", name="contestRelativeFinishTime", min="1", max="50000", ng-model='form.contestRelativeFinishTime')
+              div(ng-messages='contestForm.contestRelativeFinishTime.$error')
+                div(ng-message='required') Поле не может быть пустым.
+                div(ng-message='min') Количество часов должно быть не меньше 1.
+                div(ng-message='max') Количество часов должно быть не больше 50000.
+
+          div.contest-creation__row
+            div.contest-creation__row-title Заморозка наступает, когда остается, например, 1 час до конца контеста.
+            md-input-container
+              label Количество часов до конца контеста
+              input(required, type="number", name="contestFreezeTime", min="0", max="50000", ng-model='form.contestFreezeTime')
+              div(ng-messages='contestForm.contestFreezeTime.$error')
+                div(ng-message='required') Поле не может быть пустым.
+                div(ng-message='min') Количество часов должно быть не меньше 0.
+                div(ng-message='max') Количество часов должно быть не больше 50000.
+
+          div.contest-creation__row
+            div.contest-creation__row-title Дорешивание
+            div
+              md-checkbox.md-warn.md-align-top-left(ng-model='form.hasPractice', aria-label='Practice checkbox') Есть
+                br
+                span.sublabel Дорешивание наступает сразу после окончания контеста.
+                  | Задачи, решенные во время дорешивания, будут подсвечены в таблице.
+                  | Вы можете настроить весовой коеффициент для решённых задач во время дорешивания.
+            md-input-container(ng-if='form.hasPractice')
+              label Количество часов для дорешивания
+              input(required, type="number", name="contestPracticeTime", min="0", max="50000", ng-model='form.contestPracticeTime')
+              div(ng-messages='contestForm.contestPracticeTime.$error')
+                div(ng-message='required') Поле не может быть пустым.
+                div(ng-message='min') Количество часов должно быть не меньше 0.
+                div(ng-message='max') Количество часов должно быть не больше 50000.
+
+          div.contest-creation__row
+            div.contest-creation__row-title Кому доступен контест?
+            span.sublabel Выберите группы пользователей или оставьте поле пустым, если хотите сделать контест доступным для всех.
+            md-input-container.groups(md-no-float)
+              md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
+                md-autocomplete(
+                md-selected-item="chips.selectedItem",
+                md-search-text="chips.searchText",
+                md-items="item in groupSearch(chips.searchText)",
+                md-item-text="item.name",
+                placeholder='Введите название...'
+                )
+                  span(md-highlight-text="searchText") {{item.name}}
+                md-chip-template
+                  div
+                    span.chip-circle(style='background-color: {{$chip.color}};')
+                    span {{$chip.name}}
+
+          div.contest-creation__row
+            div.contest-creation__row-title Поиск задач
+            span.sublabel Отметьте задачи, которые хотите добавить в контест.
+            div(layout, layout-sm="column")
+              md-input-container(flex='2')
+                label Поиск по задачам
+                input(md-maxlength='200', ng-model='qProblems')
+              md-input-container.contest-creation__field-inline-fix(flex='4')
+                Label Система
+                md-select(ng-model='systemType')
+                  md-option(ng-repeat='system in systems', value='{{system.type}}', ng-bind='system.name')
+
+            div(ng-if='problems.length > 0')
+              div.contest-creation__row-title Найденные задачи:
+              md-content
+                md-list-item(ng-repeat="problem in problems")
+                  md-checkbox(ng-checked="existsProblem(problem, selectedProblems)" ng-click="toggleProblem(problem, selectedProblems)")
+                  div.md-list-item-text
+                    p
+                      span {{problem.task_number + ". " + problem.title + " "}}
+                    p(style='color: #999;', ng-switch='problem.system_type')
+                      span(ng-switch-when='timus') Timus
+                      span(ng-switch-when='cf') Codeforces
+                      span(ng-switch-when='acmp') ACMP.ru
+                      span(ng-switch-when='sgu') SGU Online Judge
+                      span(ng-switch-when='ejudge') ejudge
+                  md-icon.md-secondary(
+                  ng-click="showProblem($event, problem)",
+                  aria-label="Secondary action",
+                  md-svg-src="/img/icons/ic_visibility_48px.svg")
+
+            div(ng-if='selectedProblems.length > 0')
+              div.contest-creation__row-title Отмеченные задачи:
+              md-button(ng-click='toggleSelected($event)', ng-bind='(isShowingSelected ? "Скрыть отмеченные" : "Показать отмеченные") + " (" + selectedProblems.length + ")"', style='margin: 0;', aria-label='Show or Hide')
+              md-content(ng-show='isShowingSelected')
+                md-list-item(ng-repeat="problem in selectedProblems")
+                  md-checkbox(ng-checked="existsProblem(problem, selectedProblems)" ng-click="toggleProblem(problem, selectedProblems)")
+                  div.md-list-item-text
+                    p
+                      span {{indexGenerator($index).toUpperCase() + ". "}}
+                      span {{problem.task_number + ". " + problem.title + " "}}
+                    p(style='color: #999;', ng-switch='problem.system_type')
+                      span(ng-switch-when='timus') Timus
+                      span(ng-switch-when='cf') Codeforces
+                      span(ng-switch-when='acmp') ACMP.ru
+                      span(ng-switch-when='sgu') SGU Online Judge
+                      span(ng-switch-when='ejudge') ejudge
+                  md-icon.md-secondary(
+                  ng-click="showProblem($event, problem)",
+                  aria-label="Secondary action",
+                  md-svg-src="/img/icons/ic_visibility_48px.svg")
+
+          div.contest-creation__row.contest-creation__row_type_create
+            md-button.md-primary.md-raised(ng-disabled='!contestForm.$valid', aria-label='Send', ng-click='submitForm()') Создать контест

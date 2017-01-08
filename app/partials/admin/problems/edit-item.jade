@@ -1,0 +1,23 @@
+div.admin-content-layer.admin-content-layer__edit-problem
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Редактирование задачи
+
+      div
+        md-tabs(md-dynamic-height, md-border-bottom, md-selected="tabIndex")
+          md-tab(label='Редактирование')
+            md-content.admin-content-layer__edit-problem_reset
+              md-tabs(md-dynamic-height, md-border-bottom)
+                md-tab(label='Текст')
+                  md-content.markdown__editor
+                    include ./edit-section/text
+
+                md-tab(label='Файлы')
+                  md-content.md-padding
+                    include ./edit-section/files
+
+
+          md-tab(label='Просмотр')
+            md-content.md-padding(style='background-color: #fff;')
+              include ./edit-section/view-result

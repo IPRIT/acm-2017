@@ -1,0 +1,34 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Изменить группу
+
+      div.contest-creation__inner(style='max-width: 700px;')
+        form.contest-creation__form(name='groupForm', ng-submit='submitForm()')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Название группы
+            div(layout)
+              md-input-container(flex)
+                label Имя
+                input(md-maxlength='100', required, name='name', ng-model='group.name')
+                div(ng-messages='groupForm.name.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 100 символов
+
+          div.contest-creation__row
+            div.contest-creation__row-title Цвет группы
+            div(ng-if='group.color && group.name')
+              div.contests-list__groups-item(style='background-color: {{group.color}}')
+                span {{group.name}}
+            div(layout)
+              md-color-picker(name='color', ng-model='group.color')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Пользователи
+            div(layout)
+              include users/users-control
+
+          div.contest-creation__row.contest-creation__row_type_create
+            md-button.md-primary.md-raised(ng-disabled='!groupForm.$valid', aria-label='Send', type='submit') Сохранить изменения

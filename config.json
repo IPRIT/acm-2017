@@ -1,0 +1,30 @@
+{
+  "secureProtocol": false,
+  "domain": "localhost",
+  "contact": {
+    "email": "contact@example.com",
+    "name": "Title"
+  },
+  "ip": "",
+  "port": "9000",
+  "db": {
+    "host": "localhost",
+    "database": "",
+    "username": "",
+    "password": "",
+    "maxPoolAmount": 50
+  },
+  "cors": {
+    "origins": [ "*" ],
+    "methods": [ "POST", "GET", "OPTIONS" ],
+    "headers": [ "Content-Type", "X-Token", "X-Requested-With" ]
+  },
+  "cookieSecret": "your secret",
+  "sessionSecret": "your secret",
+  "storage": {
+    "cdnPath": "static folder",
+    "documents": {
+      "directory": "documents folder"
+    }
+  }
+}

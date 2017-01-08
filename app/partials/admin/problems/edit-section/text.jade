@@ -1,0 +1,67 @@
+md-toolbar.md-menu-toolbar
+  div(layout='row')
+    md-toolbar-filler(layout, layout-align='center center')
+      md-icon(md-svg-src='/img/icons/ic_insert_drive_file_48px.svg')
+    div
+      h2.md-toolbar-tools
+        | Файл:
+        input.md-toolbar-input(type='text', ng-model='condition.title')
+      md-menu-bar
+        md-menu
+          button(ng-click='$mdOpenMenu()')
+            | Файл
+          md-menu-content
+            md-menu-item
+              md-button(ng-click="action('save', $event)")
+                | Сохранить изменения
+            md-menu-divider
+            md-menu-item
+              md-button(ng-click="action('exit', $event)")
+                | Выход
+        md-menu
+          button(ng-click='$mdOpenMenu()')
+            | Редактирование
+          md-menu-content
+            md-menu-item
+              md-menu
+                md-button(ng-click='$mdOpenMenu()') Режим редактирования
+                md-menu-content(width='3')
+                  md-menu-item(type='checkbox', ng-model='settings.mode.original') Оригинальное условие
+                  md-menu-item(type='checkbox', ng-model='settings.mode.own') Свое условие (Markdown)
+            //md-menu-divider
+            md-menu-item
+              md-menu
+                md-button(ng-click='$mdOpenMenu()') Объединение условий
+                md-menu-content(width='3')
+                  md-menu-item(type='checkbox', ng-model='settings.replace') Заменить исходное условие своим
+                  md-menu-item(type='checkbox', ng-model='settings.merge') Последовательно объединить исходное и свое условие
+
+        md-menu
+          button(ng-click='$mdOpenMenu()')
+            | Справка
+          md-menu-content
+            md-menu-item
+              md-button(ng-href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet', target='_blank')
+                | Как пользоваться Markdown?
+
+.page-container
+  .page-container__wrap
+
+    div.page-container__editing-mode-text(ng-switch='settings.mode.own')
+      span(ng-switch-when='true') Режим редактирования своего условия
+      span(ng-switch-default) Режим редактирования исходного условия задачи
+
+    div(ng-switch='settings.mode.original')
+      div(ng-switch-when='true')
+        div.task__problem(ng-class='{"task__problem-timus": condition.system_type === "timus", \
+                         "task__problem-sgu": condition.system_type === "sgu", \
+                         "task__problem-cf": condition.system_type === "cf", \
+                         "task__problem-acmp": condition.system_type === "acmp", \
+                         "task__problem-ejudge": condition.system_type === "ejudge", \
+                         "task__problem-cf_type_gym": condition.system_problem_number.indexOf("gym") >= 0 }')
+          div(ng-bind-html='::condition.formatted_text', task-contenteditable)
+      div(ng-switch-default)
+        div.send-content__textarea.page-container__markdown-textarea-wrap
+          md-input-container(flex, style='width: 100%;')
+            label Условие
+            textarea.textarea.send-content__textarea-element.page-container__markdown-textarea(ng-model="settings.content.text", rows="10")

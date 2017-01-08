@@ -1,0 +1,51 @@
+md-content(layout='column', layout-fill, ng-controller='AdminGroupsUserControlController')
+  div.group-users
+    div.group-users__inner(layout='column')
+
+      md-tabs.md-primary(md-dynamic-height, md-border-bottom, md-selected="selectedIndex", md-autoselect)
+        md-tab(label='Поиск')
+          md-content.md-padding(md-swipe-left='onSwipeLeft()')
+            div.group-users__search(ng-if='searchUserText || !params.offset || pageNumber === 1')
+              div(layout)
+                md-input-container(flex)
+                  label Поиск по пользователям
+                  input(name='searchUsers', ng-model='searchUserText', ng-keyup='searchUsers($event, searchUserText)')
+
+            div.group-users__items
+              div(ng-if='pageNumber > 1')
+                include pagination
+
+              md-list
+                md-subheader.md-no-sticky
+                  span(ng-if='all_items_count')
+                    span {{"Пользователей: " + all_items_count}}
+                  span(ng-if='!all_items_count') Поиск не дал результатов
+                  span(ng-if='selectedUsers.length > 0') {{", выбрано: " + selectedUsers.length}}
+                md-list-item.md-3-line(ng-repeat="item in users")
+                  md-checkbox(ng-checked="existsUser(item, selectedUsers)", ng-click="toggleUser(item, selectedUsers)")
+                  div.md-avatar.group-users__user-photo(ng-class='{"group-users__user-photo_type_admin": item.access_group.access_level === 5}')
+                  div.md-list-item-text(layout='column')
+                    h3 {{item.first_name + " " + item.last_name}}
+                    h4 {{item.username}}
+                    p {{item.access_group.name}}
+
+              include pagination
+
+        md-tab(label='Выбранные пользователи')
+          md-content.md-padding(md-swipe-right='onSwipeRight()')
+            div.group-users__items
+
+              md-list
+                md-subheader.md-no-sticky
+                  span(ng-if='selectedUsers.length')
+                    span {{selectedUsers.length + " item"}}
+                      span(ng-if='selectedUsers.length > 1') s
+                  span(ng-if='!selectedUsers.length') Нет выбранных пользователей
+                md-list-item.md-3-line(ng-repeat="item in selectedUsers")
+                  md-checkbox(ng-checked="existsUser(item, selectedUsers)", ng-click="toggleUser(item, selectedUsers)")
+                  div.md-avatar.group-users__user-photo(ng-class='{"group-users__user-photo_type_admin": item.access_group.access_level === 5}')
+                  div.md-list-item-text(layout='column')
+                    h3 {{item.first_name + " " + item.last_name}}
+                    h4 {{item.username}}
+                    p {{item.access_group.name}}
+

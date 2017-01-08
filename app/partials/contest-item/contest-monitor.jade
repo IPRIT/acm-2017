@@ -1,0 +1,89 @@
+div.contest
+  div.contest__content
+    div.contest__inner
+      div.contest__title-section
+        h2 Таблица результатов
+
+      //div.contest-monitor__table-update
+        md-button.md-primary.md-raised(ng-click='updateTable()') Обновить таблицу
+
+      div.contest__status
+        span
+          div.contest-item__status(ng-switch='contest.status')
+            div(ng-switch-when='NOT_ENABLED')
+              span.contests-list__item_status_removed Не доступен
+            div(ng-switch-when='REMOVED')
+              span.contests-list__item_status_removed Удален
+            div(ng-switch-when='FINISHED')
+              span.contests-list__item_status_success Завершён
+            div(ng-switch-when='FROZEN')
+              span.contests-list__item_status_neutral Заморозка. Осталось
+                my-timer-element.contest-item__status-time(
+                finish='contest.absoluteDurationTime',
+                on-finish='updateContest'
+                on-other='[{time: contest.absoluteDurationTime, callback: updateTable}]'
+                )
+            div(ng-switch-when='WAITING')
+              span Начало через
+                my-timer-element.contest-item__status-time(finish='contest.startTime', on-finish='updateContest')
+            div(ng-switch-when='RUNNING')
+              span.contests-list__item_status_success Контест идет. Осталось
+                my-timer-element.contest-item__status-time(
+                finish='contest.absoluteDurationTime',
+                on-finish='updateContest',
+                on-other='[{time: contest.absoluteFreezeTime, callback: updateContest}, {time: contest.absoluteFreezeTime, callback: updateTable}]'
+                )
+            div(ng-switch-when='PRACTICE')
+              span.contests-list__item_status_success Дорешивание. Осталось
+                my-timer-element.contest-item__status-time(
+                finish='contest.absolutePracticeDurationTime',
+                on-finish='updateContest'
+                on-other='[{time: contest.absolutePracticeDurationTime, callback: updateTable}]'
+                )
+
+      div.monitor-content
+        md-content
+          div.monitor-content__table
+            div.monitor-content__row.monitor-content__row_type_header
+              div.monitor-content__cell
+                span Место
+              div.monitor-content__cell.monitor-content__cell-participant
+                span Участник
+              div.monitor-content__cell.monitor-content__cell-result(ng-repeat='headerCell in contestTable.header.row')
+                a.md-button.md-primary(ui-sref='^.conditions-item({problemIndex: headerCell.task.index})')
+                  | {{headerCell.task.index}}
+                  md-tooltip {{headerCell.task.name}}
+              div.monitor-content__cell.monitor-content__cell-solutions
+                span Решения
+              div.monitor-content__cell.monitor-content__cell-score
+                span Штраф
+
+            div.monitor-content__row(ng-repeat='row in contestTable.rows',
+              ng-class='{"monitor-content__row-my": user.id === row.user.user_id, "monitor-content__row_group_even": row.group % 2 === 0 && row.solutions !== 0, "monitor-content__no-solutions": row.solutions === 0}')
+              div.monitor-content__cell
+                span(ng-bind='row.rank')
+              div.monitor-content__cell.monitor-content__cell-participant
+                span(ng-bind='row.user.user_full_name')
+              div.monitor-content__cell.monitor-content__cell-result(ng-repeat='cell in row.row',
+              ng-class='{"monitor-content__cell_type_clickable": cell.result !== "—", "monitor-content__cell_type_accepted": cell.result.indexOf("+") !== -1, "monitor-content__cell_type_frozen": cell.frozen, "monitor-content__cell_type_in-practice": cell.inPractice}',
+              title='{{cell.frozen ? "Отправлено после заморозки" : (cell.inPractice ? "Дорешено" : "")}}',
+              ng-click='openStatusDialog($event, cell, row.user)')
+                span(ng-bind='cell.result')
+                span.monitor-content__cell_accept-time(ng-if='cell.time', ng-class='{"monitor-content__cell_accept-time-too-much": row.row.length > 20}')
+                  span(ng-bind='cell.time')
+                span.monitor-content__cell-loading(ng-if='cell._loading', onclick='event.stopPropagation()')
+                  div.content-spin__layer
+                    div.search-spin-layer_
+                      div.search-spin
+              div.monitor-content__cell.monitor-content__cell-solutions
+                span(ng-bind='row.solutions')
+                span.monitor-content__cell-solutions_type_after-contest(ng-if='row.solutions - row.solutionsInTime > 0')
+                  div(tabindex='{{$index}}')
+                    md-tooltip Решено во время контеста: {{row.solutionsInTime}}
+              div.monitor-content__cell.monitor-content__cell-score
+                span(ng-bind='row.score')
+          
+      div(style='padding: 20px 1px 0;')
+        md-checkbox.md-primary(ng-model="disableUpdating", aria-label="Checkbox") Отключить обновление данных таблицы в реальном времени.
+
+  page-footer

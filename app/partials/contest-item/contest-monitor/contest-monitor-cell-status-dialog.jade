@@ -1,0 +1,16 @@
+md-dialog(aria-label="Verdict selection")
+  form
+    md-toolbar
+      div.md-toolbar-tools
+        h2 Отправки в этой ячейке
+        span(flex)
+        md-button.md-icon-button(ng-click="close()")
+          md-icon(md-svg-src="/img/icons/ic_close_48px.svg", aria-label="Close dialog")
+
+    md-dialog-content(style="max-width: 1200px; min-width: 400px; max-height: 500px;")
+      md-content.md-padding
+        div(style='border: 1px solid #ccc;')
+          include ../contest-status/contest-status-tab-content
+
+    div.md-actions(layout="row")
+      md-button(ng-click="close()") Закрыть

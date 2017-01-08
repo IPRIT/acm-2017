@@ -1,0 +1,61 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Создать пользователя
+
+      div.contest-creation__inner
+        form.contest-creation__form(name='userForm')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Фио пользователя
+            div(layout)
+                md-input-container(flex)
+                  label Имя
+                  input(md-maxlength='200', required, name='firstName', ng-model='form.firstName')
+                  div(ng-messages='userForm.firstName.$error')
+                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='md-maxlength') Введите не больше 200 символов
+                md-input-container(flex)
+                  label Фамилия
+                  input(md-maxlength='200', required, name='lastName', ng-model='form.lastName')
+                  div(ng-messages='userForm.lastName.$error')
+                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='md-maxlength') Введите не больше 200 символов
+
+          div.contest-creation__row
+            div.contest-creation__row-title Данные пользователя для входа
+            div(layout)
+              md-input-container(flex)
+                label Логин
+                input(md-maxlength='200', required, name='username', ng-model='form.username')
+                div(ng-messages='userForm.username.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 200 символов
+              md-input-container(flex)
+                label Пароль
+                input(md-maxlength='200', required, name='password', ng-model='form.password')
+                div(ng-messages='userForm.password.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 200 символов
+
+          div.contest-creation__row
+            div.contest-creation__row-title В какой группе состоит?
+            span.sublabel Выберите группу для пользователя или оставьте поле пустым, чтобы пользователь входил в любые контесты.
+            md-input-container.groups(md-no-float)
+              md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
+                md-autocomplete(
+                md-selected-item="chips.selectedItem",
+                md-search-text="chips.searchText",
+                md-items="item in groupSearch(chips.searchText)",
+                md-item-text="item.name",
+                placeholder='Введите название...'
+                )
+                  span(md-highlight-text="searchText") {{item.name}}
+                md-chip-template
+                  div
+                    span.chip-circle(style='background-color: {{$chip.color}};')
+                    span {{$chip.name}}
+
+          div.contest-creation__row.contest-creation__row_type_create
+            md-button.md-primary.md-raised(ng-disabled='!userForm.$valid', aria-label='Send', ng-click='submitForm()') Создать пользователя

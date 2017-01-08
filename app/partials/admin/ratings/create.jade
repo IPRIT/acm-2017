@@ -1,0 +1,36 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+    div.contests-sort
+      div.contests-sort__item
+        md-input-container(ng-show='curSortItem || curCategory')
+          label Порядок
+          md-select(ng-model="curSortOrder", aria-label='Sort orders')
+            md-option(ng-repeat='sort_order in sortOrders', value='{{sort_order.order}}') {{sort_order.name}}
+
+      div.contests-sort__item
+        md-input-container
+          label Сортировать по
+          md-select(ng-model="curSortItem", aria-label='Sorts')
+            md-option(ng-repeat='sort in sortCategories', value='{{sort.sort}}') {{sort.name}}
+
+      div.contests-sort__item
+        md-input-container
+          label Показать
+          md-select(ng-model="curCategory", aria-label='Categories')
+            md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
+
+    div.contests-list
+      div.contests-list__title Создать рейтинг из контестов
+      div.contests-list__pagination(ng-if='pageNumber !== 1')
+        include pagination
+      div.contests-list__items
+        div.contests-list__item-layer(ng-repeat='contest in contestsList')
+          contest-list-item-admin-rating(contest='contest')
+        div(ng-if='contestsList.length === 0')
+          div.contests-list__no-items Список контестов пуст
+
+
+    include pagination
+
+    div.contest-creation__row.contest-creation__row_type_create
+      md-button.md-primary.md-raised(ng-disabled='!selectedContests.length', aria-label='Create rating', ng-click='createRating()') Создать рейтинг

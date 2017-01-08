@@ -1,0 +1,41 @@
+div.contest
+  div.contest__content.contest__min-width
+    div.contest__inner
+      div.contest__title-section
+        h2 Отправить на проверку
+
+      div.send-content
+        form
+          div.send-content__condition-selector
+            div
+              md-input-container(flex)
+                label Выбор задачи
+                md-select(ng-model='selectedCondition')
+                  md-option(ng-repeat='condition in conditions', value='{{condition.internal_index}}')
+                    span {{condition.internal_index + ". " + condition.title}}
+
+            div
+              md-input-container(flex)
+                label Язык
+                md-select(ng-model='selectedLangId')
+                  md-option(ng-repeat='lang in currentLangs', value='{{lang.id}}')
+                    span {{lang.name}}
+
+            div.send-content__submit(ng-if='solution.length > 0')
+              md-button.md-raised.md-primary(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
+
+          div.send-content__textarea
+            md-input-container(flex, style='width: 100%;')
+              label Решение
+              textarea.textarea.send-content__textarea-element(ng-model='solution')
+
+          div.send-content__file-upload-button(ng-if='solution.length === 0')
+            form(name='form')
+              md-button.md-raised(ngf-select="upload($file)", name="file", ngf-max-size="20MB")
+                md-icon(md-svg-src='/img/icons/ic_file_upload_48px.svg')
+                | Выбрать файл
+
+          div.send-content__submit
+            md-button.md-raised.md-primary(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
+
+  page-footer

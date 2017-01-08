@@ -1,0 +1,4 @@
+div.admin-menu
+  div.admin-menu__items
+    md-button.admin-menu__item(ng-repeat='item in menu', ui-sref='{{item.uiSref}}', ng-class='{"md-primary": $state.includes(item.group)}', aria-label='Admin menu item')
+      span(ng-bind='item.name')

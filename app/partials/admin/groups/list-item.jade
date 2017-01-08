@@ -1,0 +1,13 @@
+md-card.groups__item(flex-gt-lg='30', flex='45', ng-repeat='group in groups')
+   md-card-title
+      md-card-title-text
+         span.md-headline(ng-bind='group.name')
+         span.md-subhead(ng-bind='group.population + " участников"')
+
+      md-card-title-media
+         div.md-media-sm.card-media(ng-attr-style='background-color: {{group.color}}')
+
+   md-card-actions(layout="row", layout-align='end center')
+      md-button.md-primary(ui-sref='^.edit({groupId: group.id})') Редактировать
+      md-button.md-accent(ng-click='deleteGroup($event, group)') Удалить
+

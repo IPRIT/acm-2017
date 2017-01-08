@@ -1,0 +1,28 @@
+div.contest
+  div.contest__content.contest__min-width
+    div.contest__inner
+      div.contest__title-section
+        h2 Условия задач
+
+      div.contest__conditions
+        div.contest__conditions-link(ng-repeat='condition in conditions')
+          a(
+          ui-sref='^.conditions-item({problemIndex: condition.internal_index})'
+          )
+            div
+              span.contest__condition-index {{condition.internal_index}}.
+              span=' '
+              span.contest__condition-name {{condition.title}}
+            div.contest__sytem(ng-if='user.access_group.access_level === 5')
+              span.contest__system-type(ng-switch='condition.system_type')
+                span(ng-switch-when='timus') Timus
+                span(ng-switch-when='cf') Codeforces
+                span(ng-switch-when='acmp') ACMP.ru
+                span(ng-switch-when='sgu') SGU Online Judge
+                span(ng-switch-when='ejudge') ejudge
+          div.contest__condition-send-button-wrap(layout, layout-align='center center')
+            md-button.md-icon-button.md-primary(aria-label='Eat cake', ui-sref='contest.send-item({problemIndex: condition.internal_index})')
+              md-tooltip(md-direction="left") Отправить решение
+              md-icon(md-svg-src='/img/icons/ic_send_48px.svg')
+
+  page-footer

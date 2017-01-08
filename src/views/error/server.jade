@@ -1,0 +1,21 @@
+html
+  head
+    title= message
+    link(href="https://fonts.googleapis.com/css?family=Comfortaa|Monoton|Poiret+One&subset=cyrillic&effect=3d", rel="stylesheet")
+    meta(name="theme-color", content="#00897B")
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+    style
+      include style.css
+  body.body-gradient
+    .error
+      .error__alert
+        .error__header.error__header_server-error.font-effect-3d MISIS&nbsp;&nbsp;&nbsp;BOOKS
+        .error__message= message
+        a.error__action(href='/')
+          span Главная
+        br
+        a.error__action(target='_blank', href=mailToUrl)
+          span Связаться&nbsp;с&nbsp;Администрацией
+
+        div(style='text-align: left; margin-top: 60px; color: rgba(255,255,255,.7)')
+          pre= stack

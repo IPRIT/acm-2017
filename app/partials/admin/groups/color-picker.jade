@@ -1,0 +1,8 @@
+md-content.color-picker
+   div.color-picker__palette(flex, layout='row', layout-fill, layout-align='space-around flex-start')
+      div.color-picker__palette-block(flex, ng-repeat='colorRow in colorsTable')
+         div.color-picker__palette-item(
+         ng-repeat='color in colorRow',
+         style='background-color: {{color}}',
+         ng-click='setColor($event, color)',
+         ng-class='{"color-picker__palette-item_type_selected": color === value}')

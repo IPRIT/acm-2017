@@ -1,0 +1,28 @@
+div.contest
+  div.contest__content
+    div.contest__inner
+      div.contest__title-section
+        h2 Отправки
+
+      div(ng-if='currentUser.access_group.access_level === 5', ng-style='{"padding": "10px 0"}')
+        md-fab-toolbar(md-open="toolbar.isOpen", md-direction="left")
+          md-fab-trigger
+            md-button.md-fab.md-primary(aria-label="menu")
+              md-icon(md-svg-src="img/icons/ic_menu_48px.svg")
+          md-toolbar
+            md-fab-actions.md-toolbar-tools
+              md-button.md-icon-button(aria-label="refresh all", style='position: relative;', ng-click='refreshAllSolutions($event)')
+                md-icon(md-svg-src="img/icons/ic_history_48px.svg")
+
+      div.status-content
+        md-content
+          md-tabs.md-accent(md-dynamic-height, md-border-bottom, md-selected="selectedTabIndex")
+            md-tab(label='Мои отправки')
+              include contest-status/contest-status-tab-content
+
+            md-tab(label='Все отправки')
+              include contest-status/contest-status-tab-content
+
+          include ./pagination
+
+  page-footer
