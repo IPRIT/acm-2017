@@ -6,6 +6,14 @@ import Group from './Group';
 import Verdict from './Verdict';
 import UserContestEnter from './UserContestEnter';
 import Contest from './Contest';
+import Problem from './Problem';
+import ProblemToContest from './ProblemToContest';
+import Message from './Message';
+import MessageRead from './MessageRead';
+import Language from './Language';
+import Solution from './Solution';
+import SystemAccount from './SystemAccount';
+
 
 const log = Log.getLogger('models');
 
@@ -19,11 +27,45 @@ sequelize.sync(/**{ force: true }/**/).then(() => {
  */
 User.hasMany(AuthToken, { foreignKey: 'userId', targetKey: 'id' });
 AuthToken.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
-User.belongsToMany(Group, { through: 'UsersToGroups', timestamps: false, foreignKey: 'userId' });
-Group.belongsToMany(User, { through: 'UsersToGroups', timestamps: false, foreignKey: 'groupId' });
 
-Contest.belongsToMany(Group, { through: 'GroupsToContests', timestamps: false, foreignKey: 'contestId' });
-Group.belongsToMany(Contest, { through: 'GroupsToContests', timestamps: false, foreignKey: 'groupId' });
+User.hasMany(Message, { foreignKey: 'userId', targetKey: 'id' });
+Message.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
+Contest.hasMany(Message, { foreignKey: 'contestId', targetKey: 'id' });
+Message.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
+
+User.belongsToMany(Message, {
+  through: MessageRead,
+  timestamps: false,
+  foreignKey: 'userId'
+});
+Message.belongsToMany(User, {
+  through: MessageRead,
+  timestamps: false,
+  foreignKey: 'messageId'
+});
+
+User.belongsToMany(Group, {
+  through: 'UsersToGroups',
+  timestamps: false,
+  foreignKey: 'userId'
+});
+Group.belongsToMany(User, {
+  through: 'UsersToGroups',
+  timestamps: false,
+  foreignKey: 'groupId'
+});
+
+Contest.belongsToMany(Group, {
+  through: 'GroupsToContests',
+  timestamps: false,
+  foreignKey: 'contestId'
+});
+Group.belongsToMany(Contest, {
+  through: 'GroupsToContests',
+  timestamps: false,
+  foreignKey: 'groupId'
+});
 
 User.belongsToMany(Contest, {
   through: UserContestEnter,
@@ -36,6 +78,34 @@ Contest.belongsToMany(User, {
   timestamps: false
 });
 
+Problem.belongsToMany(Contest, {
+  through: ProblemToContest,
+  foreignKey: 'problemId',
+  timestamps: false
+});
+Contest.belongsToMany(Problem, {
+  through: ProblemToContest,
+  foreignKey: 'contestId',
+  timestamps: false
+});
+
+User.hasMany(Solution, { foreignKey: 'userId', targetKey: 'id' });
+Solution.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
+Problem.hasMany(Solution, { foreignKey: 'problemId', targetKey: 'id' });
+Solution.belongsTo(Problem, { foreignKey: 'problemId', targetKey: 'id' });
+
+Verdict.hasMany(Solution, { foreignKey: 'verdictId', targetKey: 'id' });
+Solution.belongsTo(Verdict, { foreignKey: 'verdictId', targetKey: 'id' });
+
+Contest.hasMany(Solution, { foreignKey: 'contestId', targetKey: 'id' });
+Solution.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
+
+Language.hasMany(Solution, { foreignKey: 'languageId', targetKey: 'id' });
+Solution.belongsTo(Language, { foreignKey: 'languageId', targetKey: 'id' });
+
 export {
-  User, AuthToken, Group, Verdict, UserContestEnter, Contest
+  User, AuthToken, Group, Verdict,
+  UserContestEnter, Contest, Problem, ProblemToContest,
+  Message, MessageRead, Solution, Language, SystemAccount
 };
