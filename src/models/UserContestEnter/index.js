@@ -7,10 +7,10 @@ let UserContestEnter = sequelize.define('UserContestEnter', {
     primaryKey: true,
     autoIncrement: true
   },
-  joinTime: {
-    type: Sequelize.DATE,
-    allowNull: false,
-    defaultValue: () => new Date()
+  joinTimeMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED,
+    defaultValue: () => new Date().getTime(),
+    allowNull: false
   }
 }, {
   timestamps: false,

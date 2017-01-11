@@ -12,20 +12,20 @@ let Contest = sequelize.define('Contest', {
     allowNull: false,
     defaultValue: 'Unnamed contest'
   },
-  startTime: {
-    type: Sequelize.DATE,
-    defaultValue: () => new Date()
+  startTimeMs: {
+    type: Sequelize.BIGINT(15),
+    defaultValue: 0
   },
   relativeFreezeTimeMs: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.BIGINT(15),
     defaultValue: 0
   },
   durationTimeMs: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.BIGINT(15),
     defaultValue: 5 * 60 * 60 * 1000
   },
   practiceDurationTimeMs: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.BIGINT(15),
     defaultValue: 0
   },
   isEnabled: {

@@ -28,7 +28,6 @@ let Problem = sequelize.define('Problem', {
     type: Sequelize.TEXT
   }
 }, {
-  timestamps: false,
   engine: 'INNODB',
   indexes: [{
     name: 'system_type_index',

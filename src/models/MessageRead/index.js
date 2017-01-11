@@ -2,9 +2,9 @@ import Sequelize from 'sequelize';
 import sequelize from '../sequelize';
 
 let MessageRead = sequelize.define('MessageRead', {
-  readAt: {
-    type: Sequelize.DATE,
-    defaultValue: () => new Date()
+  readAtMs: {
+    type: Sequelize.BIGINT(15),
+    defaultValue: () => new Date().getTime()
   }
 }, {
   timestamps: false,

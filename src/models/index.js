@@ -14,6 +14,12 @@ import Language from './Language';
 import Solution from './Solution';
 import SystemAccount from './SystemAccount';
 
+import {
+  OldUser, OldLanguage, OldContest, OldProblem,
+  OldProblemToContest, OldUsersToGroups, OldSystemAccount,
+  OldUserContestEnter, OldSolution
+} from './_Old';
+
 
 const log = Log.getLogger('models');
 
@@ -104,8 +110,15 @@ Solution.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
 Language.hasMany(Solution, { foreignKey: 'languageId', targetKey: 'id' });
 Solution.belongsTo(Language, { foreignKey: 'languageId', targetKey: 'id' });
 
+User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id' });
+Contest.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id' });
+
 export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
-  Message, MessageRead, Solution, Language, SystemAccount
+  Message, MessageRead, Solution, Language, SystemAccount,
+
+  OldUser, OldLanguage, OldContest, OldProblem,
+  OldProblemToContest, OldUsersToGroups, OldSystemAccount,
+  OldUserContestEnter, OldSolution
 };

@@ -7,12 +7,12 @@ let Solution = sequelize.define('Solution', {
     primaryKey: true,
     autoIncrement: true
   },
-  sentAt: {
-    type: Sequelize.DATE,
-    defaultValue: () => new Date()
+  sentAtMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED,
+    defaultValue: () => new Date().getTime()
   },
-  verdictGotAt: {
-    type: Sequelize.DATE
+  verdictGotAtMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED
   },
   retriesNumber: {
     type: Sequelize.INTEGER,
@@ -41,10 +41,10 @@ let Solution = sequelize.define('Solution', {
   engine: 'INNODB',
   indexes: [{
     name: 'sent_time_index',
-    fields: [ 'sentAt' ]
+    fields: [ 'sentAtMs' ]
   }, {
     name: 'verdict_time_index',
-    fields: [ 'verdictGotAt' ]
+    fields: [ 'verdictGotAtMs' ]
   }]
 });
 

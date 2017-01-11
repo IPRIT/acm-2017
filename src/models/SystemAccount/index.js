@@ -25,7 +25,7 @@ let SystemAccount = sequelize.define('SystemAccount', {
     type: Sequelize.BOOLEAN,
     defaultValue: true
   },
-  solutions: {
+  solutionsNumber: {
     type: Sequelize.INTEGER,
     defaultValue: 0
   },

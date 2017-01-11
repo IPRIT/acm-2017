@@ -46,17 +46,17 @@ let User = sequelize.define('User', {
       return userGroups.utils.groupByMask(mask);
     }
   },
-  recentActivityTime: {
-    type: Sequelize.DATE,
-    defaultValue: () => new Date()
+  recentActivityTimeMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED,
+    defaultValue: () => new Date().getTime()
   },
-  lastLoggedTime: {
-    type: Sequelize.DATE,
-    defaultValue: () => new Date()
+  lastLoggedTimeMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED,
+    defaultValue: () => new Date().getTime()
   },
-  registerTime: {
-    type: Sequelize.DATE,
-    defaultValue: () => new Date()
+  registerTimeMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED,
+    defaultValue: () => new Date().getTime()
   }
 }, {
   getterMethods: {
