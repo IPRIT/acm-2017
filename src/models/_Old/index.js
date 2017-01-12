@@ -7,3 +7,5 @@ export OldUsersToGroups from './OldUsersToGroups';
 export OldSystemAccount from './OldSystemAccount';
 export OldUserContestEnter from './OldUserContestEnter';
 export OldSolution from './OldSolution';
+export OldMessage from './OldMessage';
+export OldMessageRead from './OldMessageRead';

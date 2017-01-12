@@ -27,6 +27,7 @@ async function repairDb() {
   //await repairSystemAccounts();
   //await repairUserContestEnters();
   //await repairSolutions();
+  //await repairMessages();
 }
 
 async function repairUsers() {
@@ -261,6 +262,52 @@ async function repairSolutions() {
       }
     } catch(err) {
       console.error(oldEntity.get({ plain: true }));
+    }
+  }
+  await Promise.resolve().delay(1000);
+}
+
+async function repairMessages() {
+  console.info(`Repairing messages...`);
+  let oldEntities = await models.OldMessage.findAll();
+  if (!oldEntities) {
+    throw new HttpError();
+  }
+  for (let oldEntity of oldEntities) {
+    let {
+      id, user_id, contest_id, as_admin, attachments,
+      message, time, removed
+    } = oldEntity;
+    try {
+      let messageInstance = await models.Message.create({
+        id,
+        asAdmin: as_admin,
+        attachments,
+        message,
+        createdAt: new Date(time),
+        updatedAt: new Date(time),
+        deletedAt: removed ? Date.now() : null,
+        userId: user_id,
+        contestId: contest_id
+      });
+      let messageReads = await models.OldMessageRead.findAll({
+        where: {
+          message_id: messageInstance.id
+        },
+        attributes: [ `message_id`, `user_id`, `time_read` ]
+      });
+      for (let messageRead of messageReads) {
+        let {
+          message_id, user_id, time_read
+        } = messageRead;
+        await models.MessageRead.create({
+          readAtMs: time_read,
+          userId: user_id,
+          messageId: message_id
+        });
+      }
+    } catch(err) {
+      console.error(err, oldEntity.get({ plain: true }));
     }
   }
   await Promise.resolve().delay(1000);

@@ -17,7 +17,7 @@ import SystemAccount from './SystemAccount';
 import {
   OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,
-  OldUserContestEnter, OldSolution
+  OldUserContestEnter, OldSolution, OldMessage, OldMessageRead
 } from './_Old';
 
 
@@ -120,5 +120,5 @@ export {
 
   OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,
-  OldUserContestEnter, OldSolution
+  OldUserContestEnter, OldSolution, OldMessage, OldMessageRead
 };
