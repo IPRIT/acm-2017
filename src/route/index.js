@@ -7,11 +7,13 @@ import { repairDb } from '../utils';
 import cors from './cors';
 import test from './test';
 import user from './user';
+import contest from './contest';
 
 const router = express.Router();
 router.all('*', cors);
 router.use('/test', test);
 router.use('/user', user);
+router.use('/contest', contest);
 router.post('/repair', repairDb);
 
 router.all('/*', function(req, res, next) {

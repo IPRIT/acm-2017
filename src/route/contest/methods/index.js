@@ -1,0 +1,1 @@
+export getContests from './getContests';

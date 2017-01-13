@@ -21,7 +21,7 @@ async function repairDb() {
   //await repairUsers();
   //await repairLanguages();
   //await repairContests();
-  //await repairProblems();
+  //await repairProblems();//
   //await repairProblemsToContests();
   //await repairUsersToGroups();
   //await repairSystemAccounts();
@@ -41,7 +41,7 @@ async function repairUsers() {
       id, username, password, first_name, last_name, creation_time,
       last_logged_time, access_level, recent_action_time
     } = oldUser;
-    await models.User.create({
+    let user = await models.User.create({
       id, username, password,
       firstName: first_name,
       lastName: last_name,
@@ -50,6 +50,8 @@ async function repairUsers() {
       lastLoggedTimeMs: last_logged_time,
       registerTimeMs: creation_time
     });
+    user.setPasswordHash(password);
+    await user.save();
   });
   await Promise.resolve().delay(1000);
 }

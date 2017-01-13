@@ -132,6 +132,9 @@ let User = sequelize.define('User', {
     },
     arePasswordsEqual(password) {
       return this.getDataValue('password') === password;
+    },
+    setPasswordHash(hash) {
+      this.setDataValue('password', hash);
     }
   }
 });
