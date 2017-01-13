@@ -2,6 +2,7 @@ import { filterEntity as filter } from '../../../utils';
 import { ensureValue } from "../../../utils";
 import * as models from "../../../models";
 import Promise from 'bluebird';
+import Sequelize from 'sequelize';
 
 export default function (req, res, next) {
   return Promise.resolve().then(() => {
@@ -38,12 +39,10 @@ async function getContests(req, res) {
   if (!categoryPredicate.includes(category)) {
     category = DEFAULT_CONTESTS_CATEGORY;
   }
-  
   var availableSorts = {
-    byId: 'contests.id',
-    byStart: 'contests.start_time',
-    byEnd: 'finish_time',
-    byCreation: 'contests.creation_time'
+    byId: ['id', sort_order.toUpperCase()], //'contests.id',
+    byStart: ['startTimeMs', sort_order.toUpperCase()], //'contests.start_time',
+    byCreation: ['createdAt', sort_order.toUpperCase()], //'contests.creation_time'
   };
   if (!(sort in availableSorts)) {
     sort = DEFAULT_CONTESTS_SORT;
@@ -52,17 +51,16 @@ async function getContests(req, res) {
   return models.Contest.findAll({
     include: [ models.Group ],
     limit: count,
-    offset
-  }).then(contests => {
+    offset,
+    order: [ availableSorts[ sort ] ]
+  }).map(contest => {
     let exclude = [ 'GroupsToContests' ];
-    return contests.map(contest => {
-      return filter(contest.get({ plain: true }), {
-        exclude,
-        replace: [
-          [ 'Groups', 'allowedGroups' ]
-        ],
-        deep: true
-      });
+    return filter(contest.get({ plain: true }), {
+      exclude,
+      replace: [
+        [ 'Groups', 'allowedGroups' ]
+      ],
+      deep: true
     });
   }).then(async contests => {
     return {
