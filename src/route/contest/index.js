@@ -15,5 +15,6 @@ router.get('/:contestId/problems/:symbolIndex', [ userRetriever, rightsAllocator
 router.get('/:contestId/problems/:symbolIndex/languages', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getLanguagesRequest);
 
 router.post('/:contestId/solutions', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.sendSolutionRequest);
+router.get('/:contestId/solutions/:solutionsType', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getSolutionsRequest);
 
 export default router;

@@ -6,3 +6,4 @@ export * from './getProblems';
 export * from './getProblemBySymbolIndex';
 export * from './getLanguages';
 export * from './sendSolution';
+export * from './getSolutions';
