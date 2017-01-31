@@ -8,7 +8,7 @@ export default (...states) => {
     if (!user) {
       return next(new HttpError('You have no permissions', 403));
     }
-    contestMethods.canJoin(
+    return contestMethods.canJoin(
       Object.assign(req.params, { user: req.user })
     ).then(canJoinResult => {
       req.canJoin = canJoinResult;
@@ -17,7 +17,7 @@ export default (...states) => {
       if (!result) {
         return next(new HttpError('You have no permissions', 403));
       }
-      next();
+      return next();
     }).catch(error => next(error));
   };
 }

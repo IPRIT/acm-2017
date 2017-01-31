@@ -66,6 +66,12 @@ let User = sequelize.define('User', {
         let regexp = new RegExp(`\{${key}\}`, 'gi');
         return placeholder.replace(regexp, this[ key ]);
       }, placeholder).trim();
+    },
+    isAdmin() {
+      return userGroups.utils.hasRight(
+        this.accessGroup,
+        userGroups.groups.admin.mask
+      );
     }
   },
   setterMethods: {

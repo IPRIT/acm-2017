@@ -1,32 +1,36 @@
 import { typeCheck as isType } from 'type-check';
 import crypto from 'crypto';
 
+export const SYNTAX_C_LIKE_LITERAL_COMMENT  = '\n/* $1 */\n';
+export const SYNTAX_PYTHON_LITERAL_COMMENT   = '\n# $1\n';
+
 export function passwordHash(value) {
   return crypto.createHash('md5').update(value).digest('hex');
 }
 
 export function getSymbolIndex(index) {
-  let symbols = 'abcdefghijklmnopqrstuvwxyz',
-    intPart, modPart, symbolIndex = '';
+  let [ alphabetLength, symbolIndex ] = [ 26, '' ];
   while (index >= 0) {
-    intPart = Math.floor(index / symbols.length);
-    modPart = index % symbols.length;
-    symbolIndex += symbols[ modPart ];
-    index = intPart - 1;
+    symbolIndex += String.fromCharCode( index % alphabetLength + 0x61 );
+    index = Math.floor(index / alphabetLength) - 1;
   }
   return symbolIndex.split('').reverse().join('');
 }
 
 export function getIntegerIndex(symbolIndex) {
-  let symbols = 'abcdefghijklmnopqrstuvwxyz',
-    index = 0, symbolNumber = 0;
+  let [ alphabetLength, index, symbolNumber ] = [ 26, 0, 0 ];
   let symbolIndexArray = symbolIndex.toLowerCase().split('').reverse();
   while (symbolIndexArray.length) {
     let symbol = symbolIndexArray.shift();
-    index += (symbols.indexOf( symbol ) + 1)
-      * Math.pow(symbols.length, symbolNumber++);
+    index += ( symbol.charCodeAt(0) - 0x60 ) * Math.pow(alphabetLength, symbolNumber++);
   }
   return index - 1;
+}
+
+export function makeSourceWatermark({ solutionInstance, commentLiteral = SYNTAX_C_LIKE_LITERAL_COMMENT } = {}) {
+  let watermark = new Date().toString();
+  let sourceCode = solutionInstance.sourceCode + watermark.replace(/^(.*)$/gi, commentLiteral);
+  return solutionInstance.update({ sourceCode });
 }
 
 export class AsyncQueue {

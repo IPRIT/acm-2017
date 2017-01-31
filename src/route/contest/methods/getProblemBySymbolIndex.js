@@ -1,37 +1,33 @@
-import { filterEntity as filter, getSymbolIndex } from '../../../utils';
+import { filterEntity as filter, getSymbolIndex, getIntegerIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
 
-export function getProblemsRequest(req, res, next) {
+export function getProblemBySymbolIndexRequest(req, res, next) {
   return Promise.resolve().then(() => {
-    return getProblems(
-      Object.assign(req.params, { user: req.user })
-    );
+    return getProblemBySymbolIndex(req.params);
   }).then(result => res.json(result)).catch(next);
 }
 
-export async function getProblems(params) {
+export async function getProblemBySymbolIndex(params) {
   let {
-    contestId, userId, user, contest
+    contestId, contest, symbolIndex
   } = params;
-  
-  if (!user) {
-    user = await models.User.findByPrimary(userId);
-  }
   if (!contest) {
     contest = await models.Contest.findByPrimary(contestId);
   }
-  if (!user || !contest) {
-    throw new HttpError('User or Contest not found');
+  if (!contest) {
+    throw new HttpError('Contest not found');
   }
   return contest.getProblems({
     include: [ models.ProblemToContest ],
     order: [
       [ models.ProblemToContest, 'id', 'ASC']
-    ]
+    ],
+    offset: getIntegerIndex(symbolIndex),
+    limit: 1
   }).map((problem, index) => {
     problem = Object.assign(problem.get({ plain: true }), {
-      internalSymbolIndex: getSymbolIndex(index).toUpperCase()
+      internalSymbolIndex: symbolIndex.toUpperCase()
     });
     problem.attachments = JSON.parse(problem.attachments);
     return filter(problem, {
@@ -39,5 +35,10 @@ export async function getProblems(params) {
         'ProblemToContest', 'ProblemToContests', 'textStatement'
       ]
     })
+  }).then(problemsArray => {
+    if (!problemsArray.length) {
+      throw new HttpError('Problem not found');
+    }
+    return problemsArray[0];
   });
 }
