@@ -65,7 +65,7 @@ let User = sequelize.define('User', {
       return ['firstName', 'lastName'].reduce((placeholder, key) => {
         let regexp = new RegExp(`\{${key}\}`, 'gi');
         return placeholder.replace(regexp, this[ key ]);
-      }, placeholder);
+      }, placeholder).trim();
     }
   },
   setterMethods: {
@@ -86,18 +86,15 @@ let User = sequelize.define('User', {
     method: 'BTREE',
     fields: [ 'username' ]
   }],
-  defaultScope() {
-    let lockedGroup = userGroups.groups.locked;
-    return {
-      where: {
-        $and: {
-          isBan: false,
-          accessGroup: {
-            $ne: lockedGroup.mask
-          }
+  defaultScope: {
+    where: {
+      $and: {
+        isBan: false,
+        accessGroup: {
+          $ne: userGroups.groups.locked.mask
         }
       }
-    };
+    }
   },
   scopes: {
     deleted: {

@@ -31,9 +31,12 @@ let Contest = sequelize.define('Contest', {
   isEnabled: {
     type: Sequelize.BOOLEAN,
     defaultValue: true
+  },
+  isSuspended: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 }, {
-  paranoid: true,
   engine: 'INNODB',
   getterMethods: {
     absoluteFreezeTimeMs() {
@@ -52,7 +55,7 @@ let Contest = sequelize.define('Contest', {
       var curTime = new Date().getTime();
       if (!this.isEnabled) {
         return 'NOT_ENABLED';
-      } else if (this.removedAt) {
+      } else if (this.isSuspended) {
         return 'REMOVED';
       } else if (this.absolutePracticeDurationTimeMs < curTime) {
         return 'FINISHED';
@@ -66,6 +69,18 @@ let Contest = sequelize.define('Contest', {
         return 'RUNNING';
       }
       return 'NOT_ENABLED';
+    }
+  },
+  defaultScope: {
+    where: {
+      isSuspended: false
+    }
+  },
+  scopes: {
+    deleted: {
+      where: {
+        isSuspended: true
+      }
     }
   }
 });

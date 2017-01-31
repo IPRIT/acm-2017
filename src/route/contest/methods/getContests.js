@@ -1,12 +1,10 @@
 import { filterEntity as filter } from '../../../utils';
-import { ensureValue } from "../../../utils";
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import Sequelize from 'sequelize';
 
-export default function (req, res, next) {
+export function getContestsRequest(req, res, next) {
   return Promise.resolve().then(() => {
-    return getContests(req, res);
+    return getContests(req.query);
   }).then(result => res.json(result)).catch(next);
 }
 
@@ -16,27 +14,33 @@ const DEFAULT_CONTESTS_CATEGORY = 'all';
 const DEFAULT_CONTESTS_SORT = 'byId';
 const DEFAULT_CONTESTS_SORT_ORDER = 'desc';
 
-async function getContests(req, res) {
-  let user = req.user;
+export async function getContests(params) {
   let {
     count = DEFAULT_CONTESTS_COUNT, offset = DEFAULT_CONTESTS_OFFSET,
     category = DEFAULT_CONTESTS_CATEGORY, sort = DEFAULT_CONTESTS_SORT, sort_order = DEFAULT_CONTESTS_SORT_ORDER
-  } = req.query;
+  } = params;
   
   count = Math.max(Math.min(count, 200), 0);
   offset = Math.max(offset, 0);
   
-  var categoryPredicate = [
-    'all',
-    'showOnlyPractice',
-    'showOnlyEnabled',
-    'showOnlyDisabled',
-    'showOnlyFinished',
-    'showOnlyRemoved',
-    'showOnlyFrozen',
-    'showOnlyStarted'
-  ];
-  if (!categoryPredicate.includes(category)) {
+  let currentTimeMs = new Date().getTime();
+  let categoryPredicate = {
+    all: {},
+    showOnlyPractice: [
+      'startTimeMs + durationTimeMs < ? AND startTimeMs + durationTimeMs + practiceDurationTimeMs > ? AND isSuspended = false',
+      currentTimeMs, currentTimeMs
+    ],
+    showOnlyEnabled: { isEnabled: true },
+    showOnlyDisabled: { isEnabled: false },
+    showOnlyFinished: [ 'startTimeMs + durationTimeMs + practiceDurationTimeMs < ? AND isSuspended = false', currentTimeMs ],
+    showOnlyRemoved: { isSuspended: true },
+    showOnlyFrozen: [
+      'startTimeMs + relativeFreezeTimeMs < ? AND startTimeMs + durationTimeMs > ? AND isSuspended = false',
+      currentTimeMs, currentTimeMs
+    ],
+    showOnlyStarted: [ 'startTimeMs < ? AND startTimeMs + durationTimeMs > ? AND isSuspended = false', currentTimeMs, currentTimeMs ]
+  };
+  if (!(category in categoryPredicate)) {
     category = DEFAULT_CONTESTS_CATEGORY;
   }
   var availableSorts = {
@@ -47,25 +51,28 @@ async function getContests(req, res) {
   if (!(sort in availableSorts)) {
     sort = DEFAULT_CONTESTS_SORT;
   }
-  
   return models.Contest.findAll({
-    include: [ models.Group ],
+    include: [ models.Group, { model: models.User, association: models.Contest.associations.Author } ],
     limit: count,
     offset,
-    order: [ availableSorts[ sort ] ]
+    order: [ availableSorts[ sort ] ],
+    where: categoryPredicate[ category ]
   }).map(contest => {
-    let exclude = [ 'GroupsToContests' ];
+    let exclude = [ 'GroupsToContests', 'password' ];
     return filter(contest.get({ plain: true }), {
       exclude,
       replace: [
-        [ 'Groups', 'allowedGroups' ]
+        [ 'Groups', 'allowedGroups' ],
+        [ 'Author', 'author' ]
       ],
       deep: true
     });
   }).then(async contests => {
     return {
       contests,
-      contestsNumber: await models.Contest.count()
+      contestsNumber: await models.Contest.count({
+        where: categoryPredicate[ category ]
+      })
     }
   });
 }

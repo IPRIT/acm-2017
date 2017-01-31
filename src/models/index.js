@@ -76,12 +76,14 @@ Group.belongsToMany(Contest, {
 User.belongsToMany(Contest, {
   through: UserContestEnter,
   foreignKey: 'userId',
-  timestamps: false
+  timestamps: false,
+  as: 'ContestEnters'
 });
 Contest.belongsToMany(User, {
   through: UserContestEnter,
   foreignKey: 'contestId',
-  timestamps: false
+  timestamps: false,
+  as: 'Contestants'
 });
 
 Problem.belongsToMany(Contest, {
@@ -94,6 +96,12 @@ Contest.belongsToMany(Problem, {
   foreignKey: 'contestId',
   timestamps: false
 });
+
+Problem.hasMany(ProblemToContest, { foreignKey: 'problemId', targetKey: 'id' });
+ProblemToContest.belongsTo(Problem, { foreignKey: 'problemId', targetKey: 'id' });
+
+Contest.hasMany(ProblemToContest, { foreignKey: 'contestId', targetKey: 'id' });
+ProblemToContest.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
 
 User.hasMany(Solution, { foreignKey: 'userId', targetKey: 'id' });
 Solution.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
@@ -110,8 +118,8 @@ Solution.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
 Language.hasMany(Solution, { foreignKey: 'languageId', targetKey: 'id' });
 Solution.belongsTo(Language, { foreignKey: 'languageId', targetKey: 'id' });
 
-User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id' });
-Contest.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id' });
+User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
+Contest.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
 
 export {
   User, AuthToken, Group, Verdict,

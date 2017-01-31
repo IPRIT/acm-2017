@@ -5,6 +5,30 @@ export function passwordHash(value) {
   return crypto.createHash('md5').update(value).digest('hex');
 }
 
+export function getSymbolIndex(index) {
+  let symbols = 'abcdefghijklmnopqrstuvwxyz',
+    intPart, modPart, symbolIndex = '';
+  while (index >= 0) {
+    intPart = Math.floor(index / symbols.length);
+    modPart = index % symbols.length;
+    symbolIndex += symbols[ modPart ];
+    index = intPart - 1;
+  }
+  return symbolIndex.split('').reverse().join('');
+}
+
+export function getIntegerIndex(symbolIndex) {
+  let symbols = 'abcdefghijklmnopqrstuvwxyz',
+    index = 0, symbolNumber = 0;
+  let symbolIndexArray = symbolIndex.toLowerCase().split('').reverse();
+  while (symbolIndexArray.length) {
+    let symbol = symbolIndexArray.shift();
+    index += (symbols.indexOf( symbol ) + 1)
+      * Math.pow(symbols.length, symbolNumber++);
+  }
+  return index - 1;
+}
+
 export class AsyncQueue {
   queue = [];
   inProcess = false;

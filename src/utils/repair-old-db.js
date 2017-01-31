@@ -95,9 +95,9 @@ async function repairContests() {
       durationTimeMs: duration_time,
       practiceDurationTimeMs: practice_duration_time,
       isEnabled: enabled,
+      isSuspended: removed,
       createdAt: new Date(creation_time),
       updatedAt: new Date(creation_time),
-      deletedAt: removed ? Date.now() : null,
       authorId: user_id
     });
     allowed_groups = (allowed_groups || '').split(',').map(Number);
