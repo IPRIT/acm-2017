@@ -16,5 +16,9 @@ router.get('/:contestId/problems/:symbolIndex/languages', [ userRetriever, right
 
 router.post('/:contestId/solutions', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.sendSolutionRequest);
 router.get('/:contestId/solutions/:solutionsType', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getSolutionsRequest);
+router.get('/:contestId/solutions/:solutionId/code', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getSolutionRequest);
+
+router.get('/:contestId/table', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getTableRequest);
+router.get('/:contestId/table/solutions/user/:contestantId/problem/:problemSymbol', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getSolutionsForCellRequest);
 
 export default router;

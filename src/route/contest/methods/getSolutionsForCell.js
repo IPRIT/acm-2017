@@ -6,10 +6,10 @@ import deap from 'deap';
 import userGroups from './../../../models/User/userGroups';
 import Sequelize from 'sequelize';
 
-export function getSolutionsRequest(req, res, next) {
+export function getSolutionsForCellRequest(req, res, next) {
   return Promise.resolve().then(() => {
     let { offset = 0, count = 50 } = req.query;
-    return getSolutions(
+    return getSolutionsForCell(
       Object.assign(req.params, {
         user: req.user,
         offset, count
@@ -18,17 +18,17 @@ export function getSolutionsRequest(req, res, next) {
   }).then(result => res.json(result)).catch(next);
 }
 
-export async function getSolutions(params) {
+export async function getSolutionsForCell(params) {
   let {
     contestId, contest,
     userId, user,
     offset, count,
-    solutionsType,
+    contestantId, problemSymbol,
     ignoreFreeze, sort = 'DESC'
   } = params;
   
   offset = Number(offset) || 0;
-  count = Number(count) || 50;
+  count = Number(count) || 1e9;
   
   if (!user) {
     user = await models.User.findByPrimary(userId);
@@ -41,27 +41,32 @@ export async function getSolutions(params) {
   }
   
   let problems = await contests.getProblems({ user, contest });
-  let problemsMapping = new Map();
+  let problemsMapping = new Map(),
+    backProblemsMapping = new Map();
   problems.forEach((problem, index) => {
     problemsMapping.set(
       problem.id,
       getSymbolIndex( index )
+    );
+    backProblemsMapping.set(
+      getSymbolIndex( index ),
+      problem.id
     );
   });
   
   let currentTimeMs = new Date().getTime(),
     isContestFrozen = currentTimeMs >= contest.absoluteFreezeTimeMs && currentTimeMs <= contest.absoluteDurationTimeMs;
   
-  let where = {};
+  let where = {
+    problemId: backProblemsMapping.get( problemSymbol.toLowerCase() ),
+    userId: contestantId
+  };
   let includeUsers = {
     model: models.User,
     required: true,
     attributes: { exclude: [ 'password' ] }
   };
   
-  if (solutionsType === 'my') {
-    deap.extend(where, { userId: user.id });
-  }
   if (!user.isAdmin) {
     deap.extend(includeUsers, {
       where: {

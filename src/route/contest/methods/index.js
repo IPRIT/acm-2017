@@ -7,3 +7,6 @@ export * from './getProblemBySymbolIndex';
 export * from './getLanguages';
 export * from './sendSolution';
 export * from './getSolutions';
+export * from './getSolution';
+export * from './getTable';
+export * from './getSolutionsForCell';

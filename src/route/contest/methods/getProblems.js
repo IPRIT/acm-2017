@@ -12,7 +12,8 @@ export function getProblemsRequest(req, res, next) {
 
 export async function getProblems(params) {
   let {
-    contestId, userId, user, contest
+    contestId, contest,
+    userId, user
   } = params;
   
   if (!user) {

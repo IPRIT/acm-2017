@@ -18,6 +18,9 @@ let Solution = sequelize.define('Solution', {
     type: Sequelize.INTEGER,
     defaultValue: 0
   },
+  nextAttemptWillBeAtMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED
+  },
   testNumber: {
     type: Sequelize.INTEGER,
     defaultValue: 0
@@ -35,6 +38,9 @@ let Solution = sequelize.define('Solution', {
   },
   ip: {
     type: Sequelize.STRING
+  },
+  internalSolutionIdentifier: {
+    type: Sequelize.STRING
   }
 }, {
   paranoid: true,
@@ -43,8 +49,14 @@ let Solution = sequelize.define('Solution', {
     name: 'sent_time_index',
     fields: [ 'sentAtMs' ]
   }, {
+    name: 'next_attempt_time_index',
+    fields: [ 'nextAttemptWillBeAtMs' ]
+  }, {
     name: 'verdict_time_index',
     fields: [ 'verdictGotAtMs' ]
+  }, {
+    name: 'solution_identifier_index',
+    fields: [ 'internalSolutionIdentifier' ]
   }]
 });
 
