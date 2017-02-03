@@ -16,6 +16,10 @@ let Message = sequelize.define('Message', {
   },
   message: {
     type: Sequelize.TEXT
+  },
+  postAtMs: {
+    type: Sequelize.BIGINT(15).UNSIGNED,
+    defaultValue: () => new Date().getTime()
   }
 }, {
   paranoid: true,

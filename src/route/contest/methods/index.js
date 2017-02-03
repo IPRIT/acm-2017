@@ -10,4 +10,6 @@ export * from './getSolutions';
 export * from './getSolution';
 export * from './getTable';
 export * from './getSolutionsForCell';
-export * from '../../admin/methods/getRatingTable';
+export * from './postMessage';
+export * from './getMessages';
+export * from './markMessagesAsRead';

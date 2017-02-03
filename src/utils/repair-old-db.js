@@ -286,6 +286,7 @@ async function repairMessages() {
         asAdmin: as_admin,
         attachments,
         message,
+        postAtMs: time,
         createdAt: new Date(time),
         updatedAt: new Date(time),
         deletedAt: removed ? Date.now() : null,

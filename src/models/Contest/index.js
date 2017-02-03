@@ -52,7 +52,7 @@ let Contest = sequelize.define('Contest', {
       return !!this.practiceDurationTimeMs;
     },
     status() {
-      var curTime = new Date().getTime();
+      let curTime = new Date().getTime();
       if (!this.isEnabled) {
         return 'NOT_ENABLED';
       } else if (this.isSuspended) {

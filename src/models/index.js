@@ -51,6 +51,12 @@ Message.belongsToMany(User, {
   foreignKey: 'messageId'
 });
 
+User.hasMany(MessageRead, { foreignKey: 'userId', targetKey: 'id' });
+MessageRead.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
+Message.hasMany(MessageRead, { foreignKey: 'messageId', targetKey: 'id' });
+MessageRead.belongsTo(Message, { foreignKey: 'messageId', targetKey: 'id' });
+
 User.belongsToMany(Group, {
   through: 'UsersToGroups',
   timestamps: false,
