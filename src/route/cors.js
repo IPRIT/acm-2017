@@ -3,7 +3,7 @@ import cors from 'cors';
 
 const env = config.env;
 
-var corsOptions = {
+let corsOptions = {
   origin: config.cors.origins.join(' '),
   methods: config.cors.methods,
   allowedHeaders: config.cors.headers

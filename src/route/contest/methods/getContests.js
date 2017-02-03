@@ -43,7 +43,7 @@ export async function getContests(params) {
   if (!(category in categoryPredicate)) {
     category = DEFAULT_CONTESTS_CATEGORY;
   }
-  var availableSorts = {
+  let availableSorts = {
     byId: ['id', sort_order.toUpperCase()], //'contests.id',
     byStart: ['startTimeMs', sort_order.toUpperCase()], //'contests.start_time',
     byCreation: ['createdAt', sort_order.toUpperCase()], //'contests.creation_time'

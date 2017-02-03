@@ -2,9 +2,6 @@ import { filterEntity as filter, getSymbolIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
 import * as contests from './index';
-import deap from 'deap';
-import userGroups from './../../../models/User/userGroups';
-import Sequelize from 'sequelize';
 
 const PENALTY_TIME = 20; // minutes
 
@@ -244,7 +241,7 @@ export async function getTable(params) {
 }
 
 function getAcceptTime(diffTime) {
-  var allSeconds = Math.floor(diffTime / 1000),
+  let allSeconds = Math.floor(diffTime / 1000),
     minutes = Math.floor(allSeconds / 60),
     hours = Math.floor(minutes / 60);
   minutes %= 60;

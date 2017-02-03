@@ -20,5 +20,6 @@ router.get('/:contestId/solutions/:solutionId/code', [ userRetriever, rightsAllo
 
 router.get('/:contestId/table', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getTableRequest);
 router.get('/:contestId/table/solutions/user/:contestantId/problem/:problemSymbol', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getSolutionsForCellRequest);
+router.get('/ratingTable', [ userRetriever, rightsAllocator('admin') ], contest.getRatingTableRequest);
 
 export default router;
