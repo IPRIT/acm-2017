@@ -19,7 +19,7 @@ let Problem = sequelize.define('Problem', {
     allowNull: false
   },
   htmlStatement: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT('medium')
   },
   textStatement: {
     type: Sequelize.TEXT
