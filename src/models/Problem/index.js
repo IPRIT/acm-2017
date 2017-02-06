@@ -25,7 +25,11 @@ let Problem = sequelize.define('Problem', {
     type: Sequelize.TEXT
   },
   attachments: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    get() {
+      let jsonString = this.getDataValue('attachments') || '{}';
+      return JSON.parse(jsonString);
+    }
   }
 }, {
   engine: 'INNODB',

@@ -41,6 +41,10 @@ let Solution = sequelize.define('Solution', {
   },
   internalSolutionIdentifier: {
     type: Sequelize.STRING
+  },
+  refreshedNumber: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
   }
 }, {
   paranoid: true,

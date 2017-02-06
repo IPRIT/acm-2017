@@ -19,7 +19,12 @@ export async function getProblemBySymbolIndex(params) {
     throw new HttpError('Contest not found');
   }
   return contest.getProblems({
-    include: [ models.ProblemToContest ],
+    include: [{
+      model: models.ProblemToContest,
+      where: {
+        contestId: contest.id
+      }
+    }],
     order: [
       [ models.ProblemToContest, 'id', 'ASC']
     ],
@@ -29,7 +34,6 @@ export async function getProblemBySymbolIndex(params) {
     problem = Object.assign(problem.get({ plain: true }), {
       internalSymbolIndex: symbolIndex.toUpperCase()
     });
-    problem.attachments = JSON.parse(problem.attachments);
     return filter(problem, {
       exclude: [
         'ProblemToContest', 'ProblemToContests', 'textStatement'

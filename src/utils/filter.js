@@ -12,7 +12,7 @@ export default (obj, filterOptions) => {
 }
 
 function filter(obj, attrs) {
-  //todo: needs to entirely rewrite
+  //todo: rewrite completely
   let [ include, exclude, replace, deep ] = [ [], [], [], false ];
   if (typeof attrs === 'object') {
     include = attrs.include || [];
@@ -44,17 +44,14 @@ function filter(obj, attrs) {
               [ attr ]: filter(obj[ attr ], attrs)
             });
           } else {
-            //todo: what?
             newObj[ attr ] = obj[ attr ];
           }
         } else {
-          //todo: what?
           newObj[ attr ] = obj[ attr ];
         }
       }
     });
   } else {
-    //todo: again?
     Object.keys(obj).forEach(attr => {
       let isObject = isType('Object', obj[ attr ]);
       let isArray = isType('Array', obj[ attr ]);
@@ -70,11 +67,9 @@ function filter(obj, attrs) {
             [ attr ]: filter(obj[ attr ], attrs)
           });
         } else {
-          //todo: what?
           newObj[ attr ] = obj[ attr ];
         }
       } else {
-        //todo: what?
         newObj[ attr ] = obj[ attr ];
       }
     });

@@ -26,7 +26,12 @@ export async function getProblems(params) {
     throw new HttpError('User or Contest not found');
   }
   return contest.getProblems({
-    include: [ models.ProblemToContest ],
+    include: [{
+      model: models.ProblemToContest,
+      where: {
+        contestId: contest.id
+      }
+    }],
     order: [
       [ models.ProblemToContest, 'id', 'ASC']
     ]
@@ -34,7 +39,6 @@ export async function getProblems(params) {
     problem = Object.assign(problem.get({ plain: true }), {
       internalSymbolIndex: getSymbolIndex(index).toUpperCase()
     });
-    problem.attachments = JSON.parse(problem.attachments);
     return filter(problem, {
       exclude: [
         'ProblemToContest', 'ProblemToContests', 'textStatement'

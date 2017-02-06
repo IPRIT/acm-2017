@@ -1,8 +1,8 @@
 import { typeCheck as isType } from 'type-check';
 import crypto from 'crypto';
 
-export const SYNTAX_C_LIKE_LITERAL_COMMENT  = '\n/* $1 */\n';
-export const SYNTAX_PYTHON_LITERAL_COMMENT   = '\n# $1\n';
+export const SYNTAX_C_LIKE_LITERAL_COMMENT = '\n/* $1 */\n';
+export const SYNTAX_PYTHON_LITERAL_COMMENT = '\n# $1\n';
 
 export function passwordHash(value) {
   return crypto.createHash('md5').update(value).digest('hex');
@@ -31,6 +31,16 @@ export function makeSourceWatermark({ solutionInstance, commentLiteral = SYNTAX_
   let watermark = new Date().toString();
   let sourceCode = solutionInstance.sourceCode + watermark.replace(/^(.*)$/gi, commentLiteral);
   return solutionInstance.update({ sourceCode });
+}
+
+export function valueBetween(value, min = -Infinity, max = Infinity) {
+  if (min > max) {
+    [ min, max ] = [ max, min ];
+  }
+  return Math.min(
+    Math.max(Number(value), min),
+    max
+  );
 }
 
 export class AsyncQueue {

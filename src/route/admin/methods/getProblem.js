@@ -13,9 +13,5 @@ export async function getProblem(params) {
     problemId
   } = params;
   
-  return models.Problem.findByPrimary(problemId).then(problem => {
-    let { attachments = '{}' } = problem;
-    problem.attachments = JSON.parse(attachments);
-    return problem;
-  });
+  return models.Problem.findByPrimary(problemId);
 }

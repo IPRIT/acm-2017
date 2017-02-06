@@ -68,6 +68,9 @@ let User = sequelize.define('User', {
       }, placeholder).trim();
     },
     isAdmin() {
+      if (!this.accessGroup) {
+        return false;
+      }
       return userGroups.utils.hasRight(
         this.accessGroup,
         userGroups.groups.admin.mask
