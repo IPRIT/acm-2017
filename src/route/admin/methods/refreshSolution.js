@@ -16,10 +16,13 @@ export function refreshSolutionRequest(req, res, next) {
 
 export async function refreshSolution(params) {
   let {
-    solutionId
+    solutionId, solution
   } = params;
   
-  let solution = await models.Solution.findByPrimary(solutionId);
+  if (!solution) {
+    solution = await models.Solution.findByPrimary(solutionId);
+  }
+  
   return solution.update({
     nextAttemptWillBeAtMs: null,
     verdictId: null,

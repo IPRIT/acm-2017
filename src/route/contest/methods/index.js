@@ -13,3 +13,4 @@ export * from './getSolutionsForCell';
 export * from './postMessage';
 export * from './getMessages';
 export * from './markMessagesAsRead';
+export * from './filePipe';

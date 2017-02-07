@@ -1,5 +1,5 @@
 import express from 'express';
-import { rightsAllocator, userRetriever, canJoinContest } from '../../utils';
+import { rightsAllocator, userRetriever, canJoinContest, isJsonRequest } from '../../utils';
 import * as contest from './methods';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.get('/all', [ userRetriever, rightsAllocator('user') ], contest.getContes
 router.get('/:contestId', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getByIdRequest);
 router.get('/:contestId/canJoin', [ userRetriever, rightsAllocator('user') ], contest.canJoinRequest);
 router.post('/:contestId/join', [ userRetriever, rightsAllocator('user'), canJoinContest('can') ], contest.joinRequest);
+router.post('/:contestId/pipe', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.filePipeRequest);
 
 router.get('/:contestId/problems', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getProblemsRequest);
 router.get('/:contestId/problems/:symbolIndex', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getProblemBySymbolIndexRequest);

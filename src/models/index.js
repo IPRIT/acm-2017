@@ -124,7 +124,7 @@ Solution.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
 Language.hasMany(Solution, { foreignKey: 'languageId', targetKey: 'id' });
 Solution.belongsTo(Language, { foreignKey: 'languageId', targetKey: 'id' });
 
-Solution.hasOne(Solution, { foreignKey: 'duplicatedFromId', targetKey: 'id' });
+Solution.hasOne(Solution, { foreignKey: 'duplicatedFromId', targetKey: 'id', as: 'DuplicatedSolution' });
 
 User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
 Contest.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });

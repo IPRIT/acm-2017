@@ -30,15 +30,17 @@ export async function getProblemBySymbolIndex(params) {
     ],
     offset: getIntegerIndex(symbolIndex),
     limit: 1
-  }).map((problem, index) => {
-    problem = Object.assign(problem.get({ plain: true }), {
-      internalSymbolIndex: symbolIndex.toUpperCase()
+  }).then(problems => {
+    return problems.map((problem, index) => {
+      problem = Object.assign(problem.get({ plain: true }), {
+        internalSymbolIndex: symbolIndex.toUpperCase()
+      });
+      return filter(problem, {
+        exclude: [
+          'ProblemToContest', 'ProblemToContests', 'textStatement'
+        ]
+      })
     });
-    return filter(problem, {
-      exclude: [
-        'ProblemToContest', 'ProblemToContests', 'textStatement'
-      ]
-    })
   }).then(problemsArray => {
     if (!problemsArray.length) {
       throw new HttpError('Problem not found');
