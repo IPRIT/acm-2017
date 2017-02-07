@@ -11,8 +11,8 @@ div.contest
               md-input-container(flex)
                 label Выбор задачи
                 md-select(ng-model='selectedCondition')
-                  md-option(ng-repeat='condition in conditions', value='{{condition.internal_index}}')
-                    span {{condition.internal_index + ". " + condition.title}}
+                  md-option(ng-repeat='condition in conditions', value='{{condition.internalSymbolIndex}}')
+                    span {{condition.internalSymbolIndex + ". " + condition.title}}
 
             div
               md-input-container(flex)

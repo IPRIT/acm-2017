@@ -74,7 +74,7 @@ angular.module('Qemy.controllers', [
                 iconSrc: '/img/icons/ic_settings_48px.svg'
             }, {
                 type: 'item',
-                onlyFor: 5,
+                onlyFor: 4096,
                 id: 'admin-panel',
                 name: 'Панель администратора',
                 iconSrc: '/img/icons/ic_security_48px.svg'

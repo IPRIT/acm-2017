@@ -18,54 +18,54 @@ div.sent-list
       span Время исполнения
     div.sent-list__cell
       span Память
-    div.sent-list__cell(ng-if='currentUser.access_group.access_level === 5')
+    div.sent-list__cell(ng-if='currentUser.isAdmin')
       span &nbsp;
 
-  div.sent-list__item(ng-repeat='sent in sents track by sent.sent_id',
-  ng-class='{"sent-list__success": sent.verdict_id === 1, \
-   "sent-list__failed": [2, 4, 5, 6, 7, 8, 9, 12].indexOf(sent.verdict_id) !== -1, \
-   "sent-list__failed_type_highlighted": sent.verdict_id === 12, \
-   "sent-list__unknown": [3, 10, 11].indexOf(sent.verdict_id) !== -1}')
-    div.sent-list__cell(ng-switch='sent.contestant_id === currentUser.id || currentUser.access_group.access_level === 5')
+  div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
+  ng-class='{"sent-list__success": sent.verdictId === 1, \
+   "sent-list__failed": [2, 4, 5, 6, 7, 8, 9, 12].indexOf(sent.verdictId) !== -1, \
+   "sent-list__failed_type_highlighted": sent.verdictId === 12, \
+   "sent-list__unknown": [3, 10, 11].indexOf(sent.verdictId) !== -1}')
+    div.sent-list__cell(ng-switch='sent.userId === currentUser.id || currentUser.isAdmin')
       span(ng-switch-when='true')
-        a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: sent.sent_id})') {{sent.sent_id}}
-      span(ng-switch-default) {{sent.sent_id}}
+        a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: sent.id})') {{sent.id}}
+      span(ng-switch-default) {{sent.id}}
     div.sent-list__cell
-      span(title='{{sent.sent_time | date:"HH:mm:ss (dd.MM.yy)"}}') {{(sent.sent_time - sent.contest_start_time) | formatStartTime}}
+      span(title='{{sent.sentAtMs | date:"HH:mm:ss (dd.MM.yy)"}}') {{(sent.sentAtMs - sent.contest.startTimeMs) | formatStartTime}}
     div.sent-list__cell
-      span {{::sent.user_full_name}}
+      span {{::sent.author.fullName}}
     div.sent-list__cell.sent-list__cell-task
-      a.link.sent-list__link(ui-sref='^.conditions-item({problemIndex: sent.internal_index})', title='{{sent.internal_index + ". " + sent.title}}') {{sent.internal_index + '. ' + sent.title}}
+      a.link.sent-list__link(ui-sref='^.conditions-item({problemIndex: sent.internalSymbolIndex})', title='{{sent.internalSymbolIndex + ". " + sent.problem.title}}') {{sent.internalSymbolIndex + '. ' + sent.problem.title}}
     div.sent-list__cell
-      span {{::sent.system_lang_name}}
-    div.sent-list__cell.sent-list__verdict(ng-switch='!sent.verdict_id || sent.verdict_id === -1')
+      span {{::sent.language.name}}
+    div.sent-list__cell.sent-list__verdict(ng-switch='!sent.verdictId || sent.verdictId === -1')
       span.sent-list__cell-loading(ng-switch-when='true')
         div.sent-list__loading(style='display: inline-block;')
           div.content-spin__layer
             div.search-spin-layer_
-              div.search-spin(ng-class='{"waiting": sent.verdict_id === -1}')
-        span(ng-if='sent.verdict_id === -1', style='display: inline-block;') {{sent.verdict_name}}
-      span(ng-switch-default) {{sent.verdict_name}}
-    div.sent-list__cell(ng-switch='sent.test_num === 0')
+              div.search-spin(ng-class='{"waiting": sent.verdictId === -1}')
+        span(ng-if='sent.verdictId === -1', style='display: inline-block;') {{sent.verdict.name}}
+      span(ng-switch-default) {{sent.verdict.name}}
+    div.sent-list__cell(ng-switch='sent.testNumber === 0')
       span(ng-switch-when='true') -
-      span(ng-switch-default) {{sent.test_num}}
+      span(ng-switch-default) {{sent.testNumber}}
     div.sent-list__cell
-      span {{(sent.execution_time + ' с')}}
+      span {{(sent.executionTime + ' с')}}
     div.sent-list__cell
       span {{sent.memory + ' КБ'}}
-    div.sent-list__cell(ng-if='currentUser.access_group.access_level === 5')
+    div.sent-list__cell(ng-if='currentUser.isAdmin')
       div.sent-list__actions-menu
         md-menu
           md-button(aria-label="Select action", class="md-icon-button", ng-click="$mdOpenMenu($event)")
             md-icon(md-menu-origin, md-svg-src="/img/icons/ic_more_vert_48px.svg")
           md-menu-content(width="4")
             md-menu-item(ng-repeat="action in actionsMenuItems")
-              md-button(ng-click="selectAction($event, action, sent)", aria-label='Menu item', ng-disabled='sent.verdict_id < 0')
+              md-button(ng-click="selectAction($event, action, sent)", aria-label='Menu item', ng-disabled='sent.verdictId < 0')
                 div(layout="row")
                   md-icon(md-menu-align-target, md-svg-src="{{::action.svgIcon}}")
                   p(flex, ng-bind='::action.name')
 
-  div.no-sents(ng-if='sents.length === 0 && !loadingData')
+  div.no-sents(ng-if='solutions.length === 0 && !loadingData')
     span(ng-if='all_items_count === 0') Отправки отсутствуют
     div(ng-if='all_items_count > 0', style='display: inline-block;')
       div.content-spin__layer

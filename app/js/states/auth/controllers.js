@@ -25,7 +25,7 @@ angular.module('Qemy.controllers.auth', [
             $scope.submitForm = function () {
                 console.log($scope.form);
                 $rootScope.$broadcast('data loading');
-                var authProcess = $http.post('/api/auth/signIn', $scope.form);
+                var authProcess = $http.post('/api/user/authenticate/sign-in', $scope.form);
                 authProcess.success(function (data) {
                     $rootScope.$broadcast('data loaded');
                     console.log(data);

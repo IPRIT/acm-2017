@@ -82,14 +82,14 @@ angular.module('Qemy.services', [
         function getCurrentUser(params) {
             params = params || { cache: true };
             return $q.when(curUser && params.cache ? curUser : getUser()).then(function (result) {
-                return result.status ? result.data.user : result;
+                return result.status ? result.data : result;
             });
             function getUser() {
-                return $http.get('/api/auth/isAuth').success(function (data) {
-                    if (!data.result) {
+                return $http.get('/api/user/me').success(function (data) {
+                    if (!data || data.error) {
                         return false;
-                    } else if (data.user) {
-                        curUser = data.user;
+                    } else if (data) {
+                        curUser = data;
                     }
                     return curUser;
                 });
@@ -97,7 +97,7 @@ angular.module('Qemy.services', [
         }
 
         function logout() {
-            return $http.post('/api/auth/logout').success(function (data) {
+            return $http.post('/api/user/authenticate/logout').success(function (data) {
                 curUser = null;
                 var defaultAction = true;
                 return data && data.result
@@ -118,7 +118,7 @@ angular.module('Qemy.services', [
 
         var interval = setInterval(function () {
             console.log('Check socket connection...');
-            if (socket.connected) {
+            if (socket && socket.connected) {
                 connectCallback();
                 dispatchQueueEvents();
                 clearInterval(interval);

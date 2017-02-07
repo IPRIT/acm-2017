@@ -24,33 +24,30 @@ angular.module('Qemy.services.contests', [
         }
 
         function getContests(params) {
-            return $http({ method: 'get', url: '/api/contests/get?' + dataEncode(params) })
+            return $http({ method: 'get', url: '/api/contest/all?' + dataEncode(params) })
                 .then(function (data) {
                     return data.data;
                 });
         }
 
         function getContest(params) {
-            return $http({ method: 'get', url: '/api/contests/getById?' + dataEncode(params) })
+            return $http({ method: 'get', url: '/api/contest/' + params.contestId })
                 .then(function (data) {
                     return data.data;
                 });
         }
 
         function canJoin(params) {
-            return $http({ method: 'get', url: '/api/contests/canJoin?' + dataEncode(params) })
+            return $http({ method: 'get', url: '/api/contest/' + params.contestId + '/canJoin' })
                 .then(function (data) {
                     return data.data;
                 });
         }
 
-        function joinContest(contest_id) {
+        function joinContest(contestId) {
             return $http({
                 method: 'post',
-                url: '/api/contests/join',
-                data: {
-                    contest_id: contest_id
-                }
+                url: '/api/contest/' + contestId + '/join'
             }).then(function (data) {
                 return data.data;
             });

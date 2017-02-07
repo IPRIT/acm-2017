@@ -3,17 +3,17 @@ div.contest
     div.contest__inner
       div.contest__title-section
         h2 Исходный код #
-          span(ng-bind='source.sent_id')
+          span(ng-bind='source.id')
 
       div.source-content
-        a.link(target='_blank', href='/api/contest/getSourceCodeRaw?contest_id={{source.contest_id}}&source_id={{source.sent_id}}') Открыть чистый код
+        a.link(target='_blank', href='/api/contest/{{source.contestId}}/solutions/{{source.id}}/code?raw=true') Открыть чистый код в новой вкладке
         br
         br
         md-content
           link(href='/js/lib/rainbow/themes/monokai.css', rel='stylesheet', type='text/css')
           link(href='/js/lib/rainbow/themes/theme.css', rel='stylesheet', type='text/css')
-          div.source-content__code(ng-if='source.sent_id')
+          div.source-content__code(ng-if='source.id')
             pre
-              code(data-language='{{source.language_family}}') {{source.source_code}}
+              code(data-language='{{source.language.languageFamily}}') {{source.sourceCode}}
 
   page-footer

@@ -19,9 +19,9 @@ div.contest
             div(ng-switch-when='FROZEN')
               span.contests-list__item_status_neutral Заморозка. Осталось
                 my-timer-element.contest-item__status-time(
-                finish='contest.absoluteDurationTime',
+                finish='contest.absoluteDurationTimeMs',
                 on-finish='updateContest'
-                on-other='[{time: contest.absoluteDurationTime, callback: updateTable}]'
+                on-other='[{time: contest.absoluteDurationTimeMs, callback: updateTable}]'
                 )
             div(ng-switch-when='WAITING')
               span Начало через
@@ -29,16 +29,16 @@ div.contest
             div(ng-switch-when='RUNNING')
               span.contests-list__item_status_success Контест идет. Осталось
                 my-timer-element.contest-item__status-time(
-                finish='contest.absoluteDurationTime',
+                finish='contest.absoluteDurationTimeMs',
                 on-finish='updateContest',
-                on-other='[{time: contest.absoluteFreezeTime, callback: updateContest}, {time: contest.absoluteFreezeTime, callback: updateTable}]'
+                on-other='[{time: contest.absoluteFreezeTimeMs, callback: updateContest}, {time: contest.absoluteFreezeTimeMs, callback: updateTable}]'
                 )
             div(ng-switch-when='PRACTICE')
               span.contests-list__item_status_success Дорешивание. Осталось
                 my-timer-element.contest-item__status-time(
-                finish='contest.absolutePracticeDurationTime',
+                finish='contest.absolutePracticeDurationTimeMs',
                 on-finish='updateContest'
-                on-other='[{time: contest.absolutePracticeDurationTime, callback: updateTable}]'
+                on-other='[{time: contest.absolutePracticeDurationTimeMs, callback: updateTable}]'
                 )
 
       div.monitor-content
@@ -59,11 +59,11 @@ div.contest
                 span Штраф
 
             div.monitor-content__row(ng-repeat='row in contestTable.rows',
-              ng-class='{"monitor-content__row-my": user.id === row.user.user_id, "monitor-content__row_group_even": row.group % 2 === 0 && row.solutions !== 0, "monitor-content__no-solutions": row.solutions === 0}')
+              ng-class='{"monitor-content__row-my": user.id === row.user.id, "monitor-content__row_group_even": row.group % 2 === 0 && row.solutions !== 0, "monitor-content__no-solutions": row.solutions === 0}')
               div.monitor-content__cell
                 span(ng-bind='row.rank')
               div.monitor-content__cell.monitor-content__cell-participant
-                span(ng-bind='row.user.user_full_name')
+                span(ng-bind='row.user.fullName')
               div.monitor-content__cell.monitor-content__cell-result(ng-repeat='cell in row.row',
               ng-class='{"monitor-content__cell_type_clickable": cell.result !== "—", "monitor-content__cell_type_accepted": cell.result.indexOf("+") !== -1, "monitor-content__cell_type_frozen": cell.frozen, "monitor-content__cell_type_in-practice": cell.inPractice}',
               title='{{cell.frozen ? "Отправлено после заморозки" : (cell.inPractice ? "Дорешено" : "")}}',

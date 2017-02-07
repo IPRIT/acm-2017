@@ -39,9 +39,6 @@ angular.module('Qemy.controllers.contests', [])
                 name: 'По дате создания',
                 sort: 'byId'
             }, {
-                name: 'По времени завершения',
-                sort: 'byEnd'
-            }, {
                 name: 'По времени начала',
                 sort: 'byStart'
             }];
@@ -123,10 +120,10 @@ angular.module('Qemy.controllers.contests', [])
                     if (result && result.error) {
                         return $state.go('auth.form');
                     }
-                    if (!result || !result.hasOwnProperty('all_items_count')) {
+                    if (!result || !result.hasOwnProperty('contestsNumber')) {
                         return;
                     }
-                    $scope.all_items_count = result.all_items_count;
+                    $scope.all_items_count = result.contestsNumber;
                     $scope.contestsList = result.contests;
                     $scope.pagination = generatePaginationArray(5);
                 }).catch(function (err) {
@@ -193,7 +190,7 @@ angular.module('Qemy.controllers.contests', [])
                 }
                 $scope.loadingData = true;
                 var contestId = $scope.contest.id;
-                ContestsManager.getContest({ contest_id: contestId })
+                ContestsManager.getContest({ contestId: contestId })
                     .then(function (result) {
                         $scope.loadingData = false;
                         if (!result) {
@@ -206,13 +203,13 @@ angular.module('Qemy.controllers.contests', [])
 
             $scope.joinContest = function (contest) {
                 $scope.loadingData = true;
-                ContestsManager.canJoin({ contest_id: contest.id })
+                ContestsManager.canJoin({ contestId: contest.id })
                     .then(function (result) {
-                        if (!result || !result.result || !result.result.hasOwnProperty('can')) {
+                        if (!result || !result.hasOwnProperty('can')) {
                             $scope.loadingData = false;
                             return;
                         }
-                        handleResponse(result.result);
+                        handleResponse(result);
                     });
 
                 function handleResponse(result) {

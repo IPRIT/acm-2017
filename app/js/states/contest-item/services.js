@@ -24,7 +24,7 @@ angular.module('Qemy.services.contest-item', [
         }
 
         function getMessages(params) {
-            return $http({ method: 'get', url: '/api/contest/getMessages?' + dataEncode(params) })
+            return $http({ method: 'get', url: '/api/contest/' + params.contestId + '/messages' })
                 .then(function (data) {
                     return data.data;
                 });
@@ -33,22 +33,21 @@ angular.module('Qemy.services.contest-item', [
         function markAsRead(params) {
             return $http({
                 method: 'post',
-                url: '/api/contest/markAsRead',
-                data: params
+                url: '/api/contest/' + params.contestId + '/markAsRead'
             }).then(function (data) {
                 return data.data;
             });
         }
 
         function getConditions(params) {
-            return $http({ method: 'get', url: '/api/problemset/getForContest?' + dataEncode(params) })
+            return $http({ method: 'get', url: '/api/contest/' + params.contestId + '/problems' })
                 .then(function (data) {
                     return data.data;
                 });
         }
 
         function getCondition(params) {
-            return $http({ method: 'get', url: '/api/problemset/getByInternalIndex?' + dataEncode(params) })
+            return $http({ method: 'get', url: '/api/contest/' + params.contestId + '/problems/' + params.symbolIndex })
                 .then(function (data) {
                     return data.data;
                 });
@@ -57,7 +56,7 @@ angular.module('Qemy.services.contest-item', [
         function getLangs(params) {
             return $http({
                 method: 'get',
-                url: '/api/contest/getLangs?' + dataEncode(params)
+                url: '/api/contest/' + params.contestId + '/problems/' + params.symbolIndex + '/languages'
             }).then(function (data) {
                 return data.data;
             });
@@ -66,7 +65,7 @@ angular.module('Qemy.services.contest-item', [
         function sendSolution(params) {
             return $http({
                 method: 'post',
-                url: '/api/contest/send',
+                url: '/api/contest/' + params.contestId + '/solutions',
                 data: params
             }).then(function (data) {
                 return data.data;
@@ -76,7 +75,8 @@ angular.module('Qemy.services.contest-item', [
         function getSents(params) {
             return $http({
                 method: 'get',
-                url: '/api/contest/getSents?' + dataEncode(params)
+                url: '/api/contest/' + params.contestId + '/solutions/' + params.select,
+                params: params
             }).then(function (data) {
                 return data.data;
             });
@@ -85,7 +85,7 @@ angular.module('Qemy.services.contest-item', [
         function getSourceCode(params) {
             return $http({
                 method: 'get',
-                url: '/api/contest/getSourceCode?' + dataEncode(params)
+                url: '/api/contest/' + params.contestId + '/solutions/' + params.solutionId + '/code'
             }).then(function (data) {
                 return data.data;
             });
@@ -94,7 +94,7 @@ angular.module('Qemy.services.contest-item', [
         function getTable(params) {
             return $http({
                 method: 'get',
-                url: '/api/contest/getTable?' + dataEncode(params)
+                url: '/api/contest/' + params.contestId + '/table'
             }).then(function (data) {
                 return data.data;
             });
@@ -103,7 +103,7 @@ angular.module('Qemy.services.contest-item', [
         function getSentsForCell(params) {
             return $http({
                 method: 'get',
-                url: '/api/contest/getSentsForCell?' + dataEncode(params)
+                url: '/api/contest/' + params.contestId + '/table/solutions/user/' + params.userId + '/problem/' + params.symbolIndex
             }).then(function (data) {
                 return data.data;
             });

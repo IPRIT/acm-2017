@@ -23,15 +23,14 @@ angular.module('Qemy.controllers.contest-item', [])
 
             function updateContest() {
                 $rootScope.$broadcast('data loading');
-                ContestsManager.canJoin({contest_id: contestId})
+                ContestsManager.canJoin({contestId: contestId})
                     .then(function (response) {
-                        if (!response || !response.result
-                            || !response.result.can || !response.result.joined) {
+                        if (!response || !response.can || !response.joined) {
                             $rootScope.$broadcast('data loaded');
                             $state.go('index');
                         }
                         console.log('Доступ к контесту разрешен. Идет загрузка данных...');
-                        ContestsManager.getContest({contest_id: contestId})
+                        ContestsManager.getContest({contestId: contestId})
                             .then(function (response) {
                                 $rootScope.$broadcast('data loaded');
                                 if (!response) {
@@ -51,7 +50,7 @@ angular.module('Qemy.controllers.contest-item', [])
 
             $scope.updateContest = updateContest;
 
-            function contestFill (contest) {
+            function contestFill(contest) {
                 function getMonthName(num) {
                     num = num || 0;
                     if (num < 0 || num > 12) {
@@ -75,9 +74,9 @@ angular.module('Qemy.controllers.contest-item', [])
                         ' ' + zeroFill(curDate.getFullYear());
                 }
 
-                contest.startDate = formatDate(contest.startTime);
-                contest.finishDate = formatDate(contest.absoluteDurationTime);
-                contest.finishPracticeDate = formatDate(contest.absolutePracticeDurationTime);
+                contest.startDate = formatDate(contest.startTimeMs);
+                contest.finishDate = formatDate(contest.absoluteDurationTimeMs);
+                contest.finishPracticeDate = formatDate(contest.absolutePracticeDurationTimeMs);
 
                 return contest;
             }
@@ -87,7 +86,7 @@ angular.module('Qemy.controllers.contest-item', [])
                 newSolutionListener,
                 tableUpdateListener;
 
-            SocketService.onConnect(function () {
+            /*SocketService.onConnect(function () {
                 socketId = SocketService.getSocket().id;
                 console.log('Connected:', socketId);
 
@@ -102,7 +101,7 @@ angular.module('Qemy.controllers.contest-item', [])
                 });
 
                 attachEvents();
-            });
+            });*/
 
             function attachEvents() {
                 verdictUpdatesListener = SocketService.setListener('verdict updated', function (data) {
@@ -256,7 +255,7 @@ angular.module('Qemy.controllers.contest-item', [])
                 if (!withoutLoading) {
                     $rootScope.$broadcast('data loading');
                 }
-                ContestItemManager.getTable({contest_id: contestId})
+                ContestItemManager.getTable({contestId: contestId})
                     .then(function (result) {
                         if (result.error) {
                             return $rootScope.$broadcast('data loaded');
@@ -284,17 +283,17 @@ angular.module('Qemy.controllers.contest-item', [])
 
             $scope.openStatusDialog = function (ev, cell, user) {
                 if (!cell || !cell.task || cell.result === '—'
-                    || !user || !user.user_id) {
+                    || !user || !user.id) {
                     return;
                 }
-                var userId = user.user_id,
+                var userId = user.id,
                     problemIndex = cell.task;
                 cell._loading = true;
 
                 ContestItemManager.getSentsForCell({
-                    contest_id: contestId,
-                    user_id: userId,
-                    problem_index: problemIndex
+                    contestId: contestId,
+                    userId: userId,
+                    symbolIndex: problemIndex
                 }).then(function (response) {
                     cell._loading = false;
                     if (!response || response.error) {
@@ -307,7 +306,7 @@ angular.module('Qemy.controllers.contest-item', [])
                         targetEvent: ev,
                         clickOutsideToClose: true,
                         locals: {
-                            sents: response.sents || [],
+                            solutions: response.solutions || [],
                             $originalDialogArgs: [ ev, cell, user ],
                             $originalDialogScope: $scope
                         }
@@ -325,7 +324,7 @@ angular.module('Qemy.controllers.contest-item', [])
             var contestId = $state.params.contestId;
             $scope.conditions = {};
             $rootScope.$broadcast('data loading');
-            ContestItemManager.getConditions({ contest_id: contestId })
+            ContestItemManager.getConditions({ contestId: contestId })
                 .then(function (result) {
                     $rootScope.$broadcast('data loaded');
                     if (result.error) {
@@ -350,13 +349,13 @@ angular.module('Qemy.controllers.contest-item', [])
             var problemId = $state.params.problemIndex;
             $scope.condition = {};
             $rootScope.$broadcast('data loading');
-            ContestItemManager.getCondition({ contest_id: contestId, problem_index: problemId })
+            ContestItemManager.getCondition({ contestId: contestId, symbolIndex: problemId })
                 .then(function (result) {
                     $rootScope.$broadcast('data loaded');
                     if (result.error) {
                         return $state.go('^.conditions');
                     }
-                    result.formatted_text = result.formatted_text
+                    result.htmlStatement = result.htmlStatement
                         .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
                     $scope.condition = result;
                 });
@@ -407,8 +406,8 @@ angular.module('Qemy.controllers.contest-item', [])
 
                 $rootScope.$broadcast('data loading');
                 ContestItemManager.getLangs({
-                    contest_id: contestId,
-                    problem_index: $scope.selectedCondition
+                    contestId: contestId,
+                    symbolIndex: $scope.selectedCondition
                 }).then(function (result) {
                     $rootScope.$broadcast('data loaded');
                     if (result.error) {
@@ -453,7 +452,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
 
             $rootScope.$broadcast('data loading');
-            ContestItemManager.getConditions({ contest_id: contestId })
+            ContestItemManager.getConditions({ contestId: contestId })
                 .then(function (result) {
                     $rootScope.$broadcast('data loaded');
                     if (result.error) {
@@ -486,7 +485,7 @@ angular.module('Qemy.controllers.contest-item', [])
                 $scope.sent = true;
 
                 ContestItemManager.sendSolution({
-                    contest_id: contestId,
+                    contestId: contestId,
                     internal_index: condition,
                     solution: solution,
                     lang_id: $scope.selectedLangId
@@ -530,7 +529,7 @@ angular.module('Qemy.controllers.contest-item', [])
 
             $scope.pageNumber = parseInt($state.params.pageNumber || 1);
             $scope.params = {
-                contest_id: contestId,
+                contestId: contestId,
                 count: defaultCount,
                 offset: ($scope.pageNumber - 1) * defaultCount,
                 select: select
@@ -538,7 +537,7 @@ angular.module('Qemy.controllers.contest-item', [])
 
             $scope.all_items_count = 0;
             $scope.pagination = [];
-            $scope.sents = [];
+            $scope.solutions = [];
             $scope.allPages = 0;
 
             $scope.loadingData = false;
@@ -579,11 +578,11 @@ angular.module('Qemy.controllers.contest-item', [])
                         if (result.error) {
                             return alert('Произошла ошибка: ' + result.error);
                         }
-                        if (!result || !result.hasOwnProperty('all_items_count')) {
+                        if (!result || !result.hasOwnProperty('solutionsNumber')) {
                             return;
                         }
-                        $scope.all_items_count = result.all_items_count;
-                        $scope.sents = result.sents;
+                        $scope.all_items_count = result.solutionsNumber;
+                        $scope.solutions = result.solutions;
                         $scope.pagination = generatePaginationArray(5);
                     }).catch(function (err) {
                         console.log(err);
@@ -648,23 +647,26 @@ angular.module('Qemy.controllers.contest-item', [])
             });
 
             $scope.$on('verdict updated', function (ev, args) {
-                var sents = $scope.sents;
-                for (var i = 0; i < sents.length; ++i) {
-                    if (sents[i].sent_id === args.solution_id) {
+                var solutions = $scope.solutions;
+                for (var i = 0; i < solutions.length; ++i) {
+                    if (solutions[i].id === args.solution_id) {
                         if (typeof args.time !== 'undefined') {
-                            sents[i].execution_time = args.time;
+                            solutions[i].executionTime = args.time;
                         }
                         if (typeof args.memory !== 'undefined') {
-                            sents[i].memory = args.memory;
+                            solutions[i].memory = args.memory;
                         }
                         if (typeof args.testNum !== 'undefined') {
-                            sents[i].test_num = args.testNum;
+                            solutions[i].testNumber = args.testNum;
                         }
                         if (typeof args.verdict_id !== 'undefined') {
-                            sents[i].verdict_id = args.verdict_id;
+                            solutions[i].verdictId = args.verdict_id;
                         }
                         if (typeof args.verdict_name !== 'undefined') {
-                            sents[i].verdict_name = args.verdict_name;
+                            if (!solutions[i].verdict) {
+                                solutions[i].verdict = {};
+                            }
+                            solutions[i].verdict.name = args.verdict_name;
                         }
                         $scope.$apply();
                         break;
@@ -681,16 +683,16 @@ angular.module('Qemy.controllers.contest-item', [])
                     || $scope.pageNumber !== 1) {
                     return;
                 }
-                var sents = $scope.sents;
-                for (var i = 0; i < sents.length; ++i) {
-                    if (sents[i].sent_id === data.sent_id) {
+                var solutions = $scope.solutions;
+                for (var i = 0; i < solutions.length; ++i) {
+                    if (solutions[i].id === data.sent_id) {
                         return;
                     }
                 }
-                if (sents.length >= defaultCount) {
-                    sents.pop();
+                if (solutions.length >= defaultCount) {
+                    solutions.pop();
                 }
-                sents.unshift(data);
+                solutions.unshift(data);
             });
 
             $scope.actionsMenuItems = [{
@@ -835,13 +837,13 @@ angular.module('Qemy.controllers.contest-item', [])
                             scored: 0
                         }];
 
-                        $scope.selectedVerdictId = sentItem.verdict_id;
+                        $scope.selectedVerdictId = sentItem.verdictId;
 
                         $scope.save = function () {
-                            var sentId = sentItem.sent_id,
+                            var sentId = sentItem.id,
                                 verdict = $scope.selectedVerdictId;
                             AdminManager
-                                .setVerdictForSent( { sent_id: sentId, verdict_id: verdict } )
+                                .setVerdictForSent( { solutionId: sentId, verdictId: verdict } )
                                 .then(function (result) {
                                     if (result && result.error) {
                                         return alert('Произошла ошибка: ' + result.error);
@@ -907,7 +909,7 @@ angular.module('Qemy.controllers.contest-item', [])
                     .cancel('Отмена')
                     .targetEvent(ev);
                 $mdDialog.show(confirm).then(function () {
-                    AdminManager.refreshAllSolutions({ contest_id: contestId }).then(function (result) {
+                    AdminManager.refreshAllSolutions({ contestId: contestId }).then(function (result) {
                         if (result && result.error) {
                             return alert('Произошла ошибка: ' + result.error);
                         }
@@ -918,13 +920,13 @@ angular.module('Qemy.controllers.contest-item', [])
     ])
 
     .controller('ContestItemCellStatusController', [
-        '$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', 'UserManager', '$mdDialog', 'AdminManager', 'sents', '$originalDialogArgs', '$originalDialogScope',
-        function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, UserManager, $mdDialog, AdminManager, sents, $originalDialogArgs, $originalDialogScope) {
+        '$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', 'UserManager', '$mdDialog', 'AdminManager', 'solutions', '$originalDialogArgs', '$originalDialogScope',
+        function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, UserManager, $mdDialog, AdminManager, solutions, $originalDialogArgs, $originalDialogScope) {
             $scope.close = function () {
                 $mdDialog.hide();
             };
 
-            $scope.sents = sents;
+            $scope.solutions = solutions;
 
             $scope.currentUser = {};
             UserManager.getCurrentUser().then(function (user) {
@@ -932,23 +934,26 @@ angular.module('Qemy.controllers.contest-item', [])
             });
 
             $scope.$on('verdict updated', function (ev, args) {
-                var sents = $scope.sents;
-                for (var i = 0; i < sents.length; ++i) {
-                    if (sents[i].sent_id === args.solution_id) {
+                var solutions = $scope.solutions;
+                for (var i = 0; i < solutions.length; ++i) {
+                    if (solutions[i].id === args.solution_id) {
                         if (typeof args.time !== 'undefined') {
-                            sents[i].execution_time = args.time;
+                            solutions[i].executionTime = args.time;
                         }
                         if (typeof args.memory !== 'undefined') {
-                            sents[i].memory = args.memory;
+                            solutions[i].memory = args.memory;
                         }
                         if (typeof args.testNum !== 'undefined') {
-                            sents[i].test_num = args.testNum;
+                            solutions[i].testNumber = args.testNum;
                         }
                         if (typeof args.verdict_id !== 'undefined') {
-                            sents[i].verdict_id = args.verdict_id;
+                            solutions[i].verdictId = args.verdict_id;
                         }
                         if (typeof args.verdict_name !== 'undefined') {
-                            sents[i].verdict_name = args.verdict_name;
+                            if (!solutions[i].verdict) {
+                                solutions[i].verdict = {};
+                            }
+                            solutions[i].verdict.name = args.verdict_name;
                         }
                         $scope.$apply();
                         break;
@@ -962,13 +967,13 @@ angular.module('Qemy.controllers.contest-item', [])
                 if (userId !== $scope.currentUser.id) {
                     return;
                 }
-                var sents = $scope.sents;
-                for (var i = 0; i < sents.length; ++i) {
-                    if (sents[i].sent_id === data.sent_id) {
+                var solutions = $scope.solutions;
+                for (var i = 0; i < solutions.length; ++i) {
+                    if (solutions[i].id === data.sent_id) {
                         return;
                     }
                 }
-                $scope.sents.unshift( data );
+                $scope.solutions.unshift( data );
             });
 
             $scope.actionsMenuItems = [{
@@ -1125,7 +1130,7 @@ angular.module('Qemy.controllers.contest-item', [])
                         $scope.selectedVerdictId = sentItem.verdict_id;
 
                         $scope.save = function () {
-                            var sentId = sentItem.sent_id,
+                            var sentId = sentItem.id,
                                 verdict = $scope.selectedVerdictId;
                             AdminManager
                                 .setVerdictForSent( { sent_id: sentId, verdict_id: verdict } )
@@ -1199,7 +1204,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $scope.source = null;
 
             $rootScope.$broadcast('data loading');
-            ContestItemManager.getSourceCode({ contest_id: contestId, source_id: sourceId })
+            ContestItemManager.getSourceCode({ contestId: contestId, solutionId: sourceId })
                 .then(function (result) {
                     $scope.source = result;
                     $timeout(function () {
@@ -1271,7 +1276,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $scope.updateMessages = buildDelayedFunc(function (isImplicitAction) {
                 $scope.isMessagesLoading = true;
                 var contestId = $state.params.contestId;
-                ContestItemManager.getMessages({ contest_id: contestId || 1 })
+                ContestItemManager.getMessages({ contestId: contestId || 1 })
                     .then(function (messages) {
                         $scope.isMessagesLoading = false;
                         if (messages.error) {
@@ -1283,7 +1288,7 @@ angular.module('Qemy.controllers.contest-item', [])
                             allMessagesNumber: (messages.read || []).length + (messages.unread || []).length
                         });
                         if (isImplicitAction) {
-                            ContestItemManager.markAsRead({ contest_id: contestId || 1 })
+                            ContestItemManager.markAsRead({ contestId: contestId || 1 })
                                 .then(function (res) {
                                     if (res.error) {
                                         return console.log(res);

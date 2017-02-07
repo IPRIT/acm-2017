@@ -4,7 +4,7 @@ div.contest
       div.contest__title-section
         h2 Отправки
 
-      div(ng-if='currentUser.access_group.access_level === 5', ng-style='{"padding": "10px 0"}')
+      div(ng-if='currentUser.isAdmin', ng-style='{"padding": "10px 0"}')
         md-fab-toolbar(md-open="toolbar.isOpen", md-direction="left")
           md-fab-trigger
             md-button.md-fab.md-primary(aria-label="menu")

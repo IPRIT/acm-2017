@@ -46,19 +46,19 @@ div.contest
                     span.contests-list__item_status_success Завершён
                   div(ng-switch-when='FROZEN')
                     span.contests-list__item_status_neutral Заморозка. Осталось
-                      my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTime', on-finish='updateContest')
+                      my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTimeMs', on-finish='updateContest')
                   div(ng-switch-when='WAITING')
                     span Начало через
-                      my-timer-element.contest-item__status-time(finish='contest.startTime', on-finish='updateContest')
+                      my-timer-element.contest-item__status-time(finish='contest.startTimeMs', on-finish='updateContest')
                   div(ng-switch-when='RUNNING')
                     span.contests-list__item_status_success Контест идет. Осталось
                       my-timer-element.contest-item__status-time(
-                      finish='contest.absoluteDurationTime',
+                      finish='contest.absoluteDurationTimeMs',
                       on-finish='updateContest',
-                      on-other='[{time: contest.absoluteFreezeTime, callback: updateContest}]'
+                      on-other='[{time: contest.absoluteFreezeTimeMs, callback: updateContest}]'
                       )
                   div(ng-switch-when='PRACTICE')
                     span.contests-list__item_status_success Дорешивание. Осталось
-                      my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTime', on-finish='updateContest')
+                      my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTimeMs', on-finish='updateContest')
 
   page-footer
