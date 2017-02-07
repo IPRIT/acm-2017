@@ -24,3 +24,4 @@ export * from './getGroup';
 export * from './createGroup';
 export * from './updateGroup';
 export * from './deleteGroup';
+export * from './deleteProblem';
