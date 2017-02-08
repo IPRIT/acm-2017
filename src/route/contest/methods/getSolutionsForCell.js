@@ -96,6 +96,9 @@ export async function getSolutionsForCell(params) {
     }, {
       model: models.Language
     }, {
+      model: models.Contest,
+      attributes: [ 'startTimeMs', 'durationTimeMs' ]
+    }, {
       model: models.Problem,
       attributes: {
         exclude: [ 'htmlStatement', 'textStatement', 'attachments' ]
@@ -112,7 +115,8 @@ export async function getSolutionsForCell(params) {
         [ 'User', 'author' ],
         [ 'Verdict', 'verdict' ],
         [ 'Language', 'language' ],
-        [ 'Problem', 'problem' ]
+        [ 'Problem', 'problem' ],
+        [ 'Contest', 'contest' ]
       ]
     });
     return deap.extend(solution, {

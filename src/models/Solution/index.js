@@ -45,6 +45,9 @@ let Solution = sequelize.define('Solution', {
   refreshedNumber: {
     type: Sequelize.INTEGER,
     defaultValue: 0
+  },
+  errorTrace: {
+    type: Sequelize.TEXT
   }
 }, {
   paranoid: true,

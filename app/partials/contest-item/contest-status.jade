@@ -16,13 +16,10 @@ div.contest
 
       div.status-content
         md-content
-          md-tabs.md-accent(md-dynamic-height, md-border-bottom, md-selected="selectedTabIndex")
-            md-tab(label='Мои отправки')
-              include contest-status/contest-status-tab-content
-
-            md-tab(label='Все отправки')
-              include contest-status/contest-status-tab-content
-
+          md-nav-bar.md-primary(md-selected-nav-item="selectedTabIndex", nav-bar-aria-label="Solutions")
+            md-nav-item.md-primary(md-nav-click="showSolutions('my')", name="0") Мои решения
+            md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="1") Все решения
+          include contest-status/contest-status-tab-content
           include ./pagination
 
   page-footer

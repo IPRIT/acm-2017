@@ -205,7 +205,7 @@ angular.module('Qemy.services.admin', [
 		function setVerdictForSent(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/setVerdictForSent',
+				url: '/api/admin/solutions/' + params.solutionId + '/verdict',
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -215,8 +215,7 @@ angular.module('Qemy.services.admin', [
 		function sendSolutionAgain(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/sendSolutionAgain',
-				data: params
+				url: '/api/admin/solutions/' + params.solutionId + '/duplicate'
 			}).then(function (data) {
 				return data.data;
 			});
@@ -225,8 +224,7 @@ angular.module('Qemy.services.admin', [
 		function refreshSolution(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/refreshSolution',
-				data: params
+				url: '/api/admin/solutions/' + params.solutionId + '/refresh'
 			}).then(function (data) {
 				return data.data;
 			});
@@ -235,8 +233,7 @@ angular.module('Qemy.services.admin', [
 		function refreshAllSolutions(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/refreshAllSolutions',
-				data: params
+				url: '/api/admin/contests/' + params.contestId + '/solutions/refresh'
 			}).then(function (data) {
 				return data.data;
 			});
@@ -244,9 +241,8 @@ angular.module('Qemy.services.admin', [
 
 		function deleteSolution(params) {
 			return $http({
-				method: 'post',
-				url: '/api/admin/deleteSolution',
-				data: params
+				method: 'delete',
+				url: '/api/admin/solutions/' + params.solutionId
 			}).then(function (data) {
 				return data.data;
 			});

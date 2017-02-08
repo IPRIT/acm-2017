@@ -9,7 +9,7 @@ html(ng-controller='PageCtrl', x-manifest='/manifest.appcache')
   body(ng-controller='AppCtrl', insert-chat-sidenav)
     block content
 
-    div(ng-if='!isPageReady', layout='row', layout-align='center center', layout-fill, style='position: fixed; top: 0; right: 0; left: 0; bottom: 0; width: 100%; height: 100%;')
+    div.page__not-ready(ng-if='!isPageReady', layout='row', layout-align='center center', layout-fill)
       div.sent-list__loading(style='display: inline-block;')
         div.content-spin__layer
           div.search-spin-layer_

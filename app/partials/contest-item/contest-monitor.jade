@@ -41,12 +41,18 @@ div.contest
                 on-other='[{time: contest.absolutePracticeDurationTimeMs, callback: updateTable}]'
                 )
 
-      div.monitor-content
+      div.monitor-loading(ng-if='loadingData')
+        div(style='display: inline-block;')
+          div.content-spin__layer
+            div.search-spin-layer_
+              div.search-spin
+
+      div.monitor-content(ng-if='!loadingData')
         md-content
           div.monitor-content__table
             div.monitor-content__row.monitor-content__row_type_header
               div.monitor-content__cell
-                span Место
+                span №
               div.monitor-content__cell.monitor-content__cell-participant
                 span Участник
               div.monitor-content__cell.monitor-content__cell-result(ng-repeat='headerCell in contestTable.header.row')

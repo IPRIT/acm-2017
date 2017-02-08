@@ -51,7 +51,7 @@ function initApplication () {
         }
         bootReady.i18n_ng = true;//Config.I18n.locale == defaultLocale; // Already included
 
-        $.getJSON('/js/locales/' + Config.I18n.locale + '.json').success(function (json) {
+        $.getJSON('/js/locales/' + Config.I18n.locale + '.json').then(function (json) {
             Config.I18n.messages = json;
             bootReady.i18n_messages = true;
             console.log("Locale language has been loaded");
@@ -62,7 +62,7 @@ function initApplication () {
         });
 
         if (Config.I18n.locale != defaultLocale) {
-            $.getJSON('/js/locales/' + defaultLocale + '.json').success(function (json) {
+            $.getJSON('/js/locales/' + defaultLocale + '.json').then(function (json) {
                 Config.I18n.fallback_messages = json;
                 bootReady.i18n_fallback = true;
                 checkReady();

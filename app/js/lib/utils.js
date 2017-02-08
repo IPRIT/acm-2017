@@ -221,6 +221,24 @@ function tsNow (seconds) {
     return seconds ? Math.floor(t / 1000) : t;
 }
 
+function safeApply(scope, fn) {
+    if (!scope) {
+        return;
+    }
+    var phase = scope.$root.$$phase;
+    if (['$apply', '$digest'].indexOf(phase) >= 0) {
+        if (fn && typeof fn === 'function') {
+            scope.$eval(fn);
+        }
+    } else {
+        if (fn && typeof fn === 'function') {
+            scope.$apply(fn);
+        } else {
+            scope.$apply();
+        }
+    }
+}
+
 function safeReplaceObject (wasObject, newObject) {
     for (var key in wasObject) {
         if (!newObject.hasOwnProperty(key) && key.charAt(0) != '$') {

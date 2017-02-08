@@ -114,8 +114,9 @@ export async function getSolutions(params) {
         [ 'Contest', 'contest' ]
       ]
     });
+    let symbolIndex = problemsMapping.get( solution.problemId ) || '';
     return deap.extend(solution, {
-      internalSymbolIndex: problemsMapping.get( solution.problemId ).toUpperCase()
+      internalSymbolIndex: symbolIndex.toUpperCase()
     });
   }).then(async solutions => {
     return {

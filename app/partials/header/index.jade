@@ -14,5 +14,5 @@ div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
       a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active') Таблица результатов
       a.contest-menu__item(ui-sref='^.conditions', ui-sref-active='contest-menu__item_state_active') Условия задач
       a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED"') Отправить
-      a.contest-menu__item(ui-sref='^.status({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.status")}') Посылки
+      a.contest-menu__item(ui-sref='^.status({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.status")}') Решения
 

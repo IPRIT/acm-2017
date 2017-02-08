@@ -85,7 +85,7 @@ angular.module('Qemy.services', [
                 return result.status ? result.data : result;
             });
             function getUser() {
-                return $http.get('/api/user/me').success(function (data) {
+                return $http.get('/api/user/me').then(function (data) {
                     if (!data || data.error) {
                         return false;
                     } else if (data) {
@@ -97,7 +97,7 @@ angular.module('Qemy.services', [
         }
 
         function logout() {
-            return $http.post('/api/user/authenticate/logout').success(function (data) {
+            return $http.post('/api/user/authenticate/logout').then(function (data) {
                 curUser = null;
                 var defaultAction = true;
                 return data && data.result
@@ -112,6 +112,7 @@ angular.module('Qemy.services', [
     }])
 
     .service('SocketService', ['$rootScope', '$q', '$http', function ($rootScope, $q, $http) {
+        var io = function () {};
         var socket = io();
         var queue = [];
         var connectCallback = angular.noop;

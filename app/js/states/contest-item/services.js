@@ -33,7 +33,7 @@ angular.module('Qemy.services.contest-item', [
         function markAsRead(params) {
             return $http({
                 method: 'post',
-                url: '/api/contest/' + params.contestId + '/markAsRead'
+                url: '/api/contest/' + params.contestId + '/messages/read'
             }).then(function (data) {
                 return data.data;
             });
