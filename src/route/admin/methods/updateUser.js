@@ -31,13 +31,17 @@ export async function updateUser(params) {
   }
   
   let user = await models.User.findByPrimary(userId);
-  await user.update({
+  
+  let update = {
     username,
     firstName,
     lastName,
-    password,
     accessGroup
-  });
+  };
+  if (password) {
+    Object.assign(update, { password });
+  }
+  await user.update(update);
   await user.setGroups(groupIds);
   
   return user;

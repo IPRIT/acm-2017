@@ -23,23 +23,23 @@ div.contests-list__item-layer.admin-contests__contest-item
             span.contests-list__item_status_success Завершён
           div(ng-switch-when='FROZEN')
             span.contests-list__item_status_neutral Заморозка. Осталось
-              my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTime')
+              my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTimeMs')
           div(ng-switch-when='WAITING')
             span Начало через
-              my-timer-element.contest-item__status-time(finish='contest.startTime')
+              my-timer-element.contest-item__status-time(finish='contest.startTimeMs')
           div(ng-switch-when='RUNNING')
             span.contests-list__item_status_success Контест идет. Осталось
-              my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTime')
+              my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTimeMs')
           div(ng-switch-when='PRACTICE')
             span.contests-list__item_status_success Дорешивание. Осталось
-              my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTime')
+              my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTimeMs')
 
     div.admin-contests__buttons
-      div.admin-contests__button-wrap
+      div.admin-contests__button-wrap(ng-if='contest.status !== "REMOVED"')
         md-button.admin-contests__button(ng-click='joinContest(contest)') Войти
-      div.admin-contests__button-wrap
+      div.admin-contests__button-wrap(ng-if='contest.status !== "REMOVED"')
         md-button.admin-contests__button(ui-sref='admin.edit-contest({contestId: contest.id})') Редактировать
       div.admin-contests__button-wrap(ng-if='contest.status !== "REMOVED"')
         md-button.admin-contests__button(ng-click='deleteContest(contest)') Удалить
       div.admin-contests__button-wrap(ng-if='contest.status === "REMOVED"')
-        md-button.admin-contests__button(ng-click='repairContest(contest)') Восстановить
+        md-button.admin-contests__button.md-primary(ng-click='repairContest(contest)') Восстановить

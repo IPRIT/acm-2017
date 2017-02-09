@@ -33,5 +33,8 @@ async function signIn(req, res) {
     httpOnly: true
   });
   req.session.userId = user.id;
+  await user.update({
+    lastLoggedTimeMs: Date.now()
+  });
   return tokenInstance.token;
 }

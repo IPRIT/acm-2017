@@ -56,15 +56,16 @@ div.sent-list
       span {{sent.memory + ' КБ'}}
     div.sent-list__cell(ng-if='currentUser.isAdmin')
       div.sent-list__actions-menu
-        md-menu
+        md-menu(md-offset="-200 0")
           md-button(aria-label="Select action", class="md-icon-button", ng-click="$mdOpenMenu($event)")
             md-icon(md-menu-origin, md-svg-src="/img/icons/ic_more_vert_48px.svg")
           md-menu-content(width="4")
-            md-menu-item(ng-repeat="action in actionsMenuItems")
-              md-button(ng-click="selectAction($event, action, sent)", aria-label='Menu item', ng-disabled='sent.verdictId < 0')
+            md-menu-item(ng-repeat="action in actionsMenuItems", ng-class='{"menu-divider": action.type === "divider"}')
+              md-button(class='{{action.themeClass}}', ng-if='action.type !== "divider"', ng-click="selectAction($event, action, sent)", aria-label='Menu item', ng-disabled='sent.verdictId < 0')
                 div(layout="row")
                   md-icon(md-menu-align-target, md-svg-src="{{::action.svgIcon}}")
                   p(flex, ng-bind='::action.name')
+              md-divider(ng-if='action.type === "divider"')
 
   div.no-sents(ng-if='solutions.length === 0 && !loadingData')
     span(ng-if='all_items_count === 0') Решения отсутствуют

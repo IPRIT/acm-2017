@@ -53,13 +53,13 @@ md-toolbar.md-menu-toolbar
 
     div(ng-switch='settings.mode.original')
       div(ng-switch-when='true')
-        div.task__problem(ng-class='{"task__problem-timus": condition.system_type === "timus", \
-                         "task__problem-sgu": condition.system_type === "sgu", \
-                         "task__problem-cf": condition.system_type === "cf", \
-                         "task__problem-acmp": condition.system_type === "acmp", \
-                         "task__problem-ejudge": condition.system_type === "ejudge", \
-                         "task__problem-cf_type_gym": condition.system_problem_number.indexOf("gym") >= 0 }')
-          div(ng-bind-html='::condition.formatted_text', task-contenteditable)
+        div.task__problem(ng-class='{"task__problem-timus": condition.systemType === "timus", \
+                         "task__problem-sgu": condition.systemType === "sgu", \
+                         "task__problem-cf": condition.systemType === "cf", \
+                         "task__problem-acmp": condition.systemType === "acmp", \
+                         "task__problem-ejudge": condition.systemType === "ejudge", \
+                         "task__problem-cf_type_gym": condition.foreignProblemIdentifier.indexOf("gym") >= 0 }')
+          div(ng-bind-html='::condition.htmlStatement', task-contenteditable)
       div(ng-switch-default)
         div.send-content__textarea.page-container__markdown-textarea-wrap
           md-input-container(flex, style='width: 100%;')

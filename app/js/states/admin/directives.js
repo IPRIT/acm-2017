@@ -34,13 +34,13 @@ angular.module('Qemy.directives.admin', [])
 
                     $scope.joinContest = function (contest) {
                         $scope.loadingData = true;
-                        ContestsManager.canJoin({ contest_id: contest.id })
+                        ContestsManager.canJoin({ contestId: contest.id })
                             .then(function (result) {
-                                if (!result || !result.result || !result.result.hasOwnProperty('can')) {
+                                if (!result || !result.hasOwnProperty('can')) {
                                     $scope.loadingData = false;
                                     return;
                                 }
-                                handleResponse(result.result);
+                                handleResponse(result);
                             });
 
                         function handleResponse(result) {
@@ -112,7 +112,7 @@ angular.module('Qemy.directives.admin', [])
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.$broadcast('data loading');
-                            AdminManager.deleteContest({ contest_id: contest.id })
+                            AdminManager.deleteContest({ contestId: contest.id })
                                 .then(function (result) {
                                     $rootScope.$broadcast('data loaded');
                                     if (result.error) {
@@ -133,7 +133,7 @@ angular.module('Qemy.directives.admin', [])
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.$broadcast('data loading');
-                            AdminManager.repairContest({ contest_id: contest.id })
+                            AdminManager.repairContest({ contestId: contest.id })
                                 .then(function (result) {
                                     $rootScope.$broadcast('data loaded');
                                     if (result.error) {
@@ -159,13 +159,13 @@ angular.module('Qemy.directives.admin', [])
 
                     $scope.joinContest = function (contest) {
                         $scope.loadingData = true;
-                        ContestsManager.canJoin({ contest_id: contest.id })
+                        ContestsManager.canJoin({ contestId: contest.id })
                             .then(function (result) {
-                                if (!result || !result.result || !result.result.hasOwnProperty('can')) {
+                                if (!result || !result.hasOwnProperty('can')) {
                                     $scope.loadingData = false;
                                     return;
                                 }
-                                handleResponse(result.result);
+                                handleResponse(result);
                             });
 
                         function handleResponse(result) {
@@ -237,7 +237,7 @@ angular.module('Qemy.directives.admin', [])
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.$broadcast('data loading');
-                            AdminManager.deleteContest({ contest_id: contest.id })
+                            AdminManager.deleteContest({ contestId: contest.id })
                                 .then(function (result) {
                                     $rootScope.$broadcast('data loaded');
                                     if (result.error) {
@@ -258,7 +258,7 @@ angular.module('Qemy.directives.admin', [])
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.$broadcast('data loading');
-                            AdminManager.repairContest({ contest_id: contest.id })
+                            AdminManager.repairContest({ contestId: contest.id })
                                 .then(function (result) {
                                     $rootScope.$broadcast('data loaded');
                                     if (result.error) {
@@ -297,8 +297,8 @@ angular.module('Qemy.directives.admin', [])
                     if (!ev.target) {
                         return;
                     }
-                    scope.condition.formatted_text = ev.target.innerHTML;
-                    scope.condition.cleared_text = angular.element(ev.target).text();
+                    scope.condition.htmlStatement = ev.target.innerHTML;
+                    scope.condition.textStatement = angular.element(ev.target).text();
                     scope.confirmExit = true;
                 });
                 element.attr('contenteditable', 'true');

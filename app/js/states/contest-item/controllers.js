@@ -319,8 +319,8 @@ angular.module('Qemy.controllers.contest-item', [])
     }
   ])
   
-  .controller('ContestItemConditionsController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager',
-    function ($scope, $rootScope, $state, ContestItemManager, _, UserManager) {
+  .controller('ContestItemConditionsController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog',
+    function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog) {
       $scope.$emit('change_title', {
         title: 'Условия | ' + _('app_name')
       });
@@ -335,6 +335,22 @@ angular.module('Qemy.controllers.contest-item', [])
           }
           $scope.conditions = result;
         });
+  
+      $scope.showProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
+    
+        $mdDialog.show({
+          controller: 'AdminProblemDialogController',
+          templateUrl: templateUrl('admin', 'admin-problem-dialog'),
+          targetEvent: ev,
+          clickOutsideToClose: true,
+          locals: {
+            condition: problem
+          }
+        });
+      };
       
       $scope.user = {};
       UserManager.getCurrentUser().then(function (user) {
@@ -669,10 +685,10 @@ angular.module('Qemy.controllers.contest-item', [])
               solutions[i].memory = args.memory;
             }
             if (typeof args.testNumber !== 'undefined') {
-              solutions[i].testNumber = args.testNum;
+              solutions[i].testNumber = args.testNumber;
             }
             if (typeof args.verdictId !== 'undefined') {
-              solutions[i].verdictId = args.verdict_id;
+              solutions[i].verdictId = args.verdictId;
             }
             if (typeof args.verdictName !== 'undefined') {
               if (!solutions[i].verdict) {
@@ -710,19 +726,38 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.actionsMenuItems = [{
         id: 'CHANGE_VERDICT',
         name: 'Изменить вердикт',
-        svgIcon: '/img/icons/ic_edit_48px.svg'
+        svgIcon: '/img/icons/ic_spellcheck_48px.svg'
       }, {
         id: 'SEND_DUPLICATE',
-        name: 'Продублировать отправку',
+        name: 'Продублировать решение',
         svgIcon: '/img/icons/ic_content_copy_48px.svg'
       }, {
         id: 'REFRESH_SOLUTION',
-        name: 'Переотправить решение',
+        name: 'Перепроверить решение',
         svgIcon: '/img/icons/ic_refresh_48px.svg'
+      }, {
+        type: 'divider'
+      }, {
+        id: 'SEND_DUPLICATE_AS_ADMIN',
+        name: 'Продублировать решение (как администратор)',
+        svgIcon: '/img/icons/ic_content_copy_48px.svg'
+      }, {
+        id: 'REFRESH_SOLUTIONS_FOR_PROBLEM',
+        name: 'Переотправить все решения для задачи',
+        svgIcon: '/img/icons/ic_restore_48px.svg'
+      }, {
+        id: 'REFRESH_SOLUTIONS_FOR_USER',
+        name: 'Переотправить все решения для пользователя',
+        svgIcon: '/img/icons/ic_restore_48px.svg'
+      }, {
+        id: 'REFRESH_SOLUTIONS_FOR_PROBLEM_AND_USER',
+        name: 'Переотправить все решения для задачи и пользователя',
+        svgIcon: '/img/icons/ic_restore_48px.svg'
       }, {
         id: 'SENT_DELETE',
         name: 'Удалить отправку',
-        svgIcon: '/img/icons/ic_delete_48px.svg'
+        svgIcon: '/img/icons/ic_delete_48px.svg',
+        themeClass: 'md-accent'
       }];
       
       $scope.selectAction = function (ev, action, item) {
@@ -747,6 +782,21 @@ angular.module('Qemy.controllers.contest-item', [])
               });
           });
         }
+  
+        function sendDuplicateAsAdmin() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeSendDuplicate(ev).then(function () {
+            AdminManager
+              .sendSolutionAgain( { solutionId: item.id, asAdmin: true } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          });
+        }
         
         function refreshSolution() {
           if (!item || typeof item !== 'object') {
@@ -755,6 +805,51 @@ angular.module('Qemy.controllers.contest-item', [])
           showConfirmationDialogBeforeRefreshing(ev).then(function () {
             AdminManager
               .refreshSolution( { solutionId: item.id } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          });
+        }
+  
+        function refreshSolutionForProblem() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeRefreshing(ev).then(function () {
+            AdminManager
+              .refreshSolutionForProblem( { contestId: item.contestId, symbolIndex: item.internalSymbolIndex } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          });
+        }
+  
+        function refreshSolutionForUser() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeRefreshing(ev).then(function () {
+            AdminManager
+              .refreshSolutionForUser( { contestId: item.contestId, userId: item.userId } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          });
+        }
+  
+        function refreshSolutionForProblemAndUser() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeRefreshing(ev).then(function () {
+            AdminManager
+              .refreshSolutionForProblemAndUser( { contestId: item.contestId, symbolIndex: item.internalSymbolIndex, userId: item.userId } )
               .then(function (result) {
                 if (result && result.error) {
                   return alert('Произошла ошибка: ' + result.error);
@@ -778,11 +873,16 @@ angular.module('Qemy.controllers.contest-item', [])
               });
           });
         }
-        
+  
         var actions = {
           'CHANGE_VERDICT': changeVerdict,
           'SEND_DUPLICATE': sendDuplicate,
           'REFRESH_SOLUTION': refreshSolution,
+    
+          'SEND_DUPLICATE_AS_ADMIN': sendDuplicateAsAdmin,
+          'REFRESH_SOLUTIONS_FOR_PROBLEM': refreshSolutionForProblem,
+          'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionForUser,
+          'REFRESH_SOLUTIONS_FOR_PROBLEM_AND_USER': refreshSolutionForProblemAndUser,
           'SENT_DELETE': deleteSolution
         };
         
@@ -893,7 +993,7 @@ angular.module('Qemy.controllers.contest-item', [])
       function showConfirmationDialogBeforeRefreshing(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
-          .content('Вы действительно хотите обновить это решение?')
+          .content('Вы действительно хотите переотправить?')
           .ariaLabel('Refresh confirmation')
           .ok('Да')
           .cancel('Отмена')
@@ -956,10 +1056,10 @@ angular.module('Qemy.controllers.contest-item', [])
               solutions[i].memory = args.memory;
             }
             if (typeof args.testNumber !== 'undefined') {
-              solutions[i].testNumber = args.testNum;
+              solutions[i].testNumber = args.testNumber;
             }
             if (typeof args.verdictId !== 'undefined') {
-              solutions[i].verdictId = args.verdict_id;
+              solutions[i].verdictId = args.verdictId;
             }
             if (typeof args.verdictName !== 'undefined') {
               if (!solutions[i].verdict) {
@@ -992,19 +1092,38 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.actionsMenuItems = [{
         id: 'CHANGE_VERDICT',
         name: 'Изменить вердикт',
-        svgIcon: '/img/icons/ic_edit_48px.svg'
+        svgIcon: '/img/icons/ic_spellcheck_48px.svg'
       }, {
         id: 'SEND_DUPLICATE',
-        name: 'Продублировать отправку',
+        name: 'Продублировать решение',
         svgIcon: '/img/icons/ic_content_copy_48px.svg'
       }, {
         id: 'REFRESH_SOLUTION',
-        name: 'Переотправить решение',
+        name: 'Перепроверить решение',
         svgIcon: '/img/icons/ic_refresh_48px.svg'
+      }, {
+        type: 'divider'
+      }, {
+        id: 'SEND_DUPLICATE_AS_ADMIN',
+        name: 'Продублировать решение (как администратор)',
+        svgIcon: '/img/icons/ic_content_copy_48px.svg'
+      }, {
+        id: 'REFRESH_SOLUTIONS_FOR_PROBLEM',
+        name: 'Переотправить все решения для задачи',
+        svgIcon: '/img/icons/ic_restore_48px.svg'
+      }, {
+        id: 'REFRESH_SOLUTIONS_FOR_USER',
+        name: 'Переотправить все решения для пользователя',
+        svgIcon: '/img/icons/ic_restore_48px.svg'
+      }, {
+        id: 'REFRESH_SOLUTIONS_FOR_PROBLEM_AND_USER',
+        name: 'Переотправить все решения для задачи и пользователя',
+        svgIcon: '/img/icons/ic_restore_48px.svg'
       }, {
         id: 'SENT_DELETE',
         name: 'Удалить отправку',
-        svgIcon: '/img/icons/ic_delete_48px.svg'
+        svgIcon: '/img/icons/ic_delete_48px.svg',
+        themeClass: 'md-accent'
       }];
       
       $scope.selectAction = function (ev, action, item) {
@@ -1033,6 +1152,25 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
+  
+        function sendDuplicateAsAdmin() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeSendDuplicate(ev).then(function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+      
+            AdminManager
+              .sendSolutionAgain( { solutionId: item.id, asAdmin: true } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          }, function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+          });
+        }
         
         function refreshSolution() {
           if (!item || typeof item !== 'object') {
@@ -1042,6 +1180,60 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
             AdminManager
               .refreshSolution( { solutionId: item.id } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          }, function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+          });
+        }
+  
+        function refreshSolutionForProblem() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeRefreshing(ev).then(function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+            AdminManager
+              .refreshSolutionForProblem( { contestId: item.contestId, symbolIndex: item.internalSymbolIndex } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          }, function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+          });
+        }
+  
+        function refreshSolutionForUser() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeRefreshing(ev).then(function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+            AdminManager
+              .refreshSolutionForUser( { contestId: item.contestId, userId: item.userId } )
+              .then(function (result) {
+                if (result && result.error) {
+                  return alert('Произошла ошибка: ' + result.error);
+                }
+              });
+          }, function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+          });
+        }
+  
+        function refreshSolutionForProblemAndUser() {
+          if (!item || typeof item !== 'object') {
+            return;
+          }
+          showConfirmationDialogBeforeRefreshing(ev).then(function () {
+            $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
+            AdminManager
+              .refreshSolutionForProblemAndUser( { contestId: item.contestId, symbolIndex: item.internalSymbolIndex, userId: item.userId } )
               .then(function (result) {
                 if (result && result.error) {
                   return alert('Произошла ошибка: ' + result.error);
@@ -1074,6 +1266,11 @@ angular.module('Qemy.controllers.contest-item', [])
           'CHANGE_VERDICT': changeVerdict,
           'SEND_DUPLICATE': sendDuplicate,
           'REFRESH_SOLUTION': refreshSolution,
+          
+          'SEND_DUPLICATE_AS_ADMIN': sendDuplicateAsAdmin,
+          'REFRESH_SOLUTIONS_FOR_PROBLEM': refreshSolutionForProblem,
+          'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionForUser,
+          'REFRESH_SOLUTIONS_FOR_PROBLEM_AND_USER': refreshSolutionForProblemAndUser,
           'SENT_DELETE': deleteSolution
         };
         
@@ -1140,7 +1337,7 @@ angular.module('Qemy.controllers.contest-item', [])
               scored: 0
             }];
             
-            $scope.selectedVerdictId = sentItem.verdict_id;
+            $scope.selectedVerdictId = sentItem.verdictId;
             
             $scope.save = function () {
               var sentId = sentItem.id,
@@ -1183,7 +1380,7 @@ angular.module('Qemy.controllers.contest-item', [])
       function showConfirmationDialogBeforeRefreshing(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
-          .content('Вы действительно хотите обновить это решение?')
+          .content('Вы действительно хотите переотправить?')
           .ariaLabel('Refresh confirmation')
           .ok('Да')
           .cancel('Отмена')

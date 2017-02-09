@@ -37,5 +37,6 @@ router.delete('/contests/:contestId', [ userRetriever, rightsAllocator('admin') 
 router.post('/contests/:contestId/repair', [ userRetriever, rightsAllocator('admin') ], adminMethods.repairContestRequest);
 router.post('/contests/:contestId/solutions/refresh', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsRequest);
 router.post('/contests/:contestId/solutions/refresh/:symbolIndex', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsForProblemRequest);
+router.post('/contests/:contestId/solutions/refresh/:symbolIndex/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsForProblemAndUserRequest);
 
 export default router;

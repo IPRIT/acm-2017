@@ -481,7 +481,7 @@ my-timer-element {
   font-weight: bold;
 }
 .contests-list__item_status_success {
-  color: rgba(78, 152, 113, 0.76);
+  color: #26A69A;
   font-weight: bold;
 }
 .contests-list__item_status_neutral {
@@ -836,7 +836,7 @@ my-timer-element {
     box-sizing: border-box;
   }
 }
-.contest__condition-send-button-wrap {
+.contest__condition-send-button-wrap, .contest__condition-view-button-wrap {
   position: absolute;
   z-index: 10000;
   right: 30px;
@@ -855,6 +855,9 @@ my-timer-element {
       background-color: rgba(0,0,0,.3);
     }
   }
+}
+.contest__condition-view-button-wrap {
+  right: 100px;
 }
 .contest__conditions-link:hover {
   background-color: rgba(0, 0, 0, 0.07);
@@ -945,7 +948,7 @@ my-timer-element {
   display: flex;
   align-items: center;
   height: 50px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid rgba(204, 204, 204, .6);
   background-color: #fdfdfd;
   cursor: default;
   .sent-list__cell {
@@ -1543,6 +1546,14 @@ md-input-container {
 }
 .monitor-loading {
   text-align: center;
+}
+.admin-content-layer__inner .monitor-content * {
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   box-sizing: border-box;
+}
+.menu-divider {
+  min-height: 10px;
 }
 .rating-table {
   font-size: 0.95em;

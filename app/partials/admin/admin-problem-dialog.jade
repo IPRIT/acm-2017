@@ -17,13 +17,13 @@ md-dialog(aria-label="Problem")
             div.markdown__divider(ng-if='!condition.attachments.config.replaced || !!condition.attachments.content.text')
 
         div.task__problem(ng-if='!condition.attachments.config.replaced',
-          ng-class='{"task__problem-timus": condition.system_type === "timus", \
-                "task__problem-sgu": condition.system_type === "sgu", \
-                "task__problem-cf": condition.system_type === "cf", \
-                "task__problem-acmp": condition.system_type === "acmp", \
-                "task__problem-ejudge": condition.system_type === "ejudge", \
-                "task__problem-cf_type_gym": condition.system_problem_number.indexOf("gym") >= 0 }')
-          div(ng-bind-html='condition.formatted_text')
+          ng-class='{"task__problem-timus": condition.systemType === "timus", \
+                "task__problem-sgu": condition.systemType === "sgu", \
+                "task__problem-cf": condition.systemType === "cf", \
+                "task__problem-acmp": condition.systemType === "acmp", \
+                "task__problem-ejudge": condition.systemType === "ejudge", \
+                "task__problem-cf_type_gym": condition.foreignProblemIdentifier.indexOf("gym") >= 0 }')
+          div(ng-bind-html='condition.htmlStatement')
 
         div.task__own(ng-if='condition.attachments')
           div(ng-if='condition.attachments.content.text')

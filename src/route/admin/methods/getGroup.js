@@ -16,6 +16,9 @@ export async function getGroup(params) {
   } = params;
   
   let group = await models.Group.findByPrimary(groupId);
+  if (!group) {
+    throw new HttpError('Group not found');
+  }
   let users = await group.getUsers().then(users => {
     return users.map(user => {
       return filter(user.get({ plain: true }), {

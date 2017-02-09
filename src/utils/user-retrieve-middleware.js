@@ -35,6 +35,9 @@ async function retrieveUser(req, res, next) {
   }
   session.userId = user.id;
   req.user = user;
+  await user.update({
+    recentActivityTimeMs: Date.now()
+  });
   next();
 }
 

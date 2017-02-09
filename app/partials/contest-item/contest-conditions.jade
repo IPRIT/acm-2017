@@ -24,5 +24,9 @@ div.contest
             md-button.md-icon-button.md-primary(aria-label='Eat cake', ui-sref='contest.send-item({problemIndex: condition.internalSymbolIndex})')
               md-tooltip(md-direction="left") Отправить решение
               md-icon(md-svg-src='/img/icons/ic_send_48px.svg')
+          div.contest__condition-view-button-wrap(layout, layout-align='center center')
+            md-button.md-icon-button(aria-label='View problem', ng-click="showProblem($event, condition)")
+              md-tooltip(md-direction="left") Быстрый просмотр
+              md-icon(md-svg-src='/img/icons/ic_visibility_48px.svg')
 
   page-footer

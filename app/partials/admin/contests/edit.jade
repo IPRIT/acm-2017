@@ -111,7 +111,7 @@ div.admin-content-layer
                   div.md-list-item-text
                     p
                       span {{problem.task_number + ". " + problem.title + " "}}
-                    p(style='color: #999;', ng-switch='problem.system_type')
+                    p(style='color: #999;', ng-switch='problem.systemType')
                       span(ng-switch-when='timus') Timus
                       span(ng-switch-when='cf') Codeforces
                       span(ng-switch-when='acmp') ACMP.ru
@@ -132,7 +132,7 @@ div.admin-content-layer
                     p
                       span {{indexGenerator($index).toUpperCase() + ". "}}
                       span {{problem.task_number + ". " + problem.title + " "}}
-                    p(style='color: #999;', ng-switch='problem.system_type')
+                    p(style='color: #999;', ng-switch='problem.systemType')
                       span(ng-switch-when='timus') Timus
                       span(ng-switch-when='cf') Codeforces
                       span(ng-switch-when='acmp') ACMP.ru

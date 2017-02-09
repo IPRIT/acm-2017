@@ -12,13 +12,13 @@ div.admin-content-layer
             div(layout)
               md-input-container(flex)
                 label Имя
-                input(md-maxlength='200', required, name='firstName', ng-model='user.first_name')
+                input(md-maxlength='200', required, name='firstName', ng-model='user.firstName')
                 div(ng-messages='userForm.firstName.$error')
                   div(ng-message='required') Поле не может быть пустым.
                   div(ng-message='md-maxlength') Введите не больше 200 символов
               md-input-container(flex)
                 label Фамилия
-                input(md-maxlength='200', required, name='lastName', ng-model='user.last_name')
+                input(md-maxlength='200', required, name='lastName', ng-model='user.lastName')
                 div(ng-messages='userForm.lastName.$error')
                   div(ng-message='required') Поле не может быть пустым.
                   div(ng-message='md-maxlength') Введите не больше 200 символов
@@ -42,8 +42,8 @@ div.admin-content-layer
           div.contest-creation__row
             div.contest-creation__row-title Уровень доступа
             div(layout)
-              md-radio-group(ng-model='user.access_group.access_level')
-                md-radio-button(ng-repeat='accessGroup in accessGroups', value='{{accessGroup.access_level}}', ng-class='{"md-accent": accessGroup.access_level > 1, "md-primary": accessGroup.access_level === 1}') {{accessGroup.name}}
+              md-radio-group(ng-model='user.accessGroupMask')
+                md-radio-button(ng-repeat='accessGroup in accessGroups', value='{{accessGroup.mask}}', ng-class='{"md-accent": accessGroup.mask === 4096, "md-primary": accessGroup.mask === 256}') {{accessGroup.name}}
 
           div.contest-creation__row
             div.contest-creation__row-title В какой группе состоит?

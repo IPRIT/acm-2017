@@ -19,6 +19,7 @@ export * from './refreshSolution';
 export * from './duplicateSolution';
 export * from './refreshSolutions';
 export * from './refreshSolutionsForProblem';
+export * from './refreshSolutionsForProblemAndUser';
 export * from './deleteSolution';
 export * from './getGroup';
 export * from './createGroup';

@@ -27,7 +27,8 @@ angular.module('Qemy.services.admin', [
 		function searchGroups(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/searchGroups?' + dataEncode(params)
+				url: '/api/admin/groups',
+				params: params
 			}).then(function (data) {
 				return data.data;
 			});
@@ -36,7 +37,8 @@ angular.module('Qemy.services.admin', [
 		function searchProblems(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/searchProblems?' + dataEncode(params)
+				url: '/api/admin/problems',
+				params: params
 			}).then(function (data) {
 				return data.data;
 			});
@@ -45,7 +47,7 @@ angular.module('Qemy.services.admin', [
 		function createContest(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/createContest',
+				url: '/api/admin/contests',
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -55,7 +57,7 @@ angular.module('Qemy.services.admin', [
 		function updateContest(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/updateContest',
+				url: '/api/admin/contests/' + params.contestId,
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -64,9 +66,8 @@ angular.module('Qemy.services.admin', [
 
 		function deleteContest(params) {
 			return $http({
-				method: 'post',
-				url: '/api/admin/deleteContest',
-				data: params
+				method: 'delete',
+				url: '/api/admin/contests/' + params.contestId
 			}).then(function (data) {
 				return data.data;
 			});
@@ -75,8 +76,7 @@ angular.module('Qemy.services.admin', [
 		function repairContest(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/repairContest',
-				data: params
+				url: '/api/admin/contests/' + params.contestId + '/repair'
 			}).then(function (data) {
 				return data.data;
 			});
@@ -85,7 +85,7 @@ angular.module('Qemy.services.admin', [
 		function getContestInfo(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/getContestInfo?' + dataEncode(params)
+				url: '/api/admin/contests/' + params.contestId
 			}).then(function (data) {
 				return data.data;
 			});
@@ -94,7 +94,8 @@ angular.module('Qemy.services.admin', [
 		function getUsers(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/getUsers?' + dataEncode(params)
+				url: '/api/admin/users',
+				params: params
 			}).then(function (data) {
 				return data.data;
 			});
@@ -103,7 +104,8 @@ angular.module('Qemy.services.admin', [
 		function searchUsers(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/searchUsers?' + dataEncode(params)
+				url: '/api/admin/users',
+				params: params
 			}).then(function (data) {
 				return data.data;
 			});
@@ -111,9 +113,8 @@ angular.module('Qemy.services.admin', [
 
 		function deleteUser(params) {
 			return $http({
-				method: 'post',
-				url: '/api/admin/deleteUser',
-				data: params
+				method: 'delete',
+				url: '/api/admin/users/' + params.userId
 			}).then(function (data) {
 				return data.data;
 			});
@@ -122,7 +123,7 @@ angular.module('Qemy.services.admin', [
 		function createUser(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/createUser',
+				url: '/api/admin/users',
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -132,16 +133,16 @@ angular.module('Qemy.services.admin', [
 		function getUser(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/getUser?' + dataEncode(params)
+				url: '/api/admin/users/' + params.userId
 			}).then(function (response) {
-				return response.data ? response.data.user : {};
+				return response.data ? response.data : {};
 			});
 		}
 
 		function updateUser(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/updateUser',
+				url: '/api/admin/users/' + params.userId,
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -215,7 +216,8 @@ angular.module('Qemy.services.admin', [
 		function sendSolutionAgain(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/solutions/' + params.solutionId + '/duplicate'
+				url: '/api/admin/solutions/' + params.solutionId + '/duplicate',
+				data: params
 			}).then(function (data) {
 				return data.data;
 			});
@@ -225,6 +227,33 @@ angular.module('Qemy.services.admin', [
 			return $http({
 				method: 'post',
 				url: '/api/admin/solutions/' + params.solutionId + '/refresh'
+			}).then(function (data) {
+				return data.data;
+			});
+		}
+		
+		function refreshSolutionForProblem(params) {
+			return $http({
+				method: 'post',
+				url: '/api/admin/contests/' + params.contestId + '/solutions/refresh/' + params.symbolIndex
+			}).then(function (data) {
+				return data.data;
+			});
+		}
+		
+		function refreshSolutionForProblemAndUser(params) {
+			return $http({
+				method: 'post',
+				url:  '/api/admin/contests/' + params.contestId + '/solutions/refresh/' + params.symbolIndex + '/' + params.userId
+			}).then(function (data) {
+				return data.data;
+			});
+		}
+		
+		function refreshSolutionForUser(params) {
+			return $http({
+				method: 'post',
+				url:  '/api/admin/contests/' + params.contestId + '/solutions/refresh/all/' + params.userId
 			}).then(function (data) {
 				return data.data;
 			});
@@ -251,7 +280,7 @@ angular.module('Qemy.services.admin', [
 		function getRatingTable(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/getRatingTable',
+				url: '/api/admin/ratingTable',
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -261,7 +290,8 @@ angular.module('Qemy.services.admin', [
 		function getGroups(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/getGroups?' + dataEncode(params)
+				url: '/api/admin/groups',
+				params: params
 			}).then(function (response) {
 				return response.data;
 			});
@@ -270,7 +300,7 @@ angular.module('Qemy.services.admin', [
 		function getGroup(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/getGroup?' + dataEncode(params)
+				url: '/api/admin/groups/' + params.groupId
 			}).then(function (response) {
 				return response.data;
 			});
@@ -279,7 +309,7 @@ angular.module('Qemy.services.admin', [
 		function getCondition(params) {
 			return $http({
 				method: 'get',
-				url: '/api/admin/getCondition?' + dataEncode(params)
+				url: '/api/admin/problems/' + params.problemId
 			}).then(function (response) {
 				return response.data;
 			});
@@ -288,7 +318,7 @@ angular.module('Qemy.services.admin', [
 		function createGroup(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/createGroup',
+				url: '/api/admin/groups',
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -298,7 +328,7 @@ angular.module('Qemy.services.admin', [
 		function updateGroup(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/updateGroup',
+				url: '/api/admin/groups/' + params.groupId,
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -307,9 +337,8 @@ angular.module('Qemy.services.admin', [
 
 		function deleteGroup(params) {
 			return $http({
-				method: 'post',
-				url: '/api/admin/deleteGroup',
-				data: params
+				method: 'delete',
+				url: '/api/admin/groups/' + params.groupId
 			}).then(function (data) {
 				return data.data;
 			});
@@ -318,8 +347,17 @@ angular.module('Qemy.services.admin', [
 		function updateCondition(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/updateCondition',
+				url: '/api/admin/problems/' + params.id,
 				data: params
+			}).then(function (data) {
+				return data.data;
+			});
+		}
+		
+		function deleteProblem(params) {
+			return $http({
+				method: 'delete',
+				url: '/api/admin/problems/' + params.problemId
 			}).then(function (data) {
 				return data.data;
 			});
@@ -328,7 +366,7 @@ angular.module('Qemy.services.admin', [
 		function createEjudgeProblem(params) {
 			return $http({
 				method: 'post',
-				url: '/api/admin/createEjudgeProblem',
+				url: '/api/admin/problems/new/ejudge',
 				data: params
 			}).then(function (data) {
 				return data.data;
@@ -358,6 +396,9 @@ angular.module('Qemy.services.admin', [
 			setVerdictForSent: setVerdictForSent,
 			sendSolutionAgain: sendSolutionAgain,
 			refreshSolution: refreshSolution,
+			refreshSolutionForProblem: refreshSolutionForProblem,
+			refreshSolutionForProblemAndUser: refreshSolutionForProblemAndUser,
+			refreshSolutionForUser: refreshSolutionForUser,
 			refreshAllSolutions: refreshAllSolutions,
 			deleteSolution: deleteSolution,
 			getRatingTable: getRatingTable,
@@ -368,6 +409,7 @@ angular.module('Qemy.services.admin', [
 			deleteGroup: deleteGroup,
 			getCondition: getCondition,
 			updateCondition: updateCondition,
+			deleteProblem: deleteProblem,
 			createEjudgeProblem: createEjudgeProblem
 		}
 	}])
