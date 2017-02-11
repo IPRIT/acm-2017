@@ -321,4 +321,49 @@ angular.module('Qemy.services', [
             return methods;
         }];
     })
+  
+  .service('ErrorService', ['$rootScope', '$q', '$mdToast', function ($rootScope, $q, $mdToast) {
+      var instance;
+      var current;
+      var toastQueue = [];
+      
+      function show(error) {
+          var errorObject = error && error.data && error.data.error || {};
+          var errorMessage = errorObject && (errorObject.description || errorObject.message) || 'Unhandled error';
+          return showMessage(errorMessage);
+      }
+      
+      function showMessage(message) {
+          var position = [ 'right', 'top' ];
+          if (instance) {
+              if (toastQueue.indexOf(message) >= 0 || current === message) {
+                  return;
+              }
+              return toastQueue.push( message );
+          }
+          current = message;
+          return (instance = $mdToast.show({
+              hideDelay: 20000,
+              parent: document.body,
+              templateUrl: templateUrl('contest-item/toast', 'error'),
+              controller: ['$scope', function ($scope) {
+                  $scope.errorMessage = message;
+                  $scope.closeToast = function() {
+                      $mdToast.hide();
+                  };
+              }],
+              position: position.join(' ')
+          }).then(function () {
+              instance = null;
+              if (toastQueue.length) {
+                  showMessage( toastQueue.shift() );
+              }
+          }))
+      }
+      
+      return {
+          show: show,
+          showMessage: showMessage
+      }
+  }])
 ;

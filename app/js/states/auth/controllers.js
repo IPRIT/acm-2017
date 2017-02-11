@@ -14,8 +14,8 @@
 angular.module('Qemy.controllers.auth', [
     'Qemy.i18n'
 ])
-    .controller('AuthFormController', ['$scope', '_', '$rootScope', '$http', '$state', '$mdDialog',
-        function($scope, _, $rootScope, $http, $state, $mdDialog) {
+    .controller('AuthFormController', ['$scope', '_', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
+        function($scope, _, $rootScope, $http, $state, $mdDialog, ErrorService) {
             $scope.$emit('change_title', {
                 title: 'Авторизация | ' + _('app_name')
             });
@@ -27,20 +27,12 @@ angular.module('Qemy.controllers.auth', [
                 $rootScope.$broadcast('data loading');
                 var authProcess = $http.post('/api/user/authenticate/sign-in', $scope.form);
                 authProcess.then(function (data) {
-                    $rootScope.$broadcast('data loaded');
                     console.log(data);
-                    if (data.error) {
-                        $mdDialog.show(
-                            $mdDialog.alert()
-                                .clickOutsideToClose(true)
-                                .title('Ошибка')
-                                .content('Неверный логин или пароль.')
-                                .ariaLabel('Alert Dialog Auth')
-                                .ok('Закрыть')
-                        );
-                    } else {
-                        $state.go('index');
-                    }
+                    $rootScope.$broadcast('data loaded');
+                    $state.go('index');
+                }).catch(function (result) {
+                    $rootScope.$broadcast('data loaded');
+                    ErrorService.show(result);
                 });
             };
 

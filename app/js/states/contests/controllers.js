@@ -13,8 +13,8 @@
 
 angular.module('Qemy.controllers.contests', [])
 
-    .controller('ContestsListCtrl', ['$scope', '$rootScope', '$state', 'ContestsManager', '_',
-        function ($scope, $rootScope, $state, ContestsManager, _) {
+    .controller('ContestsListCtrl', ['$scope', '$rootScope', '$state', 'ContestsManager', '_', 'ErrorService',
+        function ($scope, $rootScope, $state, ContestsManager, _, ErrorService) {
             $scope.$emit('change_title', {
                 title: 'Контесты | ' + _('app_name')
             });
@@ -117,17 +117,16 @@ angular.module('Qemy.controllers.contests', [])
                 var contestsPromise = ContestsManager.getContests($scope.params);
                 contestsPromise.then(function (result) {
                     $rootScope.$broadcast('data loaded');
-                    if (result && result.error) {
-                        return $state.go('auth.form');
-                    }
                     if (!result || !result.hasOwnProperty('contestsNumber')) {
                         return;
                     }
                     $scope.all_items_count = result.contestsNumber;
                     $scope.contestsList = result.contests;
                     $scope.pagination = generatePaginationArray(5);
-                }).catch(function (err) {
-                    console.log(err);
+                }).catch(function (result) {
+                    $rootScope.$broadcast('data loaded');
+                    $state.go('auth.form');
+                    ErrorService.show(result);
                 });
             }
 
@@ -179,9 +178,8 @@ angular.module('Qemy.controllers.contests', [])
     ])
 
     .controller('ContestListItem', [
-        '$scope', 'ContestsManager', '$mdDialog', '$state',
-        function ($scope, ContestsManager, $mdDialog, $state) {
-            //console.log($scope.contest);
+        '$scope', 'ContestsManager', '$mdDialog', '$state', 'ErrorService',
+        function ($scope, ContestsManager, $mdDialog, $state, ErrorService) {
 
             $scope.loadingData = false;
             $scope.updateContest = function () {
@@ -190,44 +188,32 @@ angular.module('Qemy.controllers.contests', [])
                 }
                 $scope.loadingData = true;
                 var contestId = $scope.contest.id;
-                ContestsManager.getContest({ contestId: contestId })
-                    .then(function (result) {
-                        $scope.loadingData = false;
-                        if (!result) {
-                            return;
-                        }
-                        //console.log(result.contest);
-                        safeReplaceObject($scope.contest, result.contest);
-                    });
+                ContestsManager.getContest({ contestId: contestId }).then(function (result) {
+                    $scope.loadingData = false;
+                    safeReplaceObject($scope.contest, result.contest);
+                }).catch(function (result) {
+                    $scope.loadingData = false;
+                    ErrorService.show(result);
+                });
             };
 
             $scope.joinContest = function (contest) {
                 $scope.loadingData = true;
-                ContestsManager.canJoin({ contestId: contest.id })
-                    .then(function (result) {
-                        if (!result || !result.hasOwnProperty('can')) {
-                            $scope.loadingData = false;
-                            return;
-                        }
-                        handleResponse(result);
-                    });
+                ContestsManager.canJoin({ contestId: contest.id }).then(function (result) {
+                    handleResponse(result);
+                }).catch(function (result) {
+                    $scope.loadingData = false;
+                    ErrorService.show(result);
+                });
 
                 function handleResponse(result) {
                     if (!result.can) {
                         $scope.loadingData = false;
-                        var alert = $mdDialog.alert()
-                            .clickOutsideToClose(true)
-                            .title('Уведомление')
-                            .ariaLabel('Alert Dialog')
-                            .ok('Ок');
                         if (result.reason === 'NOT_IN_TIME') {
-                            alert.content('Контест еще не начат или уже завершен.');
+                            ErrorService.showMessage('Контест еще не начат или уже завершен.');
                         } else {
-                            alert.content(
-                                'Доступ запрещен. Вы не состоите в нужной группе, контест недоступен или удален.'
-                            );
+                            ErrorService.showMessage('Доступ запрещен. Вы не состоите в нужной группе, контест недоступен или удален.');
                         }
-                        $mdDialog.show(alert);
                     } else {
                         if (result.confirm) {
                             var confirm = $mdDialog.confirm()
@@ -256,12 +242,11 @@ angular.module('Qemy.controllers.contests', [])
                 }
 
                 function join() {
-                    ContestsManager.joinContest(contest.id)
-                        .then(function (result) {
-                            if (result.result) {
-                                success();
-                            }
-                        });
+                    ContestsManager.joinContest(contest.id).then(function (result) {
+                        if (result.result) {
+                            success();
+                        }
+                    });
 
                     function success() {
                         $state.go('contest.item', {
