@@ -20,6 +20,8 @@ import { config, isJsonRequest } from './utils';
 import models from './models';
 import path from 'path';
 import { ClientError, ServerError } from './route/error/http-error';
+import * as systems from './systems';
+import polygonRouter from './systems/polygon';
 
 var app = express();
 
@@ -44,6 +46,8 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, '../app')));
 
+//systems.worker.run();
+
 /*
  * Connecting routers
  */
@@ -56,6 +60,7 @@ app.get('/partials\/*:filename', function compileStaticTemplate(req, res) {
 app.use('/', indexRouter);
 app.use('/cdn', [ isJsonRequest(false) ], cdnRouter);
 app.use('/api', [ requestRestrict({ error: new HttpError('Too many requests', 429) }) ], apiRouter);
+app.use('/polygon', polygonRouter);
 
 app.all('/*', function(req, res, next) {
   // Just send the index.jade for other files to support html5 mode in angular routing

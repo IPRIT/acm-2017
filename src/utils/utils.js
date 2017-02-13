@@ -1,5 +1,7 @@
 import { typeCheck as isType } from 'type-check';
 import crypto from 'crypto';
+import querystring from 'querystring';
+import url from 'url';
 
 export const SYNTAX_C_LIKE_LITERAL_COMMENT = '\n/* $1 */\n';
 export const SYNTAX_PYTHON_LITERAL_COMMENT = '\n# $1\n';
@@ -41,6 +43,13 @@ export function valueBetween(value, min = -Infinity, max = Infinity) {
     Math.max(Number(value), min),
     max
   );
+}
+
+export function extractParam(str, key) {
+  if (typeof str !== 'string' || typeof key !== 'string') {
+    return null;
+  }
+  return querystring.parse(url.parse(str).query)[ key ];
 }
 
 export class AsyncQueue {

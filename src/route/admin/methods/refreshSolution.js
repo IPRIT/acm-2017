@@ -24,13 +24,15 @@ export async function refreshSolution(params) {
   }
   
   return solution.update({
-    nextAttemptWillBeAtMs: null,
+    nextAttemptWillBeAtMs: Date.now(),
     verdictId: null,
     memory: 0,
     executionTime: 0,
     testNumber: 0,
     retriesNumber: 0,
     verdictGotAtMs: null,
-    refreshedNumber: solution.refreshedNumber + 1
+    refreshedNumber: solution.refreshedNumber + 1,
+    internalSolutionIdentifier: null,
+    errorTrace: null
   });
 }

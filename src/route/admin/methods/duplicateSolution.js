@@ -31,7 +31,8 @@ export async function duplicateSolution(params) {
     languageId: language.id,
     sourceCode: solution.sourceCode,
     ip: solution.ip,
-    duplicatedFromId: solution.id
+    duplicatedFromId: solution.id,
+    nextAttemptWillBeAtMs: Date.now()
   });
   
   if (problem.systemType === 'cf') {

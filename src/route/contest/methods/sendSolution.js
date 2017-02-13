@@ -64,7 +64,8 @@ export async function sendSolution(params) {
     problemId: problem.id,
     languageId: language.id,
     sourceCode: solution,
-    ip
+    ip,
+    nextAttemptWillBeAtMs: Date.now()
   });
   
   if (problem.systemType === 'cf') {
