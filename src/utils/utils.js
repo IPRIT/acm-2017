@@ -52,6 +52,14 @@ export function extractParam(str, key) {
   return querystring.parse(url.parse(str).query)[ key ];
 }
 
+export function ensureNumber(value) {
+  value = Number(value);
+  if (Number.isNaN(value)) {
+    return 0;
+  }
+  return value;
+}
+
 export class AsyncQueue {
   queue = [];
   inProcess = false;

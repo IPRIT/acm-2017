@@ -22,7 +22,7 @@ export async function sendSolution(solution, systemAccount) {
     
     let $ = cheerio.load(body);
     let rows = [];
-    $('table.status').find('tr').slice(1).each(async (index, row) => {
+    $('table.status').find('tr').slice(1).each((index, row) => {
       let $row = $(row);
       let accountId = extractParam($row.find('.coder a').attr('href'), 'id'),
         nickname = $row.find('.coder a').text(),
@@ -47,6 +47,7 @@ export async function sendSolution(solution, systemAccount) {
         if (existSolution) {
           throw new Error('Solution did not send');
         }
+        systemAccount.foreignAccountId = row.accountId;
         contextRow = row;
         break;
       }
