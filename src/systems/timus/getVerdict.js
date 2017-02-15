@@ -23,7 +23,7 @@ const terminalStatesMapping = {
   'Restricted function': 9
 };
 
-export async function getVerdict(solution, systemAccount) {
+export async function getVerdict(solution, systemAccount, receivedRow) {
   let endpoint = getEndpoint(ACM_AUTHORS_SOLUTIONS_ENDPOINT);
   return Promise.resolve().then(async () => {
     let body = await request({
@@ -63,7 +63,8 @@ export async function getVerdict(solution, systemAccount) {
   
     let contextRow;
     for (let row of rows) {
-      if (row.accountId === systemAccount.foreignAccountId) {
+      if (row.accountId === systemAccount.foreignAccountId
+        && receivedRow.solutionId === row.solutionId) {
         contextRow = row;
         break;
       }
@@ -107,5 +108,5 @@ function getVerdictId(verdictName) {
 
 function sanitizeVerdict(verdictName = '') {
   let clearVerdictRegExp = /(\s\(.*\))$/i;
-  return verdictName.replace(clearVerdictRegExp, '').trim();
+  return verdictName.trim().replace(clearVerdictRegExp, '');
 }

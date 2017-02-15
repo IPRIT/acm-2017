@@ -21,7 +21,7 @@ export async function handle(solution) {
         throw new Error('Time limit has exceeded');
       }
       verdict = await getVerdict(solution, systemAccount, contextRow);
-      console.log(verdict);
+      //console.log(verdict);
       await Promise.delay(verdictCheckTimeoutMs);
     }
     return saveVerdict(solution, systemAccount, verdict);
