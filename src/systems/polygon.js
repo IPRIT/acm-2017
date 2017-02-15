@@ -38,6 +38,7 @@ async function _test() {
     verdictId: null
   };
   let problemsWhere = {};
+  
   if (inProcessSolutionIds.length) {
     Object.assign(solutionsWhere, {
       id: {

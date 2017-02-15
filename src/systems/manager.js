@@ -29,7 +29,8 @@ export async function send(solution) {
     throw new Error('System not found');
   }
   inProcessSolutionsMap.set(solution.id, solution);
-  await system.handle( solution );
-  inProcessSolutionsMap.delete(solution.id);
+  await system.handle( solution ).finally(() => {
+    inProcessSolutionsMap.delete(solution.id)
+  });
   return solution;
 }

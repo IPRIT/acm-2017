@@ -21,30 +21,59 @@ export function stop() {
 function task() {
   return Promise.resolve().then(() => {
     return _task();
-  }).catch(console.error.bind(console));
+  }).catch(console.error.bind(console, 'Task error:'));
 }
 
 async function _task() {
-  //console.log('Gathering new solutions...');
- /* let availableSystemTypes = await manager.getAvailableSystemTypes();
+  console.log('Gathering new solutions...');
+  let availableSystemTypes = await manager.getAvailableSystemTypes();
   let inProcessSolutionIds = manager.getInProcessSolutionIds();
   console.log(availableSystemTypes, inProcessSolutionIds);
   
-  let gatheredSolutions = await models.Solution.findAll({
-    where: {
+  if (!availableSystemTypes.length) {
+    return;
+  }
+  
+  let solutionsWhere = {
+    retriesNumber: {
+      $lt: 3
+    },
+    nextAttemptWillBeAtMs: {
+      $or: [{
+        $lte: Date.now()
+      }, null]
+    },
+    verdictId: null
+  };
+  let problemsWhere = {};
+  
+  if (inProcessSolutionIds.length) {
+    Object.assign(solutionsWhere, {
       id: {
         $notIn: inProcessSolutionIds
       }
-    },
+    });
+  }
+  if (availableSystemTypes.length) {
+    Object.assign(problemsWhere, {
+      systemType: {
+        $in: availableSystemTypes
+      }
+    });
+  }
+  
+  let gatheredSolutions = await models.Solution.findAll({
+    where: solutionsWhere,
     include: [{
       model: models.Problem,
       required: true,
-      where: {
-        $in: availableSystemTypes
-      }
+      where: problemsWhere
     }, models.Language ],
     group: 'Problem.systemType',
-    order: 'id ASC',
-    limit: 1
-  });*/
+    order: 'id ASC'
+  });
+  
+  for (let solution of gatheredSolutions) {
+    manager.send(solution);
+  }
 }
