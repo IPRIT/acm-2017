@@ -73,10 +73,11 @@ export async function getVerdict(solution, systemAccount, receivedRow) {
       throw new Error('Solution not found in the table');
     }
     let { testNumber, executionTime, memory, verdictName } = contextRow;
+    let verdictId = getVerdictId(verdictName);
     return {
       id: getVerdictId(verdictName),
       isTerminal: isTerminal(verdictName),
-      name: verdictName,
+      name: verdictId === 1 ? 'OK' : verdictName,
       testNumber,
       executionTime,
       memory

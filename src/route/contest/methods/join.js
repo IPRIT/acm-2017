@@ -1,6 +1,7 @@
 import * as models from '../../../models';
 import Promise from 'bluebird';
 import * as contests from './index';
+import * as sockets from '../../../socket';
 
 export function joinRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -26,6 +27,8 @@ export async function join(params) {
   }
   
   let enterItem = await contest.addContestant(user);
+  
+  sockets.emitTableUpdateEvent({ contestId });
   
   return {
     result: true,

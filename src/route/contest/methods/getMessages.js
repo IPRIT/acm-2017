@@ -43,6 +43,7 @@ export async function getMessages(params) {
   };
   for (let message of messages) {
     let groupName = message.MessageReads.length > 0 ? 'read' : 'unread';
+    let messageRead = message.MessageReads[0];
     let messageObject = {
       author: message.User.get({ plain: true }),
       message: {
@@ -51,7 +52,7 @@ export async function getMessages(params) {
         attachments: JSON.parse(message.attachments || '{}'),
         text: message.message,
         postAtMs: message.postAtMs,
-        readAtMs: message.readAtMs,
+        readAtMs: message.MessageReads.length > 0 ? messageRead.readAtMs : null,
         isRead: message.MessageReads.length > 0,
         asAdmin: message.asAdmin
       }

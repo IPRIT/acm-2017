@@ -24,11 +24,9 @@ export async function refreshSolutions(params) {
     contest = await models.Contest.findByPrimary(contestId);
   }
   
-  await contest.getSolutions().then(solutions => {
-    // due to Promise<Iterable>.map bug we need to
-    // "pre-sort" our elements in this frightening way
-    return solutions;
-  }).filter(solution => solution.verdictId !== 12).map(solution => {
+  await contest.getSolutions().filter(solution => {
+    return solution.verdictId !== 12;
+  }).map(solution => {
     console.log(`Refreshing: ${solution.id}`);
     return admin.refreshSolution({ solution });
   }, { concurrency: 5 });

@@ -17,7 +17,8 @@ export default (...states) => {
       if (!result) {
         return next(new HttpError('You have no permissions', 403));
       }
-      return next();
+      next();
+      return result;
     }).catch(error => next(error));
   };
 }

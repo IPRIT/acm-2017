@@ -1,5 +1,6 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
+import * as sockets from '../../../socket';
 
 export function deleteSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -19,6 +20,19 @@ export async function deleteSolution(params) {
   
   if (!solution) {
     solution = await models.Solution.findByPrimary(solutionId);
+    if (!solution) {
+      throw new HttpError('Solution not found');
+    }
   }
-  return solution && solution.destroy();
+  
+  let contest = await solution.getContest();
+  let result = await solution.destroy();
+  
+  let isContestFrozen = contest.isFrozen;
+  if (!isContestFrozen) {
+    sockets.emitTableUpdateEvent({
+      contestId: contest.id
+    });
+  }
+  return result;
 }

@@ -1,5 +1,6 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
+import * as sockets from '../../../socket';
 
 export function postMessageRequest(req, res, next) {
   let params = Object.assign(
@@ -50,6 +51,11 @@ export async function postMessage(params) {
     let admin = await models.User.findByPrimary(adminId);
     messageObject.author = admin.get({ plain: true });
   }
-  //io.to(contestHashKey).emit('broadcast.messages.new', messageObject);
+  
+  sockets.emitNewMessageEvent({
+    contestId,
+    message: messageObject
+  });
+  
   return messageObject;
 }

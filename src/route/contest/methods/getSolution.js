@@ -2,6 +2,7 @@ import { filterEntity as filter, getSymbolIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
 import deap from 'deap';
+import * as contests from '../../contest/methods';
 
 export function getSolutionRequest(req, res, next) {
   let { raw } = req.query;
@@ -35,6 +36,8 @@ export async function getSolution(params) {
     }, {
       model: models.Language
     }, {
+      model: models.Contest
+    }, {
       model: models.Problem,
       attributes: {
         exclude: [ 'htmlStatement', 'textStatement', 'attachments' ]
@@ -44,18 +47,24 @@ export async function getSolution(params) {
   if (!solution || Number(contestId) !== solution.contestId) {
     throw new HttpError('Solution not found');
   }
+  
+  let problems = await contests.getProblems({ user, contest: solution.Contest });
+  let foundProblemIndex = problems.findIndex(problem => problem.id === solution.problemId);
+  let symbolIndex = getSymbolIndex(foundProblemIndex).toUpperCase();
+  
   let canSee = solution.userId === user.id || user.isAdmin;
   if (!canSee) {
     throw new HttpError('You have no permissions', 403);
   } else if (raw) {
     return solution.sourceCode;
   }
-  return filter(solution.get({ plain: true }), {
+  return deap.extend(filter(solution.get({ plain: true }), {
     replace: [
       [ 'User', 'author' ],
       [ 'Verdict', 'verdict' ],
       [ 'Language', 'language' ],
-      [ 'Problem', 'problem' ]
+      [ 'Problem', 'problem' ],
+      [ 'Contest', 'contest' ],
     ]
-  });
+  }), { internalSymbolIndex: symbolIndex });
 }

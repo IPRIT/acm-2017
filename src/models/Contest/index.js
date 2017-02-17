@@ -51,6 +51,9 @@ let Contest = sequelize.define('Contest', {
     hasPracticeTime() {
       return !!this.practiceDurationTimeMs;
     },
+    isFrozen() {
+      return this.status === 'FROZEN';
+    },
     status() {
       let curTime = new Date().getTime();
       if (!this.isEnabled) {

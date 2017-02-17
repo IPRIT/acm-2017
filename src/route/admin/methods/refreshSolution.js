@@ -2,6 +2,7 @@ import * as models from "../../../models";
 import Promise from 'bluebird';
 import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
+import * as sockets from "../../../socket/socket";
 
 export function refreshSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -23,7 +24,7 @@ export async function refreshSolution(params) {
     solution = await models.Solution.findByPrimary(solutionId);
   }
   
-  return solution.update({
+  await solution.update({
     nextAttemptWillBeAtMs: Date.now(),
     verdictId: null,
     memory: 0,
@@ -35,4 +36,11 @@ export async function refreshSolution(params) {
     internalSolutionIdentifier: null,
     errorTrace: null
   });
+  
+  sockets.emitResetSolutionEvent({
+    contestId: solution.contestId,
+    solutionId: solution.id
+  });
+  
+  return solution;
 }

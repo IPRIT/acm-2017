@@ -3,6 +3,10 @@ import Promise from 'bluebird';
 import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
 import { makeSourceWatermark, SYNTAX_PYTHON_LITERAL_COMMENT } from "../../../utils/utils";
+import * as sockets from '../../../socket';
+import filter from "../../../utils/filter";
+import { getSymbolIndex } from "../../../utils/utils";
+import * as deap from "deap/lib/deap";
 
 export function duplicateSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -20,27 +24,49 @@ export async function duplicateSolution(params) {
     solutionId, asAdmin = false
   } = params;
   
-  let solution = await models.Solution.findByPrimary(solutionId);
-  let contest = await solution.getContest();
-  let problem = await solution.getProblem();
-  let language = await solution.getLanguage();
+  let solution = await models.Solution.findByPrimary(solutionId, {
+    include: [ models.Problem, models.User, models.Language, models.Contest ]
+  });
+  let { Problem, Contest, Language, User } = solution;
   
-  let newSolution = await contest.createSolution({
+  let newSolution = await Contest.createSolution({
     userId: asAdmin ? 2 : solution.userId,
-    problemId: problem.id,
-    languageId: language.id,
+    problemId: Problem.id,
+    languageId: Language.id,
     sourceCode: solution.sourceCode,
     ip: solution.ip,
     duplicatedFromId: solution.id,
     nextAttemptWillBeAtMs: Date.now()
   });
   
-  if (problem.systemType === 'cf') {
-    if ([ 'c', 'csharp', 'java', 'javascript', 'php' ].includes(language.languageFamily)) {
+  if (Problem.systemType === 'cf') {
+    if ([ 'c', 'csharp', 'java', 'javascript', 'php' ].includes(Language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance: newSolution });
-    } else if ([ 'python' ].includes(language.languageFamily)) {
+    } else if ([ 'python' ].includes(Language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance: newSolution, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });
     }
   }
+  
+  let isContestFrozen = Contest.isFrozen;
+  if (!isContestFrozen) {
+    let filledSolution = await models.Solution.findByPrimary(newSolution.id, {
+      include: [ models.Problem, models.User, models.Language, models.Contest ]
+    });
+    let problems = await contests.getProblems({ user: filledSolution.User, contest: filledSolution.Contest });
+    let foundProblemIndex = problems.findIndex(problem => problem.id === Problem.id);
+    let symbolIndex = getSymbolIndex(foundProblemIndex).toUpperCase();
+    sockets.emitNewSolutionEvent({
+      contestId: filledSolution.contestId,
+      solution: deap.extend(filter(filledSolution.get({ plain: true }), {
+        replace: [
+          [ 'User', 'author' ],
+          [ 'Contest', 'contest' ],
+          [ 'Problem', 'problem' ],
+          [ 'Language', 'language' ],
+        ]
+      }), { internalSymbolIndex: symbolIndex })
+    });
+  }
+  
   return newSolution;
 }

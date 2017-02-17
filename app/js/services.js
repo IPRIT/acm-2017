@@ -112,7 +112,6 @@ angular.module('Qemy.services', [
     }])
 
     .service('SocketService', ['$rootScope', '$q', '$http', function ($rootScope, $q, $http) {
-        var io = function () {};
         var socket = io();
         var queue = [];
         var connectCallback = angular.noop;
@@ -163,14 +162,14 @@ angular.module('Qemy.services', [
         }
 
         function joinContest(contestId) {
-            emitEvent('join contest', {
-                contest_id: contestId
+            emitEvent('contest.join', {
+                contestId: contestId
             });
         }
 
         function leaveContest(contestId) {
-            emitEvent('leave contest', {
-                contest_id: contestId
+            emitEvent('contest.left', {
+                contestId: contestId
             });
         }
 

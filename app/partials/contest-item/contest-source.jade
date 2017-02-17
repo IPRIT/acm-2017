@@ -2,8 +2,11 @@ div.contest
   div.contest__content.contest__min-width
     div.contest__inner
       div.contest__title-section
-        h2 Исходный код #
+        h2 Решение #
           span(ng-bind='source.id')
+
+      div.contest__source-row.sent-list
+        include contest-status/contest-status-row
 
       div.source-content
         a.link(target='_blank', href='/api/contest/{{source.contestId}}/solutions/{{source.id}}/code?raw=true') Открыть чистый код в новой вкладке

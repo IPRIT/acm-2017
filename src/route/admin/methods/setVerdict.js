@@ -2,6 +2,7 @@ import * as models from "../../../models";
 import Promise from 'bluebird';
 import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
+import * as sockets from '../../../socket';
 
 export function setVerdictRequest(req, res, next) {
   let params = Object.assign(
@@ -20,7 +21,17 @@ export async function setVerdict(params) {
   } = params;
   
   let solution = await models.Solution.findByPrimary(solutionId);
-  return solution.update({
+  await solution.update({
     verdictId
   });
+  
+  let contest = await solution.getContest();
+  let isContestFrozen = contest.isFrozen;
+  if (!isContestFrozen) {
+    sockets.emitTableUpdateEvent({
+      contestId: contest.id
+    });
+  }
+  
+  return solution;
 }

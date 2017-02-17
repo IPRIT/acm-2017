@@ -3,6 +3,8 @@ import Promise from 'bluebird';
 import * as contests from './index';
 import { makeSourceWatermark, SYNTAX_PYTHON_LITERAL_COMMENT } from '../../../utils';
 import deap from 'deap';
+import * as sockets from '../../../socket';
+import filter from "../../../utils/filter";
 
 export function sendSolutionRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -74,6 +76,24 @@ export async function sendSolution(params) {
     } else if ([ 'python' ].includes(language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });
     }
+  }
+  
+  let isContestFrozen = contest.isFrozen;
+  if (!isContestFrozen) {
+    let filledSolution = await models.Solution.findByPrimary(solutionInstance.id, {
+      include: [ models.Problem, models.User, models.Language, models.Contest ]
+    });
+    sockets.emitNewSolutionEvent({
+      contestId,
+      solution: deap.extend(filter(filledSolution.get({ plain: true }), {
+        replace: [
+          [ 'User', 'author' ],
+          [ 'Contest', 'contest' ],
+          [ 'Problem', 'problem' ],
+          [ 'Language', 'language' ],
+        ]
+      }), { internalSymbolIndex: symbolIndex })
+    });
   }
   
   return solutionInstance;

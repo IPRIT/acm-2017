@@ -4,7 +4,8 @@
 
 import app from './app';
 import http from 'http';
-//import sockets from './sockets/sockets';
+import socketIo from 'socket.io';
+import * as sockets from './socket';
 import { config } from './utils';
 
 /**
@@ -20,10 +21,10 @@ app.set('env', config.env);
  */
 
 var server = http.createServer(app);
-//var io = require('socket.io')(server);
-//sockets.create(io);
+var io = require('socket.io')(server);
+sockets.initialize(io);
 
-//io.on('connection', sockets.handle);
+io.on('connection', sockets.subscribeEvents);
 
 /**
  * Listen on provided port, on all network interfaces.

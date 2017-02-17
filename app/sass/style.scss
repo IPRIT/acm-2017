@@ -944,6 +944,55 @@ my-timer-element {
     background: rgb(33,150,243) !important;
   }
 }
+.contest__source-row {
+  margin: 20px 0;
+  $border-color: rgba(204, 204, 204, 0.58);
+  border-top: 1px solid $border-color;
+  border-left: 1px solid $border-color;
+  border-right: 1px solid $border-color;
+}
+.sent-list__indicator {
+  background-color: rgba(255, 255, 255, 0.68);
+  height: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  border-right: 1px solid rgba(204, 204, 204, 0.36);
+  padding: 0 6px;
+  white-space: nowrap;
+  -webkit-transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
+  -ms-transition: all .2s ease-in-out;
+  -o-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+  md-icon {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+  }
+  .indicator__solution-number {
+    display: none;
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -ms-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    margin-left: 14px;
+  }
+  &:hover {
+    background-color: #fff;
+    padding: 0 20px 0 10px;
+
+    .indicator__solution-number {
+      display: inline-block;
+    }
+  }
+}
 .sent-list__item {
   display: flex;
   align-items: center;
@@ -951,6 +1000,8 @@ my-timer-element {
   border-bottom: 1px solid rgba(204, 204, 204, .6);
   background-color: #fdfdfd;
   cursor: default;
+  position: relative;
+  padding-left: 15px;
   .sent-list__cell {
     width: 100%;
     text-align: center;
@@ -1533,8 +1584,12 @@ md-input-container {
   height: 100%;
   background-color: rgba(255,255,255,0.6);
   text-align: center;
-  top: 8px;
+  top: 0;
   right: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-top: 5px;
   .search-spin-layer, .search-spin-layer_ {
     height: 20px;
     width: 20px;
