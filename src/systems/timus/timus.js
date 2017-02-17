@@ -2,6 +2,7 @@ import * as accountsPool from './accountsPool';
 import { sendSolution, getVerdict, getCompilationError  } from './index';
 import Promise from 'bluebird';
 import * as sockets from '../../socket';
+import filter from "../../utils/filter";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 5 * 1000;
@@ -24,7 +25,9 @@ export async function handle(solution) {
       verdict = await getVerdict(solution, systemAccount, contextRow);
       sockets.emitVerdictUpdateEvent({
         contestId: solution.contestId,
-        solution: Object.assign(solution.get({ plain: true }), { verdict })
+        solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
+          exclude: [ 'sourceCode' ]
+        })
       });
       await Promise.delay(verdictCheckTimeoutMs);
     }
@@ -76,7 +79,9 @@ async function saveVerdict(solution, systemAccount, verdict) {
   }
   sockets.emitVerdictUpdateEvent({
     contestId: solution.contestId,
-    solution: Object.assign(solution.get({ plain: true }), { verdict })
+    solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
+      exclude: [ 'sourceCode' ]
+    })
   });
   return solution;
 }
