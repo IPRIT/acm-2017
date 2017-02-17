@@ -34,7 +34,8 @@ export async function getMessages(params) {
       where: {
         userId: user.id
       }
-    }, models.User]
+    }, models.User],
+    order: 'id DESC'
   });
   
   let groups = {

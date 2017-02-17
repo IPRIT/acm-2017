@@ -16,7 +16,18 @@ md-sidenav.md-sidenav-right.md-whiteframe-z2.contest-inbox(md-component-id='righ
                 span.md-title {{item.author.fullName}}
                 span.md-subhead {{item.message.postAtMs | date:'dd.MM.yyyy в HH:mm'}}
             md-card-content
+              div(ng-if='item.message.attachments.files && item.message.attachments.files.length > 0 && item.message.attachments.config.files_location === "top"')
+                div
+                  h4 Файлы: {{item.message.attachments.files.length}}
+                include ./files
+
               div.markdown(marked='item.message.text')
+
+              div(ng-if='item.message.attachments.files && item.message.attachments.files.length > 0 && (!item.message.attachments.config.files_location || item.message.attachments.config.files_location === "bottom")')
+                div.markdown__divider
+                div
+                  h4 Файлы: {{item.message.attachments.files.length}}
+                include ./files
 
       div.contest-inbox__section.contest-inbox__section_type_read(ng-if='messages.read.length > 0')
         div.contest-inbox__section-title
@@ -30,7 +41,18 @@ md-sidenav.md-sidenav-right.md-whiteframe-z2.contest-inbox(md-component-id='righ
                 span.md-title {{item.author.fullName}}
                 span.md-subhead {{item.message.postAtMs | date:'dd.MM.yyyy в HH:mm'}}
             md-card-content
+              div(ng-if='item.message.attachments.files && item.message.attachments.files.length > 0 && item.message.attachments.config.files_location === "top"')
+                div
+                  h4 Файлы: {{item.message.attachments.files.length}}
+                include ./files
+
               div.markdown(marked='item.message.text')
+
+              div(ng-if='item.message.attachments.files && item.message.attachments.files.length > 0 && (!item.message.attachments.config.files_location || item.message.attachments.config.files_location === "bottom")')
+                div.markdown__divider
+                div
+                  h4 Файлы: {{item.message.attachments.files.length}}
+                include ./files
 
     div(ng-if='isMessagesLoading')
       div(layout='row', style='padding: 40px 0;', layout-align='center center')

@@ -63,7 +63,8 @@ export async function duplicateSolution(params) {
           [ 'Contest', 'contest' ],
           [ 'Problem', 'problem' ],
           [ 'Language', 'language' ],
-        ]
+        ],
+        exclude: [ 'sourceCode' ]
       }), { internalSymbolIndex: symbolIndex })
     });
   }

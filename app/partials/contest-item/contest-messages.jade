@@ -1,0 +1,47 @@
+div.contest.contest-messages
+  div.contest__content.contest__min-width
+    div.contest__inner
+      div.contest__title-section
+        h2 Отправить сообщение в контест
+
+      div
+        form
+          div
+            md-checkbox.md-primary.md-align-top-left(ng-model='form.asAdmin', aria-label='Practice checkbox') Отправить от имени администратора
+              br
+              span(ng-switch='form.asAdmin')
+                span(ng-switch-when='true')
+                  span.sublabel Будет отправлено от имени "Admin"
+                span(ng-switch-default)
+                  span.sublabel Будет отправлено от имени "{{user.fullName}}"
+
+          div.send-content__textarea
+            md-input-container(flex, style='width: 100%;')
+              label Текст или Markdown
+              textarea.textarea.send-content__textarea-element(ng-model='form.message')
+
+          div
+            md-content.md-padding
+              include ../admin/problems/edit-section/files
+
+          div.contest-messages__preview-box
+            h2 Превью сообщения
+            md-content.md-padding.contest-messages__preview
+              div(ng-if='settings.files && settings.files.length > 0 && settings.files_location === "top"')
+                div
+                  h4 Файлы: {{settings.files.length}}
+                include ./contest-messages/files
+
+              div.task__own
+                div.markdown(marked='form.message')
+
+              div(ng-if='settings.files && settings.files.length > 0 && (!settings.files_location || settings.files_location === "bottom")')
+                div.markdown__divider
+                div
+                  h4 Файлы: {{settings.files.length}}
+                include ./contest-messages/files
+
+          div.send-content__submit
+            md-button.md-raised.md-primary(ng-disabled='form.message.length === 0 || sent', ng-click='sendMessage()') Отправить всем
+
+  page-footer

@@ -1,5 +1,5 @@
 import * as accountsPool from './accountsPool';
-import { sendSolution, getVerdict  } from './index';
+import { sendSolution, getVerdict, getCompilationError  } from './index';
 import Promise from 'bluebird';
 import * as sockets from '../../socket';
 
@@ -26,8 +26,11 @@ export async function handle(solution) {
         contestId: solution.contestId,
         solution: Object.assign(solution.get({ plain: true }), { verdict })
       });
-      //console.log(verdict);
       await Promise.delay(verdictCheckTimeoutMs);
+    }
+    if (verdict.id === 3) {
+      let compilationError = await getCompilationError(systemAccount, contextRow);
+      Object.assign(verdict, { compilationError });
     }
     return saveVerdict(solution, systemAccount, verdict);
   } catch (error) {
@@ -55,6 +58,15 @@ async function handleError(error, solution, systemAccount) {
 
 async function saveVerdict(solution, systemAccount, verdict) {
   systemAccount.free();
+  await solution.update({
+    verdictGotAtMs: Date.now(),
+    testNumber: verdict.testNumber,
+    executionTime: verdict.executionTime,
+    memory: verdict.memory,
+    verdictId: verdict.id,
+    compilationError: verdict.compilationError
+  });
+  
   let contest = await solution.getContest();
   let isContestFrozen = contest.isFrozen;
   if (!isContestFrozen) {
@@ -62,12 +74,9 @@ async function saveVerdict(solution, systemAccount, verdict) {
       contestId: contest.id
     });
   }
-  return solution.update({
-    verdictGotAtMs: Date.now(),
-    testNumber: verdict.testNumber,
-    executionTime: verdict.executionTime,
-    memory: verdict.memory,
-    verdictId: verdict.id,
-    errorTrace: verdict.errorTrace
+  sockets.emitVerdictUpdateEvent({
+    contestId: solution.contestId,
+    solution: Object.assign(solution.get({ plain: true }), { verdict })
   });
+  return solution;
 }

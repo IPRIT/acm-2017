@@ -34,7 +34,8 @@ export async function refreshSolution(params) {
     verdictGotAtMs: null,
     refreshedNumber: solution.refreshedNumber + 1,
     internalSolutionIdentifier: null,
-    errorTrace: null
+    errorTrace: null,
+    compilationError: null
   });
   
   sockets.emitResetSolutionEvent({

@@ -91,7 +91,8 @@ export async function sendSolution(params) {
           [ 'Contest', 'contest' ],
           [ 'Problem', 'problem' ],
           [ 'Language', 'language' ],
-        ]
+        ],
+        exclude: [ 'sourceCode' ]
       }), { internalSymbolIndex: symbolIndex })
     });
   }

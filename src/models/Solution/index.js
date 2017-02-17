@@ -48,6 +48,9 @@ let Solution = sequelize.define('Solution', {
   },
   errorTrace: {
     type: Sequelize.TEXT
+  },
+  compilationError: {
+    type: Sequelize.TEXT
   }
 }, {
   paranoid: true,

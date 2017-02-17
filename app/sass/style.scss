@@ -1080,6 +1080,14 @@ my-timer-element {
     width: 20px;
     height: 20px;
   }
+  &__compilation-error {
+    text-decoration: underline !important;
+    color: currentColor;
+    cursor: pointer;
+    &:hover {
+      color: darken(rgba(255, 142, 53, 0.76), 20);
+    }
+  }
 }
 .sent-list__source-link {
   text-decoration: none;
@@ -1290,6 +1298,22 @@ my-timer-element {
 .contest__status {
   padding: 10px 0 20px;
   text-align: center;
+}
+.contest-messages {
+
+  &__preview-box {
+    width: 500px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  &__preview {
+    border: 5px solid #eaeaea;
+    background: #fff;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 }
 .monitor-content__cell_type_in-practice {
   background-color: #C4F0FF;
@@ -1926,10 +1950,6 @@ html[style*='scroll'] {
       right: -12px;
       z-index: 10000;
     }
-
-    &__file-add {
-
-    }
     .link {
       text-decoration: none;
       display: inline-block;
@@ -1949,9 +1969,9 @@ html[style*='scroll'] {
       justify-content: center;
       background: rgba(0,0,0,.03);
       border-radius: 2px;
-      height: 88px;
+      height: 95px;
       position: relative;
-      width: 146px;
+      width: 155px;
       -webkit-transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
       transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
       -webkit-user-select: none;
@@ -1978,7 +1998,7 @@ html[style*='scroll'] {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
-        line-height: 1.5;
+        line-height: 1;
         max-height: 3em;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1988,6 +2008,7 @@ html[style*='scroll'] {
         color: #212121;
         height: 3em;
         text-decoration: none;
+        padding-right: 8px;
       }
       &-ext {
         color: #757575;

@@ -562,8 +562,8 @@ angular.module('Qemy.controllers.contest-item', [])
     }
   ])
   
-  .controller('ContestItemStatusController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', '$interval', 'UserManager', '$mdDialog', 'AdminManager', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, $interval, UserManager, $mdDialog, AdminManager, ErrorService) {
+  .controller('ContestItemStatusController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', '$interval', 'UserManager', '$mdDialog', '$mdBottomSheet', 'AdminManager', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, $interval, UserManager, $mdDialog, $mdBottomSheet, AdminManager, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Мои посылки | ' + _('app_name')
       });
@@ -719,6 +719,7 @@ angular.module('Qemy.controllers.contest-item', [])
             if (typeof verdict.id !== 'undefined') {
               solutions[i].verdictId = verdict.id || -1;
               solutions[i].verdict.id = verdict.id || -1;
+              solutions[i].compilationError = args.compilationError;
             }
             if (typeof verdict.name !== 'undefined') {
               solutions[i].verdict.name = verdict.name;
@@ -732,10 +733,11 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.$on('new solution', function (ev, data) {
         //console.log(data);
         var userId = data.userId,
-          select = $scope.params.select;
+          select = $scope.params.select,
+          canSee = !data.author.isAdmin || $scope.currentUser.isAdmin;
         if (select === 'my'
           && userId !== $scope.currentUser.id
-          || $scope.pageNumber !== 1) {
+          || $scope.pageNumber !== 1 || !canSee) {
           return;
         }
         var solutions = $scope.solutions;
@@ -760,6 +762,7 @@ angular.module('Qemy.controllers.contest-item', [])
             solutions[i].executionTime = 0;
             solutions[i].testNumber = 0;
             solutions[i].memory = 0;
+            solutions[i].compilationError = null;
             break;
           }
         }
@@ -996,19 +999,36 @@ angular.module('Qemy.controllers.contest-item', [])
           });
         });
       };
+  
+      function showCompilationErrorDialog($event, solution) {
+        $mdDialog.show({
+          templateUrl: templateUrl('contest-item/contest-status', 'contest-status-compilation-error-dialog'),
+          controller: 'ContestItemStatusCompilationErrorCtrl',
+          locals: {
+            solution: solution
+          },
+          parent: document.querySelector('body'),
+          clickOutsideToClose: true,
+          targetEvent: $event
+        });
+      }
+      $scope.showCompilationErrorDialog = showCompilationErrorDialog;
+      $scope.$on('$stateChangeStart', function() {
+        $mdDialog.hide();
+      });
     }
   ])
   
   .controller('ContestItemCellStatusController', [
-    '$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', 'UserManager', '$mdDialog', 'AdminManager', 'solutions', '$originalDialogArgs', '$originalDialogScope', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, UserManager, $mdDialog, AdminManager, solutions, $originalDialogArgs, $originalDialogScope, ErrorService) {
+    '$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', 'UserManager', '$mdDialog', '$mdBottomSheet', 'AdminManager', 'solutions', '$originalDialogArgs', '$originalDialogScope', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, UserManager, $mdDialog, $mdBottomSheet, AdminManager, solutions, $originalDialogArgs, $originalDialogScope, ErrorService) {
       $scope.close = function () {
         $mdDialog.hide();
       };
   
       $scope.$on('$stateChangeStart', function() {
         $scope.close();
-        console.log('closed');
+        $mdBottomSheet.hide();
       });
       
       $scope.solutions = solutions;
@@ -1043,6 +1063,7 @@ angular.module('Qemy.controllers.contest-item', [])
             if (typeof verdict.id !== 'undefined') {
               solutions[i].verdictId = verdict.id || -1;
               solutions[i].verdict.id = verdict.id || -1;
+              solutions[i].compilationError = args.compilationError;
             }
             if (typeof verdict.name !== 'undefined') {
               solutions[i].verdict.name = verdict.name;
@@ -1054,11 +1075,6 @@ angular.module('Qemy.controllers.contest-item', [])
       });
   
       $scope.$on('new solution', function (ev, data) {
-        //console.log(data);
-        var userId = data.userId;
-        if (userId !== $scope.currentUser.id) {
-          return;
-        }
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
           if (solutions[i].id === data.id) {
@@ -1079,6 +1095,7 @@ angular.module('Qemy.controllers.contest-item', [])
             solutions[i].executionTime = 0;
             solutions[i].testNumber = 0;
             solutions[i].memory = 0;
+            solutions[i].compilationError = null;
             break;
           }
         }
@@ -1320,11 +1337,23 @@ angular.module('Qemy.controllers.contest-item', [])
           .targetEvent($originalDialogArgs[0]);
         return $mdDialog.show(confirm);
       }
+  
+      function showCompilationErrorDialog($event, solution) {
+        $mdBottomSheet.show({
+          templateUrl: templateUrl('contest-item/contest-status', 'contest-status-compilation-error-bottom-sheet'),
+          controller: 'ContestItemStatusCompilationErrorCtrl',
+          locals: {
+            solution: solution
+          },
+          parent: document.querySelector('md-dialog')
+        });
+      }
+      $scope.showCompilationErrorDialog = showCompilationErrorDialog;
     }
   ])
   
-  .controller('ContestItemSourceController', ['$scope', '$rootScope', '$state', '$mdDialog', 'ContestItemManager', 'UserManager', 'AdminManager', '_', '$timeout', 'ErrorService',
-    function ($scope, $rootScope, $state, $mdDialog, ContestItemManager, UserManager, AdminManager, _, $timeout, ErrorService) {
+  .controller('ContestItemSourceController', ['$scope', '$rootScope', '$state', '$mdDialog', '$mdBottomSheet', 'ContestItemManager', 'UserManager', 'AdminManager', '_', '$timeout', 'ErrorService',
+    function ($scope, $rootScope, $state, $mdDialog, $mdBottomSheet, ContestItemManager, UserManager, AdminManager, _, $timeout, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Исходный код | ' + _('app_name')
       });
@@ -1391,6 +1420,7 @@ angular.module('Qemy.controllers.contest-item', [])
             if (typeof verdict.id !== 'undefined') {
               solutions[i].verdictId = verdict.id || -1;
               solutions[i].verdict.id = verdict.id || -1;
+              solutions[i].compilationError = args.compilationError;
             }
             if (typeof verdict.name !== 'undefined') {
               solutions[i].verdict.name = verdict.name;
@@ -1399,22 +1429,6 @@ angular.module('Qemy.controllers.contest-item', [])
             break;
           }
         }
-      });
-  
-      $scope.$on('new solution', function (ev, data) {
-        //console.log(data);
-        var userId = data.userId;
-        if (userId !== $scope.currentUser.id) {
-          return;
-        }
-        var solutions = $scope.solutions;
-        for (var i = 0; i < solutions.length; ++i) {
-          if (solutions[i].id === data.id) {
-            return;
-          }
-        }
-        $scope.solutions.unshift( data );
-        safeApply($scope);
       });
   
       $scope.$on('reset solution', function (ev, args) {
@@ -1427,6 +1441,7 @@ angular.module('Qemy.controllers.contest-item', [])
             solutions[i].executionTime = 0;
             solutions[i].testNumber = 0;
             solutions[i].memory = 0;
+            solutions[i].compilatiorError = null;
             break;
           }
         }
@@ -1637,6 +1652,21 @@ angular.module('Qemy.controllers.contest-item', [])
           .cancel('Отмена');
         return $mdDialog.show(confirm);
       }
+      
+      function showCompilationErrorDialog($event, solution) {
+        $mdBottomSheet.show({
+          templateUrl: templateUrl('contest-item/contest-status', 'contest-status-compilation-error-bottom-sheet'),
+          controller: 'ContestItemStatusCompilationErrorCtrl',
+          locals: {
+            solution: solution
+          },
+          parent: document.querySelector('body')
+        });
+      }
+      $scope.showCompilationErrorDialog = showCompilationErrorDialog;
+      $scope.$on('$stateChangeStart', function() {
+        $mdBottomSheet.hide();
+      });
     }
   ])
   
@@ -1733,6 +1763,122 @@ angular.module('Qemy.controllers.contest-item', [])
         return debounce(function() {
           fn.apply(this, arguments);
         }, 200);
+      }
+    }
+  ])
+  
+  .controller('ContestItemStatusCompilationErrorCtrl', ['$scope', '$rootScope', '$timeout', '$mdBottomSheet', '$mdDialog', 'solution',
+    function ($scope, $rootScope, $timeout, $mdBottomSheet, $mdDialog, solution) {
+      $scope.solution = solution;
+      $scope.close = function () {
+        $mdBottomSheet.hide();
+        $mdDialog.hide();
+      };
+    }
+  ])
+  
+  .controller('ContestItemMessagesController', ['$scope', '$state', '$rootScope', '$timeout', 'UserManager', 'ErrorService', '$mdDialog', 'ContestItemManager',
+    function ($scope, $state, $rootScope, $timeout, UserManager, ErrorService, $mdDialog, ContestItemManager) {
+      var defaultForm = {
+        message: 'Воспользуйтесь [онлайн Markdown-редактором](https://stackedit.io/editor#) для оформления сообщения \n<code is="math-tex"> n, 1 \\leq  n \\leq  10^{18}</code>\n',
+        attachments: {},
+        asAdmin: false,
+        contestId: $state.params.contestId
+      };
+      $scope.form = angular.copy(defaultForm);
+  
+      var defaultSettings = {
+        replace: false,
+        merge: true,
+        mode: {
+          own: false,
+          original: true
+        },
+        files_location: 'bottom',
+        files: [],
+        content: {
+          text: ''
+        }
+      };
+      $scope.settings = angular.copy(defaultSettings);
+      
+      sync();
+      
+      $scope.sendMessage = function () {
+        sync();
+        $scope.sent = true;
+        ContestItemManager.sendMessage($scope.form).then(function (result) {
+          $scope.settings = angular.copy(defaultSettings);
+          $scope.form = angular.copy(defaultForm);
+          sync();
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(function () {
+          $scope.sent = false;
+        });
+      };
+  
+      $scope.user = {};
+      UserManager.getCurrentUser().then(function (user) {
+        $scope.user = user;
+      }).catch(function (result) {
+        ErrorService.show(result);
+      });
+  
+      $scope.addFile = function (ev) {
+        $mdDialog.show({
+          controller: ['$scope', '$parentScope', function ($scope, $parentScope) {
+            $scope.close = function () {
+              $mdDialog.hide();
+            };
+            $scope.file = {
+              type: 'pdf',
+              url: 'http://',
+              title: 'Название файла'
+            };
+            $scope.save = function () {
+              $parentScope.settings.files.push($scope.file);
+              $scope.close();
+            };
+        
+            $scope.types = [ 'pdf', 'txt', 'doc', 'image' ];
+          }],
+          templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose: false,
+          locals: {
+            '$parentScope': $scope
+          }
+        });
+        $scope.confirmExit = true;
+        safeApply($scope);
+      };
+  
+      $scope.deleteFile = function (file) {
+        $scope.settings.files.splice(
+          $scope.settings.files.reduce(function (acc, cur, i) {
+            return cur === file ? i : 0;
+          }, 0), 1
+        );
+        $scope.confirmExit = true;
+        safeApply($scope);
+      };
+  
+      function sync() {
+        if (!$scope.form.attachments.config) {
+          $scope.form.attachments = {};
+          $scope.form.attachments.config = {
+            markup: 'markdown'
+          };
+          $scope.form.attachments.files = [];
+          $scope.form.attachments.content = {};
+        }
+        $scope.form.attachments.config.replaced = $scope.settings.replace;
+        $scope.form.attachments.config.files_location = $scope.settings.files_location;
+        $scope.form.attachments.files = $scope.settings.files;
+        $scope.form.attachments.content.text = $scope.settings.content.text;
+        console.log($scope.form);
       }
     }
   ])

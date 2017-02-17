@@ -31,7 +31,11 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
           div.search-spin-layer_
             div.search-spin(ng-class='{"waiting": sent.verdictId === -1}')
       span(ng-if='sent.verdictId === -1', style='display: inline-block;') {{sent.verdict.name}}
-    span(ng-switch-default) {{sent.verdict.name}}
+    span(ng-switch-default)
+      span(ng-switch='sent.verdictId === 3 && sent.compilationError.length > 0')
+        span(ng-switch-when='true')
+          a.link.sent-list__compilation-error(role='button', ng-click='showCompilationErrorDialog($event, sent)') {{sent.verdict.name}}
+        span(ng-switch-default) {{sent.verdict.name}}
   div.sent-list__cell(ng-switch='sent.testNumber === 0')
     span(ng-switch-when='true') -
     span(ng-switch-default) {{sent.testNumber}}
@@ -39,7 +43,7 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
     span {{(sent.executionTime + ' с')}}
   div.sent-list__cell
     span {{sent.memory + ' КБ'}}
-  div.sent-list__cell(ng-if='currentUser.isAdmin')
+  div.sent-list__cell(ng-if='currentUser.isAdmin', style='max-width: 60px;')
     div.sent-list__actions-menu
       md-menu(md-offset="-200 0")
         md-button(aria-label="Select action", class="md-icon-button", ng-click="$mdOpenMenu($event)")
