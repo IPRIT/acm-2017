@@ -34,6 +34,7 @@ router.delete('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adm
 
 router.post('/contests', [ userRetriever, rightsAllocator('admin') ], adminMethods.createContestRequest);
 router.post('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateContestRequest);
+router.post('/contests/:contestId/problems', [ userRetriever, rightsAllocator('admin') ], adminMethods.setProblemsForContestRequest);
 router.get('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getContestRequest);
 router.delete('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteContestRequest);
 router.post('/contests/:contestId/repair', [ userRetriever, rightsAllocator('admin') ], adminMethods.repairContestRequest);

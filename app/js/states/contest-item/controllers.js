@@ -122,8 +122,9 @@ angular.module('Qemy.controllers.contest-item', [])
         tableUpdatesListener = SocketService.setListener('table update', function () {
           $rootScope.$broadcast('table update');
         });
-        messagesUpdatesListener = SocketService.setListener('new message', function () {
-          $rootScope.$broadcast('inbox.messages.update');
+        messagesUpdatesListener = SocketService.setListener('new message', function (data) {
+          $rootScope.$broadcast('inbox.messages.update', data);
+          $rootScope.$broadcast('new message', data);
         });
         solutionResetListener = SocketService.setListener('reset solution', function (data) {
           $rootScope.$broadcast('reset solution', data);
@@ -348,14 +349,19 @@ angular.module('Qemy.controllers.contest-item', [])
       });
       var contestId = $state.params.contestId;
       $scope.conditions = {};
-      $rootScope.$broadcast('data loading');
-      ContestItemManager.getConditions({ contestId: contestId }).then(function (result) {
-        $rootScope.$broadcast('data loaded');
-        $scope.conditions = result;
-      }).catch(function (result) {
-        $rootScope.$broadcast('data loaded');
-        ErrorService.show(result);
-      });
+      
+      function fetchProblems() {
+        $rootScope.$broadcast('data loading');
+        return ContestItemManager.getConditions({ contestId: contestId }).then(function (result) {
+          $rootScope.$broadcast('data loaded');
+          $scope.conditions = result;
+        }).catch(function (result) {
+          $rootScope.$broadcast('data loaded');
+          ErrorService.show(result);
+        });
+      }
+      
+      fetchProblems();
       
       $scope.showProblem = function (ev, problem) {
         ev.stopPropagation();
@@ -380,6 +386,17 @@ angular.module('Qemy.controllers.contest-item', [])
         $rootScope.$broadcast('data loaded');
         ErrorService.show(result);
       });
+  
+      $scope.addNewProblemDialog = function (ev) {
+        $mdDialog.show({
+          controller: 'AdminAddProblemDialogController',
+          templateUrl: templateUrl('contest-item/contest-conditions', 'add-problem-dialog'),
+          targetEvent: ev,
+          clickOutsideToClose: false
+        }).then(function () {
+          return fetchProblems();
+        });
+      };
     }
   ])
   
@@ -1670,8 +1687,8 @@ angular.module('Qemy.controllers.contest-item', [])
     }
   ])
   
-  .controller('RightSidenavCtrl', ['$scope', '$rootScope', '$timeout', '$mdSidenav', '$log', '$state', 'ContestItemManager', 'ErrorService',
-    function ($scope, $rootScope, $timeout, $mdSidenav, $log, $state, ContestItemManager, ErrorService) {
+  .controller('RightSidenavCtrl', ['$scope', '$rootScope', '$timeout', '$mdSidenav', '$mdToast', '$log', '$state', 'ContestItemManager', 'ErrorService',
+    function ($scope, $rootScope, $timeout, $mdSidenav, $mdToast, $log, $state, ContestItemManager, ErrorService) {
       
       $scope.close = function () {
         $mdSidenav('right').close()
@@ -1698,6 +1715,31 @@ angular.module('Qemy.controllers.contest-item', [])
         $timeout(function () {
           $scope.updateMessages();
         }, 200);
+      });
+  
+      var toastInstance;
+      $scope.$on('new message', function (ev, args) {
+        ion.sound.play("pop_cork");
+        
+        var position = [ 'left', 'top' ];
+        var messagesNumber = $scope.messages.unread.length + 1;
+        var toast = $mdToast.simple()
+          .hideDelay(20000)
+          .textContent(messagesNumber + ' new message' + (messagesNumber > 1 ? 's' : ''))
+          .action('Open')
+          .parent(document.querySelector('.header__wrapper'))
+          .highlightAction(true)
+          .highlightClass('md-warn')
+          .position(position.join(' '));
+        
+        toastInstance = $mdToast.show(toast).then(function (response) {
+          console.log(1, response);
+          if ( response == 'ok' ) {
+            $rootScope.$broadcast('toggleRightSidenav');
+          }
+        }).catch(function (error) {
+          console.log('Toast rejected');
+        });
       });
       
       //first initializing

@@ -5,6 +5,7 @@ div.contest
         h2 Условия задач
 
       div.contest__conditions
+
         div.contest__conditions-link(ng-repeat='condition in conditions')
           a(
           ui-sref='^.conditions-item({problemIndex: condition.internalSymbolIndex})'
@@ -28,5 +29,10 @@ div.contest
             md-button.md-icon-button(aria-label='View problem', ng-click="showProblem($event, condition)")
               md-tooltip(md-direction="left") Быстрый просмотр
               md-icon(md-svg-src='/img/icons/ic_visibility_48px.svg')
+
+        div.contest__conditions_add(ng-if='user.isAdmin')
+          md-button(md-no-ink, ng-click='addNewProblemDialog($event)')
+            md-icon(md-svg-src='/img/icons/ic_add_48px.svg')
+            span(style='margin-left: 10px;') Добавить задачу
 
   page-footer

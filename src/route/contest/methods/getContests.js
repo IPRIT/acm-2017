@@ -4,7 +4,11 @@ import Promise from 'bluebird';
 
 export function getContestsRequest(req, res, next) {
   return Promise.resolve().then(() => {
-    return getContests(req.query);
+    return getContests(
+      Object.assign(req.query, {
+        user: req.user
+      })
+    );
   }).then(result => res.json(result)).catch(next);
 }
 
@@ -17,11 +21,27 @@ const DEFAULT_CONTESTS_SORT_ORDER = 'desc';
 export async function getContests(params) {
   let {
     count = DEFAULT_CONTESTS_COUNT, offset = DEFAULT_CONTESTS_OFFSET,
-    category = DEFAULT_CONTESTS_CATEGORY, sort = DEFAULT_CONTESTS_SORT, sort_order = DEFAULT_CONTESTS_SORT_ORDER
+    category = DEFAULT_CONTESTS_CATEGORY, sort = DEFAULT_CONTESTS_SORT, sort_order = DEFAULT_CONTESTS_SORT_ORDER,
+    userId, user
   } = params;
+  
+  if (!user) {
+    user = await models.User.findByPrimary(userId);
+  }
   
   count = Math.max(Math.min(count, 200), 0);
   offset = Math.max(offset, 0);
+  
+  let groupsWhere = {};
+  if (!user.isAdmin) {
+    let userGroups = await user.getGroups();
+    let userGroupIds = userGroups.map(group => group.id);
+    Object.assign(groupsWhere, {
+      id: {
+        $in: userGroupIds
+      }
+    });
+  }
   
   let currentTimeMs = new Date().getTime();
   let categoryPredicate = {
@@ -51,8 +71,16 @@ export async function getContests(params) {
   if (!(sort in availableSorts)) {
     sort = DEFAULT_CONTESTS_SORT;
   }
+  
   return models.Contest.findAll({
-    include: [ models.Group, { model: models.User, association: models.Contest.associations.Author } ],
+    include: [{
+      model: models.Group,
+      required: true,
+      where: groupsWhere
+    }, {
+      model: models.User,
+      association: models.Contest.associations.Author
+    }],
     limit: count,
     offset,
     order: [ availableSorts[ sort ] ],
@@ -71,6 +99,11 @@ export async function getContests(params) {
     return {
       contests,
       contestsNumber: await models.Contest.count({
+        include: [{
+          model: models.Group,
+          required: true,
+          where: groupsWhere
+        }],
         where: categoryPredicate[ category ]
       })
     }

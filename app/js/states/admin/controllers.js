@@ -237,7 +237,7 @@ angular.module('Qemy.controllers.admin', [])
       $scope.startTimesMinutes = [];
       
       $scope.$watch('form.contestStartTime', function (newVal) {
-        if (newVal > 1 && newVal < 4) {
+        if (newVal > 1 && newVal < 6) {
           var confirm = $mdDialog.confirm()
             .title('Начало контеста будет ночью')
             .content('Серьезно?')
@@ -1886,6 +1886,177 @@ angular.module('Qemy.controllers.admin', [])
             $state.go('admin.groups.index');
           });
       };
+    }
+  ])
+  
+  .controller('AdminAddProblemDialogController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog', 'ErrorService',
+    function($scope, $rootScope, $state, AdminManager, _, $mdDialog, ErrorService) {
+      var contestId = $state.params.contestId;
+      $scope.close = function () {
+        $mdDialog.hide();
+      };
+      $scope.save = function () {
+        var data = {
+          contestId: contestId,
+          problemIds: ($scope.selectedProblems || []).map(function (problem) {
+            return problem.id;
+          })
+        };
+        $rootScope.$broadcast('data loading');
+        return AdminManager.setProblemsForContest(data).then(function () {
+          $scope.close();
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(function () {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
+  
+      $scope.indexGenerator = function (index) {
+        var alphabetLength = 26, symbolIndex = '';
+        while (index >= 0) {
+          symbolIndex += String.fromCharCode( index % alphabetLength + 0x61 );
+          index = Math.floor(index / alphabetLength) - 1;
+        }
+        return symbolIndex.split('').reverse().join('');
+      };
+  
+      $scope.systemType = 'all';
+      $scope.problems = [];
+      $scope.qProblems = '';
+      $scope.systems = [{
+        type: 'all',
+        name: 'Все'
+      }, {
+        type: 'timus',
+        name: 'Timus'
+      }, {
+        type: 'acmp',
+        name: 'ACMP'
+      }, {
+        type: 'cf',
+        name: 'Codeforces'
+      }, {
+        type: 'sgu',
+        name: 'SGU'
+      }, {
+        type: 'ejudge',
+        name: 'ejudge'
+      }];
+  
+      $scope.selectedProblems = [];
+  
+      var newQ = '';
+      $scope.searchProblems = function () {
+        newQ = $scope.qProblems;
+        AdminManager.searchProblems({
+          q: $scope.qProblems,
+          systemType: $scope.systemType
+        }).then(function (results) {
+          if (results.error) {
+            return alert('Произошла ошибка: ' + results.error);
+          }
+          if (newQ !== results.q) {
+            return console.log('Skipped result');
+          }
+          $scope.problems = results.problems.map(function (problem) {
+            switch (problem.systemType) {
+              case 'cf':
+                var pTypeObj = problem.foreignProblemIdentifier.split(':');
+                if (!pTypeObj || pTypeObj.length !== 2) {
+                  problem.task_number = problem.foreignProblemIdentifier;
+                } else {
+                  problem.task_number = (pTypeObj[0] === 'gym' ? 'Тренировка' : 'Архив') +
+                    '. ' + pTypeObj[1];
+                }
+                break;
+              default: {
+                problem.task_number = problem.foreignProblemIdentifier;
+              }
+            }
+            return problem;
+          });
+        });
+      };
+  
+      $scope.$watch('qProblems', function () {
+        $scope.searchProblems();
+      });
+  
+      $scope.$watch('systemType', function () {
+        $scope.searchProblems();
+      });
+  
+      $scope.existsProblem = function (problem, selectedProblems) {
+        return selectedProblems.some(function (curProblem) {
+          return curProblem.id === problem.id;
+        });
+      };
+  
+      $scope.toggleProblem = function (problem, selectedProblems) {
+        var exists = $scope.existsProblem(problem, selectedProblems);
+        if (exists) {
+          selectedProblems.forEach(function (curProblem, index) {
+            if (curProblem.id === problem.id) {
+              selectedProblems.splice(index, 1);
+            }
+          });
+        } else {
+          selectedProblems.push(problem);
+        }
+      };
+  
+      $scope.showProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
+    
+        $mdDialog.show({
+          controller: 'AdminProblemDialogController',
+          templateUrl: templateUrl('admin', 'admin-problem-dialog'),
+          targetEvent: ev,
+          clickOutsideToClose: true,
+          locals: {
+            condition: problem
+          }
+        });
+      };
+  
+      $scope.isShowingSelected = false;
+      $scope.toggleSelected = function (ev) {
+        $scope.isShowingSelected = !$scope.isShowingSelected;
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
+      };
+  
+      function getContestInfo() {
+        $rootScope.$broadcast('data loading');
+        AdminManager.getContestInfo({ contestId: contestId }).then(function (result) {
+          $rootScope.$broadcast('data loaded');
+          $scope.selectedProblems = result.problems.map(function (problem) {
+            switch (problem.systemType) {
+              case 'cf':
+                var pTypeObj = problem.foreignProblemIdentifier.split(':');
+                if (!pTypeObj || pTypeObj.length !== 2) {
+                  problem.task_number = problem.foreignProblemIdentifier;
+                } else {
+                  problem.task_number = (pTypeObj[0] === 'gym' ? 'Тренировка' : 'Архив') +
+                    '. ' + pTypeObj[1];
+                }
+                break;
+              default: {
+                problem.task_number = problem.foreignProblemIdentifier;
+              }
+            }
+            return problem;
+          });
+        }).catch(function (result) {
+          ErrorService.show(result);
+        });
+      }
+  
+      getContestInfo();
     }
   ])
 ;

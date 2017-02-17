@@ -51,6 +51,7 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/angular-marked/dist/angular-marked.min.js
 /bower_components/angular-bindonce/bindonce.min.js
 /vendor/katex/katex.min.js
+/vendor/ion.sound/ion.sound.js
 /prod/js/build.min.js?0.2.8
 
 # CSS

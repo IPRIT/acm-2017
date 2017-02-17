@@ -159,6 +159,16 @@ angular.module('Qemy.services.admin', [
       });
     }
     
+    function setProblemsForContest(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/contests/' + params.contestId + '/problems',
+        data: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+    
     function scanTimus() {
       return $http({
         method: 'post',
@@ -421,7 +431,8 @@ angular.module('Qemy.services.admin', [
       updateCondition: updateCondition,
       deleteProblem: deleteProblem,
       createEjudgeProblem: createEjudgeProblem,
-      getVerdicts: getVerdicts
+      getVerdicts: getVerdicts,
+      setProblemsForContest: setProblemsForContest
     }
   }])
 ;

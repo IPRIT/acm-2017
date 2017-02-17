@@ -60,7 +60,7 @@ export async function canJoin(params) {
     } else if (!lodash.intersectionBy(contestGroups, userGroups, 'id').length
       || !contest.isEnabled
       || contest.isSuspended) {
-      reason = reasons.NOT_IN_TIME;
+      reason = reasons.ACCESS_DENIED;
     }
     Object.assign(result, { reason });
   }

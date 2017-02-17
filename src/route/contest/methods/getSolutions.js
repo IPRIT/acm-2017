@@ -95,6 +95,12 @@ export async function getSolutions(params) {
       attributes: [ 'startTimeMs', 'durationTimeMs' ]
     }, {
       model: models.Problem,
+      required: true,
+      where: {
+        id: {
+          $in: [ ...problemsMapping.keys() ]
+        }
+      },
       attributes: {
         exclude: [ 'htmlStatement', 'textStatement', 'attachments' ]
       }

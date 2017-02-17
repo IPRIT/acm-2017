@@ -1,0 +1,66 @@
+md-dialog(aria-label="Add new problem")
+  form
+    md-toolbar
+      div.md-toolbar-tools
+        h2 Добавить задачу в контест
+        span(flex)
+        md-button.md-icon-button(ng-click="close()")
+          md-icon(md-svg-src="/img/icons/ic_close_48px.svg", aria-label="Close dialog")
+
+    md-dialog-content(style="max-width: 500px; min-width: 400px; max-height: 810px;")
+      md-content.md-padding
+        div.contest-creation__row
+          div.contest-creation__row-title Поиск задач
+          span.sublabel Отметьте задачи, которые хотите добавить в контест.
+          div(layout, layout-sm="column")
+            md-input-container(flex='2')
+              label Поиск по задачам
+              input(md-maxlength='200', ng-model='qProblems')
+            md-input-container.contest-creation__field-inline-fix(flex='4')
+              Label Система
+              md-select(ng-model='systemType')
+                md-option(ng-repeat='system in systems', value='{{system.type}}', ng-bind='system.name')
+
+          div(ng-if='problems.length > 0')
+            div.contest-creation__row-title Найденные задачи:
+            md-content
+              md-list-item(ng-repeat="problem in problems")
+                md-checkbox(ng-checked="existsProblem(problem, selectedProblems)" ng-click="toggleProblem(problem, selectedProblems)")
+                div.md-list-item-text
+                  p
+                    span {{problem.task_number + ". " + problem.title + " "}}
+                  p(style='color: #999;', ng-switch='problem.systemType')
+                    span(ng-switch-when='timus') Timus
+                    span(ng-switch-when='cf') Codeforces
+                    span(ng-switch-when='acmp') ACMP.ru
+                    span(ng-switch-when='sgu') SGU Online Judge
+                    span(ng-switch-when='ejudge') ejudge
+                md-icon.md-secondary(
+                ng-click="showProblem($event, problem)",
+                aria-label="Secondary action",
+                md-svg-src="/img/icons/ic_visibility_48px.svg")
+
+          div(ng-if='selectedProblems.length > 0')
+            div.contest-creation__row-title Отмеченные задачи:
+            md-button(ng-click='toggleSelected($event)', ng-bind='(isShowingSelected ? "Скрыть отмеченные" : "Показать отмеченные") + " (" + selectedProblems.length + ")"', style='margin: 0;', aria-label='Show or Hide')
+            md-content(ng-show='isShowingSelected')
+              md-list-item(ng-repeat="problem in selectedProblems")
+                md-checkbox(ng-checked="existsProblem(problem, selectedProblems)" ng-click="toggleProblem(problem, selectedProblems)")
+                div.md-list-item-text
+                  p
+                    span {{indexGenerator($index).toUpperCase() + ". "}}
+                    span {{problem.task_number + ". " + problem.title + " "}}
+                  p(style='color: #999;', ng-switch='problem.systemType')
+                    span(ng-switch-when='timus') Timus
+                    span(ng-switch-when='cf') Codeforces
+                    span(ng-switch-when='acmp') ACMP.ru
+                    span(ng-switch-when='sgu') SGU Online Judge
+                    span(ng-switch-when='ejudge') ejudge
+                md-icon.md-secondary(
+                ng-click="showProblem($event, problem)",
+                aria-label="Secondary action",
+                md-svg-src="/img/icons/ic_visibility_48px.svg")
+
+    div.md-actions(layout="row")
+      md-button.md-primary(ng-click="save()") Сохранить
+      md-button(ng-click="close()") Закрыть

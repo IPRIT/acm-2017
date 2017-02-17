@@ -13,7 +13,7 @@ div.contest
           div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')
             div
               h4 Файлы: {{condition.attachments.files.length}}
-            include ./contest-conditions/files
+            include ./contest-condition-item/files
             div.markdown__divider(ng-if='!condition.attachments.config.replaced || !!condition.attachments.content.text')
 
         div.task__problem(ng-if='!condition.attachments.config.replaced',
@@ -37,7 +37,7 @@ div.contest
             div.markdown__divider
             div
               h4 Файлы: {{condition.attachments.files.length}}
-            include ./contest-conditions/files
+            include ./contest-condition-item/files
 
 
         div.task__send-layer

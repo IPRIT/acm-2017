@@ -1019,6 +1019,7 @@ my-timer-element {
       font-size: .8em;
       padding: 0;
       display: flex;
+      justify-content: center;
     }
     .sent-list__cell-loading {
       white-space: nowrap;
@@ -1315,6 +1316,7 @@ my-timer-element {
     box-sizing: border-box;
   }
 }
+
 .monitor-content__cell_type_in-practice {
   background-color: #C4F0FF;
 }
@@ -1817,9 +1819,13 @@ ui-view, [ui-view] {
     transform: translateY(-100%);
   }
 }
-
+iframe, img {
+  width: 100%;
+}
+.contest__conditions_add .md-button {
+  width: 100%;
+}
 .markdown {
-
   &__rainbow {
     padding-top: 5px;
     padding-bottom: 5px;
