@@ -551,6 +551,38 @@ my-timer-element {
   width: 66%;
   width: 964px;
 }
+.contest__socket-status {
+  height: 100%;
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+}
+.socket-status {
+  &__inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+  }
+  &__indicator {
+    height: 11px;
+    width: 11px;
+    border-radius: 50%;
+    background: #ccc;
+    &.on {
+      background: #8BC34A;
+    }
+    &.off {
+      background: #FF5722;
+    }
+  }
+  &__label {
+    margin-left: 8px;
+    font-size: .8em;
+    color: #777;
+  }
+}
 .contest__monitor-menu {
   background: white;
   border-radius: 4px;

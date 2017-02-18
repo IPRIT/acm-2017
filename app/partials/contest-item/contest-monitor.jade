@@ -68,9 +68,11 @@ div.contest
               ng-class='{"monitor-content__row-my": user.id === row.user.id, "monitor-content__row_group_even": row.group % 2 === 0 && row.solutions !== 0, "monitor-content__no-solutions": row.solutions === 0}')
               div.monitor-content__cell
                 span(ng-bind='row.rank')
-              div.monitor-content__cell.monitor-content__cell-participant
+              div.monitor-content__cell.monitor-content__cell-participant(ng-if='user.isAdmin')
                 md-button(ng-click='showMonitorRowMenu($event, row.user)', aria-label='User name')
                   span(ng-bind='row.user.fullName')
+              div.monitor-content__cell.monitor-content__cell-participant(ng-if='!user.isAdmin')
+                span(ng-bind='row.user.fullName')
               div.monitor-content__cell.monitor-content__cell-result(ng-repeat='cell in row.row',
               ng-class='{"monitor-content__cell_type_clickable": cell.result !== "—", "monitor-content__cell_type_accepted": cell.result.indexOf("+") !== -1, "monitor-content__cell_type_frozen": cell.frozen, "monitor-content__cell_type_in-practice": cell.inPractice}',
               title='{{cell.frozen ? "Отправлено после заморозки" : (cell.inPractice ? "Дорешено" : "")}}',
@@ -89,7 +91,8 @@ div.contest
                     md-tooltip Решено во время контеста: {{row.solutionsInTime}}
               div.monitor-content__cell.monitor-content__cell-score
                 span(ng-bind='row.score')
-          
+          socket-status(style='padding: 8px;')
+
       div(style='padding: 20px 1px 0;')
         md-checkbox.md-primary(ng-model="disableUpdating", aria-label="Checkbox") Отключить обновление данных таблицы в реальном времени.
 

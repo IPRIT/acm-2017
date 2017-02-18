@@ -1,8 +1,8 @@
 div.sent-list
   div.sent-list__item.sent-list__header
-    div.sent-list__cell
+    div.sent-list__cell(style='max-width: 90px;')
       span ID
-    div.sent-list__cell
+    div.sent-list__cell(style='max-width: 120px;')
       span Время
     div.sent-list__cell
       span Участник
@@ -10,13 +10,13 @@ div.sent-list
       span Задача
     div.sent-list__cell
       span Язык
-    div.sent-list__cell
+    div.sent-list__cell(style='min-width: 126px;')
       span Вердикт
-    div.sent-list__cell
+    div.sent-list__cell(style='max-width: 80px;')
       span Номер теста
-    div.sent-list__cell
+    div.sent-list__cell(style='max-width: 95px;')
       span Время исполнения
-    div.sent-list__cell
+    div.sent-list__cell(style='max-width: 95px;')
       span Память
     div.sent-list__cell(ng-if='currentUser.isAdmin', style='max-width: 60px;')
       span &nbsp;

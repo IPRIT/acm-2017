@@ -19,6 +19,7 @@ div.contest
           md-nav-bar.md-primary(md-selected-nav-item="selectedTabIndex", nav-bar-aria-label="Solutions")
             md-nav-item.md-primary(md-nav-click="showSolutions('my')", name="0") Мои решения
             md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="1") Все решения
+            socket-status.contest__socket-status
           include contest-status/contest-status-tab-content
           include ./pagination
 

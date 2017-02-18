@@ -115,11 +115,20 @@ angular.module('Qemy.services', [
     var socket = io();
     var queue = [];
     var connectCallback = angular.noop;
+    var connected = false;
+    var connectionChangeListeners = [];
+    var isListening = false;
+    
+    subscribeConnectionEvents();
     
     var interval = setInterval(function () {
       console.log('Check socket connection...');
       if (socket && socket.connected) {
         connectCallback();
+        connectionChangeListeners.forEach(function (observer) {
+          var args = Array.prototype.slice.call( arguments );
+          observer.apply(null, [ 'connect' ].concat(args));
+        });
         dispatchQueueEvents();
         clearInterval(interval);
       } else {
@@ -184,6 +193,40 @@ angular.module('Qemy.services', [
       socket.removeListener(eventName, callback);
     }
     
+    function onConnectionChangeSetListener(callback) {
+      connectionChangeListeners.push( callback );
+    }
+    
+    function subscribeConnectionEvents() {
+      if (!socket) {
+        return;
+      }
+      socket.io.on('connect', function () {
+        connectionChangeListeners.forEach(function (observer) {
+          var args = Array.prototype.slice.call( arguments );
+          observer.apply(null, [ 'connect' ].concat(args));
+        });
+      });
+      socket.io.on('connect_error', function () {
+        connectionChangeListeners.forEach(function (observer) {
+          var args = Array.prototype.slice.call( arguments );
+          observer.apply(null, [ 'connect_error' ].concat(args));
+        });
+      });
+      socket.on('disconnect', function () {
+        connectionChangeListeners.forEach(function (observer) {
+          var args = Array.prototype.slice.call( arguments );
+          observer.apply(null, [ 'disconnect' ].concat(args));
+        });
+      });
+      socket.io.on('reconnect', function () {
+        connectionChangeListeners.forEach(function (observer) {
+          var args = Array.prototype.slice.call( arguments );
+          observer.apply(null, [ 'reconnect' ].concat(args));
+        });
+      });
+    }
+    
     return {
       getSocket: getSocket,
       getIo: getIo,
@@ -191,7 +234,8 @@ angular.module('Qemy.services', [
       leaveContest: leaveContest,
       setListener: setListener,
       removeListener: removeListener,
-      onConnect: onConnect
+      onConnect: onConnect,
+      onConnectionChangeSetListener: onConnectionChangeSetListener
     }
   }])
   

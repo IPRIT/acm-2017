@@ -36,9 +36,9 @@ angular.module('Qemy.filters.contest-item', [
 
     .filter('mathRound', [function() {
         return function (num) {
-            num = +num || 0;
-            if (num - parseInt(num) > 0) {
-                return (+num).toFixed(2);
+            num = Number(num) || 0;
+            if (num - Math.floor(num) > 0) {
+                return num.toFixed(2);
             }
             return num;
         };

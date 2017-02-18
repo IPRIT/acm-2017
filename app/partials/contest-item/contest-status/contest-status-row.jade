@@ -11,11 +11,11 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
         span(ng-switch-when='true')
           a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: sent.duplicatedFromId})') {{sent.duplicatedFromId}}
         span(ng-switch-default) {{sent.duplicatedFromId}}
-  div.sent-list__cell(ng-switch='sent.userId === currentUser.id || currentUser.isAdmin')
+  div.sent-list__cell(style='max-width: 90px;', ng-switch='sent.userId === currentUser.id || currentUser.isAdmin')
     span(ng-switch-when='true')
       a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: sent.id})') {{sent.id}}
     span(ng-switch-default) {{sent.id}}
-  div.sent-list__cell
+  div.sent-list__cell(style='max-width: 120px;')
     span {{(sent.sentAtMs - sent.contest.startTimeMs) | formatStartTime}}
       md-tooltip {{sent.sentAtMs | date:'medium'}}
   div.sent-list__cell
@@ -24,24 +24,25 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
     a.link.sent-list__link(ui-sref='^.problems-item({problemIndex: sent.internalSymbolIndex})', title='{{sent.internalSymbolIndex + ". " + sent.problem.title}}') {{sent.internalSymbolIndex + '. ' + sent.problem.title}}
   div.sent-list__cell.sent-list__cell_type_language
     span {{::sent.language.name}}
-  div.sent-list__cell.sent-list__verdict(ng-switch='!sent.verdictId || sent.verdictId === -1')
+  div.sent-list__cell.sent-list__verdict(style='min-width: 126px;', ng-switch='!sent.verdictId || sent.verdictId === -1')
     span.sent-list__cell-loading(ng-switch-when='true')
       div.sent-list__loading(style='display: inline-block;')
         div.content-spin__layer
           div.search-spin-layer_
             div.search-spin(ng-class='{"waiting": sent.verdictId === -1}')
       span(ng-if='sent.verdictId === -1', style='display: inline-block;') {{sent.verdict.name}}
+      span(ng-if='sent.verdictId === null', style='display: inline-block; text-transform: none;') В очереди...
     span(ng-switch-default)
       span(ng-switch='sent.verdictId === 3 && sent.compilationError.length > 0 && (currentUser.id === sent.userId || currentUser.isAdmin)')
         span(ng-switch-when='true')
           a.link.sent-list__compilation-error(role='button', ng-click='showCompilationErrorDialog($event, sent)') {{sent.verdict.name}}
         span(ng-switch-default) {{sent.verdict.name}}
-  div.sent-list__cell(ng-switch='sent.testNumber === 0')
+  div.sent-list__cell(style='max-width: 80px;', ng-switch='sent.testNumber === 0')
     span(ng-switch-when='true') -
     span(ng-switch-default) {{sent.testNumber}}
-  div.sent-list__cell
+  div.sent-list__cell(style='max-width: 95px;')
     span {{(sent.executionTime + ' с')}}
-  div.sent-list__cell
+  div.sent-list__cell(style='max-width: 95px;')
     span {{sent.memory + ' КБ'}}
   div.sent-list__cell(ng-if='currentUser.isAdmin', style='max-width: 60px;')
     div.sent-list__actions-menu
