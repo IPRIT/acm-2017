@@ -69,7 +69,8 @@ div.contest
               div.monitor-content__cell
                 span(ng-bind='row.rank')
               div.monitor-content__cell.monitor-content__cell-participant
-                span(ng-bind='row.user.fullName')
+                md-button(ng-click='showMonitorRowMenu($event, row.user)', aria-label='User name')
+                  span(ng-bind='row.user.fullName')
               div.monitor-content__cell.monitor-content__cell-result(ng-repeat='cell in row.row',
               ng-class='{"monitor-content__cell_type_clickable": cell.result !== "—", "monitor-content__cell_type_accepted": cell.result.indexOf("+") !== -1, "monitor-content__cell_type_frozen": cell.frozen, "monitor-content__cell_type_in-practice": cell.inPractice}',
               title='{{cell.frozen ? "Отправлено после заморозки" : (cell.inPractice ? "Дорешено" : "")}}',

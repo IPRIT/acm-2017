@@ -267,8 +267,8 @@ angular.module('Qemy.controllers.contest-item', [])
     }
   ])
   
-  .controller('ContestItemMonitorController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService) {
+  .controller('ContestItemMonitorController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService', '$mdPanel',
+    function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService, $mdPanel) {
       $scope.$emit('change_title', {
         title: 'Таблица результатов | ' + _('app_name')
       });
@@ -282,10 +282,10 @@ angular.module('Qemy.controllers.contest-item', [])
           $rootScope.$broadcast('data loading');
           $scope.loadingData = true;
         }
-        ContestItemManager.getTable({contestId: contestId}).then(function (result) {
+        return ContestItemManager.getTable({contestId: contestId}).then(function (result) {
           $scope.loadingData = false;
           $scope.contestTable = result;
-          UserManager.getCurrentUser().then(function (user) {
+          return UserManager.getCurrentUser().then(function (user) {
             $rootScope.$broadcast('data loaded');
             $scope.user = user;
           }).catch(function (result) {
@@ -338,6 +338,43 @@ angular.module('Qemy.controllers.contest-item', [])
         }).catch(function (result) {
           ErrorService.show(result);
         });
+      };
+      
+      $scope.showMonitorRowMenu = function(ev, user) {
+        var position = $mdPanel.newPanelPosition()
+          .relativeTo(ev.currentTarget)
+          .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
+  
+        $scope.actions = [{
+          id: 'REFRESH_SOLUTIONS_FOR_USER',
+          name: 'Переотправить все решения для пользователя',
+          svgIcon: '/img/icons/ic_restore_48px.svg'
+        }, {
+          id: 'PARTICIPANT_DELETE',
+          name: 'Удалить из контеста',
+          svgIcon: '/img/icons/ic_delete_48px.svg',
+          themeClass: 'md-accent'
+        }];
+        
+        var config = {
+          attachTo: angular.element(document.body),
+          controller: 'MonitorRowMenuCtrl',
+          controllerAs: 'ctrl',
+          templateUrl: templateUrl('contest-item/contest-monitor', 'row-menu'),
+          panelClass: 'contest__monitor-menu',
+          position: position,
+          locals: {
+            actions: $scope.actions,
+            user: user
+          },
+          openFrom: ev,
+          clickOutsideToClose: true,
+          escapeToClose: true,
+          focusOnOpen: false,
+          zIndex: 70
+        };
+  
+        $mdPanel.open(config);
       };
     }
   ])
@@ -1921,6 +1958,58 @@ angular.module('Qemy.controllers.contest-item', [])
         $scope.form.attachments.files = $scope.settings.files;
         $scope.form.attachments.content.text = $scope.settings.content.text;
         console.log($scope.form);
+      }
+    }
+  ])
+  
+  .controller('MonitorRowMenuCtrl', ['mdPanelRef', '$scope', '$state', '$rootScope', '$timeout', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', 'ContestItemManager', '$mdPanel', 'user', 'actions',
+    function (mdPanelRef, $scope, $state, $rootScope, $timeout, UserManager, AdminManager, ErrorService, $mdDialog, ContestItemManager, $mdPanel, user, actions) {
+      var contestId = $state.params.contestId;
+      
+      $scope.$on('$stateChangeStart', function () {
+        mdPanelRef.close();
+      });
+      
+      $scope.runAction = function (ev, action) {
+        var actions = {
+          'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionsForUser,
+          'PARTICIPANT_DELETE': deleteUserFromContest
+        };
+        if (action && action.id in actions) {
+          actions[action.id](user);
+        }
+        
+        function deleteUserFromContest(user) {
+          showConfirmationDialog(ev).then(function () {
+            return AdminManager.deleteUserFromContest( { contestId: contestId, userId: user.id } ).then(function (result) {
+              $rootScope.$broadcast('table update');
+              mdPanelRef.hide();
+            }).catch(function (result) {
+              ErrorService.show(result);
+            });
+          });
+        }
+  
+        function refreshSolutionsForUser(user) {
+          showConfirmationDialog(ev).then(function () {
+            return AdminManager.refreshSolutionForUser( { contestId: contestId, userId: user.id } ).then(function (result) {
+              mdPanelRef.hide();
+            }).catch(function (result) {
+              ErrorService.show(result);
+            });
+          });
+        }
+  
+        function showConfirmationDialog(ev) {
+          var confirm = $mdDialog.confirm()
+            .title('Подтверждение')
+            .content('Вы действительно хотите это сделать?')
+            .ariaLabel('Confirmation dialog')
+            .ok('Да')
+            .cancel('Отмена')
+            .targetEvent(ev);
+          return $mdDialog.show(confirm);
+        }
       }
     }
   ])

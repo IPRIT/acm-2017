@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 router.get('/all', [ userRetriever, rightsAllocator('user') ], contest.getContestsRequest);
-router.get('/:contestId', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getByIdRequest);
+router.get('/:contestId', [ userRetriever, rightsAllocator('user'), canJoinContest('can') ], contest.getByIdRequest);
 router.get('/:contestId/canJoin', [ userRetriever, rightsAllocator('user') ], contest.canJoinRequest);
 router.post('/:contestId/join', [ userRetriever, rightsAllocator('user'), canJoinContest('can') ], contest.joinRequest);
 router.post('/:contestId/pipe', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.filePipeRequest);

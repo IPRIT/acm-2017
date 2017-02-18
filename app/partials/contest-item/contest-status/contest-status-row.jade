@@ -21,7 +21,7 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
   div.sent-list__cell
     span {{::sent.author.fullName}}
   div.sent-list__cell.sent-list__cell-task
-    a.link.sent-list__link(ui-sref='^.conditions-item({problemIndex: sent.internalSymbolIndex})', title='{{sent.internalSymbolIndex + ". " + sent.problem.title}}') {{sent.internalSymbolIndex + '. ' + sent.problem.title}}
+    a.link.sent-list__link(ui-sref='^.problems-item({problemIndex: sent.internalSymbolIndex})', title='{{sent.internalSymbolIndex + ". " + sent.problem.title}}') {{sent.internalSymbolIndex + '. ' + sent.problem.title}}
   div.sent-list__cell.sent-list__cell_type_language
     span {{::sent.language.name}}
   div.sent-list__cell.sent-list__verdict(ng-switch='!sent.verdictId || sent.verdictId === -1')

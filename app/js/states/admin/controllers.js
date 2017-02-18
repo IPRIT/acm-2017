@@ -235,6 +235,7 @@ angular.module('Qemy.controllers.admin', [])
       $scope.form = {};
       $scope.startTimes = [];
       $scope.startTimesMinutes = [];
+      $scope.durationMinutes = [];
       
       $scope.$watch('form.contestStartTime', function (newVal) {
         if (newVal > 1 && newVal < 6) {
@@ -257,6 +258,10 @@ angular.module('Qemy.controllers.admin', [])
       }
       for (i = 0; i < 60; ++i) {
         $scope.startTimesMinutes.push({
+          time: i,
+          name: zF(i)
+        });
+        $scope.durationMinutes.push({
           time: i,
           name: zF(i)
         });
@@ -406,10 +411,11 @@ angular.module('Qemy.controllers.admin', [])
           return group.id;
         });
   
+        var durationTimeMs = (form.contestRelativeFinishTimeHours * 3600 + Number(form.contestRelativeFinishTimeMinutes) * 60) * 1000;
         var data = {
           startTimeMs: contestStartDate.getTime(),
-          durationTimeMs: form.contestRelativeFinishTime * 3600 * 1000,
-          relativeFreezeTimeMs: form.contestRelativeFinishTime * 3600 * 1000 - form.contestFreezeTime * 3600 * 1000,
+          durationTimeMs: durationTimeMs,
+          relativeFreezeTimeMs: Math.max(0, durationTimeMs - form.contestFreezeTime * 3600 * 1000),
           practiceDurationTimeMs: form.hasPractice ? form.contestPracticeTime * 3600 * 1000 : 0,
           name: form.contestName,
           groupIds: form.groups,
@@ -454,7 +460,8 @@ angular.module('Qemy.controllers.admin', [])
             $scope.form = {
               contestName: result.name,
               contestStartDate: startDate,
-              contestRelativeFinishTime: result.durationTimeMs / (1000 * 60 * 60),
+              contestRelativeFinishTimeHours: Math.floor(result.durationTimeMs / (1000 * 60 * 60)),
+              contestRelativeFinishTimeMinutes: Math.ceil((result.durationTimeMs / (1000 * 60 * 60) - Math.floor(result.durationTimeMs / (1000 * 60 * 60))) * 60),
               contestFreezeTime: (result.durationTimeMs - result.relativeFreezeTimeMs) / (1000 * 60 * 60),
               contestPracticeTime: result.practiceDurationTimeMs / (1000 * 60 * 60),
               contestStartTime: startDate.getHours(),
@@ -496,7 +503,8 @@ angular.module('Qemy.controllers.admin', [])
       var currentDate = new Date();
       
       $scope.form = {
-        contestRelativeFinishTime: 5,
+        contestRelativeFinishTimeHours: 5,
+        //contestRelativeFinishTimeMinutes: 0,
         contestFreezeTime: 1,
         contestPracticeTime: 0,
         contestStartDate: currentDate,
@@ -505,6 +513,7 @@ angular.module('Qemy.controllers.admin', [])
       };
       $scope.startTimes = [];
       $scope.startTimesMinutes = [];
+      $scope.durationMinutes = [];
       
       $scope.$watch('form.contestStartTime', function (newVal) {
         if (newVal > 1 && newVal < 6) {
@@ -527,6 +536,10 @@ angular.module('Qemy.controllers.admin', [])
       }
       for (i = 0; i < 60; ++i) {
         $scope.startTimesMinutes.push({
+          time: i,
+          name: zF(i)
+        });
+        $scope.durationMinutes.push({
           time: i,
           name: zF(i)
         });
@@ -676,10 +689,11 @@ angular.module('Qemy.controllers.admin', [])
           return group.id;
         });
         
+        var durationTimeMs = (form.contestRelativeFinishTimeHours * 3600 + Number(form.contestRelativeFinishTimeMinutes) * 60) * 1000;
         var data = {
           startTimeMs: contestStartDate.getTime(),
-          durationTimeMs: form.contestRelativeFinishTime * 3600 * 1000,
-          relativeFreezeTimeMs: form.contestRelativeFinishTime * 3600 * 1000 - form.contestFreezeTime * 3600 * 1000,
+          durationTimeMs: durationTimeMs,
+          relativeFreezeTimeMs: Math.max(0, durationTimeMs - form.contestFreezeTime * 3600 * 1000),
           practiceDurationTimeMs: form.hasPractice ? form.contestPracticeTime * 3600 * 1000 : 0,
           name: form.contestName,
           groupIds: form.groups,
@@ -1985,6 +1999,12 @@ angular.module('Qemy.controllers.admin', [])
             }
             return problem;
           });
+        }).catch(function (error) {
+          if (error.status !== -1) {
+            ErrorService.show(error, {
+              parentSelector: 'md-dialog-content'
+            });
+          }
         });
       };
   

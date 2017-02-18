@@ -280,6 +280,15 @@ angular.module('Qemy.services.admin', [
         return data.data;
       });
     }
+  
+    function deleteUserFromContest(params) {
+      return $http({
+        method: 'delete',
+        url:  '/api/admin/contests/' + params.contestId + '/users/' + params.userId
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     function refreshAllSolutions(params) {
       return $http({
@@ -434,7 +443,8 @@ angular.module('Qemy.services.admin', [
       deleteProblem: deleteProblem,
       createEjudgeProblem: createEjudgeProblem,
       getVerdicts: getVerdicts,
-      setProblemsForContest: setProblemsForContest
+      setProblemsForContest: setProblemsForContest,
+      deleteUserFromContest: deleteUserFromContest
     }
   }])
 ;

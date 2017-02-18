@@ -15,7 +15,8 @@ export function deleteSolutionRequest(req, res, next) {
 
 export async function deleteSolution(params) {
   let {
-    solutionId, solution
+    solutionId, solution,
+    broadcastUpdate = true
   } = params;
   
   if (!solution) {
@@ -29,7 +30,7 @@ export async function deleteSolution(params) {
   let result = await solution.destroy();
   
   let isContestFrozen = contest.isFrozen;
-  if (!isContestFrozen) {
+  if (!isContestFrozen && broadcastUpdate) {
     sockets.emitTableUpdateEvent({
       contestId: contest.id
     });

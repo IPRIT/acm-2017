@@ -32,27 +32,8 @@ export async function getContests(params) {
   count = Math.max(Math.min(count, 200), 0);
   offset = Math.max(offset, 0);
   
-  let groupsWhere = {};
-  let groupsInclude = {
-    model: models.Group
-  };
-  
-  //todo: make filter for contests. Show only corresponding contests to user.
-  /*if (!user.isAdmin) {
-    let userGroups = await user.getGroups();
-    let userGroupIds = userGroups.map(group => group.id);
-    if (userGroupIds.length) {
-      Object.assign(groupsWhere, {
-        id: {
-          $in: userGroupIds
-        }
-      });
-      Object.assign(groupsInclude, {
-        //required: true,
-        where: groupsWhere
-      });
-    }
-  }*/
+  let userGroups = await user.getGroups();
+  let userGroupIds = userGroups.map(group => group.id);
   
   let currentTimeMs = Date.now();
   let categoryPredicate = {
@@ -83,16 +64,20 @@ export async function getContests(params) {
     sort = DEFAULT_CONTESTS_SORT;
   }
   
-  return models.Contest.findAll({
-    include: [groupsInclude, {
+  let contests = await models.Contest.findAll({
+    include: [models.Group, {
       model: models.User,
       association: models.Contest.associations.Author
     }],
-    limit: count,
-    offset,
     order: [ availableSorts[ sort ] ],
     where: categoryPredicate[ category ]
-  }).map(contest => {
+  }).filter(contest => {
+    return contest.Groups.some(group => {
+      return user.isAdmin || !userGroupIds.length || userGroupIds.includes( group.id );
+    }) || !contest.Groups.length;
+  });
+  let contestsNumber = contests.length;
+  contests = contests.slice(offset, offset + count).map(contest => {
     let exclude = [ 'GroupsToContests', 'password' ];
     return filter(contest.get({ plain: true }), {
       exclude,
@@ -102,12 +87,6 @@ export async function getContests(params) {
       ],
       deep: true
     });
-  }).then(async contests => {
-    return {
-      contests,
-      contestsNumber: await models.Contest.count({
-        where: categoryPredicate[ category ]
-      })
-    }
   });
+  return { contests, contestsNumber };
 }

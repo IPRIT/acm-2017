@@ -1,0 +1,5 @@
+div(aria-label='Select your action', role='listbox')
+  md-button.contest__monitor-menu-item(ng-repeat='action in ctrl.actions', ng-click='runAction($event, action)', class='{{action.themeClass}}', aria-label='{{action.name}}')
+    .layout-row(layout='row')
+      md-icon(md-svg-src='{{action.svgIcon}}')
+      span(style='margin-left: 10px;') {{ action.name }}

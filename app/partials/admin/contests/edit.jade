@@ -17,7 +17,7 @@ div.admin-content-layer
                 div(ng-message='md-maxlength') Введите не больше 200 символов
 
           div.contest-creation__row
-            div.contest-creation__row-title Выберите дату начала контеста (по серверному времени)
+            div.contest-creation__row-title Выберите дату начала контеста
             div.contest-creation__datepicker
               md-datepicker(ng-model='form.contestStartDate', name='contestStartDate', md-placeholder='Выберите дату начала', required)
 
@@ -39,13 +39,23 @@ div.admin-content-layer
 
           div.contest-creation__row
             div.contest-creation__row-title Длительность контеста (часов)
-            md-input-container
-              label Длительность
-              input(required, type="number", name="contestRelativeFinishTime", min="1", max="50000", ng-model='form.contestRelativeFinishTime')
-              div(ng-messages='contestForm.contestRelativeFinishTime.$error')
-                div(ng-message='required') Поле не может быть пустым.
-                div(ng-message='min') Количество часов должно быть не меньше 1.
-                div(ng-message='max') Количество часов должно быть не больше 50000.
+
+            div.contest-creation__second-field-inline(style='width: 180px;')
+              md-input-container
+                label Длительность (часов)
+                input(required, type="number", name="contestRelativeFinishTimeHours", min="0", max="50000", ng-model='form.contestRelativeFinishTimeHours')
+                div(ng-messages='contestForm.contestRelativeFinishTimeHours.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='min') Количество часов должно быть не меньше 0.
+                  div(ng-message='max') Количество часов должно быть не больше 50000.
+
+            div.contest-creation__second-field-inline(style='width: 180px;')
+              md-input-container
+                Label Минут
+                md-select(ng-model='form.contestRelativeFinishTimeMinutes', name='contestRelativeFinishTimeMinutes', required)
+                  md-option(ng-repeat='time in durationMinutes', value='{{time.time}}', ng-bind='time.name')
+                div(ng-messages="contestForm.contestRelativeFinishTimeMinutes.$error")
+                  div(ng-message="required") Поле не может быть пустым.
 
           div.contest-creation__row
             div.contest-creation__row-title Заморозка наступает, когда остается, например, 1 час до конца контеста.

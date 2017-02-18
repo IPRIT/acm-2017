@@ -28,3 +28,5 @@ export * from './deleteGroup';
 export * from './deleteProblem';
 export * from './getVerdicts';
 export * from './setProblemsForContest';
+export * from './deleteUserFromContest';
+export * from './deleteSolutionsForUser';

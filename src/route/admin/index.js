@@ -38,6 +38,7 @@ router.post('/contests/:contestId/problems', [ userRetriever, rightsAllocator('a
 router.get('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getContestRequest);
 router.delete('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteContestRequest);
 router.post('/contests/:contestId/repair', [ userRetriever, rightsAllocator('admin') ], adminMethods.repairContestRequest);
+router.delete('/contests/:contestId/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteUserFromContestRequest);
 router.post('/contests/:contestId/solutions/refresh', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsRequest);
 router.post('/contests/:contestId/solutions/refresh/:symbolIndex', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsForProblemRequest);
 router.post('/contests/:contestId/solutions/refresh/:symbolIndex/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsForProblemAndUserRequest);
