@@ -33,17 +33,28 @@ export async function getContests(params) {
   offset = Math.max(offset, 0);
   
   let groupsWhere = {};
-  if (!user.isAdmin) {
+  let groupsInclude = {
+    model: models.Group
+  };
+  
+  //todo: make filter for contests. Show only corresponding contests to user.
+  /*if (!user.isAdmin) {
     let userGroups = await user.getGroups();
     let userGroupIds = userGroups.map(group => group.id);
-    Object.assign(groupsWhere, {
-      id: {
-        $in: userGroupIds
-      }
-    });
-  }
+    if (userGroupIds.length) {
+      Object.assign(groupsWhere, {
+        id: {
+          $in: userGroupIds
+        }
+      });
+      Object.assign(groupsInclude, {
+        //required: true,
+        where: groupsWhere
+      });
+    }
+  }*/
   
-  let currentTimeMs = new Date().getTime();
+  let currentTimeMs = Date.now();
   let categoryPredicate = {
     all: {},
     showOnlyPractice: [
@@ -73,11 +84,7 @@ export async function getContests(params) {
   }
   
   return models.Contest.findAll({
-    include: [{
-      model: models.Group,
-      required: true,
-      where: groupsWhere
-    }, {
+    include: [groupsInclude, {
       model: models.User,
       association: models.Contest.associations.Author
     }],
@@ -99,11 +106,6 @@ export async function getContests(params) {
     return {
       contests,
       contestsNumber: await models.Contest.count({
-        include: [{
-          model: models.Group,
-          required: true,
-          where: groupsWhere
-        }],
         where: categoryPredicate[ category ]
       })
     }

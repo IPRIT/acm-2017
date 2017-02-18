@@ -4,7 +4,7 @@ div.contest
       div.contest__title-section
         h2 Таблица результатов
 
-      //div.contest-monitor__table-update
+      div.contest-monitor__table-update(ng-if='contest.isFrozen')
         md-button.md-primary.md-raised(ng-click='updateTable()') Обновить таблицу
 
       div.contest__status
@@ -56,7 +56,7 @@ div.contest
               div.monitor-content__cell.monitor-content__cell-participant
                 span Участник
               div.monitor-content__cell.monitor-content__cell-result(ng-repeat='headerCell in contestTable.header.row')
-                a.md-button.md-primary(ui-sref='^.conditions-item({problemIndex: headerCell.task.index})')
+                a.md-button.md-primary(ui-sref='^.problems-item({problemIndex: headerCell.task.index})')
                   | {{headerCell.task.index}}
                   md-tooltip {{headerCell.task.name}}
               div.monitor-content__cell.monitor-content__cell-solutions

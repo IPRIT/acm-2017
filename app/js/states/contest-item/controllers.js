@@ -417,7 +417,7 @@ angular.module('Qemy.controllers.contest-item', [])
       }).catch(function (result) {
         $rootScope.$broadcast('data loaded');
         ErrorService.show(result);
-        $state.go('^.conditions');
+        $state.go('^.problems');
       });
       
       $scope.openImage = function (ev, file) {
@@ -549,7 +549,7 @@ angular.module('Qemy.controllers.contest-item', [])
         }).then(function (result) {
           $rootScope.$broadcast('data loaded');
           $scope.sent = false;
-          $state.go('^.status', { select: 'my' });
+          $state.go('^.solutions', { select: 'my' });
         }).catch(function (result) {
           $scope.sent = false;
           $rootScope.$broadcast('data loaded');
@@ -670,13 +670,13 @@ angular.module('Qemy.controllers.contest-item', [])
             });
             if ($scope.pageNumber === 1) {
               $state.transitionTo(
-                'contest.status',
+                'contest.solutions',
                 { select: 'my' },
                 { location: true, inherit: true, relative: $state.$current, notify: false }
               );
             } else {
               $state.transitionTo(
-                'contest.status-pagination',
+                'contest.solutions-pagination',
                 { select: 'my', pageNumber: $scope.pageNumber },
                 { location: true, inherit: true, relative: $state.$current, notify: false }
               );
@@ -689,13 +689,13 @@ angular.module('Qemy.controllers.contest-item', [])
             });
             if ($scope.pageNumber === 1) {
               $state.transitionTo(
-                'contest.status',
+                'contest.solutions',
                 { select: 'all' },
                 { location: true, inherit: true, relative: $state.$current, notify: false }
               );
             } else {
               $state.transitionTo(
-                'contest.status-pagination',
+                'contest.solutions-pagination',
                 { select: 'all', pageNumber: $scope.pageNumber },
                 { location: true, inherit: true, relative: $state.$current, notify: false }
               );

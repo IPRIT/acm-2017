@@ -1207,7 +1207,7 @@ angular.module('Qemy.controllers.admin', [])
         .then(function (result) {
           $rootScope.$broadcast('data loaded');
           if (result.error) {
-            return $state.go('^.conditions');
+            return $state.go('^.problems');
           }
           result.htmlStatement = result.htmlStatement
             .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
@@ -1889,8 +1889,8 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
   
-  .controller('AdminAddProblemDialogController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog', 'ErrorService',
-    function($scope, $rootScope, $state, AdminManager, _, $mdDialog, ErrorService) {
+  .controller('AdminAddProblemDialogController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog', 'ErrorService', '$q',
+    function($scope, $rootScope, $state, AdminManager, _, $mdDialog, ErrorService, $q) {
       var contestId = $state.params.contestId;
       $scope.close = function () {
         $mdDialog.hide();
@@ -1947,18 +1947,27 @@ angular.module('Qemy.controllers.admin', [])
       $scope.selectedProblems = [];
   
       var newQ = '';
+      $scope.dataLoading = false;
+      var currentOutgoingRequest;
+      
       $scope.searchProblems = function () {
         newQ = $scope.qProblems;
+        if (currentOutgoingRequest) {
+          currentOutgoingRequest.resolve();
+        }
+        currentOutgoingRequest = $q.defer();
+        $scope.dataLoading = true;
         AdminManager.searchProblems({
           q: $scope.qProblems,
           systemType: $scope.systemType
+        }, {
+          timeout: currentOutgoingRequest.promise
         }).then(function (results) {
-          if (results.error) {
-            return alert('Произошла ошибка: ' + results.error);
-          }
           if (newQ !== results.q) {
             return console.log('Skipped result');
           }
+          currentOutgoingRequest = null;
+          $scope.dataLoading = false;
           $scope.problems = results.problems.map(function (problem) {
             switch (problem.systemType) {
               case 'cf':

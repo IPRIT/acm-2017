@@ -8,7 +8,7 @@ div.contest
 
         div.contest__conditions-link(ng-repeat='condition in conditions')
           a(
-          ui-sref='^.conditions-item({problemIndex: condition.internalSymbolIndex})'
+          ui-sref='^.problems-item({problemIndex: condition.internalSymbolIndex})'
           )
             div
               span.contest__condition-index {{condition.internalSymbolIndex}}.

@@ -22,7 +22,10 @@ md-dialog(aria-label="Add new problem")
                 md-option(ng-repeat='system in systems', value='{{system.type}}', ng-bind='system.name')
 
           div(ng-if='problems.length > 0')
-            div.contest-creation__row-title Найденные задачи:
+            div.contest-creation__row-title
+              span(ng-switch='dataLoading')
+                span(ng-switch-when='true') Идет поиск... Подождите.
+                span(ng-switch-default) Найденные задачи:
             md-content
               md-list-item(ng-repeat="problem in problems")
                 md-checkbox(ng-checked="existsProblem(problem, selectedProblems)" ng-click="toggleProblem(problem, selectedProblems)")

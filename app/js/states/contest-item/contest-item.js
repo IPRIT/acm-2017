@@ -36,13 +36,13 @@ angular.module('Qemy.ui.contest-item', [
           templateUrl: templateUrl('contest-item', 'contest-monitor'),
           controller: 'ContestItemMonitorController'
         })
-        .state('contest.conditions', {
-          url: '/conditions',
+        .state('contest.problems', {
+          url: '/problems',
           templateUrl: templateUrl('contest-item', 'contest-conditions'),
           controller: 'ContestItemConditionsController'
         })
-        .state('contest.conditions-item', {
-          url: '/conditions/{problemIndex:[a-zA-Z]+}',
+        .state('contest.problems-item', {
+          url: '/problems/{problemIndex:[a-zA-Z]+}',
           templateUrl: templateUrl('contest-item', 'contest-conditions-item'),
           controller: 'ConditionsItemController'
         })
@@ -61,13 +61,13 @@ angular.module('Qemy.ui.contest-item', [
           templateUrl: templateUrl('contest-item', 'contest-send'),
           controller: 'ContestItemSendController'
         })
-        .state('contest.status', {
-          url: '/status/:select',
+        .state('contest.solutions', {
+          url: '/solutions/:select',
           templateUrl: templateUrl('contest-item', 'contest-status'),
           controller: 'ContestItemStatusController'
         })
-        .state('contest.status-pagination', {
-          url: '/status/:select/page/:pageNumber',
+        .state('contest.solutions-pagination', {
+          url: '/solutions/:select/page/:pageNumber',
           templateUrl: templateUrl('contest-item', 'contest-status'),
           controller: 'ContestItemStatusController'
         })

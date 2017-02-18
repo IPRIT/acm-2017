@@ -29,10 +29,10 @@ export async function searchProblems(params) {
       },
       foreignProblemIdentifier: {
         $like: `%${q}%`
-      }/*,
+      },
       textStatement: {
         $like: `%${q}%`
-      }*/
+      }
     }
   };
   if (systemType) {

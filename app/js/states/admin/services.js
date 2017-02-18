@@ -34,11 +34,13 @@ angular.module('Qemy.services.admin', [
       });
     }
     
-    function searchProblems(params) {
+    function searchProblems(params, requestOpts) {
+      requestOpts = requestOpts || {};
       return $http({
         method: 'get',
         url: '/api/admin/problems',
-        params: params
+        params: params,
+        timeout: requestOpts.timeout
       }).then(function (data) {
         return data.data;
       });
