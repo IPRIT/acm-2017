@@ -16,4 +16,13 @@ div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
       a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isAdmin') Отправить
       a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}') Решения
       a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isAdmin') Массовое оповещение
-
+      a.contest-menu__item(ng-if='user.isAdmin')
+        .contest-fab-menu(layout='row', layout-align='center center')
+          md-fab-speed-dial.md-scale.md-fab-top-right(md-direction='down', md-open='contestMenu.opened', ng-mouseenter='contestMenu.opened = true', ng-mouseleave='contestMenu.opened = false')
+            md-fab-trigger
+              md-button.md-fab.md-warn(aria-label='menu')
+                md-icon(md-svg-src='/img/icons/ic_tune_48px.svg', aria-label='menu')
+            md-fab-actions
+              div(ng-repeat='item in contestMenu.items')
+                md-button.md-fab.md-raised.md-mini(aria-label='{{item.name}}', ui-sref='{{item.action}}')
+                  md-icon(md-svg-src='{{item.icon}}', aria-label='{{item.name}}')

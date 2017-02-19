@@ -7,12 +7,8 @@ div.admin-content-layer(style='padding: 0')
           div.contest-creation
             div.contests-list__title Сканирование задач
 
-            h3 Не делайте слишком часто обновления!
-            div(style='line-height: 1.6;')
-              div (Приемлемая частота 1 раз в неделю для каждой системы)
-              div Сканирование не рекомендуется делать во время активного контеста во время отправок пользователей.
             div(style='padding: 30px;')
-              div(ng-if='loading') Идет сканирование. Сканирование может происходить около 5 минут.
+              div(ng-if='loading') Идет сканирование. Сканирование может производиться несколько минут.
               div
                 md-button.md-primary.md-raised(ng-disabled='loading', ng-click='scan("timus")', aria-label='Scan timus') Сканировать Timus
               div

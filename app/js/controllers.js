@@ -60,6 +60,17 @@ angular.module('Qemy.controllers', [
       $scope.$state = $state;
       $scope.user = {};
       $scope.isAuth = false;
+      $scope.contestMenu = {
+        opened: false,
+        hover: false,
+        items: [{
+          name: 'Редактировать контест',
+          direction: 'left',
+          icon: '/img/icons/ic_settings_48px.svg',
+          action: 'admin.edit-contest({contestId: headerMenu.contest.id})'
+        }]
+      };
+      
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
           return;
