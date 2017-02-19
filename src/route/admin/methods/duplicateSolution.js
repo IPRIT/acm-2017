@@ -11,7 +11,7 @@ import * as deap from "deap/lib/deap";
 export function duplicateSolutionRequest(req, res, next) {
   let params = Object.assign(
     Object.assign(req.params, req.body), {
-      user: req.user,
+      initiatorUser: req.user,
     }
   );
   return Promise.resolve().then(() => {
@@ -21,7 +21,8 @@ export function duplicateSolutionRequest(req, res, next) {
 
 export async function duplicateSolution(params) {
   let {
-    solutionId, asAdmin = false
+    solutionId, asAdmin = false,
+    initiatorUser
   } = params;
   
   let solution = await models.Solution.findByPrimary(solutionId, {
@@ -47,26 +48,30 @@ export async function duplicateSolution(params) {
     }
   }
   
+  let filledSolution = await models.Solution.findByPrimary(newSolution.id, {
+    include: [ models.Problem, models.User, models.Language, models.Contest ]
+  });
+  let problems = await contests.getProblems({ user: filledSolution.User, contest: filledSolution.Contest });
+  let foundProblemIndex = problems.findIndex(problem => problem.id === Problem.id);
+  let symbolIndex = getSymbolIndex(foundProblemIndex).toUpperCase();
+  let socketData = {
+    contestId: filledSolution.contestId,
+    solution: deap.extend(filter(filledSolution.get({ plain: true }), {
+      replace: [
+        [ 'User', 'author' ],
+        [ 'Contest', 'contest' ],
+        [ 'Problem', 'problem' ],
+        [ 'Language', 'language' ],
+      ],
+      exclude: [ 'sourceCode' ]
+    }), { internalSymbolIndex: symbolIndex })
+  };
   let isContestFrozen = Contest.isFrozen;
-  if (!isContestFrozen) {
-    let filledSolution = await models.Solution.findByPrimary(newSolution.id, {
-      include: [ models.Problem, models.User, models.Language, models.Contest ]
-    });
-    let problems = await contests.getProblems({ user: filledSolution.User, contest: filledSolution.Contest });
-    let foundProblemIndex = problems.findIndex(problem => problem.id === Problem.id);
-    let symbolIndex = getSymbolIndex(foundProblemIndex).toUpperCase();
-    sockets.emitNewSolutionEvent({
-      contestId: filledSolution.contestId,
-      solution: deap.extend(filter(filledSolution.get({ plain: true }), {
-        replace: [
-          [ 'User', 'author' ],
-          [ 'Contest', 'contest' ],
-          [ 'Problem', 'problem' ],
-          [ 'Language', 'language' ],
-        ],
-        exclude: [ 'sourceCode' ]
-      }), { internalSymbolIndex: symbolIndex })
-    });
+  if (isContestFrozen) {
+    Object.assign(socketData, { userId: initiatorUser.id });
+    sockets.emitNewSolutionEvent(socketData, 'user');
+  } else {
+    sockets.emitNewSolutionEvent(socketData);
   }
   
   return newSolution;

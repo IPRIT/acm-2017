@@ -78,23 +78,27 @@ export async function sendSolution(params) {
     }
   }
   
+  let filledSolution = await models.Solution.findByPrimary(solutionInstance.id, {
+    include: [ models.Problem, models.User, models.Language, models.Contest ]
+  });
+  let socketData = {
+    contestId,
+    solution: deap.extend(filter(filledSolution.get({ plain: true }), {
+      replace: [
+        [ 'User', 'author' ],
+        [ 'Contest', 'contest' ],
+        [ 'Problem', 'problem' ],
+        [ 'Language', 'language' ],
+      ],
+      exclude: [ 'sourceCode' ]
+    }), { internalSymbolIndex: symbolIndex })
+  };
   let isContestFrozen = contest.isFrozen;
-  if (!isContestFrozen) {
-    let filledSolution = await models.Solution.findByPrimary(solutionInstance.id, {
-      include: [ models.Problem, models.User, models.Language, models.Contest ]
-    });
-    sockets.emitNewSolutionEvent({
-      contestId,
-      solution: deap.extend(filter(filledSolution.get({ plain: true }), {
-        replace: [
-          [ 'User', 'author' ],
-          [ 'Contest', 'contest' ],
-          [ 'Problem', 'problem' ],
-          [ 'Language', 'language' ],
-        ],
-        exclude: [ 'sourceCode' ]
-      }), { internalSymbolIndex: symbolIndex })
-    });
+  if (isContestFrozen) {
+    Object.assign(socketData, { userId: user.id });
+    sockets.emitNewSolutionEvent(socketData, 'user');
+  } else {
+    sockets.emitNewSolutionEvent(socketData);
   }
   
   return solutionInstance;

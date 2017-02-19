@@ -13,8 +13,8 @@
 
 angular.module('Qemy.controllers.contest-item', [])
   
-  .controller('ContestItemBaseController', ['$scope', '$rootScope', '$state', 'ContestsManager', '_', 'SocketService', 'Battery', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestsManager, _, SocketService, Battery, $mdToast, $mdSidenav, $log, $timeout, ErrorService) {
+  .controller('ContestItemBaseController', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'SocketService', 'Battery', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestsManager, UserManager, _, SocketService, Battery, $mdToast, $mdSidenav, $log, $timeout, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Контест | ' + _('app_name')
       });
@@ -99,17 +99,19 @@ angular.module('Qemy.controllers.contest-item', [])
         socketId = SocketService.getSocket().id;
         console.log('Connected:', socketId);
         
-        SocketService.joinContest(contestId);
-        
-        SocketService.getSocket().on('reconnect', function (data) {
-          console.log('Reconnected', SocketService.getSocket().id);
-          setTimeout(function () {
-            SocketService.joinContest(contestId);
-          }, 500);
-          //attachEvents();
+        UserManager.getCurrentUser().then(function (user) {
+          $scope.user = user;
+          SocketService.joinContest(contestId, user.id);
+          SocketService.getSocket().on('reconnect', function (data) {
+            console.log('Reconnected:', SocketService.getSocket().id);
+            $timeout(function () {
+              SocketService.joinContest(contestId, user.id);
+            }, 500);
+          });
+          attachEvents();
+        }).catch(function (result) {
+          ErrorService.show(result);
         });
-        
-        attachEvents();
       });
       
       function attachEvents() {
@@ -149,7 +151,7 @@ angular.module('Qemy.controllers.contest-item', [])
           unreadMessagesNumber: 0,
           allMessagesNumber: 0
         });
-        SocketService.leaveContest(contestId);
+        SocketService.leaveContest(contestId, $scope.user.id);
         Battery.dispose();
         removeEvents();
       });

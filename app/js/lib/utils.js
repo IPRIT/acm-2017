@@ -225,8 +225,8 @@ function safeApply(scope, fn) {
     if (!scope) {
         return;
     }
-    var phase = scope.$root.$$phase;
-    if (['$apply', '$digest'].indexOf(phase) >= 0) {
+    var phase = scope.$root && scope.$root.$$phase;
+    if (phase && ['$apply', '$digest'].indexOf(phase) >= 0) {
         if (fn && typeof fn === 'function') {
             scope.$eval(fn);
         }

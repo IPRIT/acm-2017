@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
 import * as admin from '../../admin/methods';
+import * as sockets from "../../../socket";
 
 export function refreshSolutionsForProblemRequest(req, res, next) {
   let params = Object.assign(
@@ -34,7 +35,11 @@ export async function refreshSolutionsForProblem(params) {
   }).filter(solution => solution.verdictId !== 12).map(solution => {
     console.log(`Refreshing: ${solution.id}`);
     return admin.refreshSolution({ solution });
-  }, { concurrency: 5 });
+  }, { concurrency: 5 }).then(() => {
+    sockets.emitTableUpdateEvent({
+      contestId: contest.id
+    });
+  });
   
   return { result: true }
 }

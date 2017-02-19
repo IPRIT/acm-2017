@@ -30,24 +30,28 @@ export function subscribeEvents(socket) {
     startedAt: initializedAtMs
   });
   
-  socket.on('contest.join', function (data) {
-    let { contestId } = data;
-    if (!contestId) {
+  socket.on('contest.join', data => {
+    let { contestId, userId } = data;
+    if (!contestId || !userId) {
       return;
     }
-    console.info(`[${socket.id}] joined to contest: ${contestId}.`);
+    console.info(`[${userId}:${socket.id}] joined the contest: ${contestId}.`);
     let contestHashKey = getContestHashKey(contestId);
+    let userHashKey = getUserHashKey([ contestId, userId ].join('_'));
     socket.join(contestHashKey);
+    socket.join(userHashKey);
   });
   
-  socket.on('contest.left', function (data) {
-    let { contestId } = data;
-    if (!contestId) {
+  socket.on('contest.left', data => {
+    let { contestId, userId } = data;
+    if (!contestId || !userId) {
       return;
     }
-    console.info(`[${socket.id}] left from contest: ${contestId}.`);
-    var contestHashKey = getContestHashKey(contestId);
+    console.info(`[${userId}:${socket.id}] left the contest: ${contestId}.`);
+    let contestHashKey = getContestHashKey(contestId);
+    let userHashKey = getUserHashKey([ contestId, userId ].join('_'));
     socket.leave(contestHashKey);
+    socket.leave(userHashKey);
   });
   
   socket.on('disconnect', function (data) {
@@ -56,36 +60,76 @@ export function subscribeEvents(socket) {
 }
 
 function getContestHashKey(str) {
-  return crypto.createHash('md5').update(str + hashSalt).digest('hex');
+  return crypto.createHash('md5').update('contest' + str + hashSalt).digest('hex');
 }
 
-export function emitNewSolutionEvent(params = {}) {
-  let { contestId, solution } = params;
-  emitContestEvent(contestId, 'new solution', solution);
+function getUserHashKey(str) {
+  return crypto.createHash('md5').update('user' + str + hashSalt).digest('hex');
 }
 
-export function emitTableUpdateEvent(params = {}) {
-  let { contestId, table = {} } = params;
-  emitContestEvent(contestId, 'table update', table);
+export function emitNewSolutionEvent(params = {}, target = 'contest') {
+  let eventName = 'new solution';
+  if (target === 'contest') {
+    let { contestId, solution } = params;
+    emitContestEvent(contestId, eventName, solution);
+  } else if (target === 'user') {
+    let { contestId, userId, solution } = params;
+    emitUserEvent(contestId, userId, eventName, solution);
+  }
 }
 
-export function emitVerdictUpdateEvent(params = {}) {
-  let { contestId, solution } = params;
-  emitContestEvent(contestId, 'verdict updated', solution);
+export function emitTableUpdateEvent(params = {}, target = 'contest') {
+  let eventName = 'table update';
+  if (target === 'contest') {
+    let { contestId } = params;
+    emitContestEvent(contestId, eventName, {});
+  } else if (target === 'user') {
+    let { contestId, userId } = params;
+    emitUserEvent(contestId, userId, eventName, {});
+  }
 }
 
-export function emitNewMessageEvent(params = {}) {
-  let { contestId, message } = params;
-  emitContestEvent(contestId, 'new message', message);
+export function emitVerdictUpdateEvent(params = {}, target = 'contest') {
+  let eventName = 'verdict updated';
+  if (target === 'contest') {
+    let { contestId, solution } = params;
+    emitContestEvent(contestId, eventName, solution);
+  } else if (target === 'user') {
+    let { contestId, userId, solution } = params;
+    emitUserEvent(contestId, userId, eventName, solution);
+  }
 }
 
-export function emitResetSolutionEvent(params = {}) {
-  let { contestId, solutionId } = params;
-  emitContestEvent(contestId, 'reset solution', { solutionId });
+export function emitNewMessageEvent(params = {}, target = 'contest') {
+  let eventName = 'new message';
+  if (target === 'contest') {
+    let { contestId, message } = params;
+    emitContestEvent(contestId, eventName, message);
+  } else if (target === 'user') {
+    let { contestId, userId, message } = params;
+    emitUserEvent(contestId, userId, eventName, message);
+  }
+}
+
+export function emitResetSolutionEvent(params = {}, target = 'contest') {
+  let eventName = 'reset solution';
+  if (target === 'contest') {
+    let { contestId, solutionId } = params;
+    emitContestEvent(contestId, eventName, { solutionId });
+  } else if (target === 'user') {
+    let { contestId, userId, solutionId } = params;
+    emitUserEvent(contestId, userId, eventName, { solutionId });
+  }
 }
 
 function emitContestEvent(contestId, eventName, data = {}) {
   let contestHashKey = getContestHashKey(contestId);
-  console.info(`Emitting socket.io event: ${eventName}:${contestId}`);
+  console.info(`Emitting socket.io contest's event: ${eventName}:${contestId}`);
   io.to(contestHashKey).emit(eventName, data);
+}
+
+function emitUserEvent(contestId, userId, eventName, data = {}) {
+  let userHashKey = getUserHashKey([ contestId, userId ].join('_'));
+  console.info(`Emitting socket.io user's event: ${eventName}:${contestId}_${userId}`);
+  io.to(userHashKey).emit(eventName, data);
 }

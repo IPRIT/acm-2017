@@ -70,18 +70,14 @@ async function saveVerdict(solution, systemAccount, verdict) {
     compilationError: verdict.compilationError
   });
   
-  let contest = await solution.getContest();
-  let isContestFrozen = contest.isFrozen;
-  if (!isContestFrozen) {
-    sockets.emitTableUpdateEvent({
-      contestId: contest.id
-    });
-  }
   sockets.emitVerdictUpdateEvent({
     contestId: solution.contestId,
     solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
       exclude: [ 'sourceCode' ]
     })
+  });
+  sockets.emitTableUpdateEvent({
+    contestId: solution.contestId
   });
   return solution;
 }

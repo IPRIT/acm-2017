@@ -170,15 +170,17 @@ angular.module('Qemy.services', [
       return io;
     }
     
-    function joinContest(contestId) {
+    function joinContest(contestId, userId) {
       emitEvent('contest.join', {
-        contestId: contestId
+        contestId: contestId,
+        userId: userId
       });
     }
     
-    function leaveContest(contestId) {
+    function leaveContest(contestId, userId) {
       emitEvent('contest.left', {
-        contestId: contestId
+        contestId: contestId,
+        userId: userId
       });
     }
     

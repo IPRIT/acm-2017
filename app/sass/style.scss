@@ -572,9 +572,11 @@ my-timer-element {
     background: #ccc;
     &.on {
       background: #8BC34A;
+      box-shadow: 0 0 6px -1px #8BC34A;
     }
     &.off {
       background: #FF5722;
+      box-shadow: 0 0 6px -1px #FF5722;
     }
   }
   &__label {
