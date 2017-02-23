@@ -250,7 +250,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
         }
       }
-  
+      
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
         var body = $("html, body");
         body.stop().animate({ scrollTop: 0 }, '200', 'swing', function() {
@@ -346,7 +346,7 @@ angular.module('Qemy.controllers.contest-item', [])
         var position = $mdPanel.newPanelPosition()
           .relativeTo(ev.currentTarget)
           .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
-  
+        
         $scope.actions = [{
           id: 'REFRESH_SOLUTIONS_FOR_USER',
           name: 'Переотправить все решения для пользователя',
@@ -375,7 +375,7 @@ angular.module('Qemy.controllers.contest-item', [])
           focusOnOpen: false,
           zIndex: 70
         };
-  
+        
         $mdPanel.open(config);
       };
     }
@@ -425,7 +425,7 @@ angular.module('Qemy.controllers.contest-item', [])
         $rootScope.$broadcast('data loaded');
         ErrorService.show(result);
       });
-  
+      
       $scope.addNewProblemDialog = function (ev) {
         $mdDialog.show({
           controller: 'AdminAddProblemDialogController',
@@ -491,6 +491,13 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.currentLangs = [];
       $scope.selectedLangId = null;
       
+      var editor;
+      $scope.$on('$destroy', function () {
+        if (editor) {
+          editor.destroy();
+        }
+      });
+      
       var curLang = {};
       
       $scope.$watch('selectedCondition', function (newValue, oldValue) {
@@ -512,19 +519,28 @@ angular.module('Qemy.controllers.contest-item', [])
           $scope.currentLangs = result;
           if (result.length) {
             curLang.type = result[0].systemType;
+            setUpAceEditorLanguage(result[0].languageFamily);
           }
           Storage.get('system_langs').then(function (system_langs) {
             if (!system_langs || typeof system_langs !== 'object') {
-              return $scope.selectedLangId = result && result.length ?
+              $scope.selectedLangId = result && result.length ?
                 result[0].id : null;
+              var language = findLanguageFamilyById($scope.selectedLangId) || {};
+              return setUpAceEditorLanguage(language.languageFamily);
             }
             var langId = system_langs[ curLang.type ];
             if (!langId) {
-              return $scope.selectedLangId = result && result.length ?
+              $scope.selectedLangId = result && result.length ?
                 result[0].id : null;
+              language = findLanguageFamilyById($scope.selectedLangId) || {};
+              return setUpAceEditorLanguage(language.languageFamily);
             }
             $scope.selectedLangId = langId;
+            language = findLanguageFamilyById($scope.selectedLangId) || {};
+            setUpAceEditorLanguage(language.languageFamily);
           });
+        }).then(function () {
+          return restoreSolution();
         }).catch(function (result) {
           $rootScope.$broadcast('data loaded');
           ErrorService.show(result);
@@ -545,6 +561,9 @@ angular.module('Qemy.controllers.contest-item', [])
           }
           system_langs[ curLang.type ] = curLang.id;
           Storage.set({ system_langs: system_langs });
+        }).then(function () {
+          var language = findLanguageFamilyById(curLang.id) || {};
+          return setUpAceEditorLanguage(language.languageFamily);
         });
       });
       
@@ -589,6 +608,7 @@ angular.module('Qemy.controllers.contest-item', [])
           $rootScope.$broadcast('data loaded');
           $scope.sent = false;
           $state.go('^.solutions', { select: 'my' });
+          clearBackup();
         }).catch(function (result) {
           $scope.sent = false;
           $rootScope.$broadcast('data loaded');
@@ -606,6 +626,10 @@ angular.module('Qemy.controllers.contest-item', [])
         }).then(function (resp) {
           console.log('Success ' + resp.config.data.file.name + 'uploaded.');
           $scope.solution = resp.data;
+          if (editor) {
+            editor.setValue($scope.solution);
+            goToLastLine();
+          }
         }, function (result) {
           console.log('Error status: ' + result);
         }, function (evt) {
@@ -615,6 +639,97 @@ angular.module('Qemy.controllers.contest-item', [])
           ErrorService.show(result);
         });
       };
+      
+      function setUpAceEditor(languageFamily) {
+        languageFamily = languageFamily || 'c_cpp';
+        editor = ace.edit('text_area_editor');
+        editor.setTheme('ace/theme/crimson_editor');
+        editor.session.setMode('ace/mode/' + languageFamily);
+        editor.setAutoScrollEditorIntoView(true);
+        editor.setOptions({
+          maxLines: Infinity,
+          minLines: 10,
+          fontSize: '12pt',
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          enableSnippets: true,
+          spellcheck: true,
+          animatedScroll: true,
+          tabSize: 4
+        });
+        editor.on('input', function (ev) {
+          $scope.solution = editor.getValue();
+          backupSolution($scope.solution);
+          safeApply($scope);
+        });
+        editor.renderer.setScrollMargin(0, 10, 10, 10);
+        editor.commands.addCommand({
+          name: 'showKeyboardShortcuts',
+          bindKey: {win: 'Ctrl-Alt-h', mac: 'Command-Alt-h'},
+          exec: function(editor) {
+            ace.config.loadModule('ace/ext/keybinding_menu', function(module) {
+              module.init(editor);
+              editor.showKeyboardShortcuts()
+            });
+          }
+        });
+        editor.commands.addCommand({
+          name: 'MissTheSaveEvent',
+          bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+          exec: function (editor) {
+            console.log('Event missed');
+          }
+        });
+        editor.focus();
+      }
+      
+      function setUpAceEditorLanguage(languageFamily) {
+        languageFamily = languageFamily || 'c_cpp';
+        if (!editor) {
+          setUpAceEditor(languageFamily);
+        } else {
+          editor.session.setMode('ace/mode/' + languageFamily);
+        }
+      }
+      
+      function findLanguageFamilyById(id) {
+        return ($scope.currentLangs || []).filter(function (language) {
+          return language.id === Number(id);
+        })[0];
+      }
+      
+      function backupSolution(solution) {
+        var key = 'solution_' + contestId;
+        var data = {};
+        data[ key ] = solution;
+        return Storage.set(data);
+      }
+      
+      function clearBackup() {
+        var key = 'solution_' + contestId;
+        var data = {};
+        data[ key ] = '';
+        return Storage.set(data);
+      }
+  
+      function restoreSolution() {
+        return Storage.get('solution_' + contestId).then(function (solution) {
+          $scope.solution = solution || '';
+          if (editor) {
+            editor.setValue($scope.solution);
+            goToLastLine();
+          }
+          safeApply($scope);
+        });
+      }
+      
+      function goToLastLine() {
+        if (editor) {
+          editor.focus();
+          var n = editor.getSession().getValue().split("\n").length;
+          editor.gotoLine(n);
+        }
+      }
     }
   ])
   
@@ -807,7 +922,7 @@ angular.module('Qemy.controllers.contest-item', [])
         }
         solutions.unshift(data);
       });
-  
+      
       $scope.$on('reset solution', function (ev, args) {
         var solutionId = args.solutionId;
         var solutions = $scope.solutions;
@@ -973,7 +1088,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $scope.close = function () {
               $mdDialog.hide();
             };
-  
+            
             $scope.verdicts = [];
             AdminManager.getVerdicts().then(function (verdicts) {
               $scope.verdicts = verdicts;
@@ -1055,7 +1170,7 @@ angular.module('Qemy.controllers.contest-item', [])
           });
         });
       };
-  
+      
       function showCompilationErrorDialog($event, solution) {
         $mdDialog.show({
           templateUrl: templateUrl('contest-item/contest-status', 'contest-status-compilation-error-dialog'),
@@ -1081,7 +1196,7 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.close = function () {
         $mdDialog.hide();
       };
-  
+      
       $scope.$on('$stateChangeStart', function() {
         $scope.close();
         $mdBottomSheet.hide();
@@ -1095,7 +1210,7 @@ angular.module('Qemy.controllers.contest-item', [])
       }).catch(function (result) {
         ErrorService.show(result);
       });
-  
+      
       $scope.$on('verdict updated', function (ev, args) {
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
@@ -1129,7 +1244,7 @@ angular.module('Qemy.controllers.contest-item', [])
           }
         }
       });
-  
+      
       $scope.$on('new solution', function (ev, data) {
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
@@ -1140,7 +1255,7 @@ angular.module('Qemy.controllers.contest-item', [])
         $scope.solutions.unshift( data );
         safeApply($scope);
       });
-  
+      
       $scope.$on('reset solution', function (ev, args) {
         var solutionId = args.solutionId;
         var solutions = $scope.solutions;
@@ -1157,7 +1272,7 @@ angular.module('Qemy.controllers.contest-item', [])
         }
         safeApply($scope);
       });
-  
+      
       $scope.actionsMenuItems = [{
         id: 'CHANGE_VERDICT',
         name: 'Изменить вердикт',
@@ -1194,7 +1309,7 @@ angular.module('Qemy.controllers.contest-item', [])
         svgIcon: '/img/icons/ic_delete_48px.svg',
         themeClass: 'md-accent'
       }];
-  
+      
       $scope.selectAction = function (ev, action, item) {
         function changeVerdict() {
           if (!item || typeof item !== 'object') {
@@ -1202,14 +1317,14 @@ angular.module('Qemy.controllers.contest-item', [])
           }
           showVerdictSelectionDialog(ev, item);
         }
-    
+        
         function sendDuplicate() {
           if (!item || typeof item !== 'object') {
             return;
           }
           showConfirmationDialogBeforeSendDuplicate(ev).then(function () {
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
-        
+            
             AdminManager.sendSolutionAgain( { solutionId: item.id } ).catch(function (result) {
               if (result && result.error) {
                 return ErrorService.show(result);
@@ -1219,14 +1334,14 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         function sendDuplicateAsAdmin() {
           if (!item || typeof item !== 'object') {
             return;
           }
           showConfirmationDialogBeforeSendDuplicate(ev).then(function () {
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
-        
+            
             AdminManager.sendSolutionAgain( { solutionId: item.id, asAdmin: true } ).catch(function (result) {
               ErrorService.show(result);
             });
@@ -1234,7 +1349,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         function refreshSolution() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1248,7 +1363,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         function refreshSolutionForProblem() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1262,7 +1377,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         function refreshSolutionForUser() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1276,7 +1391,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         function refreshSolutionForProblemAndUser() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1290,7 +1405,7 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         function deleteSolution() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1304,24 +1419,24 @@ angular.module('Qemy.controllers.contest-item', [])
             $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
           });
         }
-    
+        
         var actions = {
           'CHANGE_VERDICT': changeVerdict,
           'SEND_DUPLICATE': sendDuplicate,
           'REFRESH_SOLUTION': refreshSolution,
-      
+          
           'SEND_DUPLICATE_AS_ADMIN': sendDuplicateAsAdmin,
           'REFRESH_SOLUTIONS_FOR_PROBLEM': refreshSolutionForProblem,
           'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionForUser,
           'REFRESH_SOLUTIONS_FOR_PROBLEM_AND_USER': refreshSolutionForProblemAndUser,
           'SENT_DELETE': deleteSolution
         };
-    
+        
         if (action && action.id in actions) {
           actions[action.id]();
         }
       };
-  
+      
       function showVerdictSelectionDialog(ev, item) {
         $mdDialog.show({
           controller: ['$scope', 'sentItem', 'AdminManager', function ($scope, sentItem, AdminManager) {
@@ -1329,14 +1444,14 @@ angular.module('Qemy.controllers.contest-item', [])
             $scope.close = function () {
               $mdDialog.hide();
             };
-        
+            
             $scope.verdicts = [];
             AdminManager.getVerdicts().then(function (verdicts) {
               $scope.verdicts = verdicts;
             });
-        
+            
             $scope.selectedVerdictId = sentItem.verdictId;
-        
+            
             $scope.save = function () {
               var sentId = sentItem.id,
                 verdict = $scope.selectedVerdictId;
@@ -1360,7 +1475,7 @@ angular.module('Qemy.controllers.contest-item', [])
           $originalDialogScope.openStatusDialog.apply( null, $originalDialogArgs );
         });
       }
-  
+      
       function showConfirmationDialogBeforeSendDuplicate(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1371,7 +1486,7 @@ angular.module('Qemy.controllers.contest-item', [])
           .targetEvent($originalDialogArgs[0]);
         return $mdDialog.show(confirm);
       }
-  
+      
       function showConfirmationDialogBeforeRefreshing(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1382,7 +1497,7 @@ angular.module('Qemy.controllers.contest-item', [])
           .targetEvent($originalDialogArgs[0]);
         return $mdDialog.show(confirm);
       }
-  
+      
       function showConfirmationDialogBeforeDeleting(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1393,7 +1508,7 @@ angular.module('Qemy.controllers.contest-item', [])
           .targetEvent($originalDialogArgs[0]);
         return $mdDialog.show(confirm);
       }
-  
+      
       function showCompilationErrorDialog($event, solution) {
         $mdBottomSheet.show({
           templateUrl: templateUrl('contest-item/contest-status', 'contest-status-compilation-error-bottom-sheet'),
@@ -1422,6 +1537,13 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.solutions = [];
       $scope.currentUser = null;
       
+      var editor;
+      $scope.$on('$destroy', function () {
+        if (editor) {
+          editor.destroy();
+        }
+      });
+      
       UserManager.getCurrentUser().then(function (user) {
         $scope.currentUser = user;
       }).catch(function (result) {
@@ -1434,25 +1556,41 @@ angular.module('Qemy.controllers.contest-item', [])
         $scope.solutions.push(result);
         $timeout(function () {
           $rootScope.$broadcast('data loaded');
-          if (!Rainbow) {
-            var tryRunRainbow = setInterval(function () {
-              if (!Rainbow) {
-                return;
-              }
-              Rainbow.color();
-              $rootScope.$broadcast('data loaded');
-              clearInterval(tryRunRainbow);
-            }, 500);
-          } else {
-            $rootScope.$broadcast('data loaded');
-            Rainbow.color();
-          }
-        }, 200);
+          var languageFamily = (result.language && result.language.languageFamily) || "c_cpp";
+          editor = ace.edit("editor");
+          editor.setTheme("ace/theme/crimson_editor");
+          editor.session.setMode("ace/mode/" + languageFamily);
+          editor.setReadOnly(true);
+          editor.setHighlightActiveLine(false);
+          editor.setAutoScrollEditorIntoView(true);
+          editor.setOptions({
+            maxLines: Infinity,
+            minLines: 2,
+            fontSize: "12pt",
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+            spellcheck: true,
+            animatedScroll: true,
+            tabSize: 4
+          });
+          editor.renderer.setScrollMargin(0, 10, 10, 10);
+          editor.commands.addCommand({
+            name: "showKeyboardShortcuts",
+            bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+            exec: function(editor) {
+              ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
+                module.init(editor);
+                editor.showKeyboardShortcuts()
+              });
+            }
+          });
+        });
       }).catch(function (result) {
         $rootScope.$broadcast('data loaded');
         ErrorService.show(result);
       });
-  
+      
       $scope.$on('verdict updated', function (ev, args) {
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
@@ -1486,7 +1624,7 @@ angular.module('Qemy.controllers.contest-item', [])
           }
         }
       });
-  
+      
       $scope.$on('reset solution', function (ev, args) {
         var solutionId = args.solutionId;
         var solutions = $scope.solutions;
@@ -1503,7 +1641,7 @@ angular.module('Qemy.controllers.contest-item', [])
         }
         safeApply($scope);
       });
-  
+      
       $scope.actionsMenuItems = [{
         id: 'CHANGE_VERDICT',
         name: 'Изменить вердикт',
@@ -1540,7 +1678,7 @@ angular.module('Qemy.controllers.contest-item', [])
         svgIcon: '/img/icons/ic_delete_48px.svg',
         themeClass: 'md-accent'
       }];
-  
+      
       $scope.selectAction = function (ev, action, item) {
         function changeVerdict() {
           if (!item || typeof item !== 'object') {
@@ -1548,7 +1686,7 @@ angular.module('Qemy.controllers.contest-item', [])
           }
           showVerdictSelectionDialog(ev, item);
         }
-    
+        
         function sendDuplicate() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1561,7 +1699,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         function sendDuplicateAsAdmin() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1572,7 +1710,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         function refreshSolution() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1583,7 +1721,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         function refreshSolutionForProblem() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1594,7 +1732,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         function refreshSolutionForUser() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1605,7 +1743,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         function refreshSolutionForProblemAndUser() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1616,7 +1754,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         function deleteSolution() {
           if (!item || typeof item !== 'object') {
             return;
@@ -1627,24 +1765,24 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-    
+        
         var actions = {
           'CHANGE_VERDICT': changeVerdict,
           'SEND_DUPLICATE': sendDuplicate,
           'REFRESH_SOLUTION': refreshSolution,
-      
+          
           'SEND_DUPLICATE_AS_ADMIN': sendDuplicateAsAdmin,
           'REFRESH_SOLUTIONS_FOR_PROBLEM': refreshSolutionForProblem,
           'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionForUser,
           'REFRESH_SOLUTIONS_FOR_PROBLEM_AND_USER': refreshSolutionForProblemAndUser,
           'SENT_DELETE': deleteSolution
         };
-    
+        
         if (action && action.id in actions) {
           actions[action.id]();
         }
       };
-  
+      
       function showVerdictSelectionDialog(ev, item) {
         $mdDialog.show({
           controller: ['$scope', 'sentItem', 'AdminManager', function ($scope, sentItem, AdminManager) {
@@ -1652,14 +1790,14 @@ angular.module('Qemy.controllers.contest-item', [])
             $scope.close = function () {
               $mdDialog.hide();
             };
-        
+            
             $scope.verdicts = [];
             AdminManager.getVerdicts().then(function (verdicts) {
               $scope.verdicts = verdicts;
             });
-        
+            
             $scope.selectedVerdictId = sentItem.verdictId;
-        
+            
             $scope.save = function () {
               var sentId = sentItem.id,
                 verdict = $scope.selectedVerdictId;
@@ -1678,7 +1816,7 @@ angular.module('Qemy.controllers.contest-item', [])
           }
         });
       }
-  
+      
       function showConfirmationDialogBeforeSendDuplicate(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1688,7 +1826,7 @@ angular.module('Qemy.controllers.contest-item', [])
           .cancel('Отмена');
         return $mdDialog.show(confirm);
       }
-  
+      
       function showConfirmationDialogBeforeRefreshing(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1698,7 +1836,7 @@ angular.module('Qemy.controllers.contest-item', [])
           .cancel('Отмена');
         return $mdDialog.show(confirm);
       }
-  
+      
       function showConfirmationDialogBeforeDeleting(ev) {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1755,7 +1893,7 @@ angular.module('Qemy.controllers.contest-item', [])
           $scope.updateMessages();
         }, 200);
       });
-  
+      
       var toastInstance;
       $scope.$on('new message', function (ev, args) {
         ion.sound.play("pop_cork");
@@ -1867,7 +2005,7 @@ angular.module('Qemy.controllers.contest-item', [])
         contestId: $state.params.contestId
       };
       $scope.form = angular.copy(defaultForm);
-  
+      
       var defaultSettings = {
         replace: false,
         merge: true,
@@ -1898,14 +2036,14 @@ angular.module('Qemy.controllers.contest-item', [])
           $scope.sent = false;
         });
       };
-  
+      
       $scope.user = {};
       UserManager.getCurrentUser().then(function (user) {
         $scope.user = user;
       }).catch(function (result) {
         ErrorService.show(result);
       });
-  
+      
       $scope.addFile = function (ev) {
         $mdDialog.show({
           controller: ['$scope', '$parentScope', function ($scope, $parentScope) {
@@ -1921,7 +2059,7 @@ angular.module('Qemy.controllers.contest-item', [])
               $parentScope.settings.files.push($scope.file);
               $scope.close();
             };
-        
+            
             $scope.types = [ 'pdf', 'txt', 'doc', 'image' ];
           }],
           templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
@@ -1935,7 +2073,7 @@ angular.module('Qemy.controllers.contest-item', [])
         $scope.confirmExit = true;
         safeApply($scope);
       };
-  
+      
       $scope.deleteFile = function (file) {
         $scope.settings.files.splice(
           $scope.settings.files.reduce(function (acc, cur, i) {
@@ -1945,7 +2083,7 @@ angular.module('Qemy.controllers.contest-item', [])
         $scope.confirmExit = true;
         safeApply($scope);
       };
-  
+      
       function sync() {
         if (!$scope.form.attachments.config) {
           $scope.form.attachments = {};
@@ -1991,7 +2129,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-  
+        
         function refreshSolutionsForUser(user) {
           showConfirmationDialog(ev).then(function () {
             return AdminManager.refreshSolutionForUser( { contestId: contestId, userId: user.id } ).then(function (result) {
@@ -2001,7 +2139,7 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
-  
+        
         function showConfirmationDialog(ev) {
           var confirm = $mdDialog.confirm()
             .title('Подтверждение')

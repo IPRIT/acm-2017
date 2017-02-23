@@ -25,9 +25,11 @@ div.contest
               md-button.md-raised.md-primary(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
 
           div.send-content__textarea
-            md-input-container(flex, style='width: 100%;')
-              label Решение
-              textarea.textarea.send-content__textarea-element(ng-model='solution')
+            div.ace-editor__key-rules
+              span Нажмите <b>«Ctrl+Alt+H/⌘+Alt+H»</b> в редакторе для просмотра всех возможностей.
+              br
+              span <b>«Ctrl+,/⌘+,»</b> — настройка редактора.
+            textarea.textarea.send-content__textarea-element(id='text_area_editor', ng-model='solution')
 
           div.send-content__file-upload-button(ng-if='solution.length === 0')
             form(name='form')

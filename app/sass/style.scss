@@ -964,33 +964,25 @@ my-timer-element {
 }
 .send-content__textarea {
   textarea {
-    border: 2px solid rgba(0, 0, 0, 0.18) !important;
-    box-sizing: border-box;
-    padding: 10px !important;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    min-height: 100px !important;
-    -webkit-transition: all .1s ease-out;
-    -moz-transition: all .1s ease-out;
-    -ms-transition: all .1s ease-out;
-    -o-transition: all .1s ease-out;
-    transition: all .1s ease-out;
+    opacity: 0;
   }
-  textarea:focus {
-    border: 2px solid #219CF5 !important;
+  .ace_editor {
+    border: 2px solid #ebebeb;
+    border-radius: 3px;
+    overflow: visible;
   }
-  .md-errors-spacer {
-    display: none;
-  }
-  md-input-container.md-input-focused
-  label:not(.md-no-float), md-input-container.md-input-has-placeholder label:not(.md-no-float), md-input-container.md-input-has-value label:not(.md-no-float) {
-    -webkit-transform: translate3d(0,3px,0) scale(.75);
-    transform: translate3d(0,3px,0) scale(.75);
-    margin-left: 0;
-  }
-  label {
-    margin-left: 10px;
+  .ace-editor {
+    &__key-rules {
+      background: #ebebeb;
+      border-radius: 3px;
+      padding: 8px 10px;
+      color: rgba(51, 51, 51, 0.83);
+      margin: 12px 0;
+
+      b {
+        color: rgba(85, 85, 85, 0.85);
+      }
+    }
   }
 }
 
@@ -1164,10 +1156,15 @@ my-timer-element {
 .sent-list__source-link {
   text-decoration: none;
 }
+.source-content {
+  md-content {
+    background: white;
+  }
+}
 .source-content__code pre {
   overflow: hidden;
   overflow-x: auto;
-  border-radius: 6px;
+  border-radius: 5px;
   width: auto;
 }
 .monitor-content__row {
@@ -1649,6 +1646,28 @@ md-input-container {
       min-height: 17px;
       min-width: 17px;
     }
+  }
+}
+#editor {
+  position: relative;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: 3px solid rgb(235, 235, 235);
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+  overflow: visible;
+}
+#ace_settingsmenu, #kbshortcutmenu {
+  font-family: Roboto,Helvetica Neue,sans-serif;
+  h1 {
+    color: #03A9F4;
   }
 }
 @media screen and (max-width: 450px) {

@@ -22,6 +22,8 @@
     "angular-route": "^1.5.3",
     "angular-sanitize": "^1.5.3",
     "angular-ui-router": "0.3.2",
-    "ng-file-upload": "^12.0.4"
+    "ng-file-upload": "^12.0.4",
+    "ace": "^1.2.6",
+    "ace-builds": "^1.2.6"
   }
 }

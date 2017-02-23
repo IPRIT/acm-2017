@@ -80,11 +80,11 @@ angular.module('Qemy.controllers', [
       });
       
       $scope.menuList = [/*{
-        type: 'item',
-        id: 'settings',
-        name: 'Настройки',
-        iconSrc: '/img/icons/ic_settings_48px.svg'
-      },*/ {
+       type: 'item',
+       id: 'settings',
+       name: 'Настройки',
+       iconSrc: '/img/icons/ic_settings_48px.svg'
+       },*/ {
         type: 'item',
         onlyFor: 4096,
         id: 'admin-panel',

@@ -13,10 +13,8 @@ div.contest
         br
         br
         md-content
-          link(href='/js/lib/rainbow/themes/monokai.css', rel='stylesheet', type='text/css')
-          link(href='/js/lib/rainbow/themes/theme.css', rel='stylesheet', type='text/css')
-          div.source-content__code(ng-if='source.id')
-            pre
-              code(data-language='{{source.language.languageFamily}}') {{source.sourceCode}}
+          div.source-content__code
+            pre(style='min-height: 400px;')
+              div(id="editor") {{source.sourceCode}}
 
   page-footer
