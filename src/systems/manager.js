@@ -1,6 +1,7 @@
 import * as timus from './timus';
+import * as acmp from './acmp';
 
-const systems = { timus };
+const systems = { timus, acmp };
 let inProcessSolutionsMap = new Map();
 
 export async function getAvailableSystemTypes() {

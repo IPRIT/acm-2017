@@ -61,7 +61,7 @@ md-toolbar.md-menu-toolbar
                          "task__problem-cf_type_gym": condition.foreignProblemIdentifier.indexOf("gym") >= 0 }')
           div(ng-bind-html='::condition.htmlStatement', task-contenteditable)
       div(ng-switch-default)
-        div.send-content__textarea.page-container__markdown-textarea-wrap
+        div.send-message__textarea.page-container__markdown-textarea-wrap
           md-input-container(flex, style='width: 100%;')
             label Условие
-            textarea.textarea.send-content__textarea-element.page-container__markdown-textarea(ng-model="settings.content.text", rows="10")
+            textarea.textarea.send-message__textarea-element.page-container__markdown-textarea(ng-model="settings.content.text", rows="10")

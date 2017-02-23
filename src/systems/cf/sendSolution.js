@@ -4,7 +4,6 @@ import url from 'url';
 import request from 'request-promise';
 import { extractParam } from "../../utils/utils";
 import * as models from '../../models';
-import Promise from 'bluebird';
 
 const ACM_PROTOCOL = 'http';
 const ACM_HOST = 'acm.timus.ru';
@@ -42,7 +41,7 @@ export async function sendSolution(solution, systemAccount) {
       if (row.nickname === systemAccount.instance.systemNickname) {
         let existSolution = await models.Solution.findOne({
           where: {
-            internalSolutionIdentifier: `${systemAccount.instance.systemType}${row.solutionId}`
+            internalSolutionIdentifier: row.solutionId
           }
         });
         if (existSolution) {
@@ -57,7 +56,7 @@ export async function sendSolution(solution, systemAccount) {
       throw new Error('Solution did not send');
     }
     await solution.update({
-      internalSolutionIdentifier: `${systemAccount.instance.systemType}${contextRow.solutionId}`
+      internalSolutionIdentifier: contextRow.solutionId
     });
     return contextRow;
   });

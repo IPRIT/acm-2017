@@ -36,7 +36,7 @@ export async function getVerdict(solution, systemAccount, receivedRow) {
       followAllRedirects: true
     });
   
-    const $ = cheerio.load(body);
+    var $ = cheerio.load(body);
   
     let rows = [];
     $('table.status').find('tr').slice(1).each((index, row) => {

@@ -25,7 +25,7 @@ function task() {
 }
 
 async function _task() {
-  console.log('Gathering new solutions...');
+  //console.log('Gathering new solutions...');
   let availableSystemTypes = await manager.getAvailableSystemTypes();
   let inProcessSolutionIds = manager.getInProcessSolutionIds();
   console.log(availableSystemTypes, inProcessSolutionIds);

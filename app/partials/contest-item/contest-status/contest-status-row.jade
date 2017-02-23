@@ -51,7 +51,7 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
           md-icon(md-menu-origin, md-svg-src="/img/icons/ic_more_vert_48px.svg")
         md-menu-content(width="4")
           md-menu-item(ng-repeat="action in actionsMenuItems", ng-class='{"menu-divider": action.type === "divider"}')
-            md-button(class='{{action.themeClass}}', ng-if='action.type !== "divider"', ng-click="selectAction($event, action, sent)", aria-label='Menu item', ng-disabled='sent.verdictId < 0')
+            md-button(class='{{action.themeClass}}', ng-if='action.type !== "divider"', ng-click="selectAction($event, action, sent)", aria-label='Menu item', ng-disabled='!sent.verdictId || sent.verdictId < 0')
               div(layout="row")
                 md-icon(md-menu-align-target, md-svg-src="{{::action.svgIcon}}")
                 p(flex, ng-bind='::action.name')

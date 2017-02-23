@@ -15,10 +15,10 @@ div.contest.contest-messages
                 span(ng-switch-default)
                   span.sublabel Будет отправлено от имени "{{user.fullName}}"
 
-          div.send-content__textarea
+          div.send-message__textarea
             md-input-container(flex, style='width: 100%;')
               label Текст или Markdown
-              textarea.textarea.send-content__textarea-element(ng-model='form.message')
+              textarea.textarea.send-message__textarea-element(ng-model='form.message')
 
           div
             md-content.md-padding
