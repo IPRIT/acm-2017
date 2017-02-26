@@ -7,6 +7,7 @@ import filter from "../../utils/filter";
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 5 * 1000;
 const serviceUnavailableVerdictId = 13;
+const serviceUnavailableVerdictName = 'Service Unavailable';
 const verdictCheckTimeoutMs = 300;
 const maxAccountWaitingMs = 60 * 1000;
 
@@ -23,6 +24,7 @@ export async function handle(solution) {
         throw new Error('Time limit has exceeded');
       }
       verdict = await getVerdict(solution, systemAccount, contextRow);
+      console.log(verdict);
       sockets.emitVerdictUpdateEvent({
         contestId: solution.contestId,
         solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
@@ -37,6 +39,7 @@ export async function handle(solution) {
     }
     return saveVerdict(solution, systemAccount, verdict);
   } catch (error) {
+    console.error(error);
     await handleError(error, solution, systemAccount);
   }
 }
@@ -50,6 +53,21 @@ async function handleError(error, solution, systemAccount) {
       verdictId: serviceUnavailableVerdictId,
       verdictGotAtMs: Date.now(),
       errorTrace: (error || '').toString()
+    });
+    sockets.emitVerdictUpdateEvent({
+      contestId: solution.contestId,
+      solution: filter(Object.assign(solution.get({ plain: true }), {
+        verdict: {
+          id: solution.verdictId,
+          isTerminal: true,
+          name: serviceUnavailableVerdictName,
+          testNumber: 0,
+          executionTime: 0,
+          memory: 0
+        }
+      }), {
+        exclude: [ 'sourceCode' ]
+      })
     });
   } else {
     await solution.update({

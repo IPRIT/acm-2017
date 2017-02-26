@@ -1,6 +1,4 @@
 import cheerio from 'cheerio';
-import querystring from 'querystring';
-import url from 'url';
 import request from 'request-promise';
 import { extractParam } from "../../utils/utils";
 import * as models from '../../models';
@@ -11,14 +9,22 @@ const ACM_HOST = 'acm.timus.ru';
 const ACM_SOLUTIONS_POST_ENDPOINT = '/submit.aspx?space=1';
 
 export async function sendSolution(solution, systemAccount) {
-  let endpoint = getEndpoint(ACM_SOLUTIONS_POST_ENDPOINT);
   return Promise.resolve().then(async () => {
+    let endpoint = getEndpoint(ACM_SOLUTIONS_POST_ENDPOINT);
     let body = await request({
       method: 'POST',
       uri: endpoint,
       form: buildBody(solution, systemAccount),
-      simple: false,
-      followAllRedirects: true
+      simple: false
+    }).then(_ => {
+      return Promise.delay(1000);
+    }).then(_ => {
+      return request({
+        method: 'GET',
+        uri: getEndpoint('/status.aspx'),
+        simple: false,
+        followAllRedirects: false
+      });
     });
     
     let $ = cheerio.load(body);
@@ -36,7 +42,6 @@ export async function sendSolution(solution, systemAccount) {
         solutionId
       });
     });
-    
     let contextRow;
     for (let row of rows) {
       if (row.nickname === systemAccount.instance.systemNickname) {

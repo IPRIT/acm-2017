@@ -6,7 +6,7 @@ div.contest
 
       div.send-content
         form
-          div.send-content__condition-selector
+          div.send-content__condition-selector(style='padding: 0 8px;')
             div
               md-input-container(flex)
                 label Выбор задачи
@@ -22,9 +22,9 @@ div.contest
                     span {{lang.name}}
 
             div.send-content__submit(ng-if='solution.length > 0')
-              md-button.md-raised.md-primary(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
+              md-button.md-accent.md-raised(style='margin-left: 0;', ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
 
-          div.send-content__textarea
+          div.send-content__textarea(style='padding: 0 8px;')
             div.ace-editor__key-rules
               span Нажмите <b>«Ctrl+Alt+H/⌘+Alt+H»</b> в редакторе для просмотра всех возможностей.
               br
@@ -33,11 +33,11 @@ div.contest
 
           div.send-content__file-upload-button(ng-if='solution.length === 0')
             form(name='form')
-              md-button.md-raised(ngf-select="upload($file)", name="file", ngf-max-size="20MB")
+              md-button.md-raised.md-primary(ngf-select="upload($file)", name="file", ngf-max-size="20MB")
                 md-icon(md-svg-src='/img/icons/ic_file_upload_48px.svg')
                 | Выбрать файл
 
           div.send-content__submit
-            md-button.md-raised.md-primary(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
+            md-button.md-accent(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
 
   page-footer

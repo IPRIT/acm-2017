@@ -1,43 +1,34 @@
 import cheerio from 'cheerio';
-import querystring from 'querystring';
-import url from 'url';
 import request from 'request-promise';
-import { extractParam, ensureNumber } from "../../utils/utils";
-import * as models from '../../models';
 import Promise from 'bluebird';
 
 const ACM_PROTOCOL = 'http';
-const ACM_HOST = 'acm.timus.ru';
-const ACM_ENDPOINT = '/auth.aspx';
+const ACM_HOST = 'acmp.ru';
 
 export async function getCompilationError(systemAccount, receivedRow) {
-  let endpoint = getEndpoint(ACM_ENDPOINT);
   return Promise.resolve().then(async () => {
-    let response = await request({
-      method: 'POST',
-      headers: {
-        'Accept-Language': 'ru,en;q=0.8'
-      },
+    let endpoint = getEndpoint('/index.asp');
+    let { jar } = systemAccount;
+    let body = await request({
+      method: 'GET',
       uri: endpoint,
-      form: buildForm(systemAccount, receivedRow),
+      qs: {
+        main: 'source',
+        id: receivedRow.solutionId
+      },
       simple: false,
       followAllRedirects: true,
-      resolveWithFullResponse: true,
-      jar: true
+      jar
     });
-    if (response.headers && (response.headers[ 'content-type' ] || '').includes('text/plain')) {
-      return response.body;
+    
+    var $ = cheerio.load(body);
+    
+    let compilationErrorNode = $('font[color="red"][face="courier"]');
+    if (compilationErrorNode.length) {
+      return compilationErrorNode.text();
     }
     return null;
   });
-}
-
-function buildForm(systemAccount, receivedRow) {
-  return {
-    Action: 'login',
-    Source: `/ce.aspx?id=${receivedRow.solutionId}`,
-    JudgeID: systemAccount.instance.systemLogin
-  };
 }
 
 function getEndpoint(pathTo = '') {

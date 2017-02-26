@@ -12,8 +12,9 @@ const maxAccountWaitingMs = 60 * 1000;
 
 export async function handle(solution) {
   let systemAccount = await accountsPool.getFreeAccount();
-  systemAccount.busy();
+  //systemAccount.busy();
   
+  return;
   try {
     let contextRow = await sendSolution(solution, systemAccount);
     

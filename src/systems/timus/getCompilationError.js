@@ -1,9 +1,4 @@
-import cheerio from 'cheerio';
-import querystring from 'querystring';
-import url from 'url';
 import request from 'request-promise';
-import { extractParam, ensureNumber } from "../../utils/utils";
-import * as models from '../../models';
 import Promise from 'bluebird';
 
 const ACM_PROTOCOL = 'http';

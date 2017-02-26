@@ -397,8 +397,12 @@ html {
   min-width: 900px;
   width: 964px; //66%;
   margin: 0 auto;
-  border-radius: 3px;
-  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  box-sizing: border-box;
+  height: 100%;
+  position: relative;
+  box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.12), 0px 2px 2px 0px rgba(0,0,0,0.24);
+  transition: box-shadow 0.2s ease;
 }
 .contests-list__title {
   text-align: center;
@@ -544,8 +548,13 @@ my-timer-element {
   min-width: 900px;
   max-width: 1388px;
   margin: 0 auto;
-  border-radius: 3px;
-  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.12), 0px 2px 2px 0px rgba(0,0,0,0.24);
+  transition: box-shadow 0.2s ease;
 }
 .contest__min-width {
   width: 66%;
@@ -588,9 +597,7 @@ my-timer-element {
 .contest__monitor-menu {
   background: white;
   border-radius: 4px;
-  box-shadow: 1px 4px 15px 1px rgba(0, 0, 0, 0.2),
-  0px 12px 20px 0px rgba(0, 0, 0, 0),
-  0px 8px 7px -2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);
   width: 400px;
   overflow: hidden;
   padding: 4px 0;
@@ -973,19 +980,22 @@ my-timer-element {
   }
   .ace-editor {
     &__key-rules {
-      background: #ebebeb;
+      background: #03A9F4;
       border-radius: 3px;
+      color: white;
       padding: 8px 10px;
-      color: rgba(51, 51, 51, 0.83);
       margin: 12px 0;
-
-      b {
-        color: rgba(85, 85, 85, 0.85);
-      }
     }
   }
 }
-
+md-toolbar.md-theme-light {
+  background-color: rgb(255, 255, 255);
+  color: rgba(0, 0, 0, 0.82);
+  border-bottom: 2px solid rgba(158, 158, 158, 0.58);
+  padding: 13px 10px;
+  min-height: 92px;
+  box-sizing: border-box;
+}
 .status-content {
   border: 1px solid #eaeaea;
 
@@ -1320,6 +1330,7 @@ my-timer-element {
 }
 .monitor-content__row_group_even {
   background-color: rgba(154, 255, 134, 0.61);
+  border-color: #83C699;
   .monitor-content__cell {
     border-color: #83C699;
   }

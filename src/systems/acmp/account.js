@@ -63,7 +63,7 @@ function buildBody(systemAccount) {
 
 export async function getForeignAccountId(jar) {
   const serviceUnavailableException = new Error('Service Unavailable');
-  // request to the main page and gain the account id
+  // request the main page and "snatch" the account id
   let mainPageUrl = `${ACM_PROTOCOL}://${ACM_HOST}`;
   let response = await request({
     method: 'GET',
