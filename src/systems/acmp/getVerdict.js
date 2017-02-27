@@ -80,7 +80,7 @@ export async function getVerdict(solution, systemAccount, receivedRow) {
       id: getVerdictId(verdictName),
       isTerminal: isTerminal(verdictName),
       name: verdictId === 1 ? 'OK' : verdictName,
-      testNumber,
+      testNumber: verdictId === 1 ? 0 : testNumber,
       executionTime,
       memory
     }

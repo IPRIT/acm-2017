@@ -60,6 +60,22 @@ export function ensureNumber(value) {
   return value;
 }
 
+export function parseProblemIdentifier(problemIdentifier = '') {
+  let [ type, problem ] = problemIdentifier.split(':');
+  let contestNumber = ensureNumber(problem.match(/^(\d+)/i)[1]);
+  let symbolIndex = problem.match(/\d+([a-zA-Zа-яА-Я]+)$/i)[1];
+  return { type, contestNumber, symbolIndex };
+}
+
+export function capitalize(string = '') {
+  return string.split(/\s+/)
+    .map(part => part.toLowerCase())
+    .map(part => {
+      return part.slice(0, 1).toUpperCase() + part.slice(1)
+    })
+    .join(' ');
+}
+
 export class AsyncQueue {
   queue = [];
   inProcess = false;

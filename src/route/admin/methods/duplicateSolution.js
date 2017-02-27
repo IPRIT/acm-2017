@@ -41,7 +41,7 @@ export async function duplicateSolution(params) {
   });
   
   if (Problem.systemType === 'cf') {
-    if ([ 'c', 'csharp', 'java', 'javascript', 'php' ].includes(Language.languageFamily)) {
+    if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(Language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance: newSolution });
     } else if ([ 'python' ].includes(Language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance: newSolution, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });

@@ -28,6 +28,14 @@ export async function refreshSolutionsForProblem(params) {
   let problem = await contests.getProblemBySymbolIndex({ contest, symbolIndex });
   
   await contest.getSolutions({
+    include: [{
+      model: models.Problem,
+      attributes: {
+        exclude: [ 'htmlStatement', 'textStatement' ]
+      }
+    }, {
+      model: models.Language
+    }],
     where: {
       problemId: problem.id
     },

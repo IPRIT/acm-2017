@@ -1,4 +1,4 @@
-import * as acmp from './acmp';
+import * as cf from './cf';
 import * as models from '../models';
 import express from 'express';
 import Promise from 'bluebird';
@@ -15,10 +15,11 @@ async function test(req, res, next) {
 }
 
 async function _test() {
-  let solution = await models.Solution.findByPrimary(12711, {
+  let solution = await models.Solution.findByPrimary(12403, {
     include: [ models.Problem, models.Language ]
   });
-  return acmp.handle(solution);
+  
+  return cf.handle(solution);
 }
 
 export default router;

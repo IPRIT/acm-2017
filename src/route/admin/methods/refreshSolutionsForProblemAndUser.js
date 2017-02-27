@@ -37,6 +37,14 @@ export async function refreshSolutionsForProblemAndUser(params) {
   }
   
   await contest.getSolutions({
+    include: [{
+      model: models.Problem,
+      attributes: {
+        exclude: [ 'htmlStatement', 'textStatement' ]
+      }
+    }, {
+      model: models.Language
+    }],
     where,
     order: [ [ 'id', 'DESC' ] ]
   }).filter(solution => solution.verdictId !== 12).map(solution => {

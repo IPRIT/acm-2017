@@ -4,12 +4,12 @@ import * as accountMethods from './account';
 import Promise from 'bluebird';
 import * as sockets from '../../socket';
 import filter from "../../utils/filter";
+import * as models from '../../models';
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 15 * 1000;
 const serviceUnavailableVerdictId = 13;
 const acmpRestrictionVerdictId = 14;
-const acmpRestrictionVerdictName = 'ACMP Restrictions. Wait for a minute';
 const verdictCheckTimeoutMs = 100;
 const maxAccountWaitingMs = 60 * 1000;
 
@@ -52,9 +52,10 @@ async function handleError(error, solution, systemAccount) {
   systemAccount.free();
   solution.retriesNumber++;
   if (solution.retriesNumber >= maxAttemptsNumber) {
+    let verdict = await models.Verdict.findByPrimary(acmpRestrictionVerdictId);
     await solution.update({
       retriesNumber: solution.retriesNumber,
-      verdictId: acmpRestrictionVerdictId,
+      verdictId: verdict.id,
       verdictGotAtMs: Date.now(),
       errorTrace: (error || '').toString()
     });
@@ -62,9 +63,9 @@ async function handleError(error, solution, systemAccount) {
       contestId: solution.contestId,
       solution: filter(Object.assign(solution.get({ plain: true }), {
         verdict: {
-          id: solution.verdictId,
+          id: verdict.id,
           isTerminal: true,
-          name: acmpRestrictionVerdictName,
+          name: verdict.name,
           testNumber: 0,
           executionTime: 0,
           memory: 0
@@ -78,11 +79,18 @@ async function handleError(error, solution, systemAccount) {
       retriesNumber: solution.retriesNumber,
       nextAttemptWillBeAtMs: Date.now() + nextAttemptAfterMs * solution.retriesNumber
     });
+    sockets.emitVerdictUpdateEvent({
+      contestId: solution.contestId,
+      solution: filter(Object.assign(solution.get({ plain: true }), {
+        _currentAttempt: solution.retriesNumber
+      }), {
+        exclude: [ 'sourceCode' ]
+      })
+    });
   }
 }
 
 async function saveVerdict(solution, systemAccount, verdict) {
-  systemAccount.free();
   await solution.update({
     verdictGotAtMs: Date.now(),
     testNumber: verdict.testNumber,
@@ -91,6 +99,7 @@ async function saveVerdict(solution, systemAccount, verdict) {
     verdictId: verdict.id,
     compilationError: verdict.compilationError
   });
+  systemAccount.free();
   
   sockets.emitVerdictUpdateEvent({
     contestId: solution.contestId,

@@ -50,7 +50,7 @@ export async function login(systemAccount) {
         'Host': 'codeforces.com',
         'Connection': 'keep-alive',
         'Origin': 'http://codeforces.com',
-        'User-Agent': 'Mozilla/6.0 (Windows NT 11.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2403.157 YaBrowser/21.9.2403.3043 Safari/537.36',
+        'User-Agent': 'Mozilla/6.0 (Windows NT 11.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.2403.157 YaBrowser/45.9.2403.3043 Safari/737.36',
         'Content-Type': 'application/x-www-form-urlencoded; utf-8',
         'Accept': '*/*',
         'Accept-Language': 'ru,en;q=0.8'
@@ -72,10 +72,8 @@ export async function login(systemAccount) {
   });
 }
 
-function getEndpoint(pathTo = '', searchParams = {}) {
-  const searchParamsNotEmpty = Object.keys(searchParams).length;
-  return `${ACM_PROTOCOL}://${ACM_HOST}${pathTo}${searchParamsNotEmpty ?
-  '?' + querystring.stringify(searchParams) : ''}`;
+function getEndpoint(pathTo = '') {
+  return `${ACM_PROTOCOL}://${ACM_HOST}${pathTo}`;
 }
 
 function buildAuthForm(csrfToken, systemAccount) {
@@ -86,4 +84,24 @@ function buildAuthForm(csrfToken, systemAccount) {
     handle: systemLogin,
     password: systemPassword
   };
+}
+
+export function isAuth(systemAccount) {
+  return Promise.resolve().then(async () => {
+    let { jar } = systemAccount;
+    let response = await request({
+      method: 'GET',
+      uri: getEndpoint(),
+      simple: false,
+      resolveWithFullResponse: true,
+      followAllRedirects: true,
+      jar
+    });
+    if (!response.body || ![ 200, 302 ].includes(response.statusCode)) {
+      throw new Error('Service unavailable');
+    }
+    let $ = cheerio.load(response.body);
+    let accountLink = $(`#header a[href="/profile/${systemAccount.instance.systemLogin}"]`);
+    return accountLink.length > 0;
+  });
 }

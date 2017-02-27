@@ -71,7 +71,7 @@ export async function sendSolution(params) {
   });
   
   if (problem.systemType === 'cf') {
-    if ([ 'c', 'csharp', 'java', 'javascript', 'php' ].includes(language.languageFamily)) {
+    if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance });
     } else if ([ 'python' ].includes(language.languageFamily)) {
       await makeSourceWatermark({ solutionInstance, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });

@@ -871,6 +871,7 @@ angular.module('Qemy.controllers.contest-item', [])
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
           if (solutions[i].id === args.id) {
+            solutions[i]._currentAttempt = args._currentAttempt;
             var verdict = args.verdict;
             if (!verdict) {
               continue;
@@ -1215,6 +1216,7 @@ angular.module('Qemy.controllers.contest-item', [])
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
           if (solutions[i].id === args.id) {
+            solutions[i]._currentAttempt = args._currentAttempt;
             var verdict = args.verdict;
             if (!verdict) {
               continue;
@@ -1595,6 +1597,7 @@ angular.module('Qemy.controllers.contest-item', [])
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
           if (solutions[i].id === args.id) {
+            solutions[i]._currentAttempt = args._currentAttempt;
             var verdict = args.verdict;
             if (!verdict) {
               continue;

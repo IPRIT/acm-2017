@@ -2,7 +2,7 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
   ng-class='{"sent-list__success": sent.verdictId === 1, \
    "sent-list__failed": [2, 4, 5, 6, 7, 8, 9, 12].indexOf(sent.verdictId) !== -1, \
    "sent-list__failed_type_highlighted": sent.verdictId === 12, \
-   "sent-list__unknown": [3, 10, 11, 13].indexOf(sent.verdictId) !== -1}')
+   "sent-list__unknown": [3, 10, 11, 13, 14, 15, 16, 17].indexOf(sent.verdictId) !== -1}')
   div.sent-list__indicator(ng-if='sent.duplicatedFromId')
     md-tooltip Переотправленное решение №{{sent.duplicatedFromId}}
     span
@@ -31,12 +31,14 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
           div.search-spin-layer_
             div.search-spin(ng-class='{"waiting": sent.verdictId === -1}')
       span(ng-if='sent.verdictId === -1', style='display: inline-block;') {{sent.verdict.name}}
-      span(ng-if='sent.verdictId === null', style='display: inline-block; text-transform: none;') В очереди...
+      span(ng-if='sent.verdictId === null', style='display: inline-block;')
+        span(style='text-transform: none') В очереди...
+        span(style='text-transform: none', ng-if='sent._currentAttempt > 1') (попытка {{sent._currentAttempt}})
     span(ng-switch-default)
       span(ng-switch='sent.verdictId === 3 && sent.compilationError.length > 0 && (currentUser.id === sent.userId || currentUser.isAdmin)')
         span(ng-switch-when='true')
           a.link.sent-list__compilation-error(role='button', ng-click='showCompilationErrorDialog($event, sent)') {{sent.verdict.name}}
-        span(ng-switch-default) {{sent.verdict.name}}
+        span(ng-switch-default, ng-class='{"verdict-small": sent.verdict.name.length > 21 && sent.verdict.name.split(" ").length > 2}') {{sent.verdict.name}}
   div.sent-list__cell(style='max-width: 80px;', ng-switch='sent.testNumber === 0')
     span(ng-switch-when='true') -
     span(ng-switch-default) {{sent.testNumber}}

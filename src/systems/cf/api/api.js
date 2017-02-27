@@ -10,6 +10,7 @@ function requestMethod(apiUrl, params) {
     uri: apiUrl,
     qs: params,
     simple: false,
+    json: true,
     followAllRedirects: true
   });
 }
@@ -26,29 +27,29 @@ export function getContestsList(params) {
 
 
 export function getContestStandings(params) {
-  var methodUri = '/contest.standings';
+  let methodUri = '/contest.standings';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 
 export function getContestStatus(params) {
-  var methodUri = '/contest.status';
+  let methodUri = '/contest.status';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 
 export function getProblemset(params) {
-  var methodUri = '/problemset.problems';
+  let methodUri = '/problemset.problems';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 
 export function getProblemsetRecentStatus(params) {
-  var methodUri = '/problemset.recentStatus';
+  let methodUri = '/problemset.recentStatus';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 export function getUserStatus(params) {
-  var methodUri = '/user.status';
+  let methodUri = '/user.status';
   return requestMethod(buildEndpoint(methodUri), params);
 }

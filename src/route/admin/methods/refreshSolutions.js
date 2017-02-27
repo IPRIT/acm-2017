@@ -25,7 +25,16 @@ export async function refreshSolutions(params) {
     contest = await models.Contest.findByPrimary(contestId);
   }
   
-  await contest.getSolutions().filter(solution => {
+  await contest.getSolutions({
+    include: [{
+      model: models.Problem,
+      attributes: {
+        exclude: [ 'htmlStatement', 'textStatement' ]
+      }
+    }, {
+      model: models.Language
+    }]
+  }).filter(solution => {
     return solution.verdictId !== 12;
   }).map(solution => {
     console.log(`Refreshing: ${solution.id}`);

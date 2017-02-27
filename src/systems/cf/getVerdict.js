@@ -1,92 +1,37 @@
-import cheerio from 'cheerio';
-import querystring from 'querystring';
-import url from 'url';
-import request from 'request-promise';
-import { extractParam, ensureNumber } from "../../utils/utils";
+import { ensureNumber } from "../../utils/utils";
 import * as models from '../../models';
 import Promise from 'bluebird';
-
-const ACM_PROTOCOL = 'http';
-const ACM_HOST = 'acm.timus.ru';
-const ACM_AUTHORS_SOLUTIONS_ENDPOINT = '/status.aspx';
+import { parseProblemIdentifier } from "../../utils/utils";
+import * as api from './api';
+import { capitalize } from "../../utils/utils";
 
 const terminalStatesMapping = {
-  'Accepted': 1,
-  'Wrong answer': 2,
-  'Compilation error': 3,
-  'Runtime error': 4,
-  'Presentation error': 5,
-  'Output limit exceeded': 5,
-  'Time limit exceeded': 6,
-  'Memory limit exceeded': 7,
-  'Idleness limit exceeded': 8,
-  'Restricted function': 9
+  'OK': 1,
+  'WRONG_ANSWER': 2,
+  'COMPILATION_ERROR': 3,
+  'RUNTIME_ERROR': 4,
+  'PRESENTATION_ERROR': 5,
+  'TIME_LIMIT_EXCEEDED': 6,
+  'MEMORY_LIMIT_EXCEEDED': 7,
+  'IDLENESS_LIMIT_EXCEEDED': 8,
+  'SECURITY_VIOLATED': 9
 };
 
 export async function getVerdict(solution, systemAccount, receivedRow) {
-  let endpoint = getEndpoint(ACM_AUTHORS_SOLUTIONS_ENDPOINT);
   return Promise.resolve().then(async () => {
-    let body = await request({
-      method: 'GET',
-      uri: endpoint,
-      qs: {
-        author: systemAccount.foreignAccountId
-      },
-      simple: false,
-      followAllRedirects: true
-    });
-  
-    var $ = cheerio.load(body);
-  
-    let rows = [];
-    $('table.status').find('tr').slice(1).each((index, row) => {
-      let $row = $(row);
-      let accountId = extractParam($row.find('.coder a').attr('href'), 'id'),
-        nickname = $row.find('.coder a').text(),
-        problemIdentifier = extractParam($row.find('.problem a').attr('href'), 'num'),
-        solutionId = $row.find('.id').text(),
-        verdictName = sanitizeVerdict($row.find('.verdict_wt, .verdict_ac, .verdict_rj').text()),
-        testNumber = ensureNumber($row.find('.test').text()),
-        executionTime = ensureNumber($row.find('.runtime').text()),
-        memory = ensureNumber($row.find('.memory').text().replace(/[^0-9]/gi, ''));
-      rows.push({
-        accountId,
-        nickname,
-        problemIdentifier,
-        solutionId,
-        verdictName,
-        testNumber,
-        executionTime,
-        memory
-      });
-    });
-  
-    let contextRow;
-    for (let row of rows) {
-      if (row.accountId === systemAccount.foreignAccountId
-        && receivedRow.solutionId === row.solutionId) {
-        contextRow = row;
-        break;
-      }
-    }
-    if (!contextRow) {
-      throw new Error('Solution not found in the table');
-    }
+    let contextRow = await getContextRow(solution, systemAccount, receivedRow);
     let { testNumber, executionTime, memory, verdictName } = contextRow;
     let verdictId = getVerdictId(verdictName);
+    let verdictInstance = await models.Verdict.findByPrimary(verdictId);
     return {
-      id: getVerdictId(verdictName),
+      id: verdictInstance && verdictInstance.id,
       isTerminal: isTerminal(verdictName),
-      name: verdictId === 1 ? 'OK' : verdictName,
-      testNumber,
+      name: verdictInstance ? verdictInstance.name : verdictName,
+      testNumber: verdictId === 1 ? 0 : testNumber,
       executionTime,
       memory
     }
   });
-}
-
-function getEndpoint(pathTo = '') {
-  return `${ACM_PROTOCOL}://${ACM_HOST}${pathTo}`;
 }
 
 function isTerminal(verdictName = '') {
@@ -107,7 +52,37 @@ function getVerdictId(verdictName) {
   return terminalStatesMapping[ verdicts[0] ];
 }
 
-function sanitizeVerdict(verdictName = '') {
-  let clearVerdictRegExp = /(\s\(.*\))$/i;
-  return verdictName.trim().replace(clearVerdictRegExp, '');
+async function getContextRow(solution, systemAccount, receivedRow) {
+  let { type, contestNumber, symbolIndex } = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
+  let userStatus, found = false,
+    attemptsNumber = 0, maxAttemptsNumber = 3;
+  
+  while ((!userStatus || !found) && attemptsNumber < maxAttemptsNumber) {
+    await Promise.delay(1000 + attemptsNumber * 500);
+    attemptsNumber++;
+    userStatus = await api.getUserStatus({
+      handle: systemAccount.instance.systemLogin,
+      count: 1,
+      from: 1
+    });
+    let { result } = userStatus;
+    let contextRow = (result || []).filter(row => {
+      return row.id === receivedRow.solutionId;
+    }).map(row => {
+      return {
+        solutionId: row.id,
+        handle: systemAccount.instance.systemLogin,
+        problemIdentifier: { type, contestNumber, symbolIndex },
+        verdictName: capitalize(row.verdict),
+        testNumber: ensureNumber(row.passedTestCount) + 1,
+        executionTime: ensureNumber(parseFloat((row.timeConsumedMillis / 1000).toFixed(4))),
+        memory: ensureNumber(Math.floor(row.memoryConsumedBytes / 1024))
+      }
+    });
+    if (!contextRow.length) {
+      continue;
+    }
+    return contextRow[0];
+  }
+  return null;
 }
