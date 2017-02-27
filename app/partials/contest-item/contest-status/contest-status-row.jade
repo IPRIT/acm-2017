@@ -33,7 +33,7 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
       span(ng-if='sent.verdictId === -1', style='display: inline-block;') {{sent.verdict.name}}
       span(ng-if='sent.verdictId === null', style='display: inline-block;')
         span(style='text-transform: none') В очереди...
-        span(style='text-transform: none', ng-if='sent._currentAttempt > 1') (попытка {{sent._currentAttempt}})
+        span(style='text-transform: none', ng-if='sent._currentAttempt > 0') (попытка {{sent._currentAttempt + 1}})
     span(ng-switch-default)
       span(ng-switch='sent.verdictId === 3 && sent.compilationError.length > 0 && (currentUser.id === sent.userId || currentUser.isAdmin)')
         span(ng-switch-when='true')

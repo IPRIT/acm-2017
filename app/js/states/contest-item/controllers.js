@@ -896,10 +896,10 @@ angular.module('Qemy.controllers.contest-item', [])
             if (typeof verdict.name !== 'undefined') {
               solutions[i].verdict.name = verdict.name;
             }
-            safeApply($scope);
             break;
           }
         }
+        safeApply($scope);
       });
       
       $scope.$on('new solution', function (ev, data) {
@@ -1241,10 +1241,10 @@ angular.module('Qemy.controllers.contest-item', [])
             if (typeof verdict.name !== 'undefined') {
               solutions[i].verdict.name = verdict.name;
             }
-            safeApply($scope);
             break;
           }
         }
+        safeApply($scope);
       });
       
       $scope.$on('new solution', function (ev, data) {
@@ -1622,10 +1622,10 @@ angular.module('Qemy.controllers.contest-item', [])
             if (typeof verdict.name !== 'undefined') {
               solutions[i].verdict.name = verdict.name;
             }
-            safeApply($scope);
             break;
           }
         }
+        safeApply($scope);
       });
       
       $scope.$on('reset solution', function (ev, args) {

@@ -40,6 +40,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.7.1",
     "deap": "^1.0.0",
+    "encodehtml": "^0.1.0",
     "express": "^4.14.0",
     "express-form-data": "0.0.2",
     "express-light-limiter": "^1.0.1",

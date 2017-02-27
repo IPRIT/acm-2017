@@ -5,8 +5,6 @@ import Promise from 'bluebird';
 import * as sockets from '../../socket';
 import filter from "../../utils/filter";
 import * as accountMethods from './account';
-import { SYNTAX_PYTHON_LITERAL_COMMENT } from "../../utils/utils";
-import { makeSourceWatermark } from "../../utils/utils";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 10 * 1000;
@@ -39,12 +37,11 @@ export async function handle(solution) {
       await Promise.delay(verdictCheckTimeoutMs);
     }
     if (verdict.id === 3) {
-      let compilationError = 'Not implemented';//await getCompilationError(systemAccount, contextRow);
+      let compilationError = await getCompilationError(systemAccount, contextRow);
       Object.assign(verdict, { compilationError });
     }
     return saveVerdict(solution, systemAccount, verdict);
   } catch (error) {
-    console.error(error);
     await handleError(error, solution, systemAccount);
   }
 }
