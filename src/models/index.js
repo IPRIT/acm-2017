@@ -14,11 +14,13 @@ import Language from './Language';
 import Solution from './Solution';
 import SystemAccount from './SystemAccount';
 
+/*
 import {
   OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,
   OldUserContestEnter, OldSolution, OldMessage, OldMessageRead
 } from './_Old';
+*/
 
 
 const log = Log.getLogger('models');
@@ -134,7 +136,7 @@ export {
   UserContestEnter, Contest, Problem, ProblemToContest,
   Message, MessageRead, Solution, Language, SystemAccount,
 
-  OldUser, OldLanguage, OldContest, OldProblem,
+  /*OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,
-  OldUserContestEnter, OldSolution, OldMessage, OldMessageRead
+  OldUserContestEnter, OldSolution, OldMessage, OldMessageRead*/
 };
