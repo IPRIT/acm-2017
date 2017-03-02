@@ -3,12 +3,13 @@ var Config = window.Config = window.Config || {};
 Config.App = {
     id: 216,
     hash: '8da85b0d5bfe62527e5b244a309159c3',
-    version: '0.2.8',
+    version: '0.9.1',
     domains: [
         'localhost:3000',
-        'acm.alexbelov.xyz'
+        'acm.alexbelov.xyz',
+        'pat1.misis.ru'
     ],
-    current_domain: 1
+    current_domain: 2
 };
 
 Config.serverTimeOffset = 3;

@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 38
+# 50
 
 CACHE:
 
@@ -52,13 +52,13 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/angular-bindonce/bindonce.min.js
 /vendor/katex/katex.min.js
 /vendor/ion.sound/ion.sound.js
-/prod/js/build.min.js?0.2.8
+/prod/js/build.min.js?0.2.
 
 # CSS
 http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
-/prod/css/style.css?0.2.8
+/prod/css/style.css?0.9.1
 
 # Images
 /img/acm-logo-small.png

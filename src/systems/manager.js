@@ -1,8 +1,9 @@
 import * as timus from './timus';
 import * as acmp from './acmp';
 import * as cf from './cf';
+import * as ejudge from './ejudge';
 
-const systems = { timus, acmp, cf };
+const systems = { timus, acmp, cf, ejudge };
 let inProcessSolutionsMap = new Map();
 
 export async function getAvailableSystemTypes() {

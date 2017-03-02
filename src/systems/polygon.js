@@ -1,4 +1,4 @@
-import * as cf from './cf';
+import * as ejudge from './ejudge';
 import * as models from '../models';
 import express from 'express';
 import Promise from 'bluebird';
@@ -15,11 +15,11 @@ async function test(req, res, next) {
 }
 
 async function _test() {
-  let solution = await models.Solution.findByPrimary(12403, {
+  let solution = await models.Solution.findByPrimary(12529, {
     include: [ models.Problem, models.Language ]
   });
   
-  return cf.handle(solution);
+  return ejudge.handle(solution);
 }
 
 export default router;

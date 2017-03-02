@@ -1,22 +1,28 @@
 import Promise from 'bluebird';
 import * as models from '../../models';
+import * as accountsMethods from './account';
 
-const systemType = 'timus';
-const accountTimeoutMs = 15 * 1000;
+const systemType = 'ejudge';
+const accountTimeoutMs = 10 * 1000;
 
 let systemAccounts = [];
 let isInitialized = false;
+let isInitializing = false;
 
 function _initialize() {
+  isInitializing = true;
   return Promise.resolve().then(async () => {
     systemAccounts = await models.SystemAccount.findAll({
       where: {
         systemType,
         isEnabled: true
       }
-    }).map(account => _wrapAccount(account));
+    }).map(account => {
+      return _wrapAccount(account);
+    });
     isInitialized = true;
-    console.log('[System report] Timus accounts have been initialized');
+    isInitializing = false;
+    console.log('[System report] Ejudge accounts have been initialized');
   }).catch(console.error.bind(console));
 }
 
@@ -37,7 +43,7 @@ function _wrapAccount(account) {
 }
 
 export async function getFreeAccount() {
-  if (!isInitialized) {
+  if (!isInitialized && !isInitializing) {
     await _initialize();
   }
   let freeSystemAccounts = await getFreeAccounts();
@@ -48,7 +54,7 @@ export async function getFreeAccount() {
 }
 
 export async function getFreeAccounts() {
-  if (!isInitialized) {
+  if (!isInitialized && !isInitializing) {
     await _initialize();
   }
   return systemAccounts.filter(account => {

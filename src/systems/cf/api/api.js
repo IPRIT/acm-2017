@@ -27,29 +27,29 @@ export function getContestsList(params) {
 
 
 export function getContestStandings(params) {
-  let methodUri = '/contest.standings';
+  const methodUri = '/contest.standings';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 
 export function getContestStatus(params) {
-  let methodUri = '/contest.status';
+  const methodUri = '/contest.status';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 
 export function getProblemset(params) {
-  let methodUri = '/problemset.problems';
+  const methodUri = '/problemset.problems';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 
 export function getProblemsetRecentStatus(params) {
-  let methodUri = '/problemset.recentStatus';
+  const methodUri = '/problemset.recentStatus';
   return requestMethod(buildEndpoint(methodUri), params);
 }
 
 export function getUserStatus(params) {
-  let methodUri = '/user.status';
+  const methodUri = '/user.status';
   return requestMethod(buildEndpoint(methodUri), params);
 }

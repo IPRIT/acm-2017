@@ -1,6 +1,6 @@
 {
   "name": "MISIS-ACM",
-  "version": "0.2.8",
+  "version": "0.9.1",
   "main": "bin/www",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
