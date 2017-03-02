@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "name"        : "acm",
-    "script"      : "./bin/www",
+    "script"      : "server",
     "exec_mode"   : "cluster",
     "max_memory_restart": "800M",
     "cron_restart": "0 5 * * *"

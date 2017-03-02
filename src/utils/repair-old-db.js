@@ -21,13 +21,13 @@ async function repairDb() {
   //await repairUsers();
   //await repairLanguages();
   //await repairContests();
-  //await repairProblems();//
+  //await repairProblems();
   //await repairProblemsToContests();
   //await repairUsersToGroups();
   //await repairSystemAccounts();
-  //await repairUserContestEnters();
-  //await repairSolutions();
-  //await repairMessages();
+  /*await repairUserContestEnters();
+  await repairSolutions();
+  await repairMessages();*/
 }
 
 async function repairUsers() {
@@ -172,7 +172,7 @@ async function repairUsersToGroups() {
     let user = await models.User.findByPrimary(user_id);
     let group = await models.Group.findByPrimary(group_id);
     if (!user || !group) {
-      throw new HttpError();
+      continue;
     }
     await user.addGroup(group);
   }

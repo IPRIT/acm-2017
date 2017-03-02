@@ -46,7 +46,7 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, '../app')));
 
-systems.worker.run();
+//systems.worker.run();
 
 /*
  * Connecting routers
