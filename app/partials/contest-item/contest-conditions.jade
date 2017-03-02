@@ -8,7 +8,8 @@ div.contest
 
         div.contest__conditions-link(ng-repeat='condition in conditions')
           a(
-          ui-sref='^.problems-item({problemIndex: condition.internalSymbolIndex})'
+          ui-sref='^.problems-item({problemIndex: condition.internalSymbolIndex})',
+          ng-class='{"problem-status__accepted-problem": condition.verdictStatus.accepted}'
           )
             div
               span.contest__condition-index {{condition.internalSymbolIndex}}.
@@ -29,6 +30,14 @@ div.contest
             md-button.md-icon-button(aria-label='View problem', ng-click="showProblem($event, condition)")
               md-tooltip(md-direction="left") Быстрый просмотр
               md-icon(md-svg-src='/img/icons/ic_visibility_48px.svg')
+          div.contest__condition-status-button-wrap(layout, layout-align='center center')
+            div(aria-label='Problem status')
+              div.problem-status.problem-status__accepted(ng-if='condition.verdictStatus.accepted')
+                md-tooltip(md-direction="left") Задача решена
+                md-icon(md-svg-src='/img/icons/ic_done_48px.svg')
+              div.problem-status.problem-status__wrong(ng-if='!condition.verdictStatus.accepted && condition.verdictStatus.wrongsNumber > 0')
+                md-tooltip(md-direction="left") Задача не решена
+                span {{condition.verdictStatus.wrongsNumber}}
 
         div.contest__conditions_add(ng-if='user.isAdmin')
           md-button(md-no-ink, ng-click='addNewProblemDialog($event)')

@@ -94,6 +94,7 @@ function filter(obj, attrs) {
       [ to ]: ensureValue(toValue, '^(Undefined)', fromValue)
     });
     if (to !== from) {
+      newObj[ from ] = null;
       delete newObj[ from ];
     }
   });
