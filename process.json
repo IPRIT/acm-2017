@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"        : "acm",
+    "name"        : "acm2",
     "script"      : "./server.js",
     "exec_mode"   : "cluster",
     "max_memory_restart": "800M",
