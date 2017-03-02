@@ -4,6 +4,7 @@
     "script"      : "server",
     "exec_mode"   : "cluster",
     "max_memory_restart": "800M",
-    "cron_restart": "0 5 * * *"
+    "cron_restart": "0 5 * * *",
+    "env": { "NODE_ENV": "development" }
   }]
 }
