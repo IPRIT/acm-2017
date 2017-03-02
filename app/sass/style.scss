@@ -914,7 +914,12 @@ my-timer-element {
     box-sizing: border-box;
   }
 }
-.contest__condition-send-button-wrap, .contest__condition-view-button-wrap {
+.problem-status__accepted-problem {
+  background: rgba(139, 195, 74, 0.15);
+}
+.contest__condition-send-button-wrap,
+.contest__condition-view-button-wrap,
+.contest__condition-status-button-wrap {
   position: absolute;
   z-index: 10000;
   right: 30px;
@@ -933,9 +938,47 @@ my-timer-element {
       background-color: rgba(0,0,0,.3);
     }
   }
+
+  .problem-status {
+    background: #ccc;
+    border-radius: 50%;
+    padding: 4px;
+    width: 13px;
+    height: 13px;
+    text-align: center;
+
+    &__accepted {
+      background: transparentize(white, .5);
+      border: 2px solid #8BC34A;
+
+      md-icon {
+        $size: 15px;
+        width: $size;
+        height: $size;
+        min-width: $size;
+        min-height: $size;
+        color: #8BC34A;
+        top: -4px;
+        position: relative;
+        left: -1px;
+      }
+    }
+
+    &__wrong {
+      background: transparentize(white, .5);
+      border: 2px solid #FF5722;
+      color: #FF5722;
+      line-height: 1;
+      font-size: 13px;
+      font-weight: bold;
+    }
+  }
 }
 .contest__condition-view-button-wrap {
   right: 100px;
+}
+.contest__condition-status-button-wrap {
+  right: 180px;
 }
 .contest__conditions-link:hover {
   background-color: rgba(0, 0, 0, 0.07);

@@ -31,6 +31,13 @@ export async function getProblems(params) {
       where: {
         contestId: contest.id
       }
+    }, {
+      model: models.Solution,
+      required: false,
+      include: [ models.Verdict ],
+      where: {
+        userId: user.id
+      }
     }],
     order: [
       [ models.ProblemToContest, 'id', 'ASC']
@@ -42,6 +49,23 @@ export async function getProblems(params) {
     return filter(problem, {
       exclude: [
         'ProblemToContest', 'ProblemToContests', 'textStatement'
+      ],
+      replace: [
+        ['Solutions', 'verdictStatus', (fromValue) => {
+          let accepted = false, wrongsNumber = 0;
+          for (let solution of fromValue) {
+            if (solution.verdictId === 1) {
+              accepted = true;
+              break;
+            } else if (solution.Verdict && solution.Verdict.scored) {
+              wrongsNumber++;
+            }
+          }
+          return {
+            accepted,
+            wrongsNumber
+          }
+        }]
       ]
     })
   });
