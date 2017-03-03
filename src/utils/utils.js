@@ -29,10 +29,27 @@ export function getIntegerIndex(symbolIndex) {
   return index - 1;
 }
 
-export function makeSourceWatermark({ solutionInstance, commentLiteral = SYNTAX_C_LIKE_LITERAL_COMMENT } = {}) {
-  let watermark = new Date().toString();
-  let sourceCode = solutionInstance.sourceCode + watermark.replace(/^(.*)$/gi, commentLiteral);
-  return solutionInstance.update({ sourceCode });
+export function makeSourceWatermark({ solutionInstance, commentLiteral = SYNTAX_C_LIKE_LITERAL_COMMENT, whitespace = false } = {}) {
+  if (whitespace) {
+    let whitespacesNumber = Math.floor(Math.random() * 100) + 1;
+    let watermark = '\n'.repeat(whitespacesNumber);
+    let sourceCode = solutionInstance.sourceCode + watermark;
+    return solutionInstance.update({ sourceCode });
+  } else {
+    let watermark = new Date().toString();
+    let sourceCode = solutionInstance.sourceCode + watermark.replace(/^(.*)$/gi, commentLiteral);
+    return solutionInstance.update({ sourceCode });
+  }
+}
+
+export function appendWatermark(solutionInstance, language = solutionInstance.Language) {
+  if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(language.languageFamily)) {
+    return makeSourceWatermark({ solutionInstance });
+  } else if ([ 'python' ].includes(language.languageFamily)) {
+    return makeSourceWatermark({ solutionInstance, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });
+  } else {
+    return makeSourceWatermark({ solutionInstance, whitespace: true });
+  }
 }
 
 export function valueBetween(value, min = -Infinity, max = Infinity) {

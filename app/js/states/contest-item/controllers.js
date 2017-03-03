@@ -284,16 +284,13 @@ angular.module('Qemy.controllers.contest-item', [])
           $rootScope.$broadcast('data loading');
           $scope.loadingData = true;
         }
-        return ContestItemManager.getTable({contestId: contestId}).then(function (result) {
-          $scope.loadingData = false;
-          $scope.contestTable = result;
+        return ContestItemManager.getTable({contestId: contestId}).then(function (table) {
           return UserManager.getCurrentUser().then(function (user) {
             $rootScope.$broadcast('data loaded');
             $scope.user = user;
-          }).catch(function (result) {
-            $rootScope.$broadcast('data loaded');
-            ErrorService.show(result)
-          });
+            $scope.contestTable = table;
+            $scope.loadingData = false;
+          })
         }).catch(function (result) {
           $rootScope.$broadcast('data loaded');
           ErrorService.show(result);
@@ -312,7 +309,7 @@ angular.module('Qemy.controllers.contest-item', [])
       
       $scope.openStatusDialog = function (ev, cell, user) {
         if (!cell || !cell.task || cell.result === '—'
-          || !user || !user.id) {
+          || !user || !user.id || (user.id !== $scope.user.id && !$scope.user.isAdmin)) {
           return;
         }
         var userId = user.id,

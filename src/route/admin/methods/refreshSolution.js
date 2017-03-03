@@ -1,9 +1,7 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
-import * as contests from '../../contest/methods';
 import * as sockets from "../../../socket/socket";
-import { SYNTAX_PYTHON_LITERAL_COMMENT, makeSourceWatermark } from "../../../utils/utils";
+import { appendWatermark } from "../../../utils/utils";
 
 export function refreshSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -48,11 +46,7 @@ export async function refreshSolution(params) {
   });
   
   if (solution.Problem.systemType === 'cf') {
-    if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(solution.Language.languageFamily)) {
-      await makeSourceWatermark({ solutionInstance: solution });
-    } else if ([ 'python' ].includes(solution.Language.languageFamily)) {
-      await makeSourceWatermark({ solutionInstance: solution, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });
-    }
+    await appendWatermark(solution);
   }
   
   sockets.emitResetSolutionEvent({

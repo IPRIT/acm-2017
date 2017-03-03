@@ -26,6 +26,7 @@ export async function handle(solution) {
         throw new Error('Time limit has exceeded');
       }
       verdict = await getVerdict(solution, systemAccount, contextRow);
+      console.log(verdict);
       sockets.emitVerdictUpdateEvent({
         contestId: solution.contestId,
         solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {

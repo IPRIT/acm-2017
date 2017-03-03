@@ -5,6 +5,7 @@ import { makeSourceWatermark, SYNTAX_PYTHON_LITERAL_COMMENT } from '../../../uti
 import deap from 'deap';
 import * as sockets from '../../../socket';
 import filter from "../../../utils/filter";
+import { appendWatermark } from "../../../utils/utils";
 
 export function sendSolutionRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -71,11 +72,7 @@ export async function sendSolution(params) {
   });
   
   if (problem.systemType === 'cf') {
-    if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(language.languageFamily)) {
-      await makeSourceWatermark({ solutionInstance });
-    } else if ([ 'python' ].includes(language.languageFamily)) {
-      await makeSourceWatermark({ solutionInstance, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });
-    }
+    await appendWatermark(solutionInstance, language);
   }
   
   let filledSolution = await models.Solution.findByPrimary(solutionInstance.id, {
