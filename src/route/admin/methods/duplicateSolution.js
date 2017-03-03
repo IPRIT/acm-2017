@@ -1,12 +1,9 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
-import { makeSourceWatermark, SYNTAX_PYTHON_LITERAL_COMMENT } from "../../../utils/utils";
 import * as sockets from '../../../socket';
-import filter from "../../../utils/filter";
-import { getSymbolIndex } from "../../../utils/utils";
-import * as deap from "deap/lib/deap";
+import { getSymbolIndex, appendWatermark, filterEntity as filter } from "../../../utils";
+import deap from 'deap';
 
 export function duplicateSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -41,11 +38,7 @@ export async function duplicateSolution(params) {
   });
   
   if (Problem.systemType === 'cf') {
-    if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(Language.languageFamily)) {
-      await makeSourceWatermark({ solutionInstance: newSolution });
-    } else if ([ 'python' ].includes(Language.languageFamily)) {
-      await makeSourceWatermark({ solutionInstance: newSolution, commentLiteral: SYNTAX_PYTHON_LITERAL_COMMENT });
-    }
+    await appendWatermark(newSolution, Language);
   }
   
   let filledSolution = await models.Solution.findByPrimary(newSolution.id, {

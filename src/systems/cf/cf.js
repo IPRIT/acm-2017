@@ -1,10 +1,10 @@
-import * as accountsPool from './accountsPool';
-import { sendSolution, getVerdict, getCompilationError  } from './index';
-import * as models from '../../models';
 import Promise from 'bluebird';
+import * as accountsPool from './accountsPool';
+import * as models from '../../models';
 import * as sockets from '../../socket';
-import filter from "../../utils/filter";
 import * as accountMethods from './account';
+import { sendSolution, getVerdict, getCompilationError  } from './index';
+import { appendWatermark, filterEntity as filter } from "../../utils";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 10 * 1000;
@@ -13,7 +13,7 @@ const sameSolutionVerdictId = 15;
 const solutionWithWarningVerdictId = 16;
 const tooMuchSolutionsVerdictId = 17;
 const verdictCheckTimeoutMs = 100;
-const maxAccountWaitingMs = 90 * 1000;
+const maxAccountWaitingMs = 120 * 1000;
 
 export async function handle(solution) {
   let systemAccount = await accountsPool.getFreeAccount();
@@ -21,13 +21,14 @@ export async function handle(solution) {
   
   try {
     let contextRow = await sendSolution(solution, systemAccount);
-
+    
     let verdict;
     while (!verdict || !verdict.isTerminal) {
       if (systemAccount.lastSentSolutionAtMs + maxAccountWaitingMs < Date.now()) {
         throw new Error('Time limit has exceeded');
       }
       verdict = await getVerdict(solution, systemAccount, contextRow);
+      console.log(verdict);
       sockets.emitVerdictUpdateEvent({
         contestId: solution.contestId,
         solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
@@ -52,11 +53,16 @@ async function handleError(error, solution, systemAccount) {
     console.log(`[System report] Refreshing Codeforces account [${systemAccount.instance.systemLogin}]...`);
     await accountMethods.login(systemAccount);
   }
-  
   Promise.delay(10 * 1000).then(_ => systemAccount.free());
-  solution.retriesNumber++;
+  
+  let verdictId = getVerdictIdByError(error);
+  if ([ sameSolutionVerdictId, solutionWithWarningVerdictId, tooMuchSolutionsVerdictId ].includes( verdictId )) {
+    solution.retriesNumber = maxAttemptsNumber;
+  } else {
+    solution.retriesNumber++;
+  }
+  
   if (solution.retriesNumber >= maxAttemptsNumber) {
-    let verdictId = getVerdictIdByError(error);
     let verdict = await models.Verdict.findByPrimary(verdictId);
     await solution.update({
       retriesNumber: solution.retriesNumber,
@@ -80,6 +86,7 @@ async function handleError(error, solution, systemAccount) {
       })
     });
   } else {
+    await appendWatermark(solution);
     await solution.update({
       retriesNumber: solution.retriesNumber,
       nextAttemptWillBeAtMs: Date.now() + nextAttemptAfterMs * solution.retriesNumber

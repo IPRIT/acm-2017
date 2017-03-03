@@ -48,8 +48,9 @@ export async function handle(solution) {
 async function handleError(error, solution, systemAccount) {
   Promise.delay(10 * 1000).then(_ => systemAccount.free());
   solution.retriesNumber++;
+  
   if (solution.retriesNumber >= maxAttemptsNumber) {
-    let verdictId = getVerdictIdByError(error);
+    let verdictId = serviceUnavailableVerdictId;
     let verdict = await models.Verdict.findByPrimary(verdictId);
     await solution.update({
       retriesNumber: solution.retriesNumber,
@@ -85,12 +86,6 @@ async function handleError(error, solution, systemAccount) {
         exclude: [ 'sourceCode' ]
       })
     });
-  }
-}
-
-function getVerdictIdByError(error) {
-  if (!error || !error.message) {
-    return serviceUnavailableVerdictId;
   }
 }
 

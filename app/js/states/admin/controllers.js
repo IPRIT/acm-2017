@@ -1066,13 +1066,10 @@ angular.module('Qemy.controllers.admin', [])
       var newQ = '';
       $scope.searchProblems = function () {
         newQ = $scope.qProblems;
-        AdminManager.searchProblems({
+        return AdminManager.searchProblems({
           q: $scope.qProblems,
           systemType: $scope.systemType
         }).then(function (results) {
-          if (results.error) {
-            return alert('Произошла ошибка: ' + results.error);
-          }
           if (newQ !== results.q) {
             return console.log('Skipped result');
           }
@@ -1093,6 +1090,7 @@ angular.module('Qemy.controllers.admin', [])
             }
             return problem;
           });
+          return $scope.problems;
         });
       };
       
@@ -1113,6 +1111,25 @@ angular.module('Qemy.controllers.admin', [])
           locals: {
             condition: problem
           }
+        });
+      };
+  
+      $scope.deleteProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
+  
+        var confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content('Вы действительно хотите удалить эту задачу? В случае удаления, эта задача удалится из каждого контеста.')
+          .ariaLabel('Confirm dialog')
+          .ok('Да')
+          .cancel('Отмена');
+  
+        $mdDialog.show(confirm).then(function () {
+          return AdminManager.deleteProblem({ problemId: problem.id });
+        }).then(function () {
+          return $scope.searchProblems();
         });
       };
       

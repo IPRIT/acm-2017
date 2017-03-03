@@ -565,6 +565,10 @@ my-timer-element {
   position: absolute;
   right: 0;
   margin-right: 20px;
+
+  &_my {
+    left: 15px;
+  }
 }
 .socket-status {
   &__inner {
@@ -914,9 +918,6 @@ my-timer-element {
     box-sizing: border-box;
   }
 }
-.problem-status__accepted-problem {
-  background: rgba(139, 195, 74, 0.15);
-}
 .contest__condition-send-button-wrap,
 .contest__condition-view-button-wrap,
 .contest__condition-status-button-wrap {
@@ -1000,7 +1001,13 @@ my-timer-element {
   color: #999;
 }
 .contest__conditions-link a:visited .contest__condition-name {
-  color: #8754C4 !important;
+  color: #8754C4;
+}
+.problem-status__accepted-problem {
+  background: rgba(139, 195, 74, 0.15);
+  .contest__condition-name {
+    color: #4caf50 !important;
+  }
 }
 .send-content__condition-selector {
   max-width: 400px;
@@ -1260,13 +1267,13 @@ md-toolbar.md-theme-light {
   .monitor-content__cell_type_accepted {
     font-weight: 100;
     flex-direction: column;
+  }
+  .monitor-content__cell_type_clickable {
+    cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-  }
-  .monitor-content__cell_type_clickable {
-    cursor: pointer;
     &:active {
       -webkit-box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
       -moz-box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
@@ -1383,6 +1390,12 @@ md-toolbar.md-theme-light {
   &:hover {
     background-color: rgba(136, 230, 116, 0.61) !important;
   }
+  &.monitor-content__row-my {
+    border-color: rgba(223, 210, 93, 0.87) !important;
+    &:hover {
+      background-color: darken(rgba(255, 245, 157, 0.64), 7) !important;
+    }
+  }
 }
 .monitor-content__row:not(.monitor-content__row_type_header):nth-child(2n + 1) {
   background-color: rgba(0,0,0,0.05);
@@ -1456,7 +1469,8 @@ md-toolbar.md-theme-light {
 }
 
 .monitor-content__cell_type_in-practice {
-  background-color: #C4F0FF;
+  //background-color: #C4F0FF;
+  background-color: rgba(103, 58, 183, 0.12);
 }
 .logo__content {
   white-space: nowrap;
