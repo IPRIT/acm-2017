@@ -389,7 +389,7 @@ angular.module('Qemy.services', [
       current = message;
       params = angular.extend({}, params);
       var parentSelector = params.parentSelector;
-      var parent = parentSelector ? document.querySelector(parentSelector) : document.body;
+      var parent = parentSelector ? document.querySelector(parentSelector) : document.querySelector('.notifications');
       return (instance = $mdToast.show({
         hideDelay: 20000,
         parent: parent,

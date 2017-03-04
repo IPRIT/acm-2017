@@ -9,6 +9,7 @@ html(ng-controller='PageCtrl', manifest='/manifest.appcache')
   body(ng-controller='AppCtrl', insert-chat-sidenav)
     block content
 
+    div.notifications
     div.page__not-ready(ng-if='!isPageReady', layout='row', layout-align='center center', layout-fill)
       div.sent-list__loading(style='display: inline-block;')
         div.content-spin__layer

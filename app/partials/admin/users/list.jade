@@ -2,13 +2,25 @@ div.admin-content-layer
   div.admin-content-layer__inner
 
     div.contests-sort
+      div.contests-list__title Пользователи
       div.contests-sort__item.admin-content__add-contest
         md-input-container
           md-button.md-raised.md-primary(ui-sref='admin.create-user') + Создать пользователя
-          md-button.md-raised.md-primary(ui-sref='admin.create-user-into-group') + Регистрация пользователей в группу
+          //md-button.md-raised.md-primary(ui-sref='admin.create-user-into-group') + Регистрация пользователей в группу
+
+    div
+      div(layout, layout-sm="column")
+        md-input-container(flex='2')
+          label Поиск по пользователям
+          input(md-maxlength='200', ng-model='query')
+
+      div(ng-if='usersList.length > 0')
+        div.contest-creation__row-title
+          span(ng-switch='dataLoading')
+            span(ng-switch-when='true') Идет поиск... Подождите.
+            span(ng-switch-default) Найденные пользователи:
 
     div.contests-list
-      div.contests-list__title Пользователи
       div.contests-list__pagination(ng-if='pageNumber !== 1')
         include pagination
       div.contests-list__items
