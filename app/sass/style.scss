@@ -44,6 +44,15 @@ html {
   width: 100vw;
   z-index: 77;
   -webkit-transform: translateZ(0);
+
+  &_collapsed {
+    .contest-menu {
+      border-bottom: none;
+      -webkit-box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.23);
+      -moz-box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.23);
+      box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.23);
+    }
+  }
 }
 .header__wrapper {
   height: 100%;
@@ -527,10 +536,10 @@ my-timer-element {
   background-color: rgba(0, 0, 0, 0.05);
 }
 .contest-menu {
-  background-color: #F8F8F8;
+  background-color: white;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  border-top: 1px solid #e1e1e1;
-  box-shadow: inset 0 2px 7px -5px rgba(0,0,0,0.3);
+  //border-top: 1px solid #e1e1e1;
+  //box-shadow: inset 0 2px 7px -5px rgba(0,0,0,0.3);
 }
 .contest-menu__layer {
   width: 75%;
@@ -1467,13 +1476,25 @@ md-toolbar.md-theme-light {
     box-sizing: border-box;
   }
 }
-
 .monitor-content__cell_type_in-practice {
-  //background-color: #C4F0FF;
-  background-color: rgba(103, 58, 183, 0.12);
+  background-color: #00BCD4;
+  color: white;
+  box-shadow: inset 0 0 0px 1px #03A9F4;
+  & > span:first-of-type {
+    font-weight: bold;
+  }
 }
 .logo__content {
   white-space: nowrap;
+}
+.notifications {
+  position: fixed;
+  top: -1px;
+  right: 0;
+  width: 100%;
+  height: 1px;
+  background: transparent;
+  z-index: 1000000000;
 }
 .admin-menu__item {
   text-transform: none;

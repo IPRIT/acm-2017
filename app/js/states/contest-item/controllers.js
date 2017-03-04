@@ -1904,7 +1904,7 @@ angular.module('Qemy.controllers.contest-item', [])
           .hideDelay(20000)
           .textContent(messagesNumber + ' new message' + (messagesNumber > 1 ? 's' : ''))
           .action('Open')
-          .parent(document.querySelector('.header__wrapper'))
+          .parent(document.querySelector('.notifications'))
           .highlightAction(true)
           .highlightClass('md-warn')
           .position(position.join(' '));

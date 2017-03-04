@@ -734,8 +734,8 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
   
-  .controller('AdminUsersListController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog',
-    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog) {
+  .controller('AdminUsersListController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
+    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Список пользователей | ' + _('app_name')
       });
@@ -790,22 +790,27 @@ angular.module('Qemy.controllers.admin', [])
         loadUsers();
       });
       
+      $scope.query = '';
+      
       function loadUsers() {
-        $rootScope.$broadcast('data loading');
-        AdminManager.getUsers($scope.params)
-          .then(function (result) {
-            $rootScope.$broadcast('data loaded');
-            if (!result || !result.hasOwnProperty('usersNumber')) {
-              return;
-            }
-            $scope.all_items_count = result.usersNumber;
-            $scope.usersList = result.users;
-            $scope.pagination = generatePaginationArray(5);
-          }).catch(function (err) {
-          console.log(err);
+        $scope.dataLoading = true;
+        $scope.params.q = $scope.query;
+        return AdminManager.getUsers($scope.params).then(function (result) {
+          if (!result || !result.hasOwnProperty('usersNumber') || $scope.query !== result.q) {
+            return;
+          }
+          $scope.dataLoading = false;
+          $scope.all_items_count = result.usersNumber;
+          $scope.usersList = result.users;
+          $scope.pagination = generatePaginationArray(5);
+        }).catch(function (err) {
+          ErrorService.show(err);
         });
       }
-      loadUsers();
+      
+      $scope.$watch('query', function () {
+        loadUsers();
+      })
     }
   ])
   
