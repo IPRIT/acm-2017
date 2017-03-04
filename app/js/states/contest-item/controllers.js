@@ -566,7 +566,6 @@ angular.module('Qemy.controllers.contest-item', [])
       
       $rootScope.$broadcast('data loading');
       ContestItemManager.getConditions({ contestId: contestId }).then(function (result) {
-        $rootScope.$broadcast('data loaded');
         $scope.conditions = result;
         Storage.get('selected_problems').then(function (selectedProblems) {
           selectedProblems = selectedProblems || {};
