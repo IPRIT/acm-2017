@@ -12,6 +12,7 @@ export * from './repairContest';
 export * from './getContest';
 export * from './deleteUser';
 export * from './createUser';
+export * from './createUsersIntoGroups';
 export * from './getUser';
 export * from './updateUser';
 export * from './setVerdict';

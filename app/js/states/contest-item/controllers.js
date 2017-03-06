@@ -2051,7 +2051,7 @@ angular.module('Qemy.controllers.contest-item', [])
             };
             $scope.file = {
               type: 'pdf',
-              url: 'http://',
+              url: 'https://',
               title: 'Название файла'
             };
             $scope.save = function () {
@@ -2059,7 +2059,7 @@ angular.module('Qemy.controllers.contest-item', [])
               $scope.close();
             };
             
-            $scope.types = [ 'pdf', 'txt', 'doc', 'image' ];
+            $scope.types = [ 'pdf', 'txt', 'doc', 'image', 'spreadsheet' ];
           }],
           templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
           parent: angular.element(document.body),

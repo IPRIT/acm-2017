@@ -1,5 +1,5 @@
 import express from 'express';
-import { rightsAllocator, userRetriever } from '../../utils';
+import { rightsAllocator, userRetriever, isJsonRequest } from '../../utils';
 import * as adminMethods from './methods';
 
 const router = express.Router();
@@ -28,6 +28,7 @@ router.delete('/solutions/:solutionId', [ userRetriever, rightsAllocator('admin'
 
 router.get('/users', [ userRetriever, rightsAllocator('admin') ], adminMethods.searchUsersRequest);
 router.post('/users', [ userRetriever, rightsAllocator('admin') ], adminMethods.createUserRequest);
+router.post('/users-groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.createUsersIntoGroupsRequest);
 router.get('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getUserRequest);
 router.post('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateUserRequest);
 router.delete('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteUserRequest);
