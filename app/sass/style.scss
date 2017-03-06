@@ -44,6 +44,7 @@ html {
   width: 100vw;
   z-index: 77;
   -webkit-transform: translateZ(0);
+  transition: transform .25s ease-in-out;
 
   &_collapsed {
     .contest-menu {
@@ -2183,6 +2184,11 @@ html[style*='scroll'] {
     width: 100vw !important;
   }
 }
+md-chips {
+  .md-chip-input-container {
+    width: 100%;
+  }
+}
 .task__files {
   .task__file-wrap {
     cursor: pointer;
@@ -2190,10 +2196,13 @@ html[style*='scroll'] {
     position: relative;
     text-decoration: none;
     vertical-align: top;
-    -webkit-transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
-    transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
-    margin-right: 12px;
-    margin-bottom: 12px;
+    //-webkit-transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
+    //transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
+
+    &:not(:last-of-type) {
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
 
     .task__file-delete {
       position: absolute;
@@ -2206,7 +2215,7 @@ html[style*='scroll'] {
       display: inline-block;
     }
     .task__file {
-      box-shadow: 0 0 1px rgba(0,0,0,.11),0 1px 2px rgba(0,0,0,.22);
+      box-shadow: 0 0 1px rgba(0,0,0,.11), 0 1px 2px rgba(0,0,0,.22);
       box-sizing: border-box;
       padding: 12px;
       top: 0;
@@ -2233,8 +2242,12 @@ html[style*='scroll'] {
       &_type_image {
         background-position: center center;
         background-size: 100%;
-        background-size: contain;
+        background-size: cover;
         background-repeat: no-repeat;
+
+        md-icon {
+          background: rgba(255, 255, 255, 0.68);
+        }
       }
       &:hover {
         box-shadow: 0 0 3px rgba(0,0,0,.13),0 3px 6px rgba(0,0,0,.26);
@@ -2264,6 +2277,7 @@ html[style*='scroll'] {
       &-ext {
         color: #757575;
         line-height: 16px;
+        font-size: .9em;
         margin-top: 4px;
         white-space: nowrap;
         &-icon {
@@ -2279,6 +2293,9 @@ html[style*='scroll'] {
           background-image: url('/img/icon_2_generic_x32.png');
           &_type_pdf {
             background-image: url('/img/icon_3_pdf_x32.png');
+          }
+          &_type_spreadsheet {
+            background-image: url('/img/icon_1_excel_x32.png');
           }
         }
         span {
@@ -2394,6 +2411,7 @@ md-sidenav {
 
   md-content {
     background: #F3F3F3 !important;
+    padding: 0;
   }
   &__section-title {
     font-size: 11px;

@@ -1,0 +1,37 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Создать пользователей в определенные группы
+
+      div.contest-creation__inner
+        form.contest-creation__form(name='userForm')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Загрузите файл с пользователями в следующем формате:
+            div(layout)
+              md-content.md-padding
+                include ../../contest-item/utils/files
+
+          div.contest-creation__row
+            div.contest-creation__row-title В какой группе будут состоять?
+            span.sublabel Выберите группу для пользователей или оставьте поле пустым, чтобы пользователи видели все контесты.
+            md-input-container.groups(md-no-float)
+              md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
+                md-autocomplete(
+                md-selected-item="chips.selectedItem",
+                md-search-text="chips.searchText",
+                md-items="item in groupSearch(chips.searchText)",
+                md-item-text="item.name",
+                placeholder='Введите названия групп...'
+                )
+                  span(md-highlight-text="searchText") {{item.name}}
+                md-chip-template
+                  div
+                    span.chip-circle(style='background-color: {{$chip.color}};')
+                    span {{$chip.name}}
+
+          div.contest-creation__row
+            md-button.md-raised.md-primary(ngf-select="upload($file)", name="file", ngf-max-size="20MB")
+              md-icon(md-svg-src='/img/icons/ic_file_upload_48px.svg')
+              | Выбрать файл и отправить

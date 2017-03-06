@@ -24,5 +24,10 @@ export async function deleteUser(params) {
   }
   
   let user = await models.User.findByPrimary(userId);
+  if (user) {
+    await user.update({
+      username: `${user.username}_deleted_${Math.random()}`
+    });
+  }
   return user && user.destroy();
 }

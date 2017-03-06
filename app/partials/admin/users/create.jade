@@ -41,7 +41,7 @@ div.admin-content-layer
 
           div.contest-creation__row
             div.contest-creation__row-title В какой группе состоит?
-            span.sublabel Выберите группу для пользователя или оставьте поле пустым, чтобы пользователь входил в любые контесты.
+            span.sublabel Выберите группу для пользователя или оставьте поле пустым, чтобы пользователь видел все контесты.
             md-input-container.groups(md-no-float)
               md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
                 md-autocomplete(
@@ -49,7 +49,7 @@ div.admin-content-layer
                 md-search-text="chips.searchText",
                 md-items="item in groupSearch(chips.searchText)",
                 md-item-text="item.name",
-                placeholder='Введите название...'
+                placeholder='Введите название группы...'
                 )
                   span(md-highlight-text="searchText") {{item.name}}
                 md-chip-template

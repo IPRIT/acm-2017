@@ -792,9 +792,11 @@ angular.module('Qemy.controllers.admin', [])
       
       $scope.query = '';
       
-      function loadUsers() {
+      function loadUsers(params) {
         $scope.dataLoading = true;
         $scope.params.q = $scope.query;
+        angular.extend($scope.params, params);
+        
         return AdminManager.getUsers($scope.params).then(function (result) {
           if (!result || !result.hasOwnProperty('usersNumber') || $scope.query !== result.q) {
             return;
@@ -879,6 +881,73 @@ angular.module('Qemy.controllers.admin', [])
       
       $scope.$watch('form.firstName', fioChanged);
       $scope.$watch('form.lastName', fioChanged);
+    }
+  ])
+  
+  .controller('AdminCreateUsersIntoGroupController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter', 'Upload', 'ErrorService', '$mdToast',
+    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter, Upload, ErrorService, $mdToast) {
+      $scope.$emit('change_title', {
+        title: 'Регистрация пользователей в группу | ' + _('app_name')
+      });
+      
+      $scope.form = {
+        groups: []
+      };
+      
+      $scope.chips = {
+        selectedItem: '',
+        searchText: ''
+      };
+      
+      $scope.groupSearch = function (query) {
+        return AdminManager.searchGroups({ q: query }).then(function (data) {
+          return data.groups;
+        });
+      };
+      
+      $scope.upload = function (file) {
+        $rootScope.$broadcast('data loading');
+        var form = angular.copy($scope.form);
+        var groupIds = (form.groups || []).map(function (group) {
+          return group.id;
+        });
+        Upload.upload({
+          url: '/api/admin/users-groups',
+          data: {
+            file: file,
+            groupIds: groupIds.join(',')
+          }
+        }).then(function (response) {
+          $rootScope.$broadcast('data loaded');
+          $state.go('admin.users-list');
+          var toast = $mdToast.simple()
+            .hideDelay(2000)
+            .textContent('Пользователи успешно созданы')
+            .action('OK')
+            .parent(document.querySelector('.notifications'))
+            .highlightAction(true)
+            .highlightClass('md-warn')
+            .position('top right');
+  
+          $mdToast.show(toast).catch(function (error) {
+            console.log('Toast rejected');
+          });
+        }, function (result) {
+          $rootScope.$broadcast('data loaded');
+          console.log('Error status: ' + result);
+        }, function (evt) {
+          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+          console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        }).catch(function (result) {
+          ErrorService.show(result);
+        });
+      };
+      
+      $scope.files = [{
+        type: 'spreadsheet',
+        url: '/files/docs/users.csv',
+        title: 'users.csv'
+      }];
     }
   ])
   
@@ -1270,7 +1339,7 @@ angular.module('Qemy.controllers.admin', [])
             };
             $scope.file = {
               type: 'pdf',
-              url: 'http://',
+              url: 'https://',
               title: 'Название файла'
             };
             $scope.save = function () {
@@ -1278,7 +1347,7 @@ angular.module('Qemy.controllers.admin', [])
               $scope.close();
             };
             
-            $scope.types = [ 'pdf', 'txt', 'doc', 'image' ];
+            $scope.types = [ 'pdf', 'txt', 'doc', 'image', 'spreadsheet' ];
           }],
           templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
           parent: angular.element(document.body),
