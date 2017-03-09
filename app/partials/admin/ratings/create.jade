@@ -19,6 +19,10 @@ div.admin-content-layer
           md-select(ng-model="curCategory", aria-label='Categories')
             md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
 
+      div.contests-sort__item
+        md-input-container
+          md-button.md-raised.md-primary(ng-click='computeRatings()', ng-disabled='isComputing') Пересчитать рейтинги для всех групп
+
     div.contests-list
       div.contests-list__title Создать рейтинг из контестов
       div.contests-list__pagination(ng-if='pageNumber !== 1')

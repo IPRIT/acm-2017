@@ -404,6 +404,15 @@ angular.module('Qemy.services.admin', [
       });
     }
     
+    function computeRatings(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/computeRatings'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+    
     return {
       searchGroups: searchGroups,
       searchProblems: searchProblems,
@@ -444,7 +453,8 @@ angular.module('Qemy.services.admin', [
       createEjudgeProblem: createEjudgeProblem,
       getVerdicts: getVerdicts,
       setProblemsForContest: setProblemsForContest,
-      deleteUserFromContest: deleteUserFromContest
+      deleteUserFromContest: deleteUserFromContest,
+      computeRatings: computeRatings
     }
   }])
 ;

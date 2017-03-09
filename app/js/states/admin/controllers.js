@@ -1444,11 +1444,33 @@ angular.module('Qemy.controllers.admin', [])
   ])
   
   /* Base create rating controller */
-  .controller('AdminRatingCreateBaseController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
-    function($scope, $rootScope, $state, AdminManager, _) {
+  .controller('AdminRatingCreateBaseController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', 'ErrorService', '$mdToast',
+    function($scope, $rootScope, $state, AdminManager, _, ErrorService, $mdToast) {
       $scope.$emit('change_title', {
         title: 'Создание рейтинга | ' + _('app_name')
       });
+  
+      $scope.isComputing = false;
+      $scope.computeRatings = function () {
+        $scope.isComputing = true;
+        var toast = $mdToast.simple()
+          .hideDelay(2000)
+          .textContent('Рейтинги для всех групп будут обновлены в течение 2-3 минут')
+          .action('OK')
+          .parent(document.querySelector('.notifications'))
+          .highlightAction(true)
+          .highlightClass('md-warn')
+          .position('top right');
+  
+        $mdToast.show(toast).catch(function (error) {
+          console.log('Toast rejected');
+        });
+        return AdminManager.computeRatings().catch(function (err) {
+          ErrorService.show(err);
+        }).finally(function () {
+          $scope.isComputing = false;
+        });
+      };
       
       $scope.selectedContests = [];
       
