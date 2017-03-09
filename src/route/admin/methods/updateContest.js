@@ -21,7 +21,8 @@ export async function updateContest(params) {
     user, userId,
     startTimeMs, durationTimeMs,
     relativeFreezeTimeMs, practiceDurationTimeMs, name,
-    groupIds, problemIds
+    groupIds, problemIds,
+    isRated = true
   } = params;
   
   if (!user) {
@@ -39,7 +40,8 @@ export async function updateContest(params) {
     startTimeMs,
     relativeFreezeTimeMs,
     durationTimeMs,
-    practiceDurationTimeMs
+    practiceDurationTimeMs,
+    isRated
   });
   
   await contest.setProblems([]);

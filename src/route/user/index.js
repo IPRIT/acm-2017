@@ -7,5 +7,6 @@ const router = express.Router();
 router.use('/authenticate', user.authenticator);
 
 router.get('/me', [ userRetriever, rightsAllocator('user') ], user.me);
+router.get('/rating', [ userRetriever, rightsAllocator('user') ], user.getRatingHistoryRequest);
 
 export default router;

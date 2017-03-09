@@ -422,7 +422,8 @@ angular.module('Qemy.controllers.admin', [])
           problemIds: (problems || []).map(function (problem) {
             return problem.id;
           }),
-          contestId: contestId
+          contestId: contestId,
+          isRated: form.isRated
         };
         
         AdminManager.updateContest(data)
@@ -467,7 +468,8 @@ angular.module('Qemy.controllers.admin', [])
               contestStartTime: startDate.getHours(),
               contestStartTimeMinutes: startDate.getMinutes(),
               hasPractice: result.hasPracticeTime,
-              groups: result.allowedGroups || []
+              groups: result.allowedGroups || [],
+              isRated: result.isRated
             };
             $scope.selectedProblems = result.problems.map(function (problem) {
               switch (problem.systemType) {
@@ -509,7 +511,8 @@ angular.module('Qemy.controllers.admin', [])
         contestPracticeTime: 0,
         contestStartDate: currentDate,
         contestName: zF(currentDate.getDate()) + '.' + zF(currentDate.getMonth() + 1) + '.' + zF(currentDate.getFullYear()) + '. Название контеста.',
-        groups: []
+        groups: [],
+        isRated: true
       };
       $scope.startTimes = [];
       $scope.startTimesMinutes = [];
@@ -699,7 +702,8 @@ angular.module('Qemy.controllers.admin', [])
           groupIds: form.groups,
           problemIds: (problems || []).map(function (problem) {
             return problem.id;
-          })
+          }),
+          isRated: form.isRated
         };
         
         AdminManager.createContest(data)

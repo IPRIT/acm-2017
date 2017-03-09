@@ -2111,6 +2111,7 @@ angular.module('Qemy.controllers.contest-item', [])
       
       $scope.runAction = function (ev, action) {
         var actions = {
+          'SHOW_RATING_HISTORY': showRatingHistory,
           'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionsForUser,
           'PARTICIPANT_DELETE': deleteUserFromContest
         };
@@ -2137,6 +2138,10 @@ angular.module('Qemy.controllers.contest-item', [])
               ErrorService.show(result);
             });
           });
+        }
+  
+        function showRatingHistory(user) {
+          
         }
         
         function showConfirmationDialog(ev) {

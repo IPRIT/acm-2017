@@ -31,3 +31,4 @@ export * from './getVerdicts';
 export * from './setProblemsForContest';
 export * from './deleteUserFromContest';
 export * from './deleteSolutionsForUser';
+export * from './computeRatings';

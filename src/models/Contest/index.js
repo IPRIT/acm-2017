@@ -35,6 +35,10 @@ let Contest = sequelize.define('Contest', {
   isSuspended: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
+  },
+  isRated: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: true
   }
 }, {
   engine: 'INNODB',

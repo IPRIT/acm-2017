@@ -13,6 +13,7 @@ import MessageRead from './MessageRead';
 import Language from './Language';
 import Solution from './Solution';
 import SystemAccount from './SystemAccount';
+import RatingChange from './RatingChange';
 
 /*
 import {
@@ -131,10 +132,19 @@ Solution.hasOne(Solution, { foreignKey: 'duplicatedFromId', targetKey: 'id', as:
 User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
 Contest.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
 
+Contest.hasMany(RatingChange, { foreignKey: 'contestId', targetKey: 'id' });
+RatingChange.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
+
+User.hasMany(RatingChange, { foreignKey: 'userId', targetKey: 'id' });
+RatingChange.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
+Group.hasMany(RatingChange, { foreignKey: 'groupId', targetKey: 'id' });
+RatingChange.belongsTo(Group, { foreignKey: 'groupId', targetKey: 'id' });
+
 export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
-  Message, MessageRead, Solution, Language, SystemAccount,
+  Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
 
   /*OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,
