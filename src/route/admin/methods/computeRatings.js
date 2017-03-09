@@ -33,7 +33,8 @@ export async function computeRatings(params) {
     let contests = await group.getContests({
       where: {
         isRated: true
-      }
+      },
+      order: 'startTimeMs ASC'
     });
     
     for (let contest of contests) {
@@ -81,13 +82,14 @@ export async function computeRatings(params) {
       
       results.push({
         contestId: contest.id,
+        contest: contest,
         groupId: group.id,
         result: table.rows
       });
     }
   }
   
-  results.sort((a, b) => b.contestId - a.contestId);
+  results.sort((a, b) => b.contest.startTimeMs - a.contest.startTimeMs);
   
   return results;
 }

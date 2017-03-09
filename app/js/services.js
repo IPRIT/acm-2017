@@ -104,10 +104,31 @@ angular.module('Qemy.services', [
           ? data.result : defaultAction;
       });
     }
+  
+    function getRatingHistory(params) {
+      return $http({
+        method: 'get',
+        url: '/api/user/rating',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+  
+    function getUserGroups(params) {
+      return $http({
+        method: 'get',
+        url: '/api/user/' + params.userId + '/groups'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       getCurrentUser: getCurrentUser,
-      logout: logout
+      logout: logout,
+      getUserGroups: getUserGroups,
+      getRatingHistory: getRatingHistory
     }
   }])
   

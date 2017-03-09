@@ -36,7 +36,8 @@ export async function getProblems(params) {
       required: false,
       include: [ models.Verdict ],
       where: {
-        userId: user.id
+        userId: user.id,
+        contestId: contest.id
       }
     }],
     order: [

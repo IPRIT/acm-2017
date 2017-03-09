@@ -31,21 +31,66 @@ export async function getRatingHistory(params) {
     throw new HttpError('User or Group not found');
   }
   
+  let targetVersion = await models.RatingChange.getCurrentVersion();
+  
   let ratingChanges = await user.getRatingChanges({
     where: {
-      groupId
+      groupId,
+      versionNumber: targetVersion
     },
-    order: 'contestId ASC',
+    order: 'Contest.startTimeMs ASC',
     include: [{
       model: models.Contest
-    }]
+    }, models.Group]
   });
-  
-  return ratingChanges.map(ratingChange => {
+  ratingChanges = ratingChanges.map(ratingChange => {
     return filter(ratingChange.get({ plain: true}), {
       replace: [
-        [ 'Contest', 'contest' ]
+        [ 'Contest', 'contest' ],
+        [ 'Group', 'group' ],
       ]
     });
   });
+  let currentRating = ratingChanges[ratingChanges.length - 1];
+  
+  let otherUsers = await models.RatingChange.findAll({
+    where: {
+      groupId,
+      versionNumber: targetVersion,
+    },
+    order: 'RatingChange.ratingAfter DESC',
+    include: [{
+      model: models.Contest
+    }, models.Group, models.User]
+  });
+  
+  let otherUsersMap = new Map();
+  for (let ratingChange of otherUsers) {
+    if (!otherUsersMap.has(ratingChange.userId)) {
+      otherUsersMap.set(ratingChange.userId, []);
+    }
+    let userChanges = otherUsersMap.get(ratingChange.userId);
+    userChanges.push( ratingChange );
+  }
+  
+  let latestUsersChanges = [];
+  otherUsersMap.forEach(usersArray => {
+    let latestContestIndex = 0, latestContestStartTimeMs = -1e9;
+    usersArray.forEach((change, index) => {
+      if (latestContestStartTimeMs < change.Contest.startTimeMs) {
+        latestContestStartTimeMs = change.Contest.startTimeMs;
+        latestContestIndex = index;
+      }
+    });
+    latestUsersChanges.push( usersArray[latestContestIndex] );
+  });
+  latestUsersChanges.sort((a, b) => b.ratingAfter - a.ratingAfter);
+  
+  currentRating.groupRank = latestUsersChanges.findIndex(change => {
+    return change.userId === currentRating.userId;
+  }) + 1;
+  
+  return {
+    currentRating, ratingChanges
+  };
 }
