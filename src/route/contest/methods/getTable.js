@@ -2,6 +2,8 @@ import { filterEntity as filter, getSymbolIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
 import * as contests from './index';
+import * as usersMethods from '../../user/methods';
+import * as lodash from "lodash";
 
 const PENALTY_TIME = 20; // minutes
 
@@ -237,6 +239,24 @@ export async function getTable(params) {
       readyTable.rows[i].group = ++currentGroupCounter;
     }
   }
+  
+  try {
+    let contestsGroups = await contest.getGroups();
+    let ratings = [];
+    for (let contestGroup of contestsGroups) {
+      let ratingsForGroup = await usersMethods.getRatingTable({group: contestGroup});
+      ratings.push(...ratingsForGroup);
+    }
+    readyTable.rows = readyTable.rows.map(row => {
+      let ratingIndex = ratings.findIndex(change => {
+        return change.User.id === row.user.id;
+      });
+      let rating = ratings[ratingIndex];
+      row.user.rating = rating.ratingAfter;
+      return row;
+    });
+  } catch (err) {}
+  
   return readyTable;
 }
 

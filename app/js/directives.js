@@ -96,6 +96,56 @@ angular.module('Qemy.directives', [])
     };
   })
   
+  .directive('ratedUser', function () {
+    return {
+      restrict: 'E',
+      scope: {
+        user: '='
+      },
+      templateUrl: templateUrl('contest-item/contest-monitor', 'rated-user'),
+      controller: ['$scope', function ($scope) {
+        var ratedGroups = [
+          [-Infinity, 999],
+          [1000, 1499],
+          [1500, 1999],
+          [2000, Infinity]
+        ];
+        var userRating = $scope.user.rating;
+        var ratedGroupIndex = 0;
+        ratedGroups.forEach(function (group, index) {
+          if (group[0] <= userRating && group[1] >= userRating) {
+            ratedGroupIndex = index;
+          }
+        });
+        $scope.ratedGroupNumber = ratedGroupIndex + 1;
+      }]
+    }
+  })
+  
+  .directive('ratedUserWithDialog', function () {
+    return {
+      restrict: 'E',
+      scope: {
+        user: '='
+      },
+      templateUrl: templateUrl('contest-item/contest-monitor', 'rated-user-with-dialog'),
+      controller: ['$scope', '$mdDialog', function ($scope, $mdDialog) {
+        $scope.showRatingHistory = function (ev, user) {
+          $mdDialog.show({
+            controller: 'RatingHistoryDialogController',
+            templateUrl: templateUrl('contest-item/rating', 'dialog'),
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true,
+            locals: {
+              user: user
+            }
+          });
+        };
+      }]
+    }
+  })
+  
   .directive('myTimerElement', ['$injector', function ($injector) {
     return {
       restrict: 'EA',

@@ -2193,11 +2193,12 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.userGroups = [];
       $scope.selectedGroupId = null;
       $scope.ratingHistory = {};
+      $scope.groupTable = [];
       $scope.isLoading = false;
       
       $scope.findGroupById = function (id) {
         return $scope.userGroups.filter(function (group) {
-          return group.id === id;
+          return group.id == id;
         })[0];
       };
       
@@ -2213,7 +2214,9 @@ angular.module('Qemy.controllers.contest-item', [])
       
       function loadData(groupId) {
         $scope.isLoading = true;
-        return loadUserGroups().then(function (groups) {
+        return loadUserInfo().then(function () {
+          return loadUserGroups();
+        }).then(function (groups) {
           if (!groups.length) {
             throw new Error('Пользователь не состоит ни в какой группе');
           }
@@ -2329,11 +2332,39 @@ angular.module('Qemy.controllers.contest-item', [])
         });
       }
   
+      function loadUserInfo() {
+        return UserManager.getUserById({
+          userId: user.id
+        }).then(function (user) {
+          $scope.user = user;
+          return $scope.user;
+        });
+      }
+  
+      function loadGroupTable(groupId) {
+        $scope.isTableLoading = true;
+        return UserManager.getRatingTable({
+          groupId: groupId
+        }).then(function (table) {
+          $scope.groupTable = (table || []).map(function (row) {
+            row.User.rating = row.ratingAfter;
+            return row;
+          });
+          return $scope.groupTable;
+        }).catch(function (err) {
+          ErrorService.show(err);
+        }).finally(function () {
+          $scope.isTableLoading = false;
+        });
+      }
+  
       loadData();
       
       $scope.close = function () {
         $mdDialog.hide();
-      }
+      };
+      
+      $scope.loadGroupTable = loadGroupTable;
     }
   ])
 ;
