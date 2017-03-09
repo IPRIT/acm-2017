@@ -84,6 +84,13 @@ div.admin-content-layer
                 div(ng-message='max') Количество часов должно быть не больше 50000.
 
           div.contest-creation__row
+            div.contest-creation__row-title [Бета] Учитывать результаты контеста при пересчете рейтинга?
+            div
+              md-checkbox.md-warn.md-align-top-left(ng-model='form.isRated', aria-label='Practice checkbox') Рейтинговый контест
+                br
+                span.sublabel Результаты рейтинговых контестов учитываются в групповых рейтингах
+
+          div.contest-creation__row
             div.contest-creation__row-title Кому доступен контест?
             span.sublabel Выберите группы пользователей или оставьте поле пустым, если хотите сделать контест доступным для всех.
             md-input-container.groups(md-no-float)

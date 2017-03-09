@@ -7,5 +7,8 @@ const router = express.Router();
 router.use('/authenticate', user.authenticator);
 
 router.get('/me', [ userRetriever, rightsAllocator('user') ], user.me);
+router.get('/rating', [ userRetriever, rightsAllocator('user') ], user.getRatingHistoryRequest);
+
+router.get('/:userId/groups', [ userRetriever, rightsAllocator('user') ], user.getUserGroupsRequest);
 
 export default router;

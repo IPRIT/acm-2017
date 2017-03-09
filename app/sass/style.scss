@@ -33,6 +33,12 @@ html {
   border: 1px solid #000;
   background: #00A000;
 }
+.red {
+  color: #ff4834 !important;
+}
+.green {
+  color: #35a94f !important;
+}
 .header {
   display: block;
   height: 90px;
@@ -1880,6 +1886,49 @@ md-input-container {
 .menu-divider {
   min-height: 10px;
 }
+.rating-info {
+  background: white;
+  margin-bottom: 16px;
+
+  &__group {
+    background: #ccc;
+    border-radius: 3px;
+    color: #fff !important;
+    padding: 1px 10px;
+    font-size: 0.8em;
+
+    md-select-value {
+      border-bottom: none !important;
+      color: white !important;
+      padding-bottom: 1px !important;
+    }
+    .md-select-icon {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+  }
+
+  &__trend {
+    margin-left: 10px;
+
+    md-icon {
+      margin-right: 5px;
+    }
+    &.up {
+      $color: #35a94f;
+      color: $color;
+      md-icon {
+        color: $color !important;
+      }
+    }
+    &.down {
+      $color: #ff4834;
+      color: $color;
+      md-icon {
+        color: $color !important;
+      }
+    }
+  }
+}
 .rating-table {
   font-size: 0.95em;
 
@@ -2114,6 +2163,9 @@ ui-view, [ui-view] {
   }
   h2 {
     margin-top: 50px;
+  }
+  img {
+    max-width: 100%;
   }
   table {
     border-collapse: collapse;

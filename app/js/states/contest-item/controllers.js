@@ -339,12 +339,32 @@ angular.module('Qemy.controllers.contest-item', [])
         });
       };
       
+      $scope.showRatingHistory = function (ev, user) {
+        $mdDialog.show({
+          controller: 'RatingHistoryDialogController',
+          templateUrl: templateUrl('contest-item/rating', 'dialog'),
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          locals: {
+            user: user
+          }
+        });
+      };
+      
+      var $panelRef;
       $scope.showMonitorRowMenu = function(ev, user) {
+        if ($panelRef && $panelRef.$$state.status === 1) {
+          $panelRef.$$state.value.hide();
+        }
         var position = $mdPanel.newPanelPosition()
           .relativeTo(ev.currentTarget)
           .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
         
         $scope.actions = [{
+          id: 'SHOW_RATING_HISTORY',
+          name: 'Показать рейтинг',
+          svgIcon: '/img/icons/ic_trending_up_48px.svg'
+        }, {
           id: 'REFRESH_SOLUTIONS_FOR_USER',
           name: 'Переотправить все решения для пользователя',
           svgIcon: '/img/icons/ic_restore_48px.svg'
@@ -373,7 +393,7 @@ angular.module('Qemy.controllers.contest-item', [])
           zIndex: 70
         };
         
-        $mdPanel.open(config);
+        $panelRef = $mdPanel.open(config);
       };
     }
   ])
@@ -2111,6 +2131,7 @@ angular.module('Qemy.controllers.contest-item', [])
       
       $scope.runAction = function (ev, action) {
         var actions = {
+          'SHOW_RATING_HISTORY': showRatingHistory,
           'REFRESH_SOLUTIONS_FOR_USER': refreshSolutionsForUser,
           'PARTICIPANT_DELETE': deleteUserFromContest
         };
@@ -2138,6 +2159,19 @@ angular.module('Qemy.controllers.contest-item', [])
             });
           });
         }
+  
+        function showRatingHistory(user) {
+          mdPanelRef.close();
+          $mdDialog.show({
+            controller: 'RatingHistoryDialogController',
+            templateUrl: templateUrl('contest-item/rating', 'dialog'),
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            locals: {
+              user: user
+            }
+          });
+        }
         
         function showConfirmationDialog(ev) {
           var confirm = $mdDialog.confirm()
@@ -2149,6 +2183,152 @@ angular.module('Qemy.controllers.contest-item', [])
             .targetEvent(ev);
           return $mdDialog.show(confirm);
         }
+      }
+    }
+  ])
+
+  .controller('RatingHistoryDialogController', ['$scope', 'user', '$mdDialog', 'ErrorService', 'UserManager', '$timeout',
+    function ($scope, user, $mdDialog, ErrorService, UserManager, $timeout) {
+      
+      $scope.userGroups = [];
+      $scope.selectedGroupId = null;
+      $scope.ratingHistory = {};
+      $scope.isLoading = false;
+      
+      $scope.findGroupById = function (id) {
+        return $scope.userGroups.filter(function (group) {
+          return group.id === id;
+        })[0];
+      };
+      
+      $scope.$watch('selectedGroupId', function (newVal) {
+        $scope.ratingHistory = null;
+        var group = $scope.findGroupById(newVal);
+        $scope.groupColor = group && group.color || '#ccc';
+        loadData($scope.selectedGroupId);
+      });
+      
+      function loadData(groupId) {
+        $scope.isLoading = true;
+        return loadUserGroups().then(function (groups) {
+          if (!groups.length) {
+            throw new Error('Пользователь не состоит ни в какой группе');
+          }
+          $scope.selectedGroupId = groupId || groups[0].id;
+          return loadRatingHistory($scope.selectedGroupId);
+        }).then(function (ratingHistory) {
+          $scope.groupColor = $scope.findGroupById($scope.selectedGroupId).color;
+          safeApply($scope);
+          var history = ratingHistory.ratingChanges;
+          if (!history.length) {
+            return;
+          }
+          var minY = 1e9, maxY = -1e9;
+          var data = history.map(function (ratingChange) {
+            minY = Math.min(minY, ratingChange.ratingAfter);
+            maxY = Math.max(maxY, ratingChange.ratingAfter);
+            return {
+              name: '<b>#' + ratingChange.contest.id + '. ' + ratingChange.contest.name + '<b><br>' +
+                ('Место в контесте: <b>#' + ratingChange.realRank + '</b><br>') +
+                'Изменение рейтинга: ' + (ratingChange.ratingChange > 0
+                ? '<b style="fill: #35a94f; color: #35a94f;">+' + ratingChange.ratingChange + '</b>'
+                : '<b style="fill: #ff4834; color: #ff4834;">' + ratingChange.ratingChange + '</b>'),
+              y: ratingChange.ratingAfter,
+              x: new Date(ratingChange.contest.startTimeMs)
+            };
+          });
+          $timeout(function () {
+            Highcharts.chart('rating-chart', {
+              chart: {
+                type: 'line',
+                zoomType: 'x'
+              },
+              title: {
+                text: 'Рейтинг пользователя'
+              },
+              subtitle: {
+                text: 'Показаны только рейтинговые контесты'
+              },
+              xAxis: {
+                type: 'datetime',
+                title: {
+                  text: 'Дата'
+                },
+                tickInterval: 25 * 24 * 3600 * 1000
+              },
+              yAxis: {
+                title: {
+                  text: 'Рейтинг'
+                },
+                min: minY - 50,
+                max: maxY + 50
+              },
+              plotOptions: {
+                area: {
+                  marker: {
+                    enabled: true,
+                    radius: 4
+                  },
+                  lineWidth: 2
+                }
+              },
+              series: [{
+                type: 'area',
+                name: 'Рейтинг',
+                data: data,
+                zones: [{
+                  value: 1000,
+                  color: '#009688',
+                  fillColor: 'rgba(0, 150, 136, 0.31)',
+                  negativeFillColor: 'rgba(0, 150, 136, 0.31)'
+                }, {
+                  value: 1500,
+                  color: '#8bc34a',
+                  fillColor: 'rgba(139, 195, 74, 0.33)',
+                  negativeFillColor: 'rgba(139, 195, 74, 0.33)'
+                }, {
+                  value: 2000,
+                  color: '#ff9800',
+                  fillColor: 'rgba(255, 152, 0, 0.36)',
+                  negativeFillColor: 'rgba(255, 152, 0, 0.36)'
+                }, {
+                  value: 8000,
+                  color: 'rgb(255,82,82)',
+                  fillColor: 'rgba(255,82,82,.3)',
+                  negativeFillColor: 'rgba(255,82,82,.3)'
+                }]
+              }]
+            });
+          }, 100);
+        }).catch(function (err) {
+          console.error(err);
+          ErrorService.show(err);
+        }).finally(function () {
+          $scope.isLoading = false;
+        });
+      }
+      
+      function loadUserGroups() {
+        return UserManager.getUserGroups({ userId: user.id }).then(function (groups) {
+          $scope.userGroups = groups || [];
+          return $scope.userGroups;
+        });
+      }
+  
+      function loadRatingHistory(groupId) {
+        return UserManager.getRatingHistory({
+          userId: user.id,
+          groupId: groupId
+        }).then(function (history) {
+          $scope.ratingHistory = history || [];
+          return $scope.ratingHistory;
+        });
+      }
+  
+      loadData();
+      
+      $scope.close = function () {
+        $mdDialog.hide();
       }
     }
   ])

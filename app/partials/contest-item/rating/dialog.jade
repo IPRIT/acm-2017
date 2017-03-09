@@ -1,0 +1,45 @@
+md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 1200px; min-width: 800px;')
+  form
+    md-toolbar.md-accent
+      div.md-toolbar-tools
+        h2 Рейтинг пользователя
+        span(flex)
+        md-button.md-icon-button(ng-click="close()")
+          md-icon(md-svg-src="/img/icons/ic_close_48px.svg", aria-label="Close dialog")
+
+    md-dialog-content
+      md-content.md-padding
+        md-content.rating-info.md-padding
+          div
+            span(style='vertical-align: middle;') Рейтинг показывается для группы:
+            span(style='vertical-align: middle;')
+              div(style='max-width: 200px; display: inline-block; margin-left: 10px; position: relative; top: -3px;')
+                md-input-container
+                  md-select.rating-info__group(ng-model="selectedGroupId", aria-label='Sort orders', style='background-color: {{groupColor}}')
+                    md-option(ng-repeat='userGroup in userGroups', value='{{userGroup.id}}') {{userGroup.name}}
+
+        md-content.rating-info.md-padding
+          div
+            span(style='vertical-align: middle;') Место в группе:&nbsp;
+            span(style='vertical-align: middle; font-weight: bold;') \#{{ratingHistory.currentRating.groupRank}}
+          div
+            span(style='vertical-align: middle;') Текущий рейтинг:&nbsp;
+            span(style='vertical-align: middle; font-size: {{ratingHistory.currentRating.ratingAfter / 1000}}em')
+              span(ng-if='ratingHistory.currentRating.ratingAfter >= 2000', style='color: rgb(255,82,82)') {{ratingHistory.currentRating.ratingAfter}}
+              span(ng-if='ratingHistory.currentRating.ratingAfter >= 1500 && ratingHistory.currentRating.ratingAfter < 2000', style='color: #ff9800') {{ratingHistory.currentRating.ratingAfter}}
+              span(ng-if='ratingHistory.currentRating.ratingAfter >= 1000 && ratingHistory.currentRating.ratingAfter < 1500', style='color: #8bc34a') {{ratingHistory.currentRating.ratingAfter}}
+              span(ng-if='ratingHistory.currentRating.ratingAfter >= 0 && ratingHistory.currentRating.ratingAfter < 1000', style='color: #009688') {{ratingHistory.currentRating.ratingAfter}}
+            span.rating-info__trend(style='vertical-align: middle;', ng-class='{"up": ratingHistory.currentRating.ratingChange > 0, "down": ratingHistory.currentRating.ratingChange < 0}')
+              md-icon(ng-if='ratingHistory.currentRating.ratingChange > 0', md-svg-src='/img/icons/ic_trending_up_48px.svg')
+              md-icon(ng-if='ratingHistory.currentRating.ratingChange < 0', md-svg-src='/img/icons/ic_trending_down_48px.svg')
+              span {{ratingHistory.currentRating.ratingChange > 0 ? '+' + ratingHistory.currentRating.ratingChange : ratingHistory.currentRating.ratingChange}}
+        md-content
+          div(ng-if='!isLoading && userGroups.length > 0 && ratingHistory.ratingChanges.length === 0') Пользователь не имеет рейтинга в данной группе
+          div(ng-if='!isLoading && userGroups.length === 0') Пользователь не состоит ни в какой группе
+          div(ng-show='!isLoading && userGroups.length > 0 && ratingHistory.ratingChanges.length > 0')
+            div#rating-chart
+          div(ng-if='isLoading', style='padding: 20px;', layout='row', layout-align='center center')
+            md-progress-circular(md-diameter="40")
+
+    div.md-actions(layout="row")
+      md-button(ng-click="close()") Закрыть
