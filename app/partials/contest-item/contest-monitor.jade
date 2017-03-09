@@ -25,7 +25,7 @@ div.contest
                 )
             div(ng-switch-when='WAITING')
               span Начало через
-                my-timer-element.contest-item__status-time(finish='contest.startTime', on-finish='updateContest')
+                my-timer-element.contest-item__status-time(finish='contest.startTimeMs', on-finish='updateContest')
             div(ng-switch-when='RUNNING')
               span.contests-list__item_status_success Контест идет. Осталось
                 my-timer-element.contest-item__status-time(
