@@ -2220,7 +2220,8 @@ angular.module('Qemy.controllers.contest-item', [])
           $scope.selectedGroupId = groupId || groups[0].id;
           return loadRatingHistory($scope.selectedGroupId);
         }).then(function (ratingHistory) {
-          $scope.groupColor = $scope.findGroupById($scope.selectedGroupId).color;
+          var group = $scope.findGroupById($scope.selectedGroupId);
+          $scope.groupColor = group && group.color || '#ccc';
           safeApply($scope);
           var history = ratingHistory.ratingChanges;
           if (!history.length) {
