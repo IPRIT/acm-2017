@@ -123,12 +123,33 @@ angular.module('Qemy.services', [
         return data.data;
       });
     }
+  
+    function getRatingTable(params) {
+      return $http({
+        method: 'get',
+        url: '/api/user/rating/table',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+    
+    function getUserById(params) {
+      return $http({
+        method: 'get',
+        url: '/api/user/' + params.userId
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       getCurrentUser: getCurrentUser,
       logout: logout,
       getUserGroups: getUserGroups,
-      getRatingHistory: getRatingHistory
+      getRatingHistory: getRatingHistory,
+      getRatingTable: getRatingTable,
+      getUserById: getUserById
     }
   }])
   

@@ -1886,7 +1886,54 @@ md-input-container {
 .menu-divider {
   min-height: 10px;
 }
-.rating-info {
+.rated-group {
+  text-shadow: 0 1px 0px rgba(0, 0, 0, .2);
+
+  $groups-colors: (#009688, #71a242, #ff9800, rgb(255,82,82));
+  $group-number: 1;
+  @each $color in $groups-colors {
+    &__number-#{$group-number} {
+      color: $color;
+    }
+    $group-number: $group-number + 1;
+  }
+}
+.rated-user-with-dialog {
+  cursor: pointer;
+  color: currentColor;
+  outline: none;
+
+  .rated-group {
+    text-decoration: underline;
+    text-shadow: none;
+  }
+}
+.group-rating-table {
+  background: white;
+  margin-bottom: 16px;
+
+  &__row {
+    border-bottom: 1px solid transparentize(#000, .95);
+    border-left: 1px solid transparentize(#000, .95);
+    border-right: 1px solid transparentize(#000, .95);
+    padding: 13px 20px;
+
+    &:nth-child(2n + 1) {
+      background-color: transparentize(#000, .98);
+    }
+    &:first-of-type {
+      border-top: 1px solid transparentize(#000, .95);
+    }
+    &_highlighted {
+      background-color: rgba(255, 201, 38, 0.37) !important;
+    }
+  }
+  &__rating {
+    margin-bottom: 0 !important;
+    background: transparent !important;
+  }
+}
+.rating-info, .group-rating-table__rating {
   background: white;
   margin-bottom: 16px;
 
@@ -1903,7 +1950,7 @@ md-input-container {
       padding-bottom: 1px !important;
     }
     .md-select-icon {
-      color: rgba(255, 255, 255, 0.8) !important;
+      color: rgba(255, 255, 255, .8) !important;
     }
   }
 

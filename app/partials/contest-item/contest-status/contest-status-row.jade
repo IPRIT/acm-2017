@@ -19,7 +19,7 @@ div.sent-list__item(ng-repeat='sent in solutions track by sent.id',
     span {{(sent.sentAtMs - sent.contest.startTimeMs) | formatStartTime}}
       md-tooltip {{sent.sentAtMs | date:'medium'}}
   div.sent-list__cell
-    span {{::sent.author.fullName}}
+    rated-user-with-dialog(user='::sent.author')
   div.sent-list__cell.sent-list__cell-task
     a.link.sent-list__link(ui-sref='^.problems-item({problemIndex: sent.internalSymbolIndex})', title='{{sent.internalSymbolIndex + ". " + sent.problem.title}}') {{sent.internalSymbolIndex + '. ' + sent.problem.title}}
   div.sent-list__cell.sent-list__cell_type_language

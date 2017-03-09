@@ -4,6 +4,7 @@ import Promise from 'bluebird';
 import * as contests from './index';
 import deap from 'deap';
 import userGroups from './../../../models/User/userGroups';
+import * as userMethods from '../../user/methods';
 import Sequelize from 'sequelize';
 
 export function getSolutionsRequest(req, res, next) {
@@ -124,6 +125,25 @@ export async function getSolutions(params) {
     return deap.extend(solution, {
       internalSymbolIndex: symbolIndex.toUpperCase()
     });
+  }).then(async solutions => {
+    try {
+      let contestsGroups = await contest.getGroups();
+      let ratings = [];
+      for (let contestGroup of contestsGroups) {
+        let ratingsForGroup = await userMethods.getRatingTable({ group: contestGroup });
+        ratings.push(...ratingsForGroup);
+      }
+      return solutions.map(solution => {
+        let ratingIndex = ratings.findIndex(change => {
+          return change.User.id === solution.author.id;
+        });
+        let rating = ratings[ ratingIndex ];
+        solution.author.rating = rating.ratingAfter;
+        return solution;
+      });
+    } catch (err) {
+      return solutions;
+    }
   }).then(async solutions => {
     return {
       solutions,
