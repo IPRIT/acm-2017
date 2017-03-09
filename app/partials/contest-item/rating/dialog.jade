@@ -40,7 +40,7 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
           div(ng-if='!isTableLoading && groupTable.length > 0')
             div.group-rating-table__inner
               div.group-rating-table__row(ng-repeat='rating in groupTable', layout='row', layout-align='space-between center', ng-class='{"group-rating-table__row_highlighted": user.id === rating.User.id}')
-                div.group-rating-table__user
+                div.group-rating-table__user {{rating.groupRank}}.&nbsp;
                   rated-user-with-dialog(user='rating.User')
                 div.group-rating-table__rating(layout='column', layout-align='center center')
                   div
