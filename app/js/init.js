@@ -142,7 +142,7 @@ function initApplication () {
                             // Angular Material is exists
                             var confirmDialog = $mdDialog.confirm()
                                 .title('Предупреждение')
-                                .content('A new version (' + Config.App.version + ') of this app is available. Load it?')
+                                .content('Доступна новая версия приложения. Обновить кеш?')
                                 .clickOutsideToClose(false)
                                 .ariaLabel('Application cache update confirm')
                                 .ok('Ok')
@@ -151,7 +151,7 @@ function initApplication () {
                                 window.location.reload();
                             });
                         } else {
-                            if (confirm('A new version (' + Config.App.version + ') of this app is available. Load it?')) {
+                            if (confirm('Доступна новая версия приложения. Обновить кеш?')) {
                                 window.location.reload();
                             }
                         }
