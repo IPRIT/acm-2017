@@ -345,6 +345,10 @@ angular.module('Qemy.controllers.contest-item', [])
           .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.BELOW);
         
         $scope.actions = [{
+          id: 'SHOW_RATING_HISTORY',
+          name: 'Показать рейтинг',
+          svgIcon: '/img/icons/ic_trending_up_48px.svg'
+        }, {
           id: 'REFRESH_SOLUTIONS_FOR_USER',
           name: 'Переотправить все решения для пользователя',
           svgIcon: '/img/icons/ic_restore_48px.svg'
