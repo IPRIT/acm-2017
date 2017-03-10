@@ -5,7 +5,9 @@ div.contests-list__item-layer.admin-contests__contest-item
       div.search-spin-layer_
         div.search-spin
   div.contests-list__item.contest-item
-    div.contest-item__title {{contest.name}}
+    div.contest-item__title
+      span.contest-item__rated-label(ng-if='contest.isRated') Рейтинговый
+      span {{contest.name}}
     div.contest-item__groups
       div.contest-item__groups-for Кто видит:
       div.contests-list__groups-item(ng-if='!contest.allowedGroups.length', style='background-color: #9E9E9E;')
