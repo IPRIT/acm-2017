@@ -450,6 +450,19 @@ contest-list-item {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
+  &__rated-label {
+    margin-right: 7px;
+    color: white;
+    background: #F44336;
+    padding: 6px 8px;
+    font-size: 0.6em;
+    font-weight: 100;
+    position: relative;
+    top: -1px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
 }
 .contest-item__title {
   font-size: 1.2em;
