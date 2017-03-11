@@ -2187,8 +2187,8 @@ angular.module('Qemy.controllers.contest-item', [])
     }
   ])
 
-  .controller('RatingHistoryDialogController', ['$scope', 'user', '$mdDialog', 'ErrorService', 'UserManager', '$timeout',
-    function ($scope, user, $mdDialog, ErrorService, UserManager, $timeout) {
+  .controller('RatingHistoryDialogController', ['$scope', 'user', '$mdDialog', 'ErrorService', 'UserManager', '$timeout', '$q',
+    function ($scope, user, $mdDialog, ErrorService, UserManager, $timeout, $q) {
       
       $scope.userGroups = [];
       $scope.selectedGroupId = null;
@@ -2284,7 +2284,7 @@ angular.module('Qemy.controllers.contest-item', [])
                 name: 'Рейтинг',
                 data: data,
                 zones: [{
-                  value: 1000,
+                  value: 1350,
                   color: '#009688',
                   fillColor: 'rgba(0, 150, 136, 0.31)',
                   negativeFillColor: 'rgba(0, 150, 136, 0.31)'
@@ -2294,15 +2294,20 @@ angular.module('Qemy.controllers.contest-item', [])
                   fillColor: 'rgba(139, 195, 74, 0.33)',
                   negativeFillColor: 'rgba(139, 195, 74, 0.33)'
                 }, {
-                  value: 2000,
+                  value: 1650,
                   color: '#ff9800',
                   fillColor: 'rgba(255, 152, 0, 0.36)',
                   negativeFillColor: 'rgba(255, 152, 0, 0.36)'
                 }, {
-                  value: 8000,
+                  value: 1750,
                   color: 'rgb(255,82,82)',
                   fillColor: 'rgba(255,82,82,.3)',
                   negativeFillColor: 'rgba(255,82,82,.3)'
+                }, {
+                  value: 8000,
+                  color: '#9c27b0',
+                  fillColor: 'rgba(156, 39, 176, 0.3)',
+                  negativeFillColor: 'rgba(156, 39, 176, 0.3)'
                 }]
               }]
             });
@@ -2327,18 +2332,14 @@ angular.module('Qemy.controllers.contest-item', [])
           userId: user.id,
           groupId: groupId
         }).then(function (history) {
-          $scope.ratingHistory = history || [];
+          $scope.ratingHistory = history || {};
           return $scope.ratingHistory;
         });
       }
   
       function loadUserInfo() {
-        return UserManager.getUserById({
-          userId: user.id
-        }).then(function (user) {
-          $scope.user = user;
-          return $scope.user;
-        });
+        $scope.user = user;
+        return $q.when(user);
       }
   
       function loadGroupTable(groupId) {

@@ -58,7 +58,7 @@ export async function getRatingTable(params) {
   });
   latestUsersChanges.sort((a, b) => b.ratingAfter - a.ratingAfter);
   latestUsersChanges = latestUsersChanges.map((value, index) => {
-    value = value.get({ plain: true });
+    value = value.get({ plain: true }) || value;
     value.groupRank = index + 1;
     value.User.rating = value.ratingAfter;
     return value;
