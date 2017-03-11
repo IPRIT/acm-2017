@@ -148,7 +148,18 @@ export async function getSolutions(params) {
     return {
       solutions,
       solutionsNumber: await models.Solution.count({
-        include: [ includeUsers ],
+        include: [ includeUsers, {
+          model: models.Problem,
+          required: true,
+          where: {
+            id: {
+              $in: [ ...problemsMapping.keys() ]
+            }
+          },
+          attributes: {
+            exclude: [ 'htmlStatement', 'textStatement', 'attachments' ]
+          }
+        } ],
         where: deap.extend(where, { contestId: contest.id })
       })
     }

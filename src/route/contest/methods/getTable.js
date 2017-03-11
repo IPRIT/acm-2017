@@ -240,22 +240,20 @@ export async function getTable(params) {
     }
   }
   
-  try {
-    let contestsGroups = await contest.getGroups();
-    let ratings = [];
-    for (let contestGroup of contestsGroups) {
-      let ratingsForGroup = await usersMethods.getRatingTable({group: contestGroup});
-      ratings.push(...ratingsForGroup);
-    }
-    readyTable.rows = readyTable.rows.map(row => {
-      let ratingIndex = ratings.findIndex(change => {
-        return change.User.id === row.user.id;
-      });
-      let rating = ratings[ratingIndex];
-      row.user.rating = rating.ratingAfter;
-      return row;
+  let contestsGroups = await contest.getGroups();
+  let ratings = [];
+  for (let contestGroup of contestsGroups) {
+    let ratingsForGroup = await usersMethods.getRatingTable({ group: contestGroup });
+    ratings.push(...ratingsForGroup);
+  }
+  readyTable.rows = readyTable.rows.map(row => {
+    let ratingIndex = ratings.findIndex(change => {
+      return change.User.id === row.user.id;
     });
-  } catch (err) {}
+    let rating = ratings[ratingIndex];
+    row.user.rating = rating.ratingAfter || 0;
+    return row;
+  });
   
   return readyTable;
 }

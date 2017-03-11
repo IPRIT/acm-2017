@@ -25,10 +25,7 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
           div
             span(style='vertical-align: middle;') Текущий рейтинг:&nbsp;
             span(style='vertical-align: middle; font-size: {{ratingHistory.currentRating.ratingAfter / 1000}}em')
-              span(ng-if='ratingHistory.currentRating.ratingAfter >= 2000', style='color: rgb(255,82,82)') {{ratingHistory.currentRating.ratingAfter}}
-              span(ng-if='ratingHistory.currentRating.ratingAfter >= 1500 && ratingHistory.currentRating.ratingAfter < 2000', style='color: #ff9800') {{ratingHistory.currentRating.ratingAfter}}
-              span(ng-if='ratingHistory.currentRating.ratingAfter >= 1000 && ratingHistory.currentRating.ratingAfter < 1500', style='color: #8bc34a') {{ratingHistory.currentRating.ratingAfter}}
-              span(ng-if='ratingHistory.currentRating.ratingAfter >= 0 && ratingHistory.currentRating.ratingAfter < 1000', style='color: #009688') {{ratingHistory.currentRating.ratingAfter}}
+              rating-color-text(ng-if='ratingHistory.currentRating', rating='ratingHistory.currentRating.ratingAfter') {{ratingHistory.currentRating.ratingAfter}}
             span.rating-info__trend(style='vertical-align: middle;', ng-class='{"up": ratingHistory.currentRating.ratingChange > 0, "down": ratingHistory.currentRating.ratingChange < 0}')
               md-icon(ng-if='ratingHistory.currentRating.ratingChange > 0', md-svg-src='/img/icons/ic_trending_up_48px.svg')
               md-icon(ng-if='ratingHistory.currentRating.ratingChange < 0', md-svg-src='/img/icons/ic_trending_down_48px.svg')
@@ -45,10 +42,7 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
                 div.group-rating-table__rating(layout='column', layout-align='center center')
                   div
                     span
-                      span(ng-if='rating.ratingAfter >= 2000', style='color: rgb(255,82,82)') {{rating.ratingAfter}}
-                      span(ng-if='rating.ratingAfter >= 1500 && rating.ratingAfter < 2000', style='color: #ff9800') {{rating.ratingAfter}}
-                      span(ng-if='rating.ratingAfter >= 1000 && rating.ratingAfter < 1500', style='color: #8bc34a') {{rating.ratingAfter}}
-                      span(ng-if='rating.ratingAfter >= 0 && rating.ratingAfter < 1000', style='color: #009688') {{rating.ratingAfter}}
+                      rating-color-text(rating='rating.User.rating') {{rating.User.rating}}
                     span.rating-info__trend(style='vertical-align: middle;', ng-class='{"up": rating.ratingChange > 0, "down": rating.ratingChange < 0}')
                       md-icon(ng-if='rating.ratingChange > 0', md-svg-src='/img/icons/ic_trending_up_48px.svg')
                       md-icon(ng-if='rating.ratingChange < 0', md-svg-src='/img/icons/ic_trending_down_48px.svg')

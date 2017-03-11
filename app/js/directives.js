@@ -96,29 +96,41 @@ angular.module('Qemy.directives', [])
     };
   })
   
+  .directive('ratingColorText', function () {
+    return {
+      restrict: 'E',
+      scope: {
+        rating: '='
+      },
+      transclude: true,
+      templateUrl: templateUrl('contest-item/contest-monitor', 'rating-color-text'),
+      controller: ['$scope', function ($scope) {
+        var ratedGroups = [
+          [-Infinity, 1350],
+          [1350, 1500],
+          [1500, 1650],
+          [1650, 1750],
+          [1750, Infinity]
+        ];
+        var userRating = $scope.rating;
+        var ratedGroupIndex = 0;
+        ratedGroups.forEach(function (group, index) {
+          if (group[0] <= userRating && group[1] > userRating) {
+            ratedGroupIndex = index;
+          }
+        });
+        $scope.ratedGroupNumber = ratedGroupIndex + 1;
+      }]
+    }
+  })
+  
   .directive('ratedUser', function () {
     return {
       restrict: 'E',
       scope: {
         user: '='
       },
-      templateUrl: templateUrl('contest-item/contest-monitor', 'rated-user'),
-      controller: ['$scope', function ($scope) {
-        var ratedGroups = [
-          [-Infinity, 999],
-          [1000, 1499],
-          [1500, 1999],
-          [2000, Infinity]
-        ];
-        var userRating = $scope.user.rating;
-        var ratedGroupIndex = 0;
-        ratedGroups.forEach(function (group, index) {
-          if (group[0] <= userRating && group[1] >= userRating) {
-            ratedGroupIndex = index;
-          }
-        });
-        $scope.ratedGroupNumber = ratedGroupIndex + 1;
-      }]
+      templateUrl: templateUrl('contest-item/contest-monitor', 'rated-user')
     }
   })
   
