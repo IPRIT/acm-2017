@@ -249,7 +249,7 @@ export async function getTable(params) {
   readyTable.rows = readyTable.rows.map(row => {
     console.log('User: ', row.user.id);
     let ratingIndex = ratings.findIndex(change => {
-      if (!change) {
+      if (!change || !change.User) {
         return console.log(change);
       }
       console.log(change.User.id, row.user.id);
