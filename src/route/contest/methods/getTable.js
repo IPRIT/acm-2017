@@ -256,7 +256,7 @@ export async function getTable(params) {
       return change.User.id === row.user.id;
     });
     let rating = ratings[ratingIndex];
-    row.user.rating = rating.User && rating.User.rating || 0;
+    row.user.rating = rating && rating.User && rating.User.rating || 0;
     if (!rating) {
       console.log('Skipped user', row.user.id);
     }
