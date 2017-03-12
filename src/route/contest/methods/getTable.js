@@ -244,9 +244,8 @@ export async function getTable(params) {
   let ratings = [];
   for (let contestGroup of contestsGroups) {
     let ratingsForGroup = await usersMethods.getRatingTable({ group: contestGroup });
-    ratings.push(...ratingsForGroup);
+    ratings.concat(ratingsForGroup);
   }
-  console.log(ratings.map(change => {return{id: change.User.id, value: change.User.rating}}));
   readyTable.rows = readyTable.rows.map(row => {
     console.log('User: ', row.user.id);
     let ratingIndex = ratings.findIndex(change => {
