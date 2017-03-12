@@ -250,6 +250,9 @@ export async function getTable(params) {
   readyTable.rows = readyTable.rows.map(row => {
     console.log('User: ', row.user.id);
     let ratingIndex = ratings.findIndex(change => {
+      if (!change) {
+        return console.log(change);
+      }
       console.log(change.User.id, row.user.id);
       return change.User.id === row.user.id;
     });
