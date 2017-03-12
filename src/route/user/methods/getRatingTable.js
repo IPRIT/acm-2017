@@ -42,7 +42,7 @@ export async function getRatingTable(params) {
       otherUsersMap.set(ratingChange.userId, []);
     }
     let userChanges = otherUsersMap.get(ratingChange.userId);
-    userChanges.push( ratingChange );
+    userChanges.push( ratingChange.get({ plain: true }) );
   }
   
   let latestUsersChanges = [];
@@ -58,11 +58,11 @@ export async function getRatingTable(params) {
   });
   latestUsersChanges.sort((a, b) => b.ratingAfter - a.ratingAfter);
   latestUsersChanges = latestUsersChanges.map((value, index) => {
-    value = value.get({ plain: true }) || value;
     value.groupRank = index + 1;
     value.User.rating = value.ratingAfter;
     return value;
   });
+  console.log(latestUsersChanges.map(change => change.User.id));
   
   return latestUsersChanges;
 }
