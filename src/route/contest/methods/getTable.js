@@ -248,6 +248,7 @@ export async function getTable(params) {
   }
   console.log(ratings.map(change => {return{id: change.User.id, value: change.User.rating}}));
   readyTable.rows = readyTable.rows.map(row => {
+    console.log('User: ', row.user.id);
     let ratingIndex = ratings.findIndex(change => {
       console.log(change.User.id, row.user.id);
       return change.User.id === row.user.id;
