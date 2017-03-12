@@ -1080,6 +1080,7 @@ md-toolbar.md-theme-light {
 
   md-content {
     background-color: transparent !important;
+    overflow-y: hidden;
   }
   md-content md-tabs {
     background: #f6f6f6;
@@ -1687,18 +1688,29 @@ md-input-container {
   -o-transition: all .2s ease-out;
   transition: all .2s ease-out;
 }
-.animation.ng-leave { opacity: 1; }
-.animation.ng-leave.ng-leave-active { opacity: 0; }
+.animation.ng-leave {
+  opacity: 1;
+  transform: translateY(0px);
+}
+.animation.ng-leave.ng-leave-active {
+  opacity: 0;
+  transform: translateY(10px);
+}
 
-.animation.ng-enter { opacity: 0; height: 0; }
-.animation.ng-enter.ng-enter-active { opacity: 1; height: 50px; }
+.animation.ng-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.animation.ng-enter.ng-enter-active {
+  opacity: 1;
+  transform: translateY(0px);
+}
 
 .animation.ng-enter-stagger,
 .animation.ng-leave-stagger{
   /* Задержка анимации */
-  -webkit-transition-delay: 0.1s;
-  transition-delay: 0.1s;
-  opacity: 0;
+  -webkit-transition-delay: .1s;
+  transition-delay: .1s;
 
   /* Эта часть нужна, чтобы анимация проходила без проблем */
   -webkit-transition-duration: 0;
