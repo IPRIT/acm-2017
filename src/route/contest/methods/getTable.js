@@ -244,7 +244,7 @@ export async function getTable(params) {
   let ratings = [];
   for (let contestGroup of contestsGroups) {
     let ratingsForGroup = await usersMethods.getRatingTable({ group: contestGroup });
-    ratings.concat(ratingsForGroup);
+    ratings = ratings.concat(ratingsForGroup);
   }
   readyTable.rows = readyTable.rows.map(row => {
     console.log('User: ', row.user.id);
