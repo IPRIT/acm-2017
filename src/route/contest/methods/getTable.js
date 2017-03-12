@@ -247,19 +247,14 @@ export async function getTable(params) {
     ratings = ratings.concat(ratingsForGroup);
   }
   readyTable.rows = readyTable.rows.map(row => {
-    console.log('User: ', row.user.id);
     let ratingIndex = ratings.findIndex(change => {
-      if (!change || !change.User) {
-        return console.log(change);
-      }
-      console.log(change.User.id, row.user.id);
       return change.User.id === row.user.id;
     });
-    let rating = ratings[ratingIndex];
-    row.user.rating = rating && rating.User && rating.User.rating || 0;
-    if (!rating) {
-      console.log('Skipped user', row.user.id);
+    if (ratingIndex < 0) {
+      return;
     }
+    let rating = ratings[ ratingIndex ];
+    row.user.rating = rating.User.rating || 0;
     return row;
   });
   
