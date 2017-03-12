@@ -62,7 +62,7 @@ export async function getRatingTable(params) {
     value.User.rating = value.ratingAfter;
     return value;
   });
-  console.log(latestUsersChanges.map(change => change.User.id));
+  console.log(latestUsersChanges.map(change => {return{id: change.User.id, value: change.User.rating}}));
   
   return latestUsersChanges;
 }
