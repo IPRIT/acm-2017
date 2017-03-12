@@ -251,7 +251,7 @@ export async function getTable(params) {
       return change.User.id === row.user.id;
     });
     if (ratingIndex < 0) {
-      return;
+      return row;
     }
     let rating = ratings[ ratingIndex ];
     row.user.rating = rating.User.rating || 0;
