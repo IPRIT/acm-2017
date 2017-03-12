@@ -10,12 +10,13 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
     md-dialog-content
       md-content.md-padding
         md-content.rating-info.md-padding
+          div Последнее обновление в {{ratingHistory.currentRating.versionTimeStampMs | date:'HH:mm:ss d MMM yyyy'}}
           div
             span(style='vertical-align: middle;') Рейтинг показывается для группы:
             span(style='vertical-align: middle;')
               div(style='max-width: 200px; display: inline-block; margin-left: 10px; position: relative; top: -3px;')
                 md-input-container
-                  md-select.rating-info__group(ng-model="selectedGroupId", aria-label='Sort orders', style='background-color: {{groupColor}}')
+                  md-select.rating-info__group(ng-model="selectedGroupId", aria-label='Group', style='background-color: {{groupColor}}')
                     md-option(ng-repeat='userGroup in userGroups', value='{{userGroup.id}}') {{userGroup.name}}
 
         md-content.rating-info.md-padding
