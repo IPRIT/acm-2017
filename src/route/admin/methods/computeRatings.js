@@ -65,7 +65,10 @@ export async function computeRatings(params) {
           computeGeometricMeanForContestant(contestant),
           table.rows
         );
-        contestant.ratingChange = (contestant.R - contestant.rating) / 2;
+        contestant.ratingChange = ((contestant.R - contestant.rating) / 2) / 4;
+        if (contestant.ratingChange > 30) {
+            contestant.ratingChange = 30 + (contestant.ratingChange - 30) / 2;
+        }
         return contestant;
       });
   
