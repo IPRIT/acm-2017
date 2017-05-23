@@ -138,7 +138,9 @@ export async function getSolutions(params) {
           return change.User.id === solution.author.id;
         });
         let rating = ratings[ ratingIndex ];
-        solution.author.rating = rating.ratingAfter;
+        if (rating) {
+          solution.author.rating = rating.ratingAfter;
+        }
         return solution;
       });
     } catch (err) {
