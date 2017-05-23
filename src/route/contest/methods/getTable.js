@@ -4,6 +4,7 @@ import Promise from 'bluebird';
 import * as contests from './index';
 import * as usersMethods from '../../user/methods';
 import * as lodash from "lodash";
+import {RatingsStore} from "../../../utils/ratings-store";
 
 const PENALTY_TIME = 20; // minutes
 
@@ -20,7 +21,7 @@ export function getTableRequest(req, res, next) {
 export async function getTable(params) {
   let {
     contestId, contest,
-    userId, user
+    userId, user, withRatings = true
   } = params;
   
   if (!user) {
@@ -64,7 +65,7 @@ export async function getTable(params) {
     });
   });
   
-  let { solutions } = await contests.getSolutions({ contest, user, count: 1e9, ignoreFreeze: true, sort: 'ASC' });
+  let { solutions } = await contests.getSolutions({ contest, user, count: 1e9, ignoreFreeze: true, sort: 'ASC', withRatings: false });
   let contestants = await contest.getContestants({
     order: 'UserContestEnter.id ASC'
   });
@@ -239,25 +240,25 @@ export async function getTable(params) {
       readyTable.rows[i].group = ++currentGroupCounter;
     }
   }
-  
-  let contestsGroups = await contest.getGroups();
-  let ratings = [];
-  for (let contestGroup of contestsGroups) {
-    let ratingsForGroup = await usersMethods.getRatingTable({ group: contestGroup });
-    ratings = ratings.concat(ratingsForGroup);
-  }
-  readyTable.rows = readyTable.rows.map(row => {
-    let ratingIndex = ratings.findIndex(change => {
-      return change.User.id === row.user.id;
-    });
-    if (ratingIndex < 0) {
-      return row;
+
+  if (withRatings) {
+    let contestsGroups = await contest.getGroups();
+    let ratingsStore = RatingsStore.getInstance();
+    if (!ratingsStore.isReady) {
+      await ratingsStore.retrieve();
     }
-    let rating = ratings[ ratingIndex ];
-    row.user.rating = rating.User.rating || 0;
-    return row;
-  });
-  
+
+    for (let row of readyTable.rows) {
+      let userId = row.user.id;
+      for (let contestGroup of contestsGroups) {
+        let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, userId);
+        if (ratingValue) {
+          row.user.rating = ratingValue;
+          break;
+        }
+      }
+    }
+  }
   return readyTable;
 }
 

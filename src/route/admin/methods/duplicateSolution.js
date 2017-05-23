@@ -4,6 +4,7 @@ import * as contests from '../../contest/methods';
 import * as sockets from '../../../socket';
 import { getSymbolIndex, appendWatermark, filterEntity as filter } from "../../../utils";
 import deap from 'deap';
+import { RatingsStore } from "../../../utils/ratings-store";
 
 export function duplicateSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -59,6 +60,21 @@ export async function duplicateSolution(params) {
       exclude: [ 'sourceCode' ]
     }), { internalSymbolIndex: symbolIndex })
   };
+
+  let contestsGroups = await Contest.getGroups();
+  let ratingsStore = RatingsStore.getInstance();
+  if (!ratingsStore.isReady) {
+    await ratingsStore.retrieve();
+  }
+
+  for (let contestGroup of contestsGroups) {
+    let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, newSolution.userId);
+    if (ratingValue && socketData.solution && socketData.solution.author) {
+      socketData.solution.author.rating = ratingValue;
+      break;
+    }
+  }
+
   let isContestFrozen = Contest.isFrozen;
   if (isContestFrozen) {
     Object.assign(socketData, { userId: initiatorUser.id });

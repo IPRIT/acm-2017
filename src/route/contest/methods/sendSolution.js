@@ -6,6 +6,7 @@ import deap from 'deap';
 import * as sockets from '../../../socket';
 import filter from "../../../utils/filter";
 import { appendWatermark } from "../../../utils/utils";
+import {RatingsStore} from "../../../utils/ratings-store";
 
 export function sendSolutionRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -90,6 +91,21 @@ export async function sendSolution(params) {
       exclude: [ 'sourceCode' ]
     }), { internalSymbolIndex: symbolIndex })
   };
+
+  let contestsGroups = await contest.getGroups();
+  let ratingsStore = RatingsStore.getInstance();
+  if (!ratingsStore.isReady) {
+    await ratingsStore.retrieve();
+  }
+
+  for (let contestGroup of contestsGroups) {
+    let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, solutionInstance.userId);
+    if (ratingValue && socketData.solution && socketData.solution.author) {
+      socketData.solution.author.rating = ratingValue;
+      break;
+    }
+  }
+
   let isContestFrozen = contest.isFrozen;
   if (isContestFrozen) {
     Object.assign(socketData, { userId: user.id });
