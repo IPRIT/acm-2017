@@ -1,14 +1,16 @@
-import { filterEntity as filter, getSymbolIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import deap from 'deap';
 import * as contestMethods from '../../contest/methods';
 import { extractAllParams } from "../../../utils/utils";
+import { RatingsStore } from "../../../utils/ratings-store";
 
 export function computeRatingsRequest(req, res, next) {
   return Promise.resolve().then(() => {
     return computeRatings( extractAllParams(req) );
-  }).then(result => res.json(result)).catch(next);
+  }).then(async result => {
+    await RatingsStore.getInstance().update();
+    res.json(result);
+  }).catch(next);
 }
 
 const INITIAL_RATING = 1500;
@@ -38,7 +40,7 @@ export async function computeRatings(params) {
     });
     
     for (let contest of contests) {
-      let table = await contestMethods.getTable({ contest, user });
+      let table = await contestMethods.getTable({ contest, user, withRatings: false });
   
       let rank = 1, lastScore;
       table.rows = table.rows.filter(tableRow => {

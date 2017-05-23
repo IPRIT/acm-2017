@@ -5,6 +5,7 @@ import * as contests from './index';
 import deap from 'deap';
 import userGroups from './../../../models/User/userGroups';
 import Sequelize from 'sequelize';
+import {RatingsStore} from "../../../utils/ratings-store";
 
 export function getSolutionsForCellRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -122,6 +123,28 @@ export async function getSolutionsForCell(params) {
     return deap.extend(solution, {
       internalSymbolIndex: problemsMapping.get( solution.problemId ).toUpperCase()
     });
+  }).then(async solutions => {
+    try {
+      let contestsGroups = await contest.getGroups();
+      let ratingsStore = RatingsStore.getInstance();
+      if (!ratingsStore.isReady) {
+        await ratingsStore.retrieve();
+      }
+
+      for (let solution of solutions) {
+        let userId = solution.author.id;
+        for (let contestGroup of contestsGroups) {
+          let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, userId);
+          if (ratingValue) {
+            solution.author.rating = ratingValue;
+            break;
+          }
+        }
+      }
+      return solutions;
+    } catch (err) {
+      return solutions;
+    }
   }).then(async solutions => {
     return {
       solutions,

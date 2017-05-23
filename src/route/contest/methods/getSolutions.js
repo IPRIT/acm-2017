@@ -4,8 +4,7 @@ import Promise from 'bluebird';
 import * as contests from './index';
 import deap from 'deap';
 import userGroups from './../../../models/User/userGroups';
-import * as userMethods from '../../user/methods';
-import Sequelize from 'sequelize';
+import {RatingsStore} from "../../../utils/ratings-store";
 
 export function getSolutionsRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -25,7 +24,8 @@ export async function getSolutions(params) {
     userId, user,
     offset, count,
     solutionsType,
-    ignoreFreeze, sort = 'DESC'
+    ignoreFreeze, sort = 'DESC',
+    withRatings = true
   } = params;
   
   offset = Number(offset) || 0;
@@ -126,23 +126,27 @@ export async function getSolutions(params) {
       internalSymbolIndex: symbolIndex.toUpperCase()
     });
   }).then(async solutions => {
+    if (!withRatings) {
+      return solutions;
+    }
     try {
       let contestsGroups = await contest.getGroups();
-      let ratings = [];
-      for (let contestGroup of contestsGroups) {
-        let ratingsForGroup = await userMethods.getRatingTable({ group: contestGroup });
-        ratings.push(...ratingsForGroup);
+      let ratingsStore = RatingsStore.getInstance();
+      if (!ratingsStore.isReady) {
+        await ratingsStore.retrieve();
       }
-      return solutions.map(solution => {
-        let ratingIndex = ratings.findIndex(change => {
-          return change.User.id === solution.author.id;
-        });
-        let rating = ratings[ ratingIndex ];
-        if (rating) {
-          solution.author.rating = rating.ratingAfter;
+
+      for (let solution of solutions) {
+        let userId = solution.author.id;
+        for (let contestGroup of contestsGroups) {
+          let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, userId);
+          if (ratingValue) {
+            solution.author.rating = ratingValue;
+            break;
+          }
         }
-        return solution;
-      });
+      }
+      return solutions;
     } catch (err) {
       return solutions;
     }

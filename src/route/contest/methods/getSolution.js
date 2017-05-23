@@ -3,6 +3,7 @@ import * as models from "../../../models";
 import Promise from 'bluebird';
 import deap from 'deap';
 import * as contests from '../../contest/methods';
+import {RatingsStore} from "../../../utils/ratings-store";
 
 export function getSolutionRequest(req, res, next) {
   let { raw } = req.query;
@@ -47,7 +48,8 @@ export async function getSolution(params) {
   if (!solution || Number(contestId) !== solution.contestId) {
     throw new HttpError('Solution not found');
   }
-  
+
+  let contestsGroups = await solution.Contest.getGroups();
   let problems = await contests.getProblems({ user, contest: solution.Contest });
   let foundProblemIndex = problems.findIndex(problem => problem.id === solution.problemId);
   let symbolIndex = getSymbolIndex(foundProblemIndex).toUpperCase();
@@ -58,7 +60,8 @@ export async function getSolution(params) {
   } else if (raw) {
     return solution.sourceCode;
   }
-  return deap.extend(filter(solution.get({ plain: true }), {
+
+  let result = deap.extend(filter(solution.get({ plain: true }), {
     replace: [
       [ 'User', 'author' ],
       [ 'Verdict', 'verdict' ],
@@ -67,4 +70,18 @@ export async function getSolution(params) {
       [ 'Contest', 'contest' ],
     ]
   }), { internalSymbolIndex: symbolIndex });
+
+  let ratingsStore = RatingsStore.getInstance();
+  if (!ratingsStore.isReady) {
+    await ratingsStore.retrieve();
+  }
+
+  for (let contestGroup of contestsGroups) {
+    let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, solution.userId);
+    if (ratingValue) {
+      result.author.rating = ratingValue;
+      break;
+    }
+  }
+  return result;
 }
