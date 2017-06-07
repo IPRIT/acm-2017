@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 66
+# 67
 
 CACHE:
 
@@ -18,6 +18,10 @@ CACHE:
 /partials/contest-item/utils/socket-status.html
 /partials/contest-item/contest-monitor/rated-user.html
 /partials/contest-item/contest-monitor/rating-color-text.html
+/partials/contest-item/contest-chat/sidenav.html
+/partials/contest-item/contest-monitor/row-menu.html
+/partials/contest-item/rating/dialog.html
+/partials/contest-item/contest-monitor/rated-user-with-dialog.html
 /partials/admin/admin-base.html
 /partials/admin/contests/index.html
 /partials/admin/contests/edit.html
@@ -41,7 +45,6 @@ CACHE:
 /partials/page/footer.html
 /partials/contests/contest-list-item.html
 /vendor/math-tex/dist/math-tex.html
-/partials/contest-item/contest-chat/sidenav.html
 
 # js
 /socket.io/socket.io.js
@@ -66,6 +69,7 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/ace-builds/src-min-noconflict/ext-settings_menu.js
 /bower_components/ace-builds/src-min-noconflict/ext-keybinding_menu.js
 /bower_components/ace-builds/src-min-noconflict/ext-textarea.js
+/bower_components/ace-builds/src-min-noconflict/theme-crimson_editor.js
 /bower_components/highcharts/highcharts.js
 /bower_components/highcharts/highcharts-more.js
 /vendor/katex/katex.min.js
@@ -87,6 +91,25 @@ http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyril
 /img/icons/ic_exit_to_app_48px.svg
 /img/icons/ic_settings_48px.svg
 /img/icons/ic_tune_48px.svg
+/img/icons/ic_history_48px.svg
+/img/icons/ic_add_48px.svg
+/img/icons/ic_file_upload_48px.svg
+/img/icons/ic_menu_48px.svg
+/img/icons/ic_send_48px.svg
+/img/icons/ic_visibility_48px.svg
+/img/icons/ic_restore_48px.svg
+/img/icons/ic_trending_up_48px.svg
+/img/icons/ic_trending_down_48px.svg
+/img/icons/ic_delete_48px.svg
+/img/icons/ic_close_48px.svg
+/img/icons/ic_spellcheck_48px.svg
+/img/icons/ic_content_copy_48px.svg
+/img/icons/ic_refresh_48px.svg
+/img/icons/ic_more_vert_48px.svg
+/img/icons/ic_fast_forward_48px.svg
+/img/icons/ic_skip_next_48px.svg
+/img/icons/ic_skip_previous_48px.svg
+/img/icons/ic_fast_rewind_48px.svg
 
 # fonts
 http://fonts.gstatic.com/s/roboto/v16/CWB0XYA8bzo0kSThX0UTuA.woff2
