@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 63
+# 65
 
 CACHE:
 
@@ -14,6 +14,10 @@ CACHE:
 /partials/contest-item/contest-send.html
 /partials/contest-item/contest-status.html
 /partials/contest-item/contest-source.html
+/partials/contest-item/contest-messages.html
+/partials/contest-item/utils/socket-status.html
+/partials/contest-item/contest-monitor/rated-user.html
+/partials/contest-item/contest-monitor/rating-color-text.html
 /partials/admin/admin-base.html
 /partials/admin/contests/index.html
 /partials/admin/contests/edit.html
@@ -29,10 +33,12 @@ CACHE:
 /partials/admin/groups/index.html
 /partials/admin/groups/create.html
 /partials/admin/groups/edit.html
+/partials/admin/admin-problem-dialog.html
 /partials/index/index.html
 /partials/header/index.html
 /partials/page/wrapper.html
 /partials/page/loading-layer.html
+/partials/page/footer.html
 /partials/contests/contest-list-item.html
 /vendor/math-tex/dist/math-tex.html
 
@@ -50,6 +56,17 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/marked/marked.min.js
 /bower_components/angular-marked/dist/angular-marked.min.js
 /bower_components/angular-bindonce/bindonce.min.js
+/bower_components/ng-file-upload/ng-file-upload-all.min.js
+/bower_components/ace-builds/src-min-noconflict/ace.js
+/bower_components/ace-builds/src-min-noconflict/ext-searchbox.js
+/bower_components/ace-builds/src-min-noconflict/ext-spellcheck.js
+/bower_components/ace-builds/src-min-noconflict/ext-error_marker.js
+/bower_components/ace-builds/src-min-noconflict/ext-language_tools.js
+/bower_components/ace-builds/src-min-noconflict/ext-settings_menu.js
+/bower_components/ace-builds/src-min-noconflict/ext-keybinding_menu.js
+/bower_components/ace-builds/src-min-noconflict/ext-textarea.js
+/bower_components/highcharts/highcharts.js
+/bower_components/highcharts/highcharts-more.js
 /vendor/katex/katex.min.js
 /vendor/ion.sound/ion.sound.js
 /prod/js/build.min.js?0.9.4
@@ -64,11 +81,13 @@ http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyril
 /img/acm-logo-small.png
 
 # fonts
-http://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2
-http://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2
-http://fonts.gstatic.com/s/roboto/v15/mErvLBYg_cXG3rLvUsKT_fesZW2xOQ-xsNqO47m55DA.woff2
-http://fonts.gstatic.com/s/roboto/v15/RxZJdnzeo3R5zSexge8UUVtXRa8TVwTICgirnJhmVJw.woff2
-http://fonts.gstatic.com/s/roboto/v15/isZ-wbCXNKAbnjo6_TwHThJtnKITppOI_IvcXXDNrsc.woff2
+http://fonts.gstatic.com/s/roboto/v16/CWB0XYA8bzo0kSThX0UTuA.woff2
+http://fonts.gstatic.com/s/roboto/v16/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2
+http://fonts.gstatic.com/s/roboto/v16/mErvLBYg_cXG3rLvUsKT_fesZW2xOQ-xsNqO47m55DA.woff2
+http://fonts.gstatic.com/s/roboto/v16/RxZJdnzeo3R5zSexge8UUVtXRa8TVwTICgirnJhmVJw.woff2
+http://fonts.gstatic.com/s/roboto/v16/isZ-wbCXNKAbnjo6_TwHThJtnKITppOI_IvcXXDNrsc.woff2
+/vendor/katex/fonts/KaTeX_Math-Italic.woff2
+/vendor/katex/fonts/KaTeX_Main-Regular.woff2
 
 
 # Resources that require the user to be online.
