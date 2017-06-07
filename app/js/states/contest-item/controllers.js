@@ -749,8 +749,8 @@ angular.module('Qemy.controllers.contest-item', [])
     }
   ])
   
-  .controller('ContestItemStatusController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', '$interval', 'UserManager', '$mdDialog', '$mdBottomSheet', 'AdminManager', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, $interval, UserManager, $mdDialog, $mdBottomSheet, AdminManager, ErrorService) {
+  .controller('ContestItemStatusController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', '$interval', 'UserManager', '$mdDialog', '$mdBottomSheet', 'AdminManager', 'ErrorService', '$element',
+    function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, $interval, UserManager, $mdDialog, $mdBottomSheet, AdminManager, ErrorService, $element) {
       $scope.$emit('change_title', {
         title: 'Мои посылки | ' + _('app_name')
       });
@@ -770,8 +770,64 @@ angular.module('Qemy.controllers.contest-item', [])
       $scope.pagination = [];
       $scope.solutions = [];
       $scope.allPages = 0;
+      $scope.contestId = contestId;
       
       $scope.loadingData = false;
+
+      $element.find('input').on('keydown', function (ev) {
+        ev.stopPropagation();
+      });
+
+      $scope.clearSearchTerm = function() {
+        $scope.searchTerm = '';
+        console.log($scope.filterParticipants);
+      };
+
+      $scope.filterParticipants = [];
+      $scope.participants = [];
+
+      $scope.loadParticipants = function () {
+        return ContestItemManager.getParticipants({
+          contestId: contestId
+        }).then(function (users) {
+          $scope.participants = users;
+        });
+      };
+
+      $scope.$watch('filterParticipants', function (newVal) {
+        $scope.params.filterUserIds = (newVal || []).join(',');
+        updateSentsList();
+      });
+
+      $scope.filterProblems = [];
+      $scope.problems = [];
+
+      $scope.loadProblems = function () {
+        return ContestItemManager.getConditions({
+          contestId: contestId
+        }).then(function (problems) {
+          $scope.problems = problems;
+        });
+      };
+
+      $scope.$watch('filterProblems', function (newVal) {
+        $scope.params.filterProblemIds = (newVal || []).join(',');
+        updateSentsList();
+      });
+
+      $scope.filterVerdicts = [];
+      $scope.verdicts = [];
+
+      $scope.loadVerdicts = function () {
+        return AdminManager.getVerdicts().then(function (verdicts) {
+          $scope.verdicts = verdicts;
+        });
+      };
+
+      $scope.$watch('filterVerdicts', function (newVal) {
+        $scope.params.filterVerdictIds = (newVal || []).join(',');
+        updateSentsList();
+      });
       
       function generatePaginationArray(offsetCount) {
         var pages = [],
@@ -925,7 +981,7 @@ angular.module('Qemy.controllers.contest-item', [])
           canSee = !data.author.isAdmin || $scope.currentUser.isAdmin;
         if (select === 'my'
           && userId !== $scope.currentUser.id
-          || $scope.pageNumber !== 1 || !canSee) {
+          || $scope.pageNumber !== 1 || !canSee || $scope.filterParticipants.indexOf(userId) === -1) {
           return;
         }
         var solutions = $scope.solutions;

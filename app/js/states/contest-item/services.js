@@ -118,6 +118,15 @@ angular.module('Qemy.services.contest-item', [
         return data.data;
       });
     }
+
+    function getParticipants(params) {
+      return $http({
+        method: 'get',
+        url: '/api/contest/' + params.contestId + '/participants'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       getConditions: getConditions,
@@ -130,7 +139,8 @@ angular.module('Qemy.services.contest-item', [
       getSentsForCell: getSentsForCell,
       getMessages: getMessages,
       markAsRead: markAsRead,
-      sendMessage: sendMessage
+      sendMessage: sendMessage,
+      getParticipants: getParticipants
     }
   }])
 ;
