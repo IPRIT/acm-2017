@@ -70,6 +70,9 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/ace-builds/src-min-noconflict/ext-keybinding_menu.js
 /bower_components/ace-builds/src-min-noconflict/ext-textarea.js
 /bower_components/ace-builds/src-min-noconflict/theme-crimson_editor.js
+/bower_components/ace-builds/src-min-noconflict/mode-c_cpp.js
+/bower_components/ace-builds/src-min-noconflict/snippets/text.js
+/bower_components/ace-builds/src-min-noconflict/snippets/c_cpp.js
 /bower_components/highcharts/highcharts.js
 /bower_components/highcharts/highcharts-more.js
 /vendor/katex/katex.min.js
