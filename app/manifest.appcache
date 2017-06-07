@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 65
+# 66
 
 CACHE:
 
@@ -41,6 +41,7 @@ CACHE:
 /partials/page/footer.html
 /partials/contests/contest-list-item.html
 /vendor/math-tex/dist/math-tex.html
+/partials/contest-item/contest-chat/sidenav.html
 
 # js
 /socket.io/socket.io.js
@@ -52,7 +53,7 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/angular-material/angular-material.min.js
 /bower_components/angular-animate/angular-animate.min.js
 /bower_components/angular-aria/angular-aria.min.js
-/bower_components/angular-messages/angular-messages.js
+/bower_components/angular-messages/angular-messages.min.js
 /bower_components/marked/marked.min.js
 /bower_components/angular-marked/dist/angular-marked.min.js
 /bower_components/angular-bindonce/bindonce.min.js
@@ -69,6 +70,9 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /bower_components/highcharts/highcharts-more.js
 /vendor/katex/katex.min.js
 /vendor/ion.sound/ion.sound.js
+/vendor/math-tex/dist/katex.min.js
+/vendor/math-tex/dist/math-tex.min.js
+/js/locales/ru-ru.json
 /prod/js/build.min.js?0.9.6
 
 # CSS
@@ -79,6 +83,10 @@ http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyril
 
 # Images
 /img/acm-logo-small.png
+/img/icons/ic_security_48px.svg
+/img/icons/ic_exit_to_app_48px.svg
+/img/icons/ic_settings_48px.svg
+/img/icons/ic_tune_48px.svg
 
 # fonts
 http://fonts.gstatic.com/s/roboto/v16/CWB0XYA8bzo0kSThX0UTuA.woff2
