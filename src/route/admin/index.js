@@ -13,7 +13,7 @@ router.get('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], admi
 router.post('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateGroupRequest);
 router.delete('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteGroupRequest);
 
-router.get('/verdicts', [ userRetriever, rightsAllocator('admin') ], adminMethods.getVerdictsRequest);
+router.get('/verdicts', [ userRetriever, rightsAllocator('user') ], adminMethods.getVerdictsRequest);
 
 router.get('/problems', [ userRetriever, rightsAllocator('admin') ], adminMethods.searchProblemsRequest);
 router.get('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getProblemRequest);

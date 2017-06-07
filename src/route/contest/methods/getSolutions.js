@@ -4,15 +4,19 @@ import Promise from 'bluebird';
 import * as contests from './index';
 import deap from 'deap';
 import userGroups from './../../../models/User/userGroups';
-import {RatingsStore} from "../../../utils/ratings-store";
+import { RatingsStore } from "../../../utils/ratings-store";
 
 export function getSolutionsRequest(req, res, next) {
   return Promise.resolve().then(() => {
-    let { offset = 0, count = 50 } = req.query;
+    let {
+      offset = 0, count = 50,
+      filterUserIds, filterProblemIds, filterVerdictIds
+    } = req.query;
     return getSolutions(
       Object.assign(req.params, {
         user: req.user,
-        offset, count
+        offset, count,
+        filterUserIds, filterProblemIds, filterVerdictIds
       })
     );
   }).then(result => res.json(result)).catch(next);
@@ -24,13 +28,20 @@ export async function getSolutions(params) {
     userId, user,
     offset, count,
     solutionsType,
+    filterUserIds, filterProblemIds, filterVerdictIds,
     ignoreFreeze, sort = 'DESC',
     withRatings = true
   } = params;
   
   offset = Number(offset) || 0;
   count = Number(count) || 50;
-  
+  filterUserIds = filterUserIds ?
+    filterUserIds.split(',').map(Number) : [];
+  filterProblemIds = filterProblemIds ?
+    filterProblemIds.split(',').map(Number) : [];
+  filterVerdictIds = filterVerdictIds ?
+    filterVerdictIds.split(',').map(Number) : [];
+
   if (!user) {
     user = await models.User.findByPrimary(userId);
   }
@@ -54,6 +65,27 @@ export async function getSolutions(params) {
     isContestFrozen = currentTimeMs >= contest.absoluteFreezeTimeMs && currentTimeMs <= contest.absoluteDurationTimeMs;
   
   let where = {};
+  if (filterUserIds.length) {
+    Object.assign(where, {
+      userId: {
+        $in: filterUserIds
+      }
+    });
+  }
+  if (filterProblemIds.length) {
+    Object.assign(where, {
+      problemId: {
+        $in: filterProblemIds
+      }
+    });
+  }
+  if (filterVerdictIds.length) {
+    Object.assign(where, {
+      verdictId: {
+        $in: filterVerdictIds
+      }
+    });
+  }
   let includeUsers = {
     model: models.User,
     required: true,

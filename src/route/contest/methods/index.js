@@ -14,3 +14,4 @@ export * from './postMessage';
 export * from './getMessages';
 export * from './markMessagesAsRead';
 export * from './filePipe';
+export * from './getParticipants';

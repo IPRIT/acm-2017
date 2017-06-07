@@ -26,5 +26,7 @@ router.post('/:contestId/messages', [ userRetriever, rightsAllocator() ], contes
 router.get('/:contestId/messages', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getMessagesRequest);
 router.post('/:contestId/messages/read', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.markMessagesAsReadRequest);
 
+router.get('/:contestId/participants', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getParticipantsRequest);
+
 
 export default router;
