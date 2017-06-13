@@ -78,13 +78,13 @@ angular.module('Qemy.controllers', [
         $scope.user = args.user;
         $scope.isAuth = !!args.user.id;
       });
-      
-      $scope.menuList = [/*{
+
+      $scope.menuList = [{
        type: 'item',
-       id: 'settings',
-       name: 'Настройки',
-       iconSrc: '/img/icons/ic_settings_48px.svg'
-       },*/ {
+       id: 'profile',
+       name: 'Профиль',
+       iconSrc: '/img/icons/ic_person_48px.svg'
+       }, {
         type: 'item',
         onlyFor: 4096,
         id: 'admin-panel',
@@ -101,7 +101,8 @@ angular.module('Qemy.controllers', [
       
       $scope.profileItemClick = function (event, item, index) {
         switch (item.id) {
-          case 'settings':
+          case 'profile':
+            $state.go('user.solutions', { select: 'all' });
             break;
           case 'admin-panel':
             $state.go('admin.index');

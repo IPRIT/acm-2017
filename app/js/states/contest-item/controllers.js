@@ -794,7 +794,10 @@ angular.module('Qemy.controllers.contest-item', [])
         });
       };
 
-      $scope.$watch('filterParticipants', function (newVal) {
+      $scope.$watch('filterParticipants', function (newVal, oldVal) {
+        if (newVal == oldVal) {
+          return;
+        }
         $scope.params.filterUserIds = (newVal || []).join(',');
         updateSentsList();
       });
@@ -810,7 +813,10 @@ angular.module('Qemy.controllers.contest-item', [])
         });
       };
 
-      $scope.$watch('filterProblems', function (newVal) {
+      $scope.$watch('filterProblems', function (newVal, oldVal) {
+        if (newVal == oldVal) {
+          return;
+        }
         $scope.params.filterProblemIds = (newVal || []).join(',');
         updateSentsList();
       });
@@ -824,7 +830,10 @@ angular.module('Qemy.controllers.contest-item', [])
         });
       };
 
-      $scope.$watch('filterVerdicts', function (newVal) {
+      $scope.$watch('filterVerdicts', function (newVal, oldVal) {
+        if (newVal == oldVal) {
+          return;
+        }
         $scope.params.filterVerdictIds = (newVal || []).join(',');
         updateSentsList();
       });
@@ -981,7 +990,9 @@ angular.module('Qemy.controllers.contest-item', [])
           canSee = !data.author.isAdmin || $scope.currentUser.isAdmin;
         if (select === 'my'
           && userId !== $scope.currentUser.id
-          || $scope.pageNumber !== 1 || !canSee || $scope.filterParticipants.indexOf(userId) === -1) {
+          || $scope.pageNumber !== 1
+          || !canSee
+          || ($scope.filterParticipants.length && $scope.filterParticipants.indexOf(userId) === -1)) {
           return;
         }
         var solutions = $scope.solutions;

@@ -26,7 +26,7 @@ router.post('/solutions/:solutionId/refresh', [ userRetriever, rightsAllocator('
 router.post('/solutions/:solutionId/duplicate', [ userRetriever, rightsAllocator('admin') ], adminMethods.duplicateSolutionRequest);
 router.delete('/solutions/:solutionId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteSolutionRequest);
 
-router.get('/users', [ userRetriever, rightsAllocator('admin') ], adminMethods.searchUsersRequest);
+router.get('/users', [ userRetriever, rightsAllocator('user') ], adminMethods.searchUsersRequest);
 router.post('/users', [ userRetriever, rightsAllocator('admin') ], adminMethods.createUserRequest);
 router.post('/users-groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.createUsersIntoGroupsRequest);
 router.get('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getUserRequest);

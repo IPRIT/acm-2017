@@ -1,0 +1,60 @@
+div.sent-list
+    div.sent-list__item.sent-list__header
+        div.sent-list__cell(style='max-width: 90px;')
+            span ID
+        div.sent-list__cell.sent-list__cell-task
+            span Контест
+        div.sent-list__cell(style='max-width: 120px;')
+            span Время
+        div.sent-list__cell.sent-list__filter-participant
+            div(layout='row', ng-show='user.isAdmin')
+                md-input-container.md-no-float(md-no-float)
+                    label Участник
+                    md-select(ng-model='filterParticipants', md-on-close='clearSearchTerm()',
+                    md-on-open="loadParticipants()"
+                    data-md-container-class="filter-header", multiple)
+                        md-select-header.select-header
+                            input.header-searchbox.md-text(ng-model='searchTerm', type='search', placeholder='Поиск по участникам...')
+                        md-optgroup(label='participants')
+                            md-option(ng-value='participant.id', ng-repeat='participant in participants |\
+              filter:searchTerm') {{participant.fullName}}
+            span(ng-show='!user.isAdmin') Участник
+        div.sent-list__cell.sent-list__cell-task
+            span Задача
+        div.sent-list__cell
+            span Язык
+        div.sent-list__cell.sent-list__filter-verdict(style='min-width: 126px;')
+            div(layout='row')
+                md-input-container.md-no-float(md-no-float)
+                    label Вердикт
+                    md-select(ng-model='filterVerdicts', md-on-close='clearSearchTerm()',
+                    md-on-open="loadVerdicts()"
+                    data-md-container-class="filter-header", multiple)
+                        md-select-header.select-header
+                            input.header-searchbox.md-text(ng-model='searchTerm', type='search', placeholder='Поиск по вердиктам...')
+                        md-optgroup(label='verdicts')
+                            md-option(ng-value='verdict.id', ng-repeat='verdict in verdicts |\
+                          filter:searchTerm') {{verdict.name}}
+        div.sent-list__cell(style='max-width: 80px;')
+            span Номер теста
+        div.sent-list__cell(style='max-width: 95px;')
+            span Время исполнения
+        div.sent-list__cell(style='max-width: 95px;')
+            span Память
+        div.sent-list__cell(ng-if='user.isAdmin', style='max-width: 60px;')
+            span &nbsp;
+
+    include ./solution-item
+
+    div.no-sents(ng-if='solutions.length === 0 && !loadingData')
+        span(ng-if='all_items_count === 0') Решения отсутствуют
+        div(ng-if='all_items_count > 0', style='display: inline-block;')
+            div.content-spin__layer
+                div.search-spin-layer_
+                    div.search-spin
+
+    div.no-sents(ng-if='loadingData')
+        div(style='display: inline-block;')
+            div.content-spin__layer
+                div.search-spin-layer_
+                    div.search-spin

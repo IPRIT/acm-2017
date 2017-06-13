@@ -4,3 +4,4 @@ export * from './getRatingHistory';
 export * from './getUserGroups';
 export * from './getRatingTable';
 export * from './getUserById';
+export * from './getSolutions';

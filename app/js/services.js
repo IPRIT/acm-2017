@@ -133,6 +133,16 @@ angular.module('Qemy.services', [
         return data.data;
       });
     }
+
+    function getSolutions(params) {
+      return $http({
+        method: 'get',
+        url: '/api/user/solutions',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     function getUserById(params) {
       return $http({
@@ -149,7 +159,8 @@ angular.module('Qemy.services', [
       getUserGroups: getUserGroups,
       getRatingHistory: getRatingHistory,
       getRatingTable: getRatingTable,
-      getUserById: getUserById
+      getUserById: getUserById,
+      getSolutions: getSolutions
     }
   }])
   

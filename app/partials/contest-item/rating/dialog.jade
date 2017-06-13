@@ -34,8 +34,8 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
             span(style='position: absolute; right: 20px; top: 20px;')
               md-button.md-accent(ng-click='loadGroupTable(selectedGroupId)') Показать общую таблицу
 
-        md-content.group-rating-table.md-padding
-          div(ng-if='!isTableLoading && groupTable.length > 0')
+        md-content.group-rating-table.md-padding(ng-if='!isTableLoading && groupTable.length > 0')
+          div
             div.group-rating-table__inner
               div.group-rating-table__row(ng-repeat='rating in groupTable', layout='row', layout-align='space-between center', ng-class='{"group-rating-table__row_highlighted": user.id === rating.User.id}')
                 div.group-rating-table__user {{rating.groupRank}}.&nbsp;
