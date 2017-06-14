@@ -1,6 +1,5 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
 import { valueBetween } from "../../../utils/utils";
 
 export function searchUsersRequest(req, res, next) {

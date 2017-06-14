@@ -133,6 +133,16 @@ angular.module('Qemy.services', [
         return data.data;
       });
     }
+
+    function getSolutions(params) {
+      return $http({
+        method: 'get',
+        url: '/api/user/solutions',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     function getUserById(params) {
       return $http({
@@ -149,7 +159,8 @@ angular.module('Qemy.services', [
       getUserGroups: getUserGroups,
       getRatingHistory: getRatingHistory,
       getRatingTable: getRatingTable,
-      getUserById: getUserById
+      getUserById: getUserById,
+      getSolutions: getSolutions
     }
   }])
   
@@ -225,6 +236,18 @@ angular.module('Qemy.services', [
         userId: userId
       });
     }
+
+    function listenSolutions(userId) {
+      emitEvent('solutions.listen', {
+        userId: userId
+      });
+    }
+
+    function stopListenSolutions(userId) {
+      emitEvent('solutions.stopListen', {
+        userId: userId
+      });
+    }
     
     function setListener(eventName, callback) {
       socket.on(eventName, callback);
@@ -276,6 +299,8 @@ angular.module('Qemy.services', [
       getIo: getIo,
       joinContest: joinContest,
       leaveContest: leaveContest,
+      listenSolutions: listenSolutions,
+      stopListenSolutions: stopListenSolutions,
       setListener: setListener,
       removeListener: removeListener,
       onConnect: onConnect,
@@ -404,7 +429,6 @@ angular.module('Qemy.services', [
           removeListeners[ el ]();
         }
       };
-      
       return methods;
     }];
   })

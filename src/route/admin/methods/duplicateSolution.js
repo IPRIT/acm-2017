@@ -82,6 +82,10 @@ export async function duplicateSolution(params) {
   } else {
     sockets.emitNewSolutionEvent(socketData);
   }
+  if (!User.isAdmin) {
+    sockets.emitUserSolutionsEvent(newSolution.userId, 'new solution', socketData.solution);
+  }
+  sockets.emitAdminSolutionsEvent('new solution', socketData.solution);
   
   return newSolution;
 }

@@ -7,9 +7,9 @@ import { extractAllParams } from "../../../utils";
 export function getRatingHistoryRequest(req, res, next) {
   return Promise.resolve().then(() => {
     return getRatingHistory(
-      Object.assign(req.query), {
+      Object.assign(req.query, {
         initiatorUser: req.user
-      }
+      })
     );
   }).then(result => res.json(result)).catch(next);
 }
