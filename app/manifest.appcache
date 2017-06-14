@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 67
+# 68
 
 CACHE:
 
@@ -28,7 +28,7 @@ CACHE:
 /partials/admin/contests/create.html
 /partials/admin/users/list.html
 /partials/admin/users/create.html
-# /partials/admin/users/create-into-group.html
+/partials/admin/users/create-into-group.html
 /partials/admin/admin-problems.html
 /partials/admin/users/edit.html
 /partials/admin/admin-server.html
@@ -44,6 +44,10 @@ CACHE:
 /partials/page/loading-layer.html
 /partials/page/footer.html
 /partials/contests/contest-list-item.html
+/partials/user/solutions/pagination.html
+/partials/user/solutions/solution-item.html
+/partials/user/solutions/solutions.html
+/partials/user/solutions/solutions-content.html
 /vendor/math-tex/dist/math-tex.html
 
 # js
@@ -113,6 +117,7 @@ http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyril
 /img/icons/ic_skip_next_48px.svg
 /img/icons/ic_skip_previous_48px.svg
 /img/icons/ic_fast_rewind_48px.svg
+/img/icons/ic_person_48px.svg
 
 # fonts
 http://fonts.gstatic.com/s/roboto/v16/CWB0XYA8bzo0kSThX0UTuA.woff2
