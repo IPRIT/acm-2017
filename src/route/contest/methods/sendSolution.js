@@ -6,7 +6,7 @@ import deap from 'deap';
 import * as sockets from '../../../socket';
 import filter from "../../../utils/filter";
 import { appendWatermark } from "../../../utils/utils";
-import {RatingsStore} from "../../../utils/ratings-store";
+import { RatingsStore } from "../../../utils/ratings-store";
 
 export function sendSolutionRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -113,6 +113,10 @@ export async function sendSolution(params) {
   } else {
     sockets.emitNewSolutionEvent(socketData);
   }
-  
+  if (!user.isAdmin) {
+    sockets.emitUserSolutionsEvent(user.id, 'new solution', socketData.solution);
+  }
+  sockets.emitAdminSolutionsEvent('new solution', socketData.solution);
+
   return solutionInstance;
 }

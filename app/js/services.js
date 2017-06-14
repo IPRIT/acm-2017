@@ -236,6 +236,18 @@ angular.module('Qemy.services', [
         userId: userId
       });
     }
+
+    function listenSolutions(userId) {
+      emitEvent('solutions.listen', {
+        userId: userId
+      });
+    }
+
+    function stopListenSolutions(userId) {
+      emitEvent('solutions.stopListen', {
+        userId: userId
+      });
+    }
     
     function setListener(eventName, callback) {
       socket.on(eventName, callback);
@@ -287,6 +299,8 @@ angular.module('Qemy.services', [
       getIo: getIo,
       joinContest: joinContest,
       leaveContest: leaveContest,
+      listenSolutions: listenSolutions,
+      stopListenSolutions: stopListenSolutions,
       setListener: setListener,
       removeListener: removeListener,
       onConnect: onConnect,
@@ -415,7 +429,6 @@ angular.module('Qemy.services', [
           removeListeners[ el ]();
         }
       };
-      
       return methods;
     }];
   })

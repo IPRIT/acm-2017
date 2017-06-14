@@ -53,6 +53,12 @@ export async function refreshSolution(params) {
     contestId: solution.contestId,
     solutionId: solution.id
   });
+  sockets.emitUserSolutionsEvent(solution.userId, 'reset solution', {
+    solutionId: solution.id
+  });
+  sockets.emitAdminSolutionsEvent('reset solution', {
+    solutionId: solution.id
+  });
   
   return solution;
 }

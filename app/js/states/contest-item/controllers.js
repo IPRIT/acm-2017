@@ -1005,6 +1005,7 @@ angular.module('Qemy.controllers.contest-item', [])
           solutions.pop();
         }
         solutions.unshift(data);
+        safeApply($scope);
       });
       
       $scope.$on('reset solution', function (ev, args) {

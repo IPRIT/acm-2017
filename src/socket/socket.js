@@ -8,6 +8,7 @@
  */
 
 import crypto from 'crypto';
+import * as models from "../models";
 
 let io,
   hashSalt = 'misis_acm_belov_2017',
@@ -53,6 +54,40 @@ export function subscribeEvents(socket) {
     socket.leave(contestHashKey);
     socket.leave(userHashKey);
   });
+
+  socket.on('solutions.listen', async data => {
+    let { userId } = data;
+    if (!userId) {
+      return;
+    }
+    let user = await models.User.findByPrimary(userId);
+
+    let solutionsHashKey;
+    if (user.isAdmin) {
+      solutionsHashKey = getAdminSolutionsHashKey();
+    } else {
+      solutionsHashKey = getUserSolutionsHashKey( userId );
+    }
+    socket.join(solutionsHashKey);
+    console.info(`[${userId}:${socket.id}] started listening solutions updates.`);
+  });
+
+  socket.on('solutions.stopListen', async data => {
+    let { userId } = data;
+    if (!userId) {
+      return;
+    }
+    let user = await models.User.findByPrimary(userId);
+
+    let solutionsHashKey;
+    if (user.isAdmin) {
+      solutionsHashKey = getAdminSolutionsHashKey();
+    } else {
+      solutionsHashKey = getUserSolutionsHashKey( userId );
+    }
+    socket.leave(solutionsHashKey);
+    console.info(`[${userId}:${socket.id}] stopped listening solutions updates.`);
+  });
   
   socket.on('disconnect', function (data) {
     console.log(`[${socket.id}] disconnected from the server.`, );
@@ -65,6 +100,14 @@ function getContestHashKey(str) {
 
 function getUserHashKey(str) {
   return crypto.createHash('md5').update('user' + str + hashSalt).digest('hex');
+}
+
+function getAdminSolutionsHashKey(adminRoom = 'default') {
+  return crypto.createHash('md5').update(`admin_solutions_${adminRoom}_${hashSalt}`).digest('hex');
+}
+
+function getUserSolutionsHashKey(userRoom = 'default') {
+  return crypto.createHash('md5').update(`user_solutions_${userRoom}_${hashSalt}`).digest('hex');
 }
 
 export function emitNewSolutionEvent(params = {}, target = 'contest') {
@@ -132,4 +175,16 @@ function emitUserEvent(contestId, userId, eventName, data = {}) {
   let userHashKey = getUserHashKey([ contestId, userId ].join('_'));
   console.info(`Emitting socket.io user's event: ${eventName}:${contestId}_${userId}`);
   io.to(userHashKey).emit(eventName, data);
+}
+
+export function emitUserSolutionsEvent(userId, eventName, data = {}) {
+  let userHashKey = getUserSolutionsHashKey( userId );
+  console.info(`[Solutions] Emitting socket.io user's event: ${eventName}:${userId}`);
+  io.to(userHashKey).emit(eventName, data);
+}
+
+export function emitAdminSolutionsEvent(eventName, data = {}) {
+  let adminHashKey = getAdminSolutionsHashKey();
+  console.info(`[Solutions] Emitting socket.io admin's event: ${eventName}`);
+  io.to(adminHashKey).emit(eventName, data);
 }

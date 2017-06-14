@@ -27,12 +27,15 @@ export async function handle(solution) {
       }
       verdict = await getVerdict(solution, systemAccount, contextRow);
       console.log(verdict);
-      sockets.emitVerdictUpdateEvent({
+      let socketData = {
         contestId: solution.contestId,
         solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
           exclude: [ 'sourceCode' ]
         })
-      });
+      };
+      sockets.emitVerdictUpdateEvent(socketData);
+      sockets.emitUserSolutionsEvent(solution.userId, 'verdict updated', socketData.solution);
+      sockets.emitAdminSolutionsEvent('verdict updated', socketData.solution);
       await Promise.delay(verdictCheckTimeoutMs);
     }
     if (verdict.id === 3) {
@@ -60,7 +63,7 @@ async function handleError(error, solution, systemAccount) {
       verdictGotAtMs: Date.now(),
       errorTrace: (error || '').toString()
     });
-    sockets.emitVerdictUpdateEvent({
+    let socketData = {
       contestId: solution.contestId,
       solution: filter(Object.assign(solution.get({ plain: true }), {
         verdict: {
@@ -74,20 +77,26 @@ async function handleError(error, solution, systemAccount) {
       }), {
         exclude: [ 'sourceCode' ]
       })
-    });
+    };
+    sockets.emitVerdictUpdateEvent(socketData);
+    sockets.emitUserSolutionsEvent(solution.userId, 'verdict updated', socketData.solution);
+    sockets.emitAdminSolutionsEvent('verdict updated', socketData.solution);
   } else {
     await solution.update({
       retriesNumber: solution.retriesNumber,
       nextAttemptWillBeAtMs: Date.now() + nextAttemptAfterMs * solution.retriesNumber
     });
-    sockets.emitVerdictUpdateEvent({
+    let socketData = {
       contestId: solution.contestId,
       solution: filter(Object.assign(solution.get({ plain: true }), {
         _currentAttempt: solution.retriesNumber
       }), {
         exclude: [ 'sourceCode' ]
       })
-    });
+    };
+    sockets.emitVerdictUpdateEvent(socketData);
+    sockets.emitUserSolutionsEvent(solution.userId, 'verdict updated', socketData.solution);
+    sockets.emitAdminSolutionsEvent('verdict updated', socketData.solution);
   }
 }
 
@@ -101,13 +110,16 @@ async function saveVerdict(solution, systemAccount, verdict) {
     compilationError: verdict.compilationError
   });
   systemAccount.free();
-  
-  sockets.emitVerdictUpdateEvent({
+
+  let socketData = {
     contestId: solution.contestId,
     solution: filter(Object.assign(solution.get({ plain: true }), { verdict }), {
       exclude: [ 'sourceCode' ]
     })
-  });
+  };
+  sockets.emitVerdictUpdateEvent(socketData);
+  sockets.emitUserSolutionsEvent(solution.userId, 'verdict updated', socketData.solution);
+  sockets.emitAdminSolutionsEvent('verdict updated', socketData.solution);
   sockets.emitTableUpdateEvent({
     contestId: solution.contestId
   });

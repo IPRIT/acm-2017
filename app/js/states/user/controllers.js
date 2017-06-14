@@ -32,8 +32,8 @@ angular.module('Qemy.controllers.user', [])
     }
   ])
   
-  .controller('UserSolutionsController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ContestsManager',
-    function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ContestsManager) {
+  .controller('UserSolutionsController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ContestsManager', 'SocketService',
+    function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ContestsManager, SocketService) {
       $scope.$emit('change_title', {
         title: 'Решения | ' + _('app_name')
       });
@@ -181,9 +181,8 @@ angular.module('Qemy.controllers.user', [])
       $scope.$on('new solution', function (ev, data) {
         //console.log(data);
         var userId = data.userId,
-          canSee = !data.author.isAdmin || $scope.user.isAdmin;
-        if (userId !== $scope.user.id
-          || $scope.pageNumber !== 1
+          canSee = !data.author.isAdmin || $scope.user.isAdmin || userId === $scope.user.id;
+        if ($scope.pageNumber !== 1
           || !canSee
           || ($scope.filterParticipants.length && $scope.filterParticipants.indexOf(userId) === -1)) {
           return;
@@ -198,6 +197,7 @@ angular.module('Qemy.controllers.user', [])
           solutions.pop();
         }
         solutions.unshift(data);
+        safeApply($scope);
       });
 
       $scope.$on('reset solution', function (ev, args) {
@@ -515,6 +515,57 @@ angular.module('Qemy.controllers.user', [])
           }
         }
       };
+
+      var socketId,
+        verdictUpdatesListener,
+        newSolutionListener,
+        solutionResetListener;
+
+      SocketService.onConnect(function () {
+        socketId = SocketService.getSocket().id;
+        console.log('Connected:', socketId);
+
+        UserManager.getCurrentUser().then(function (user) {
+          SocketService.listenSolutions(user.id);
+          SocketService.getSocket().on('reconnect', function (data) {
+            console.log('Reconnected:', SocketService.getSocket().id);
+            $timeout(function () {
+              SocketService.listenSolutions(user.id);
+            }, 500);
+          });
+          attachEvents();
+        }).catch(function (result) {
+          ErrorService.show(result);
+        });
+      });
+
+      function attachEvents() {
+        verdictUpdatesListener = SocketService.setListener('verdict updated', function (data) {
+          $rootScope.$broadcast('verdict updated', data);
+        });
+        newSolutionListener = SocketService.setListener('new solution', function (data) {
+          $rootScope.$broadcast('new solution', data);
+        });
+        solutionResetListener = SocketService.setListener('reset solution', function (data) {
+          $rootScope.$broadcast('reset solution', data);
+        });
+      }
+
+      function removeEvents() {
+        try {
+          verdictUpdatesListener.removeListener();
+          newSolutionListener.removeListener();
+          solutionResetListener.removeListener();
+          console.log('Solutions listeners have been removed.');
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      $scope.$on('$destroy', function () {
+        SocketService.stopListenSolutions($scope.user.id);
+        removeEvents();
+      });
     }
   ])
 ;
