@@ -1,0 +1,69 @@
+div
+  div.contest__content.contest__min-width
+    div.contest__inner
+      div.task
+        div.task__title
+          div.task__title-index
+            span(ng-cloak, style='color: #777; font-size: .9em; text-transform: uppercase;')
+             | Файл: {{ condition.title }}
+            md-button.md-primary.md-raised(ng-if='user.isAdmin', ui-sref='admin.problems-edit({ problemId: condition.id })') Редактировать
+
+        div.problem-info(style='margin-top: 15px;')
+          div.problem-info__content
+            div.problem-info__title Мета данные
+            div.problem-info__inner
+              div.problem-info__row
+                div.problem-info__cell ID
+                div.problem-info__cell {{ condition.id }}
+              div.problem-info__row
+                div.problem-info__cell Проверяющая система
+                div.problem-info__cell(style='text-transform: uppercase;') {{ condition.systemType }}
+              div.problem-info__row
+                div.problem-info__cell Системный ID
+                div.problem-info__cell {{ condition.foreignProblemIdentifier }}
+              div.problem-info__row
+                div.problem-info__cell Создана
+                div.problem-info__cell {{ condition.createdAt | date:'medium' }}
+              div.problem-info__row
+                div.problem-info__cell Обновлена
+                div.problem-info__cell {{ condition.updatedAt | date:'medium' }}
+              div.problem-info__row
+                div.problem-info__cell Связанные контесты
+                div.problem-info__cell
+                  span(ng-if='condition.connectedContests.length === 0') —
+                  div.problem-info__contests(ng-if='condition.connectedContests.length > 0')
+                    md-button.md-primary(ng-repeat='contest in condition.connectedContests', ui-sref='contest.item({contestId: contest.id})', join-contest, contest='contest')
+                      | \#{{ contest.id }}
+                      md-tooltip {{ contest.name }}
+
+        div.task__own(ng-if='condition.attachments')
+          div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')
+            div
+              h4 Файлы: {{condition.attachments.files.length}}
+            include ../contest-item/contest-condition-item/files
+            div.markdown__divider(ng-if='!condition.attachments.config.replaced || !!condition.attachments.content.text')
+
+        div.task__problem(ng-if='!condition.attachments.config.replaced',
+        ng-class='{"task__problem-timus": condition.systemType === "timus", \
+        "task__problem-sgu": condition.systemType === "sgu", \
+        "task__problem-cf": condition.systemType === "cf", \
+        "task__problem-acmp": condition.systemType === "acmp", \
+        "task__problem-ejudge": condition.systemType === "ejudge", \
+        "task__problem-cf_type_gym": condition.foreignProblemIdentifier.indexOf("gym") >= 0 }')
+          div(ng-bind-html='condition.htmlStatement')
+
+        div.task__own(ng-if='condition.attachments')
+          div(ng-if='condition.attachments.content.text')
+            div(ng-switch='condition.attachments.config.markup')
+              div(ng-switch-when='markdown')
+                div.markdown(marked='condition.attachments.content.text')
+              div(ng-switch-default)
+                p Not implemented
+
+          div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && (!condition.attachments.config.files_location || condition.attachments.config.files_location === "bottom")')
+            div.markdown__divider
+            div
+              h4 Файлы: {{condition.attachments.files.length}}
+            include ../contest-item/contest-condition-item/files
+
+  page-footer

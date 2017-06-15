@@ -8,6 +8,7 @@ import cors from './cors';
 import test from './test';
 import user from './user';
 import contest from './contest';
+import problems from './problems';
 import admin from './admin';
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.all('*', cors);
 router.use('/test', test);
 router.use('/user', user);
 router.use('/contest', contest);
+router.use('/problems', problems);
 router.use('/admin', admin);
 router.post('/repair', repairDb);
 

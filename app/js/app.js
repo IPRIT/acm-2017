@@ -16,9 +16,10 @@ angular.module('Qemy', [
   'Qemy.controllers',
   'Qemy.services',
   'Qemy.filters',
-  
+
   'Qemy.ui.contests',
   'Qemy.ui.user',
+  'Qemy.ui.problems',
   'Qemy.ui.auth',
   'Qemy.ui.contest-item',
   'Qemy.ui.admin'

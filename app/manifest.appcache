@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 68
+# 69
 
 CACHE:
 
@@ -48,6 +48,7 @@ CACHE:
 /partials/user/solutions/solution-item.html
 /partials/user/solutions/solutions.html
 /partials/user/solutions/solutions-content.html
+/partials/problems/item.html
 /vendor/math-tex/dist/math-tex.html
 
 # js
