@@ -4,24 +4,7 @@ div.admin-content-layer(style='padding: 0')
     md-tabs(md-dynamic-height, md-border-bottom)
       md-tab(label='Сканирование')
         md-content.md-padding
-          div.contest-creation
-            div.contests-list__title Сканирование задач
-
-            div(style='padding: 30px;')
-              div(ng-if='loading') Идет сканирование. Сканирование может производиться несколько минут.
-              div
-                md-button.md-primary.md-raised(ng-disabled='loading', ng-click='scan("timus")', aria-label='Scan timus') Сканировать Timus
-              div
-                md-button.md-primary.md-raised(ng-disabled='loading', ng-click='scan("cf:problemset")', aria-label='Scan cf problemset') Сканировать Codeforces (Архив)
-              div
-                md-button.md-primary.md-raised(ng-disabled='loading', ng-click='scan("cf:gym")', aria-label='Scan cf gyms') Сканировать Codeforces (Тренировки)
-              div
-                md-button.md-primary.md-raised(ng-disabled='loading', ng-click='scan("acmp")', aria-label='Scan acmp') Сканировать ACMP.ru
-              div
-                md-button.md-primary.md-raised(ng-disabled='loading', ng-click='scan("sgu")', aria-label='Scan sgu') Сканировать SGU
-
-            div(ng-if='result')
-              div Обновлено и добавлено: {{result.all_items_count}} задач.
+          include ./problems/scan/index
 
       md-tab(label='Редактирование')
         md-content.md-padding

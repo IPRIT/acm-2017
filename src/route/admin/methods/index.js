@@ -33,3 +33,4 @@ export * from './deleteUserFromContest';
 export * from './deleteSolutionsForUser';
 export * from './computeRatings';
 export * from './restart';
+export * from './scan';

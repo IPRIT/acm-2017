@@ -248,6 +248,14 @@ angular.module('Qemy.services', [
         userId: userId
       });
     }
+
+    function listenScanningConsole() {
+      emitEvent('scanner-console.listenLogs', {});
+    }
+
+    function stopListenScanningConsole() {
+      emitEvent('scanner-console.stopListenLogs', {});
+    }
     
     function setListener(eventName, callback) {
       socket.on(eventName, callback);
@@ -301,6 +309,8 @@ angular.module('Qemy.services', [
       leaveContest: leaveContest,
       listenSolutions: listenSolutions,
       stopListenSolutions: stopListenSolutions,
+      listenScanningConsole: listenScanningConsole,
+      stopListenScanningConsole: stopListenScanningConsole,
       setListener: setListener,
       removeListener: removeListener,
       onConnect: onConnect,

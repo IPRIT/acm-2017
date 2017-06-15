@@ -412,6 +412,16 @@ angular.module('Qemy.services.admin', [
         return data.data;
       });
     }
+
+    function scanProblems(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/problems/scan',
+        data: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       searchGroups: searchGroups,
@@ -454,7 +464,8 @@ angular.module('Qemy.services.admin', [
       getVerdicts: getVerdicts,
       setProblemsForContest: setProblemsForContest,
       deleteUserFromContest: deleteUserFromContest,
-      computeRatings: computeRatings
+      computeRatings: computeRatings,
+      scanProblems: scanProblems
     }
   }])
 ;

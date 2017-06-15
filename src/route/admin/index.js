@@ -17,6 +17,7 @@ router.get('/verdicts', [ userRetriever, rightsAllocator('user') ], adminMethods
 
 router.get('/problems', [ userRetriever, rightsAllocator('admin') ], adminMethods.searchProblemsRequest);
 router.get('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getProblemRequest);
+router.post('/problems/scan', [ userRetriever, rightsAllocator('admin') ], adminMethods.scanRequest);
 router.post('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateProblemRequest);
 router.delete('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteProblemRequest);
 router.post('/problems/new/ejudge', [ userRetriever, rightsAllocator('admin') ], adminMethods.createEjudgeProblemRequest);
