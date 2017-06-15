@@ -1070,51 +1070,89 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
   
-  .controller('AdminProblemsController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager',
-    function($scope, $rootScope, $mdDialog, $state, AdminManager) {
+  .controller('AdminProblemsController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager', 'ErrorService', 'SocketService',
+    function($scope, $rootScope, $mdDialog, $state, AdminManager, ErrorService, SocketService) {
       $scope.loading = false;
-      
-      $scope.scan = function (systemType) {
+
+      $scope.consoleRows = [];
+
+      $scope.availableSystems = [{
+        systemType: 'timus',
+        name: 'Timus',
+        update: false, // updating exists problems (rewrite exists problems)
+        insert: true // insert new problems
+      }];
+      $scope.selectedSystemType = 'timus';
+
+      $scope.scan = function () {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
-          .content('Вы действительно хотите произвести сканирование? После этого желательно произвести перезагрузку сервера.')
-          .ariaLabel('Seriously?')
+          .content('Вы действительно хотите произвести сканирование?')
+          .ariaLabel('Подтверждение')
           .ok('Да')
           .cancel('Отмена');
         
         $mdDialog.show(confirm).then(function () {
-          var promise;
-          $scope.loading = true;
           $scope.$emit('data loading');
-          switch (systemType) {
-            case 'timus':
-              promise = AdminManager.scanTimus();
-              break;
-            case 'cf:problemset':
-              promise = AdminManager.scanCfProblemset();
-              break;
-            case 'cf:gym':
-              promise = AdminManager.scanCfGym();
-              break;
-            case 'acmp':
-              promise = AdminManager.scanAcmp();
-              break;
-            case 'sgu':
-              promise = AdminManager.scanSgu();
-              break;
-            default:
-              promise = AdminManager.scanTimus();
-          }
-          promise.then(function (data) {
-            $scope.loading = false;
+          $scope.consoleRows.unshift('----');
+          var params = $scope.availableSystems.filter(function (value, index) {
+            return value.systemType === $scope.selectedSystemType;
+          })[0];
+          AdminManager.scanProblems(params).then(function (data) {
+            console.log(data);
+          }).catch(function (error) {
+            ErrorService.show(error);
+          }).finally(function () {
+            $scope.scanning = true;
             $scope.$emit('data loaded');
-            if (data.error) {
-              return alert('Произошла ошибка: ' + data.error);
-            }
-            $scope.result = data;
           });
         });
       };
+
+      $scope.$on('scanner-console.log', function (ev, args) {
+        $scope.consoleRows.unshift( args.message );
+        if (args.message === 'finished') {
+          $scope.scanning = false;
+        }
+        safeApply($scope);
+      });
+
+      var socketId,
+        scannerConsoleLogListener;
+
+      SocketService.onConnect(function () {
+        socketId = SocketService.getSocket().id;
+        console.log('Connected:', socketId);
+
+        SocketService.listenScanningConsole();
+        SocketService.getSocket().on('reconnect', function (data) {
+          console.log('Reconnected:', SocketService.getSocket().id);
+          $timeout(function () {
+            SocketService.listenScanningConsole();
+          }, 500);
+        });
+        attachEvents();
+      });
+
+      function attachEvents() {
+        scannerConsoleLogListener = SocketService.setListener('scanner-console.log', function (data) {
+          $rootScope.$broadcast('scanner-console.log', data);
+        });
+      }
+
+      function removeEvents() {
+        try {
+          scannerConsoleLogListener.removeListener();
+          console.log('Scanner listeners have been removed.');
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      $scope.$on('$destroy', function () {
+        SocketService.stopListenScanningConsole();
+        removeEvents();
+      });
       
       $scope.systemType = 'all';
       $scope.problems = [];
@@ -1389,7 +1427,6 @@ angular.module('Qemy.controllers.admin', [])
           $scope.condition.attachments.files = [];
           $scope.condition.attachments.content = {};
         }
-        console.log($scope.condition);
         $scope.condition.attachments.config.replaced = $scope.settings.replace;
         $scope.condition.attachments.config.files_location = $scope.settings.files_location;
         $scope.condition.attachments.files = $scope.settings.files;

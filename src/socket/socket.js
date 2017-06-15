@@ -88,6 +88,16 @@ export function subscribeEvents(socket) {
     socket.leave(solutionsHashKey);
     console.info(`[${userId}:${socket.id}] stopped listening solutions updates.`);
   });
+
+  socket.on('scanner-console.listenLogs', async data => {
+    socket.join( getScannerConsoleLogsHashKey() );
+    console.info(`[${socket.id}] started listening scanner console logs.`);
+  });
+
+  socket.on('scanner-console.stopListenLogs', async data => {
+    socket.leave( getScannerConsoleLogsHashKey() );
+    console.info(`[${socket.id}] stopped listening scanner console logs.`);
+  });
   
   socket.on('disconnect', function (data) {
     console.log(`[${socket.id}] disconnected from the server.`, );
@@ -108,6 +118,10 @@ function getAdminSolutionsHashKey(adminRoom = 'default') {
 
 function getUserSolutionsHashKey(userRoom = 'default') {
   return crypto.createHash('md5').update(`user_solutions_${userRoom}_${hashSalt}`).digest('hex');
+}
+
+function getScannerConsoleLogsHashKey() {
+  return crypto.createHash('md5').update(`scanner.console.log`).digest('hex');
 }
 
 export function emitNewSolutionEvent(params = {}, target = 'contest') {
@@ -187,4 +201,11 @@ export function emitAdminSolutionsEvent(eventName, data = {}) {
   let adminHashKey = getAdminSolutionsHashKey();
   console.info(`[Solutions] Emitting socket.io admin's event: ${eventName}`);
   io.to(adminHashKey).emit(eventName, data);
+}
+
+export function emitScannerConsoleLog(consoleLogMessage) {
+  let roomKey = getScannerConsoleLogsHashKey();
+  let eventName = 'scanner-console.log';
+  console.log(consoleLogMessage);
+  io.to(roomKey).emit(eventName, { message: consoleLogMessage });
 }

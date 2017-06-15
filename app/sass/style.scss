@@ -2707,3 +2707,37 @@ md-sidenav {
     }
   }
 }
+
+.scan-console {
+
+  &__title {
+    font-size: 1em;
+    margin-left: 0;
+  }
+
+  &__inner {
+    box-shadow: inset 0 0 2px 2px transparentize(black, .9);
+    background: white;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  &__row {
+    padding: 3px 4px;
+
+    &:hover {
+      background: transparentize(black, .95);
+    }
+
+    * {
+      font-family: "Courier New", Courier, sans-serif;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+div.contest-creation
+  div.contests-list__title Сканирование задач
+
+  div(style='padding: 30px;', layout='row')
+    md-input-container.contest-creation__field-inline-fix(flex='4')
+      Label Система
+      md-select(ng-model='selectedSystemType')
+        md-option(ng-repeat='system in availableSystems', value='{{system.systemType}}', ng-bind='system.name')
+
+    md-button.md-raised.md-primary(ng-click='scan()', flex='1', ng-disabled='scanning') Старт
+
+  div.scan-console
+    div.problem-info__title.scan-console__title Консоль
+    div.scan-console__inner
+      div.scan-console__row.markdown(ng-repeat='consoleRow in consoleRows track by $index', marked='consoleRow')
