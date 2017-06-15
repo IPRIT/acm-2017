@@ -459,7 +459,7 @@ angular.module('Qemy.controllers.contest-item', [])
   .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Условия | ' + _('app_name')
+        title: 'Условие | ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       var problemId = $state.params.problemIndex;
@@ -470,6 +470,10 @@ angular.module('Qemy.controllers.contest-item', [])
         result.htmlStatement = result.htmlStatement
           .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
         $scope.condition = result;
+        console.log(result);
+        $scope.$emit('change_title', {
+          title: problemId + '. ' + result.title + ' | ' + _('app_name')
+        });
       }).catch(function (result) {
         $rootScope.$broadcast('data loaded');
         ErrorService.show(result);

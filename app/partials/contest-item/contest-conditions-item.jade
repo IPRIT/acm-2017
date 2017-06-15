@@ -8,6 +8,10 @@ div.contest
             md-icon(md-svg-src='/img/icons/ic_chevron_right_48px.svg')
           div.task__title-index
             span(ng-bind='condition.internalSymbolIndex + ". " + condition.title + ""')
+            span(style='font-size: .7em', ng-if='user.isAdmin')
+              | &nbsp;[
+              a.link(ui-sref='problems.item({problemId: condition.id})') информация
+              | ]
 
         div.task__own(ng-if='condition.attachments')
           div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')

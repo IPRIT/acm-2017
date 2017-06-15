@@ -32,3 +32,4 @@ export * from './setProblemsForContest';
 export * from './deleteUserFromContest';
 export * from './deleteSolutionsForUser';
 export * from './computeRatings';
+export * from './restart';

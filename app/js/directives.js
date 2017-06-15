@@ -73,6 +73,106 @@ angular.module('Qemy.directives', [])
       }
     };
   })
+
+  .directive('loadingSpinner', function () {
+    return {
+      restrict: 'EA',
+      templateUrl: templateUrl('page', 'loading-spinner'),
+      scope: true,
+      link: function (scope, element, attrs) {
+        var radius = attrs.radius || 48;
+        var rootElement = element.find('.loader');
+        rootElement.css({
+          width: radius + 'px',
+          height: radius + 'px',
+        });
+      }
+    };
+  })
+
+  .directive('joinContest', function () {
+    return {
+      restrict: 'EA',
+      scope: {
+        contest: '='
+      },
+      link: function (scope, element, attrs) {
+        element.on('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          scope.joinContest();
+        });
+      },
+      controller: ['$scope', 'ContestsManager', '$mdDialog', '$state', function ($scope, ContestsManager, $mdDialog, $state) {
+        var contest = $scope.contest;
+
+        function joinContest() {
+          ContestsManager.canJoin({ contestId: contest.id })
+            .then(function (result) {
+              if (!result || !result.hasOwnProperty('can')) {
+                $scope.loadingData = false;
+                return;
+              }
+              handleResponse(result);
+            });
+
+          function handleResponse(result) {
+            if (!result.can) {
+              var alert = $mdDialog.alert()
+                .clickOutsideToClose(true)
+                .title('Уведомление')
+                .ariaLabel('Alert Dialog')
+                .ok('Ок');
+              if (result.reason === 'NOT_IN_TIME') {
+                alert.content('Контест еще не начат или уже завершен.');
+              } else {
+                alert.content(
+                  'Доступ запрещен. Вы не состоите в нужной группе, контест недоступен или удален.'
+                );
+              }
+              $mdDialog.show(alert);
+            } else {
+              if (result.confirm) {
+                var confirm = $mdDialog.confirm()
+                  .title('Предупреждение')
+                  .content('Вы действительно хотите войти в контест? Вы будете добавлены в таблицу результатов.')
+                  .clickOutsideToClose(true)
+                  .ariaLabel('Confirm dialog')
+                  .ok('Да')
+                  .cancel('Отмена');
+                $mdDialog.show(confirm).then(function() {
+                  join();
+                });
+              } else if (!result.joined) {
+                join();
+              } else {
+                $state.go('contest.item', {
+                  contestId: contest.id
+                });
+              }
+            }
+          }
+
+          function join() {
+            ContestsManager.joinContest(contest.id)
+              .then(function (result) {
+                if (result.result) {
+                  success();
+                }
+              });
+
+            function success() {
+              $state.go('contest.item', {
+                contestId: contest.id
+              });
+            }
+          }
+        }
+
+        $scope.joinContest = joinContest;
+      }]
+    };
+  })
   
   .directive('stickyHeader', function () {
     return {

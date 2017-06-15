@@ -46,4 +46,6 @@ router.post('/contests/:contestId/solutions/refresh/:symbolIndex/:userId', [ use
 
 router.post('/computeRatings', [ userRetriever, rightsAllocator('admin') ], adminMethods.computeRatingsRequest);
 
+router.post('/restart', [ userRetriever, rightsAllocator('admin') ], adminMethods.restartRequest);
+
 export default router;

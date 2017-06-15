@@ -2604,10 +2604,11 @@ md-sidenav {
     max-height: 240px;
   }
 }
-.sent-list__filter-participant, .sent-list__filter-problem, .sent-list__filter-verdict {
+.sent-list__filter-participant,
+.sent-list__filter-problem,
+.sent-list__filter-verdict {
   md-input-container {
     margin: 0;
-
     span {
       color: transparentize(black, .13);
     }
@@ -2615,6 +2616,94 @@ md-sidenav {
       label {
         display: none;
       }
+    }
+  }
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  color: #fff;
+
+  svg {
+    position: absolute;
+    transform-origin: 50% 50% 50%;
+    overflow: visible;
+    top: 0;
+    left: 0;
+  }
+
+  &-inner {
+    background: #ee264f;
+    background: linear-gradient(135deg, #ee264f 36%, #f89e4b 62%, #e92765 84%);
+    background-size: 100% 100%;
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    & > svg {
+      & > rect {
+        fill: currentColor;
+        mask: url(#mask);
+      }
+
+      #overlay {
+        fill: white;
+      }
+    }
+  }
+}
+.problem-info {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: #F6F5F3;
+  padding: 20px;
+
+  &__content {
+    margin: 0 auto;
+    width: 50%;
+    min-width: 300px;
+  }
+
+  &__title {
+    text-transform: uppercase;
+    font-size: .7em;
+    color: darken(#F6F5F3, 70);
+    margin-bottom: 8px;
+    margin-left: 16px;
+  }
+
+  &__inner {
+    background: white;
+    padding: 16px;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  &__cell {
+    flex: 1;
+    padding: 8px;
+
+    &:first-of-type {
+      text-align: right;
+      color: darken(#F6F5F3, 50);
+    }
+  }
+
+  &__contests {
+    .md-button {
+      margin: 4px;
+      padding: 0 4px;
+      min-width: 30px;
     }
   }
 }
