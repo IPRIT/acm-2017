@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 70
+# 71
 
 CACHE:
 
@@ -94,7 +94,8 @@ http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyril
 /prod/css/style.css?0.9.6
 
 # Images
-/img/acm-logo-small.png
+/img/acm-logo.svg
+/img/acm-logo-blue-circle-filled.png
 /img/icons/ic_security_48px.svg
 /img/icons/ic_exit_to_app_48px.svg
 /img/icons/ic_settings_48px.svg
