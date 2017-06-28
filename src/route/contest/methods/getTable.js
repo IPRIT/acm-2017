@@ -72,7 +72,8 @@ export async function getTable(params) {
   
   for (let contestant of contestants) {
     if (!Array.isArray(table.users[ contestant.id ])
-      && (!contestant.isAdmin || user.isAdmin)) {
+      && (!contestant.isAdmin || user.isAdmin)
+      && (contestant.id !== 1 || user.id === 1)) {
       table.users[ contestant.id ] = {
         info: contestant,
         problems: {},
