@@ -1,14 +1,16 @@
-import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
 import * as socket from '../../../socket';
 import { extractAllParams } from "../../../utils/utils";
-import * as scanMethods from "./scanMethods/timus";
+import * as scanMethods from "./scanMethods";
 
 export function scanRequest(req, res, next) {
   return Promise.resolve().then(() => {
-    return scan( extractAllParams(req) );
-  }).then(result => res.json(result)).catch(next);
+    res.json( extractAllParams(req) );
+    return scan( extractAllParams(req) )
+      .catch((err) => {
+        socket.emitScannerConsoleLog(`error: ${err.message}`);
+      });
+  }).catch(next);
 }
 
 const availableMethods = {

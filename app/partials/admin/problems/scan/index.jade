@@ -9,7 +9,11 @@ div.contest-creation
 
     md-button.md-raised.md-primary(ng-click='scan()', flex='1', ng-disabled='scanning') Старт
 
+  div(style='padding: 30px;', layout='row')
+    md-checkbox.md-primary(ng-model='scanParams.insert', flex='1') Добавить новые задачи
+    md-checkbox.md-primary(ng-model='scanParams.update', flex='1') Заменить условия задач на новые
+
   div.scan-console
     div.problem-info__title.scan-console__title Консоль
     div.scan-console__inner
-      div.scan-console__row.markdown(ng-repeat='consoleRow in consoleRows track by $index', marked='consoleRow')
+      div.scan-console__row.markdown(ng-repeat='consoleRow in consoleRows track by $index', marked='consoleRow.message')

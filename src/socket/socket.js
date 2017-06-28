@@ -203,9 +203,9 @@ export function emitAdminSolutionsEvent(eventName, data = {}) {
   io.to(adminHashKey).emit(eventName, data);
 }
 
-export function emitScannerConsoleLog(consoleLogMessage) {
+export function emitScannerConsoleLog(consoleLogMessage, messageHash = '') {
   let roomKey = getScannerConsoleLogsHashKey();
   let eventName = 'scanner-console.log';
-  console.log(consoleLogMessage);
-  io.to(roomKey).emit(eventName, { message: consoleLogMessage });
+  //console.log(consoleLogMessage);
+  io.to(roomKey).emit(eventName, { message: consoleLogMessage, messageHash });
 }

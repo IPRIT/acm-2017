@@ -1070,17 +1070,20 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
   
-  .controller('AdminProblemsController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager', 'ErrorService', 'SocketService',
-    function($scope, $rootScope, $mdDialog, $state, AdminManager, ErrorService, SocketService) {
+  .controller('AdminProblemsController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager', 'ErrorService', 'SocketService', '$timeout',
+    function($scope, $rootScope, $mdDialog, $state, AdminManager, ErrorService, SocketService, $timeout) {
       $scope.loading = false;
 
       $scope.consoleRows = [];
 
-      $scope.availableSystems = [{
-        systemType: 'timus',
-        name: 'Timus',
+      $scope.scanParams = {
         update: false, // updating exists problems (rewrite exists problems)
         insert: true // insert new problems
+      };
+
+      $scope.availableSystems = [{
+        systemType: 'timus',
+        name: 'Timus'
       }];
       $scope.selectedSystemType = 'timus';
 
@@ -1094,10 +1097,14 @@ angular.module('Qemy.controllers.admin', [])
         
         $mdDialog.show(confirm).then(function () {
           $scope.$emit('data loading');
-          $scope.consoleRows.unshift('----');
+          $scope.consoleRows.unshift({
+            message: '----'
+          });
           var params = $scope.availableSystems.filter(function (value, index) {
             return value.systemType === $scope.selectedSystemType;
           })[0];
+          params.insert = $scope.scanParams.insert;
+          params.update = $scope.scanParams.update;
           AdminManager.scanProblems(params).then(function (data) {
             console.log(data);
           }).catch(function (error) {
@@ -1110,8 +1117,20 @@ angular.module('Qemy.controllers.admin', [])
       };
 
       $scope.$on('scanner-console.log', function (ev, args) {
-        $scope.consoleRows.unshift( args.message );
-        if (args.message === 'finished') {
+        if (args.messageHash && args.messageHash.length) {
+          var messageIndex = $scope.consoleRows.findIndex(function (val) {
+            return val.messageHash === args.messageHash;
+          });
+          if (messageIndex >= 0) {
+            $scope.consoleRows[ messageIndex ] = args;
+          } else {
+            $scope.consoleRows.unshift( args );
+          }
+        } else {
+          $scope.consoleRows.unshift( args );
+        }
+        if (args.message === 'finished'
+          || args.message.indexOf('error') >= 0) {
           $scope.scanning = false;
         }
         safeApply($scope);
