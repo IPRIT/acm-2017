@@ -2722,6 +2722,66 @@ md-sidenav {
       min-width: 30px;
     }
   }
+
+  &__versions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: white;
+  }
+
+  &__version {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #00acec;
+    margin: 20px;
+    position: relative;
+    display: block;
+
+    &:hover {
+      box-shadow: 0 0 0 4px #00acec;
+    }
+
+    &_selected {
+      box-shadow: 0 0 0 4px #00acec;
+    }
+
+    &_current {
+      background-color: #4caf50;
+      box-shadow: 0 0 0 4px #4caf50;
+    }
+
+    &:not(:last-of-type):before {
+      content: '';
+      height: 2px;
+      position: absolute;
+      width: 30px;
+      top: 4px;
+      background-color: #00acec;
+    }
+
+    &:not(:first-of-type):after {
+      content: '';
+      height: 2px;
+      position: absolute;
+      width: 30px;
+      top: 4px;
+      left: -30px;
+      background-color: #00acec;
+    }
+
+    &-number {
+      position: absolute;
+      bottom: -20px;
+      left: 1px;
+      text-decoration: none;
+      color: #333;
+      font-size: .8em;
+    }
+  }
 }
 
 .scan-console {

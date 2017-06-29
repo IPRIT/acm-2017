@@ -17,14 +17,24 @@ angular.module('Qemy.services.problems', [
     function getProblem(params) {
       return $http({
         method: 'get',
-        url: '/api/problems/' + params.problemId
+        url: '/api/problems/' + params.problemId + (params.versionNumber ? '/version/' + params.versionNumber : '')
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function refreshProblem(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/problems/' + params.problemId + '/rescan'
       }).then(function (data) {
         return data.data;
       });
     }
     
     return {
-      getProblem: getProblem
+      getProblem: getProblem,
+      refreshProblem: refreshProblem
     }
   }])
 ;

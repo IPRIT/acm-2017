@@ -14,6 +14,7 @@ import Language from './Language';
 import Solution from './Solution';
 import SystemAccount from './SystemAccount';
 import RatingChange from './RatingChange';
+import ProblemVersionControl from './ProblemVersionControl';
 
 /*
 import {
@@ -109,6 +110,9 @@ Contest.belongsToMany(Problem, {
 Problem.hasMany(ProblemToContest, { foreignKey: 'problemId', targetKey: 'id' });
 ProblemToContest.belongsTo(Problem, { foreignKey: 'problemId', targetKey: 'id' });
 
+Problem.hasMany(ProblemVersionControl, { foreignKey: 'problemId', targetKey: 'id' });
+ProblemVersionControl.belongsTo(Problem, { foreignKey: 'problemId', targetKey: 'id' });
+
 Contest.hasMany(ProblemToContest, { foreignKey: 'contestId', targetKey: 'id' });
 ProblemToContest.belongsTo(Contest, { foreignKey: 'contestId', targetKey: 'id' });
 
@@ -145,6 +149,7 @@ export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
   Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
+  ProblemVersionControl
 
   /*OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,
