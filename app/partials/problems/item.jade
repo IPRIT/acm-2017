@@ -6,7 +6,15 @@ div
           div.task__title-index
             span(ng-cloak, style='color: #777; font-size: .9em; text-transform: uppercase;')
              | Файл: {{ condition.title }}
-            md-button.md-primary.md-raised(ng-if='user.isAdmin', ui-sref='admin.problems-edit({ problemId: condition.id })') Редактировать
+            md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ui-sref='admin.problems-edit({ problemId: condition.id })')
+              md-icon(md-svg-src='/img/icons/ic_mode_edit_48px.svg', style='margin-right: 5px;')
+              span Редактировать
+            md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ng-disabled='rescanning', ng-click='refreshProblem(condition)')
+              md-icon(md-svg-src='/img/icons/ic_autorenew_48px.svg', style='margin-right: 5px;')
+              span Обновить условие
+            md-button.md-primary.md-raised(ng-if='user.isAdmin', ng-disabled='condition.versionNumber === condition.latestVersionNumber')
+              md-icon(md-svg-src='/img/icons/ic_replay_48px.svg', style='margin-right: 5px;')
+              span Сделать версию \#{{ condition.versionNumber }} основной
 
         div.problem-info(style='margin-top: 15px;')
           div.problem-info__content
@@ -35,6 +43,15 @@ div
                     md-button.md-primary(ng-repeat='contest in condition.connectedContests', ui-sref='contest.item({contestId: contest.id})', join-contest, contest='contest')
                       | \#{{ contest.id }}
                       md-tooltip {{ contest.name }}
+              div.problem-info__row
+                div.problem-info__cell Версия
+                div.problem-info__cell
+                  span {{ condition.versionNumber }}
+
+          div.problem-info__versions
+            a.problem-info__version(ng-repeat='version in condition.versions', ui-sref='problems.item-version({problemId: condition.id, versionNumber: version.versionNumber})', ng-class='{"problem-info__version_selected": version.versionNumber == versionNumber, "problem-info__version_current": version.versionNumber === condition.latestVersionNumber}')
+              div.problem-info__version-number {{ version.versionNumber }}
+              md-tooltip Версия \#{{ version.versionNumber }} {{ version.versionNumber === condition.latestVersionNumber ? '[Текущая]' : '' }}
 
         div.task__own(ng-if='condition.attachments')
           div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')

@@ -29,5 +29,10 @@ angular.module('Qemy.ui.problems', [
           templateUrl: templateUrl('problems', 'item'),
           controller: 'ProblemsItemController'
         })
+        .state('problems.item-version', {
+          url: '/:problemId/version/:versionNumber',
+          templateUrl: templateUrl('problems', 'item'),
+          controller: 'ProblemsItemController'
+        })
     }
   ]);

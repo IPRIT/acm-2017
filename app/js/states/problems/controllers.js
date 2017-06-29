@@ -36,16 +36,17 @@ angular.module('Qemy.controllers.problems', [])
       });
 
       var problemId = $state.params.problemId;
+      $scope.versionNumber = $state.params.versionNumber;
       $scope.condition = {};
 
       function updateProblem() {
         $rootScope.$broadcast('data loading');
-        ProblemsManager.getProblem({ problemId: problemId }).then(function (result) {
+        ProblemsManager.getProblem({ problemId: problemId, versionNumber: $scope.versionNumber }).then(function (result) {
           result.htmlStatement = result.htmlStatement
             .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
           $scope.condition = result;
           $scope.$emit('change_title', {
-            title: '[' + result.systemType.toUpperCase() + '] ' + result.title + ' | ' + _('app_name')
+            title: 'Версия #' + result.versionNumber + ' [' + result.systemType.toUpperCase() + '] ' + result.title + ' | ' + _('app_name')
           });
         }).catch(function (result) {
           ErrorService.show(result);
@@ -73,6 +74,19 @@ angular.module('Qemy.controllers.problems', [])
         ev.preventDefault();
         return false;
       };
+
+      $scope.refreshProblem = function (problem) {
+        $rootScope.$broadcast('data loading');
+        $scope.rescanning = true;
+        ProblemsManager.refreshProblem({ problemId: problem.id }).then(function (result) {
+          $state.go('problems.item-version', { problemId: problem.id, versionNumber: result.versionNumber });
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(function () {
+          $rootScope.$broadcast('data loaded');
+          $scope.rescanning = false;
+        });
+      }
     }
   ])
 ;

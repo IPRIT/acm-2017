@@ -1,7 +1,6 @@
-import * as socket from '../../../../socket';
-import * as models from '../../../../models';
-import {passwordHash} from "../../../../utils/utils";
-import { extractParam, ensureNumber } from "../../../../utils";
+import * as socket from '../../../../../socket';
+import * as models from '../../../../../models';
+import { extractParam, ensureNumber, passwordHash } from "../../../../../utils";
 import Promise from 'bluebird';
 import request from 'request-promise';
 import cheerio from 'cheerio';
@@ -82,31 +81,7 @@ async function retrieveProblems(tasksMeta, params) {
   } = params;
 
   return Promise.resolve(tasksMeta).map(async taskMeta => {
-    let body = await request({
-      method: 'GET',
-      uri: endpoint,
-      qs: {
-        space: 1,
-        num: taskMeta.internalSystemId
-      },
-      simple: false,
-      followAllRedirects: true,
-      headers: {
-        'Accept-Language': 'ru,en'
-      }
-    });
-
-    const $ = cheerio.load(body);
-    let content = $('.problem_content').parent().find('.problem_content');
-    content.find('img').each(function () {
-      let imgThis = $(this),
-        src = imgThis.attr('src');
-      if (src && src.indexOf(`http://${ACM_HOST}`) === -1) {
-        imgThis.attr('src', `http://${ACM_HOST}` + src);
-      }
-    });
-    let htmlStatement = '<div class="problem_content">' + content.html() + '</div>',
-      textStatement = content.text();
+    let { htmlStatement, textStatement } = await retrieveProblem(taskMeta);
 
     let problem = await models.Problem.findOne({
       where: {
@@ -123,6 +98,14 @@ async function retrieveProblems(tasksMeta, params) {
           htmlStatement,
           textStatement
         });
+        let versionNumber = await models.ProblemVersionControl.getCurrentVersion(problem.id);
+        await problem.createProblemVersionControl({
+          htmlStatement,
+          textStatement,
+          title: taskMeta.name,
+          versionNumber: versionNumber + 1,
+          attachments: ''
+        });
         inserted.push(problem);
       }
     } else if (problem.htmlStatement !== htmlStatement) {
@@ -131,6 +114,14 @@ async function retrieveProblems(tasksMeta, params) {
           htmlStatement,
           textStatement,
           title: taskMeta.name
+        });
+        let versionNumber = await models.ProblemVersionControl.getCurrentVersion(problem.id);
+        await problem.createProblemVersionControl({
+          htmlStatement,
+          textStatement,
+          title: taskMeta.name,
+          versionNumber: versionNumber + 1,
+          attachments: ''
         });
         changed.push(problem);
       }
@@ -141,6 +132,37 @@ async function retrieveProblems(tasksMeta, params) {
     printResults(inserted, changed);
     socket.emitScannerConsoleLog(`finished`);
   });
+}
+
+export async function retrieveProblem(taskMeta) {
+  let endpoint = getEndpoint(ACM_PROBLEM_PATH);
+
+  let body = await request({
+    method: 'GET',
+    uri: endpoint,
+    qs: {
+      space: 1,
+      num: taskMeta.internalSystemId
+    },
+    simple: false,
+    followAllRedirects: true,
+    headers: {
+      'Accept-Language': 'ru,en'
+    }
+  });
+
+  const $ = cheerio.load(body);
+  let content = $('.problem_content').parent().find('.problem_content');
+  content.find('img').each(function () {
+    let imgThis = $(this),
+      src = imgThis.attr('src');
+    if (src && src.indexOf(`http://${ACM_HOST}`) === -1) {
+      imgThis.attr('src', `http://${ACM_HOST}` + src);
+    }
+  });
+  let htmlStatement = '<div class="problem_content">' + content.html() + '</div>',
+    textStatement = content.text();
+  return { htmlStatement, textStatement }
 }
 
 function getEndpoint(pathTo = '') {
