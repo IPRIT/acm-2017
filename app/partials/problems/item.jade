@@ -48,7 +48,7 @@ div
                 div.problem-info__cell
                   span {{ condition.versionNumber }}
 
-          div.problem-info__versions
+          div.problem-info__versions(ng-if='condition.versions.length')
             a.problem-info__version(ng-repeat='version in condition.versions', ui-sref='problems.item-version({problemId: condition.id, versionNumber: version.versionNumber})', ng-class='{"problem-info__version_selected": version.versionNumber == versionNumber, "problem-info__version_current": version.versionNumber === condition.latestVersionNumber}')
               div.problem-info__version-number {{ version.versionNumber }}
               md-tooltip Версия \#{{ version.versionNumber }} {{ version.versionNumber === condition.latestVersionNumber ? '[Текущая]' : '' }}
