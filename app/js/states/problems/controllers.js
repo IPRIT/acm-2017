@@ -42,7 +42,7 @@ angular.module('Qemy.controllers.problems', [])
       function updateProblem() {
         $rootScope.$broadcast('data loading');
         ProblemsManager.getProblem({ problemId: problemId, versionNumber: $scope.versionNumber }).then(function (result) {
-          result.htmlStatement = result.htmlStatement
+          result.htmlStatement = (result.htmlStatement || '')
             .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
           $scope.condition = result;
           $scope.$emit('change_title', {

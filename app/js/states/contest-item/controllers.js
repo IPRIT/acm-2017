@@ -467,7 +467,7 @@ angular.module('Qemy.controllers.contest-item', [])
       $rootScope.$broadcast('data loading');
       ContestItemManager.getCondition({ contestId: contestId, symbolIndex: problemId }).then(function (result) {
         $rootScope.$broadcast('data loaded');
-        result.htmlStatement = result.htmlStatement
+        result.htmlStatement = (result.htmlStatement || '')
           .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
         $scope.condition = result;
         console.log(result);
