@@ -19,7 +19,7 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
                   md-select.rating-info__group(ng-model="selectedGroupId", aria-label='Group', style='background-color: {{groupColor}}')
                     md-option(ng-repeat='userGroup in userGroups', value='{{userGroup.id}}') {{userGroup.name}}
 
-        md-content.rating-info.md-padding
+        md-content.rating-info.md-padding(ng-if='ratingHistory.currentRating.groupRank')
           div
             span(style='vertical-align: middle;') Место в группе:&nbsp;
             span(style='vertical-align: middle; font-weight: bold;') \#{{ratingHistory.currentRating.groupRank}}
@@ -52,7 +52,7 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
           div(ng-if='isTableLoading', style='padding: 20px;', layout='row', layout-align='center center')
             md-progress-circular(md-diameter="40")
 
-        md-content
+        md-content.group-rating-table.md-padding
           div(ng-if='!isLoading && userGroups.length > 0 && ratingHistory.ratingChanges.length === 0') Пользователь не имеет рейтинга в данной группе
           div(ng-if='!isLoading && userGroups.length === 0') Пользователь не состоит ни в какой группе
           div(ng-show='!isLoading && userGroups.length > 0 && ratingHistory.ratingChanges.length > 0')
