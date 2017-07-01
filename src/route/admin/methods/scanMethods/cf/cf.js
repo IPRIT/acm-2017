@@ -389,6 +389,17 @@ export async function retrieveCfProblem(taskMeta) {
   });
   let htmlStatement = content.html(),
     textStatement = isPdf ? 'pdf' : content.text();
+  if (!htmlStatement) {
+    let pathTo = taskMeta.type === 'problemset'
+      ? ACM_PROBLEMSET_PROBLEM_PATH : ACM_GYM_PROBLEM_PATH;
+    isPdf = true;
+    attachments.files.push({
+      type: "pdf",
+      url: getEndpoint(pathTo, taskMeta),
+      title: `Условие`
+    });
+    htmlStatement = '';
+  }
   return { htmlStatement, textStatement, attachments: isPdf ? attachments : '' }
 }
 
