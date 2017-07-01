@@ -85,12 +85,16 @@ export async function getRatingHistory(params) {
     latestUsersChanges.push( usersArray[latestContestIndex] );
   });
   latestUsersChanges.sort((a, b) => b.ratingAfter - a.ratingAfter);
-  
-  currentRating.groupRank = latestUsersChanges.findIndex(change => {
-    return change && currentRating && change.userId === currentRating.userId;
-  }) + 1;
+
+  try {
+    currentRating.groupRank = latestUsersChanges.findIndex(change => {
+        return change && currentRating && change.userId === currentRating.userId;
+      }) + 1;
+  } catch (error) {
+    console.error(error);
+  }
   
   return {
-    currentRating, ratingChanges
+    currentRating: currentRating || {}, ratingChanges
   };
 }
