@@ -37,6 +37,7 @@ export async function getProblem(params) {
       id: problemVersion.problemId,
       systemType: problem.systemType,
       foreignProblemIdentifier: problem.foreignProblemIdentifier,
+      createdAt: problem.createdAt,
       versionNumber: ensureNumber(versionNumber),
       latestVersionNumber,
       versions

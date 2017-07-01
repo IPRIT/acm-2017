@@ -1084,6 +1084,9 @@ angular.module('Qemy.controllers.admin', [])
       $scope.availableSystems = [{
         systemType: 'timus',
         name: 'Timus'
+      }, {
+        systemType: 'cf',
+        name: 'Codeforces'
       }];
       $scope.selectedSystemType = 'timus';
 

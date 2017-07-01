@@ -31,10 +31,20 @@ angular.module('Qemy.services.problems', [
         return data.data;
       });
     }
+
+    function rollbackProblem(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/problems/' + params.problemId + '/rollback/' + params.versionNumber
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       getProblem: getProblem,
-      refreshProblem: refreshProblem
+      refreshProblem: refreshProblem,
+      rollbackProblem: rollbackProblem
     }
   }])
 ;
