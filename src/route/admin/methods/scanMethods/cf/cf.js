@@ -287,8 +287,7 @@ async function retrieveGyms(tasksMeta, params) {
         });
         inserted.push(problem);
       }
-    } else if (problem.htmlStatement !== htmlStatement
-      || JSON.stringify(problem.attachments) !== stringifiedAttachments) {
+    } else if (problem.htmlStatement !== htmlStatement) {
       if (update) {
         await problem.update({
           htmlStatement,

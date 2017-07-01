@@ -27,18 +27,19 @@ export async function rollbackProblem(params) {
     throw new HttpError('Version not found');
   }
   let latestVersionNumber = await models.ProblemVersionControl.getCurrentVersion(problem.id);
+  let attachments = typeof version.attachments === 'object' ? JSON.stringify(version.attachments) : '';
 
   await problem.update({
     htmlStatement: version.htmlStatement,
     textStatement: version.textStatement,
     title: version.title,
-    attachments: typeof version.attachments === 'object' ? JSON.stringify(version.attachments) : ''
+    attachments: attachments === '{}' ? '' : attachments
   });
   return await problem.createProblemVersionControl({
     htmlStatement: version.htmlStatement,
     textStatement: version.textStatement,
     title: version.title,
     versionNumber: latestVersionNumber + 1,
-    attachments: typeof version.attachments === 'object' ? JSON.stringify(version.attachments) : ''
+    attachments: attachments === '{}' ? '' : attachments
   });
 }
