@@ -88,6 +88,21 @@ export function parseCfIdentifier(identifier = '') {
   return { contestNumber, symbolIndex };
 }
 
+export function getEndpoint(host, pathTo = '/', params = {}, qs = {}, protocol = 'http') {
+  let uri = `${protocol}://${host}${pathTo}`;
+  for (let param in params) {
+    uri = uri.replace(new RegExp(`(\:${param})`, 'gi'), params[ param ]);
+  }
+  let qsArray = [];
+  for (let param in qs) {
+    qsArray.push(`${param}=${qs[param]}`);
+  }
+  if (qsArray.length) {
+    uri += '?' + qsArray.join('&');
+  }
+  return uri;
+}
+
 export function capitalize(string = '') {
   return string.split(/\s+/)
     .map(part => part.toLowerCase())
