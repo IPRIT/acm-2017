@@ -8,10 +8,9 @@ div.contest
             md-icon(md-svg-src='/img/icons/ic_chevron_right_48px.svg')
           div.task__title-index
             span(ng-bind='condition.internalSymbolIndex + ". " + condition.title + ""')
-            span(style='font-size: .7em')
-              | &nbsp;[
-              a.link(ui-sref='problems.item({problemId: condition.id})') информация
-              | ]
+            md-button.md-icon-button(style='margin-left: 5px; top: -2px; position: relative;', ui-sref='problems.item({problemId: condition.id})')
+              md-icon(md-svg-src='/img/icons/ic_history_48px.svg')
+              md-tooltip Версии условия
 
         div.task__own(ng-if='condition.attachments')
           div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')

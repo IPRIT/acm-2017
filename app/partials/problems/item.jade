@@ -6,15 +6,16 @@ div
           div.task__title-index
             span(ng-cloak, style='color: #777; font-size: .9em; text-transform: uppercase;')
              | Файл: {{ condition.title }}
-            md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ui-sref='admin.problems-edit({ problemId: condition.id })')
-              md-icon(md-svg-src='/img/icons/ic_mode_edit_48px.svg', style='margin-right: 5px;')
-              span Редактировать
-            md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ng-disabled='rescanning', ng-click='refreshProblem(condition)')
-              md-icon(md-svg-src='/img/icons/ic_autorenew_48px.svg', style='margin-right: 5px;')
-              span Обновить условие
-            md-button.md-primary.md-raised(ng-if='user.isAdmin', ng-disabled='condition.versionNumber === condition.latestVersionNumber', ng-click='rollbackVersion(condition)')
-              md-icon(md-svg-src='/img/icons/ic_replay_48px.svg', style='margin-right: 5px;')
-              span Восстановить версию \#{{ condition.versionNumber }}
+            div(style='margin: 10px 0;')
+              md-button.md-primary.md-raised(style='margin-left: 0;', ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ui-sref='admin.problems-edit({ problemId: condition.id })')
+                md-icon(md-svg-src='/img/icons/ic_mode_edit_48px.svg', style='margin-right: 5px;')
+                span Редактировать
+              md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ng-disabled='rescanning', ng-click='refreshProblem(condition)')
+                md-icon(md-svg-src='/img/icons/ic_autorenew_48px.svg', style='margin-right: 5px;')
+                span Обновить условие
+              md-button.md-primary.md-raised(ng-if='user.isAdmin', ng-disabled='condition.versionNumber === condition.latestVersionNumber', ng-click='rollbackVersion(condition)')
+                md-icon(md-svg-src='/img/icons/ic_replay_48px.svg', style='margin-right: 5px;')
+                span Восстановить версию \#{{ condition.versionNumber }}
 
         div.problem-info(style='margin-top: 15px;')
           div.problem-info__content
@@ -29,6 +30,10 @@ div
               div.problem-info__row
                 div.problem-info__cell Системный ID
                 div.problem-info__cell {{ condition.foreignProblemIdentifier }}
+              div.problem-info__row(ng-if='condition.sourceUrl')
+                div.problem-info__cell Источник
+                div.problem-info__cell(style='word-break: break-all;')
+                  a.link(target='_blank', ng-href='{{ condition.sourceUrl }}') {{ condition.sourceUrl }}
               div.problem-info__row
                 div.problem-info__cell Создана
                 div.problem-info__cell {{ condition.createdAt | date:'medium' }}
