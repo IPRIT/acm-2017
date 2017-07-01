@@ -25,7 +25,7 @@ export async function scanCf(params) {
   } = params;
 
   // problemset scanning
-  socket.emitScannerConsoleLog(buildMessage(`Сканирование архива`));
+  socket.emitScannerConsoleLog(buildMessage(`Сканирование архива...`));
 
   let problemsetMeta = await getAllProblemsetMeta();
   socket.emitScannerConsoleLog(buildMessage(`Ссылки на задачи из архива получены.`));
@@ -38,7 +38,7 @@ export async function scanCf(params) {
 
   // gyms scanning
   socket.emitScannerConsoleLog(`-----`);
-  socket.emitScannerConsoleLog(buildMessage(`Сканирование тренировок`));
+  socket.emitScannerConsoleLog(buildMessage(`Сканирование тренировок...`));
 
   let gymsMeta = await getAllGymsMeta();
   socket.emitScannerConsoleLog(buildMessage(`Ссылки на задачи из тренировок получены.`));
