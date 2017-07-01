@@ -314,7 +314,7 @@ async function retrieveGyms(tasksMeta, params) {
   });
 }
 
-export async function retrieveCfProblem(taskMeta) {
+export async function retrieveCfProblem(taskMeta, deepLevel = 0) {
   let endpoint;
   if (taskMeta.type === 'problemset') {
     endpoint = getEndpoint(ACM_PROBLEMSET_PROBLEM_PATH, taskMeta);
@@ -336,6 +336,15 @@ export async function retrieveCfProblem(taskMeta) {
   });
 
   const $ = cheerio.load(body);
+
+  // fix the route bug from codeforces
+  // sometimes we get main page instead of requested page
+  if (isMainPage($) && deepLevel < 20) {
+    // adding short timeout to get repair
+    await Promise.delay(1000);
+    return retrieveCfProblem(taskMeta, deepLevel + 1);
+  }
+
   let content = $('.ttypography');
   let isPdf = false;
   let attachments = {
@@ -484,4 +493,10 @@ function printResults(inserted, changed) {
     `;
   }
   socket.emitScannerConsoleLog( message );
+}
+
+function isMainPage($) {
+  // tested for different pages
+  // the shortest way is select elements with `topic` class name.
+  return $('.topic').length > 0;
 }
