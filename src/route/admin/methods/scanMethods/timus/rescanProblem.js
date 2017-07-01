@@ -3,7 +3,7 @@ import { ensureNumber } from "../../../../../utils";
 import Promise from 'bluebird';
 import request from 'request-promise';
 import cheerio from 'cheerio';
-import { retrieveProblem } from "./timus";
+import { retrieveTimusProblem } from "./timus";
 
 const SYSTEM_TYPE = 'timus';
 const ACM_PROTOCOL = 'http';
@@ -22,7 +22,7 @@ export async function rescanTimusProblem(params) {
     }
   }
   let taskMeta = await getTaskMeta(problem);
-  let { htmlStatement, textStatement } = await retrieveProblem(taskMeta);
+  let { htmlStatement, textStatement } = await retrieveTimusProblem(taskMeta);
 
   let versionNumber = await models.ProblemVersionControl.getCurrentVersion(problem.id);
 

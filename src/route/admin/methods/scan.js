@@ -14,7 +14,8 @@ export function scanRequest(req, res, next) {
 }
 
 const availableMethods = {
-  timus: scanMethods.scanTimus
+  timus: scanMethods.scanTimus,
+  cf: scanMethods.scanCf
 };
 
 export async function scan(params) {
@@ -26,6 +27,8 @@ export async function scan(params) {
 
   if (systemType in availableMethods) {
     availableMethods[ systemType ](params);
+  } else {
+    console.error( new Error('Foreign system not found') );
   }
 
   return params;

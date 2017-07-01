@@ -81,7 +81,7 @@ async function retrieveProblems(tasksMeta, params) {
   } = params;
 
   return Promise.resolve(tasksMeta).map(async taskMeta => {
-    let { htmlStatement, textStatement } = await retrieveProblem(taskMeta);
+    let { htmlStatement, textStatement } = await retrieveTimusProblem(taskMeta);
 
     let problem = await models.Problem.findOne({
       where: {
@@ -134,7 +134,7 @@ async function retrieveProblems(tasksMeta, params) {
   });
 }
 
-export async function retrieveProblem(taskMeta) {
+export async function retrieveTimusProblem(taskMeta) {
   let endpoint = getEndpoint(ACM_PROBLEM_PATH);
 
   let body = await request({

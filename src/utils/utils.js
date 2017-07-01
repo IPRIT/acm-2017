@@ -79,9 +79,13 @@ export function ensureNumber(value) {
 
 export function parseProblemIdentifier(problemIdentifier = '') {
   let [ type, problem ] = problemIdentifier.split(':');
-  let contestNumber = ensureNumber(problem.match(/^(\d+)/i)[1]);
-  let symbolIndex = problem.match(/\d+([a-zA-Zа-яА-Я0-9]+)$/i)[1];
-  return { type, contestNumber, symbolIndex };
+  return { type, ...parseCfIdentifier(problem) };
+}
+
+export function parseCfIdentifier(identifier = '') {
+  let contestNumber = ensureNumber(identifier.match(/^(\d+)/i)[1]);
+  let symbolIndex = identifier.match(/\d+([a-zA-Zа-яА-Я0-9]+)$/i)[1];
+  return { contestNumber, symbolIndex };
 }
 
 export function capitalize(string = '') {

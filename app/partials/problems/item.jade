@@ -12,9 +12,9 @@ div
             md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ng-disabled='rescanning', ng-click='refreshProblem(condition)')
               md-icon(md-svg-src='/img/icons/ic_autorenew_48px.svg', style='margin-right: 5px;')
               span Обновить условие
-            md-button.md-primary.md-raised(ng-if='user.isAdmin', ng-disabled='condition.versionNumber === condition.latestVersionNumber')
+            md-button.md-primary.md-raised(ng-if='user.isAdmin', ng-disabled='condition.versionNumber === condition.latestVersionNumber', ng-click='rollbackVersion(condition)')
               md-icon(md-svg-src='/img/icons/ic_replay_48px.svg', style='margin-right: 5px;')
-              span Сделать версию \#{{ condition.versionNumber }} основной
+              span Восстановить версию \#{{ condition.versionNumber }}
 
         div.problem-info(style='margin-top: 15px;')
           div.problem-info__content
@@ -48,10 +48,12 @@ div
                 div.problem-info__cell
                   span {{ condition.versionNumber }}
 
-          div.problem-info__versions(ng-if='condition.versions.length')
-            a.problem-info__version(ng-repeat='version in condition.versions', ui-sref='problems.item-version({problemId: condition.id, versionNumber: version.versionNumber})', ng-class='{"problem-info__version_selected": version.versionNumber == versionNumber, "problem-info__version_current": version.versionNumber === condition.latestVersionNumber}')
-              div.problem-info__version-number {{ version.versionNumber }}
-              md-tooltip Версия \#{{ version.versionNumber }} {{ version.versionNumber === condition.latestVersionNumber ? '[Текущая]' : '' }}
+          div(ng-if='condition.versions.length')
+            div.problem-info__title(style='margin-top: 20px;') Версии
+            div.problem-info__versions
+              a.problem-info__version(ng-repeat='version in condition.versions', ui-sref='problems.item-version({problemId: condition.id, versionNumber: version.versionNumber})', ng-class='{"problem-info__version_selected": version.versionNumber == versionNumber || (!versionNumber && condition.versionNumber === version.versionNumber), "problem-info__version_current": version.versionNumber === condition.latestVersionNumber}')
+                div.problem-info__version-number {{ version.versionNumber }}
+                md-tooltip Версия \#{{ version.versionNumber }} {{ version.versionNumber === condition.latestVersionNumber ? '[Текущая]' : '' }}
 
         div.task__own(ng-if='condition.attachments')
           div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')

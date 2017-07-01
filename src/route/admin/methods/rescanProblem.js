@@ -11,7 +11,8 @@ export function rescanProblemRequest(req, res, next) {
 }
 
 const availableMethods = {
-  timus: scanMethods.rescanTimusProblem
+  timus: scanMethods.rescanTimusProblem,
+  cf: scanMethods.rescanCfProblem
 };
 
 export async function rescanProblem(params) {
@@ -28,5 +29,7 @@ export async function rescanProblem(params) {
 
   if (problem.systemType in availableMethods) {
     return availableMethods[ problem.systemType ]({ problem });
+  } else {
+    throw new HttpError('Foreign system not found');
   }
 }

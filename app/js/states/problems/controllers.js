@@ -28,8 +28,8 @@ angular.module('Qemy.controllers.problems', [])
     }
   ])
   
-  .controller('ProblemsItemController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ProblemsManager', 'SocketService',
-    function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ProblemsManager, SocketService) {
+  .controller('ProblemsItemController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ProblemsManager', 'SocketService', '$mdToast',
+    function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ProblemsManager, SocketService, $mdToast) {
 
       $scope.$emit('change_title', {
         title: 'Условие | ' + _('app_name')
@@ -86,7 +86,25 @@ angular.module('Qemy.controllers.problems', [])
           $rootScope.$broadcast('data loaded');
           $scope.rescanning = false;
         });
-      }
+      };
+
+      $scope.rollbackVersion = function (problem) {
+        $rootScope.$broadcast('data loading');
+        ProblemsManager.rollbackProblem({ problemId: problem.id, versionNumber: problem.versionNumber }).then(function (result) {
+          $mdToast.show(
+            $mdToast.simple()
+              .parent(document.querySelector('.notifications'))
+              .textContent('Версия #' + problem.versionNumber + ' восстановлена. Актуальная версия: #' + result.versionNumber)
+              .position('right top')
+              .hideDelay(5000)
+          );
+          $state.go('problems.item', { problemId: problem.id });
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(function () {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
     }
   ])
 ;

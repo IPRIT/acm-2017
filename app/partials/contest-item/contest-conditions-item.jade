@@ -8,7 +8,7 @@ div.contest
             md-icon(md-svg-src='/img/icons/ic_chevron_right_48px.svg')
           div.task__title-index
             span(ng-bind='condition.internalSymbolIndex + ". " + condition.title + ""')
-            span(style='font-size: .7em', ng-if='user.isAdmin')
+            span(style='font-size: .7em')
               | &nbsp;[
               a.link(ui-sref='problems.item({problemId: condition.id})') информация
               | ]

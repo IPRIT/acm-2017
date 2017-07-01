@@ -2727,7 +2727,6 @@ md-sidenav {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin-top: 20px;
     padding: 10px;
     background-color: white;
   }
@@ -2740,18 +2739,30 @@ md-sidenav {
     margin: 20px;
     position: relative;
     display: block;
+    -webkit-transition: all .15s ease-in-out;
+    -moz-transition: all .15s ease-in-out;
+    -ms-transition: all .15s ease-in-out;
+    -o-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
 
     &:hover {
       box-shadow: 0 0 0 4px #00acec;
+
+      &.problem-info__version_current {
+        box-shadow: 0 0 0 4px #4caf50;
+      }
     }
 
     &_selected {
       box-shadow: 0 0 0 4px #00acec;
+
+      &.problem-info__version_current {
+        box-shadow: 0 0 0 4px #4caf50;
+      }
     }
 
     &_current {
       background-color: #4caf50;
-      box-shadow: 0 0 0 4px #4caf50;
     }
 
     &:not(:last-of-type):before {
