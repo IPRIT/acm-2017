@@ -87,7 +87,7 @@ export async function getRatingHistory(params) {
   latestUsersChanges.sort((a, b) => b.ratingAfter - a.ratingAfter);
   
   currentRating.groupRank = latestUsersChanges.findIndex(change => {
-    return change.userId === currentRating.userId;
+    return change && currentRating && change.userId === currentRating.userId;
   }) + 1;
   
   return {
