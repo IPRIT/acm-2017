@@ -6,14 +6,14 @@ div
           div.task__title-index
             span(ng-cloak, style='color: #777; font-size: .9em; text-transform: uppercase;')
              | Файл: {{ condition.title }}
-            div(style='margin: 10px 0;')
-              md-button.md-primary.md-raised(style='margin-left: 0;', ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ui-sref='admin.problems-edit({ problemId: condition.id })')
+            div(style='margin: 10px 0;', ng-if='user.isAdmin')
+              md-button.md-primary.md-raised(style='margin-left: 0;', ng-if='condition.versionNumber === condition.latestVersionNumber', ui-sref='admin.problems-edit({ problemId: condition.id })')
                 md-icon(md-svg-src='/img/icons/ic_mode_edit_48px.svg', style='margin-right: 5px;')
                 span Редактировать
-              md-button.md-primary.md-raised(ng-if='user.isAdmin && condition.versionNumber === condition.latestVersionNumber', ng-disabled='rescanning', ng-click='refreshProblem(condition)')
+              md-button.md-primary.md-raised(ng-if='condition.versionNumber === condition.latestVersionNumber', ng-disabled='rescanning', ng-click='refreshProblem(condition)')
                 md-icon(md-svg-src='/img/icons/ic_autorenew_48px.svg', style='margin-right: 5px;')
                 span Обновить условие
-              md-button.md-primary.md-raised(ng-if='user.isAdmin', ng-disabled='condition.versionNumber === condition.latestVersionNumber', ng-click='rollbackVersion(condition)')
+              md-button.md-primary.md-raised(ng-disabled='condition.versionNumber === condition.latestVersionNumber', ng-click='rollbackVersion(condition)')
                 md-icon(md-svg-src='/img/icons/ic_replay_48px.svg', style='margin-right: 5px;')
                 span Восстановить версию \#{{ condition.versionNumber }}
 
