@@ -19,10 +19,16 @@ let Problem = sequelize.define('Problem', {
     allowNull: false
   },
   htmlStatement: {
-    type: Sequelize.TEXT('medium')
+    type: Sequelize.TEXT('medium'),
+    get() {
+      return this.getDataValue('htmlStatement') || '';
+    }
   },
   textStatement: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    get() {
+      return this.getDataValue('textStatement') || '';
+    }
   },
   attachments: {
     type: Sequelize.TEXT,
