@@ -31,7 +31,7 @@ export async function rescanTimusProblem(params) {
     textStatement,
     title: taskMeta.name
   });
-  return await problem.createProblemVersionControl({
+  return problem.createProblemVersionControl({
     htmlStatement,
     textStatement,
     title: taskMeta.name,

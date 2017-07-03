@@ -6,24 +6,20 @@
 import { HttpError } from './utils/http-error';
 global.HttpError = HttpError;
 
-var favicon = require('serve-favicon');
+let favicon = require('serve-favicon');
 
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
 import session from 'express-session';
-import formData from 'express-form-data';
-import requestRestrict from 'express-light-limiter';
 import { apiRouter, indexRouter, cdnRouter } from './route';
-import { config, isJsonRequest } from './utils';
-import models from './models';
+import { config } from './utils';
 import path from 'path';
 import { ClientError, ServerError } from './route/error/http-error';
 import * as systems from './systems';
 import polygonRouter from './systems/polygon';
 
-var app = express();
+let app = express();
 
 // view engine setup
 app.set('views', __dirname + '/views');
@@ -32,11 +28,6 @@ app.set('view engine', 'jade');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/app/img/favicon.ico'));
 app.use(morgan('tiny'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(formData.parse());
-app.use(formData.stream());
-app.use(formData.union());
 app.use(cookieParser(config.cookieSecret));
 app.enable('trust proxy');
 app.use(session({
@@ -58,8 +49,8 @@ app.get('/partials\/*:filename', function compileStaticTemplate(req, res) {
   res.render(`${path.join(__dirname, '../app')}/partials/${filename}`);
 });
 app.use('/', indexRouter);
-app.use('/cdn', [ isJsonRequest(false) ], cdnRouter);
-app.use('/api', [ requestRestrict({ error: new HttpError('Too many requests', 429) }) ], apiRouter);
+app.use('/cdn', cdnRouter);
+app.use('/api', apiRouter);
 app.use('/polygon', polygonRouter);
 
 app.all('/*', function(req, res, next) {

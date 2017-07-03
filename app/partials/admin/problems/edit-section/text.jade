@@ -58,6 +58,7 @@ md-toolbar.md-menu-toolbar
                          "task__problem-cf": condition.systemType === "cf", \
                          "task__problem-acmp": condition.systemType === "acmp", \
                          "task__problem-ejudge": condition.systemType === "ejudge", \
+                         "task__problem-yandex": condition.systemType === "yandex", \
                          "task__problem-cf_type_gym": condition.foreignProblemIdentifier.indexOf("gym") >= 0 }')
           div(ng-bind-html='::condition.htmlStatement', task-contenteditable)
       div(ng-switch-default)

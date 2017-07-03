@@ -79,10 +79,10 @@ export function ensureNumber(value) {
 
 export function parseProblemIdentifier(problemIdentifier = '') {
   let [ type, problem ] = problemIdentifier.split(':');
-  return { type, ...parseCfIdentifier(problem) };
+  return { type, ...parseIdentifier(problem) };
 }
 
-export function parseCfIdentifier(identifier = '') {
+export function parseIdentifier(identifier = '') {
   let contestNumber = ensureNumber(identifier.match(/^(\d+)/i)[1]);
   let symbolIndex = identifier.match(/\d+([a-zA-Zа-яА-Я0-9]+)$/i)[1];
   return { contestNumber, symbolIndex };

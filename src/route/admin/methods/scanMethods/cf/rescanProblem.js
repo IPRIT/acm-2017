@@ -29,7 +29,7 @@ export async function rescanCfProblem(params) {
     title: taskMeta.name,
     attachments: stringifiedAttachments
   });
-  return await problem.createProblemVersionControl({
+  return problem.createProblemVersionControl({
     htmlStatement,
     textStatement,
     title: taskMeta.name,

@@ -1,4 +1,8 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import formData from 'express-form-data';
+import requestRestrict from 'express-light-limiter';
+import { HttpError } from '../utils/http-error';
 
 import indexRouter from './index/index';
 import cdnRouter from './cdn';
@@ -12,6 +16,16 @@ import problems from './problems';
 import admin from './admin';
 
 const router = express.Router();
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(formData.parse());
+router.use(formData.stream());
+router.use(formData.union());
+router.use(requestRestrict({
+  error: new HttpError('Too many requests', 429)
+}));
+
 router.all('*', cors);
 router.use('/test', test);
 router.use('/user', user);

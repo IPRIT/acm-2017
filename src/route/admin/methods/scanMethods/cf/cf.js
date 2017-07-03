@@ -4,7 +4,7 @@ import { extractParam, ensureNumber, passwordHash } from "../../../../../utils";
 import Promise from 'bluebird';
 import request from 'request-promise';
 import cheerio from 'cheerio';
-import {parseCfIdentifier, parseProblemIdentifier} from "../../../../../utils/utils";
+import { parseIdentifier, parseProblemIdentifier } from "../../../../../utils/utils";
 
 const SYSTEM_TYPE = 'cf';
 const ACM_PROTOCOL = 'http';
@@ -88,7 +88,7 @@ async function getAllProblemsetMeta() {
       let $row = $(row);
       let identifier = $row.find('td').eq(0).text().trim(),
         name = $row.find('td').eq(1).find('div').eq(0).text().trim(),
-        parsedIdentifier = parseCfIdentifier(identifier);
+        parsedIdentifier = parseIdentifier(identifier);
       rows.push({
         contestNumber: parsedIdentifier.contestNumber,
         symbolIndex: parsedIdentifier.symbolIndex,

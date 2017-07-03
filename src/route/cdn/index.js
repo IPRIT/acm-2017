@@ -1,10 +1,10 @@
 import express from 'express';
-import { rightsAllocator, userRetriever, isJsonRequest } from '../../utils';
+import { isJsonRequest } from '../../utils';
 
 const router = express.Router();
 
-//router.all('/documents/:name', [ isJsonRequest(false), userRetriever, rightsAllocator('proUser') ], express.static('cdn'));
-//router.all('/images/covers/:name', [ isJsonRequest(false) ], express.static('cdn'));
+router.use(isJsonRequest(false));
+
 router.all('/images/:name', express.static('cdn'));
 
 router.all('/*', function(req, res, next) {

@@ -299,6 +299,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'ejudge',
         name: 'ejudge'
+      }, {
+        type: 'yandex',
+        name: 'Яндекс.Контест'
       }];
       
       $scope.selectedProblems = [];
@@ -575,6 +578,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'ejudge',
         name: 'ejudge'
+      }, {
+        type: 'yandex',
+        name: 'Яндекс.Контест'
       }];
 
       $scope.selectedProblems = [];
@@ -858,6 +864,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'ejudge',
         name: 'ejudge'
+      }, {
+        type: 'yandex',
+        name: 'Яндекс.Контест'
       }];
       
       $scope.selectedProblems = [];
@@ -1478,6 +1487,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'ejudge',
         name: 'ejudge'
+      }, {
+        type: 'yandex',
+        name: 'Яндекс.Контест'
       }];
       
       $scope.selectedProblems = [];
@@ -2413,6 +2425,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'ejudge',
         name: 'ejudge'
+      }, {
+        type: 'yandex',
+        name: 'Яндекс.Контест'
       }];
   
       $scope.selectedProblems = [];
