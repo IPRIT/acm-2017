@@ -222,8 +222,8 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
   
-  .controller('AdminEditContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog',
-    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog) {
+  .controller('AdminEditContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
+    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Редактирование контеста | ' + _('app_name')
       });
@@ -429,10 +429,13 @@ angular.module('Qemy.controllers.admin', [])
         AdminManager.updateContest(data)
           .then(function (result) {
             $rootScope.$broadcast('data loaded');
-            if (!result || result.error) {
-              return alert('Произошла ошибка');
-            }
             $state.go('admin.index');
+          })
+          .catch(function (err) {
+            ErrorService.show(err);
+          })
+          .finally(function () {
+            $rootScope.$broadcast('data loaded');
           });
       };
       
@@ -494,9 +497,284 @@ angular.module('Qemy.controllers.admin', [])
       getContestInfo();
     }
   ])
+
+  .controller('AdminCopyContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
+    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
+      $scope.$emit('change_title', {
+        title: 'Создание контеста | ' + _('app_name')
+      });
+
+      var contestId = $state.params.contestId;
+      var zF = function (num) { return num < 10 ? '0' + num : num };
+      var currentDate = new Date();
+
+      $scope.form = {};
+      $scope.startTimes = [];
+      $scope.startTimesMinutes = [];
+      $scope.durationMinutes = [];
+
+      $scope.$watch('form.contestStartTime', function (newVal) {
+        if (newVal > 1 && newVal < 6) {
+          var confirm = $mdDialog.confirm()
+            .title('Начало контеста будет ночью')
+            .content('Серьезно?')
+            .ariaLabel('Lucky day')
+            .ok('Да')
+            .cancel('Нет');
+
+          $mdDialog.show(confirm);
+        }
+      });
+
+      for (var i = 0; i < 24; ++i) {
+        $scope.startTimes.push({
+          time: i,
+          name: zF(i)
+        });
+      }
+      for (i = 0; i < 60; ++i) {
+        $scope.startTimesMinutes.push({
+          time: i,
+          name: zF(i)
+        });
+        $scope.durationMinutes.push({
+          time: i,
+          name: zF(i)
+        });
+      }
+
+      $scope.chips = {
+        selectedItem: '',
+        searchText: ''
+      };
+
+      $scope.groupSearch = function (query) {
+        return AdminManager.searchGroups({ q: query }).then(function (data) {
+          return data.groups;
+        });
+      };
+
+      $scope.systemType = 'all';
+      $scope.problems = [];
+      $scope.qProblems = '';
+      $scope.systems = [{
+        type: 'all',
+        name: 'Все'
+      }, {
+        type: 'timus',
+        name: 'Timus'
+      }, {
+        type: 'acmp',
+        name: 'ACMP'
+      }, {
+        type: 'cf',
+        name: 'Codeforces'
+      }, {
+        type: 'sgu',
+        name: 'SGU'
+      }, {
+        type: 'ejudge',
+        name: 'ejudge'
+      }];
+
+      $scope.selectedProblems = [];
+
+      var newQ = '';
+      $scope.searchProblems = function () {
+        newQ = $scope.qProblems;
+        AdminManager.searchProblems({
+          q: $scope.qProblems,
+          systemType: $scope.systemType
+        }).then(function (results) {
+          if (results.error) {
+            return alert('Произошла ошибка: ' + results.error);
+          }
+          if (newQ !== results.q) {
+            return console.log('Skipped result');
+          }
+          $scope.problems = results.problems.map(function (problem) {
+            switch (problem.systemType) {
+              case 'cf':
+                var pTypeObj = problem.foreignProblemIdentifier.split(':');
+                if (!pTypeObj || pTypeObj.length !== 2) {
+                  problem.task_number = problem.foreignProblemIdentifier;
+                } else {
+                  problem.task_number = (pTypeObj[0] === 'gym' ? 'Тренировка' : 'Архив') +
+                    '. ' + pTypeObj[1];
+                }
+                break;
+              default: {
+                problem.task_number = problem.foreignProblemIdentifier;
+              }
+            }
+            return problem;
+          });
+        });
+      };
+
+      $scope.$watch('qProblems', function () {
+        $scope.searchProblems();
+      });
+
+      $scope.$watch('systemType', function () {
+        $scope.searchProblems();
+      });
+
+      $scope.existsProblem = function (problem, selectedProblems) {
+        return selectedProblems.some(function (curProblem) {
+          return curProblem.id === problem.id;
+        });
+      };
+
+      $scope.toggleProblem = function (problem, selectedProblems) {
+        var exists = $scope.existsProblem(problem, selectedProblems);
+        if (exists) {
+          selectedProblems.forEach(function (curProblem, index) {
+            if (curProblem.id === problem.id) {
+              selectedProblems.splice(index, 1);
+            }
+          });
+        } else {
+          selectedProblems.push(problem);
+        }
+      };
+
+      $scope.showProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
+
+        $mdDialog.show({
+          controller: 'AdminProblemDialogController',
+          templateUrl: templateUrl('admin', 'admin-problem-dialog'),
+          targetEvent: ev,
+          clickOutsideToClose: true,
+          locals: {
+            condition: problem
+          }
+        });
+      };
+
+      $scope.isShowingSelected = false;
+      $scope.toggleSelected = function (ev) {
+        $scope.isShowingSelected = !$scope.isShowingSelected;
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
+      };
+
+      $scope.submitForm = function () {
+        $rootScope.$broadcast('data loading');
+        var form = angular.copy($scope.form);
+
+        var contestStartDate = form.contestStartDate;
+        contestStartDate = {
+          year: contestStartDate.getFullYear(),
+          month: contestStartDate.getMonth(),
+          day: contestStartDate.getDate(),
+          hours: parseInt(form.contestStartTime),
+          minutes: parseInt(form.contestStartTimeMinutes)
+        };
+        //year,month,date,hours,minutes
+        contestStartDate = new Date(
+          contestStartDate.year, contestStartDate.month,
+          contestStartDate.day, contestStartDate.hours,
+          contestStartDate.minutes
+        );
+
+        var problems = $scope.selectedProblems;
+        form.groups = (form.groups || []).map(function (group) {
+          return group.id;
+        });
+
+        var durationTimeMs = (form.contestRelativeFinishTimeHours * 3600 + Number(form.contestRelativeFinishTimeMinutes) * 60) * 1000;
+        var data = {
+          startTimeMs: contestStartDate.getTime(),
+          durationTimeMs: durationTimeMs,
+          relativeFreezeTimeMs: Math.max(0, durationTimeMs - form.contestFreezeTime * 3600 * 1000),
+          practiceDurationTimeMs: form.hasPractice ? form.contestPracticeTime * 3600 * 1000 : 0,
+          name: form.contestName,
+          groupIds: form.groups,
+          problemIds: (problems || []).map(function (problem) {
+            return problem.id;
+          }),
+          isRated: form.isRated
+        };
+
+        AdminManager.createContest(data)
+          .then(function (result) {
+            $rootScope.$broadcast('data loaded');
+            $state.go('admin.index');
+          })
+          .catch(function (err) {
+            ErrorService.show(err);
+          })
+          .finally(function () {
+            $rootScope.$broadcast('data loaded');
+          });
+      };
+
+      $scope.indexGenerator = function (curIndex) {
+        var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split(''),
+          symbolsNumber = Math.floor(curIndex / alphabet.length) + 1;
+        if (symbolsNumber === 1) {
+          return alphabet[ curIndex ];
+        } else {
+          return alphabet[ symbolsNumber - 2 ] + alphabet[ curIndex % alphabet.length ];
+        }
+      };
+
+      $scope.objectRow = {};
+
+      function getContestInfo() {
+        $rootScope.$broadcast('data loading');
+        AdminManager.getContestInfo({ contestId: contestId })
+          .then(function (result) {
+            $rootScope.$broadcast('data loaded');
+            if (result.error) {
+              return alert('Произошла ошибка');
+            }
+            $scope.objectRow = result;
+            var startDate = new Date(result.startTimeMs);
+            $scope.form = {
+              contestName: result.name,
+              contestStartDate: startDate,
+              contestRelativeFinishTimeHours: Math.floor(result.durationTimeMs / (1000 * 60 * 60)),
+              contestRelativeFinishTimeMinutes: Math.ceil((result.durationTimeMs / (1000 * 60 * 60) - Math.floor(result.durationTimeMs / (1000 * 60 * 60))) * 60),
+              contestFreezeTime: (result.durationTimeMs - result.relativeFreezeTimeMs) / (1000 * 60 * 60),
+              contestPracticeTime: result.practiceDurationTimeMs / (1000 * 60 * 60),
+              contestStartTime: startDate.getHours(),
+              contestStartTimeMinutes: startDate.getMinutes(),
+              hasPractice: result.hasPracticeTime,
+              groups: result.allowedGroups || [],
+              isRated: result.isRated
+            };
+            $scope.selectedProblems = result.problems.map(function (problem) {
+              switch (problem.systemType) {
+                case 'cf':
+                  var pTypeObj = problem.foreignProblemIdentifier.split(':');
+                  if (!pTypeObj || pTypeObj.length !== 2) {
+                    problem.task_number = problem.foreignProblemIdentifier;
+                  } else {
+                    problem.task_number = (pTypeObj[0] === 'gym' ? 'Тренировка' : 'Архив') +
+                      '. ' + pTypeObj[1];
+                  }
+                  break;
+                default: {
+                  problem.task_number = problem.foreignProblemIdentifier;
+                }
+              }
+              return problem;
+            });
+          });
+      }
+
+      getContestInfo();
+    }
+  ])
   
-  .controller('AdminCreateContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog',
-    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog) {
+  .controller('AdminCreateContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
+    function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Создание контеста | ' + _('app_name')
       });
@@ -709,10 +987,13 @@ angular.module('Qemy.controllers.admin', [])
         AdminManager.createContest(data)
           .then(function (result) {
             $rootScope.$broadcast('data loaded');
-            if (!result || result.error) {
-              return alert('Произошла ошибка');
-            }
             $state.go('admin.index');
+          })
+          .catch(function (err) {
+            ErrorService.show(err);
+          })
+          .finally(function () {
+            $rootScope.$broadcast('data loaded');
           });
       };
       

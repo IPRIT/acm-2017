@@ -4,6 +4,8 @@ import * as contests from './index';
 import Sequelize from 'sequelize';
 import filter from "../../../utils/filter";
 
+let cache = new Map();
+
 export function getLanguagesRequest(req, res, next) {
   return Promise.resolve().then(() => {
     return getLanguages(req.params);
@@ -13,6 +15,10 @@ export function getLanguagesRequest(req, res, next) {
 export async function getLanguages(params) {
   let problem = await contests.getProblemBySymbolIndex(params);
   let { systemType } = problem;
+  if (cache.has(systemType)) {
+    console.log('from cache');
+    return cache.get(systemType);
+  }
   return models.Language.findAll({
     where: { systemType },
     attributes: {
@@ -41,6 +47,8 @@ export async function getLanguages(params) {
       })
     ];
   }).spread((popularLanguages, restLanguages) => {
-    return popularLanguages.concat(restLanguages);
+    let languages = popularLanguages.concat(restLanguages);
+    cache.set(systemType, languages);
+    return languages;
   });
 }
