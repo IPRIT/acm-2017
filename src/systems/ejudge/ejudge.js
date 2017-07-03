@@ -38,7 +38,7 @@ export async function handle(solution) {
       await Promise.delay(verdictCheckTimeoutMs);
     }
     if (verdict.id === 3) {
-      let compilationError = 'Not Implemented'; //await getCompilationError(systemAccount, contextRow);
+      let compilationError = await getCompilationError(systemAccount, contextRow);
       Object.assign(verdict, { compilationError });
     }
     return saveVerdict(solution, systemAccount, verdict);

@@ -5,7 +5,7 @@ import * as accountsMethods from './account';
 import request from 'request-promise';
 import cheerio from 'cheerio';
 import { getEjudgeSolutionId } from "./sendSolution";
-import { getSymbolIndex, config, capitalize } from "../../utils";
+import { config } from "../../utils";
 
 const terminalStatesMapping = {
   'OK': 1,
@@ -118,11 +118,57 @@ async function getContextRow(solution, systemAccount, receivedRow) {
   
     for (let row of rows) {
       if (row.solutionId === receivedRow.solutionId) {
+        let solutionInfo = await getSolutionInfo(systemAccount, row);
+        console.log(solutionInfo);
+        if (solutionInfo) {
+          Object.assign(row, solutionInfo);
+        }
         return row;
       }
     }
   }
   return null;
+}
+
+async function getSolutionInfo(systemAccount, receivedRow) {
+  let { jar, sid } = systemAccount;
+  let { solutionId } = receivedRow;
+  let clearedSolutionId = getClearedSolutionId(solutionId);
+
+  let endpoint = getEndpoint(ACM_SOLUTIONS_ENDPOINT);
+  let response = await request({
+    method: 'GET',
+    uri: endpoint,
+    qs: {
+      SID: sid,
+      run_id: clearedSolutionId,
+      action: 37
+    },
+    simple: false,
+    resolveWithFullResponse: true,
+    followAllRedirects: true,
+    encoding: 'utf8',
+    jar
+  });
+  if (!response.body || ![ 200 ].includes(response.statusCode)) {
+    return null;
+  }
+
+  let $ = cheerio.load(response.body);
+  let table = $('table.b1');
+  if (!table.length) {
+    return null;
+  }
+  let lastTableRow = table.find('tr').slice(1).last();
+  let tds = lastTableRow.find('td');
+  return {
+    executionTime: ensureNumber( tds.eq(3).text() ),
+    memory: (ensureNumber( tds.eq(4).text() ) || 0) / 1024 // convert from bytes to Kbytes
+  };
+}
+
+export function getClearedSolutionId(solutionId = '') {
+  return ensureNumber( solutionId.match(/(\d+)$/i)[1] );
 }
 
 function getEndpoint(pathTo = '') {

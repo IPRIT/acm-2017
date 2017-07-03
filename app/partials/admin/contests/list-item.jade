@@ -42,6 +42,8 @@ div.contests-list__item-layer.admin-contests__contest-item
       div.admin-contests__button-wrap(ng-if='contest.status !== "REMOVED"')
         md-button.admin-contests__button(ui-sref='admin.edit-contest({contestId: contest.id})') Редактировать
       div.admin-contests__button-wrap(ng-if='contest.status !== "REMOVED"')
-        md-button.admin-contests__button(ng-click='deleteContest(contest)') Удалить
+        md-button.admin-contests__button(ui-sref='admin.copy-contest({contestId: contest.id})') Копировать
+      div.admin-contests__button-wrap(ng-if='contest.status !== "REMOVED"')
+        md-button.admin-contests__button.md-warn(ng-click='deleteContest(contest)') Удалить
       div.admin-contests__button-wrap(ng-if='contest.status === "REMOVED"')
         md-button.admin-contests__button.md-primary(ng-click='repairContest(contest)') Восстановить

@@ -1,49 +1,39 @@
 import request from 'request-promise';
-import Promise from 'bluebird';
+import cheerio from 'cheerio';
+import { config } from "../../utils";
+import { getClearedSolutionId } from "./getVerdict";
 
-const ACM_PROTOCOL = 'http';
-const ACM_HOST = 'codeforces.com';
-const ACM_JUDGE_PROTOCOL_PATH = '/data/judgeProtocol';
+const ACM_SOLUTIONS_ENDPOINT = '/cgi-bin/new-judge';
 
-export async function getCompilationError(systemAccount, receivedRow) {
-  return Promise.resolve().then(async () => {
-    let response, attemptsNumber = 0, maxAttemptsNumber = 3;
-    while (attemptsNumber < maxAttemptsNumber) {
-      attemptsNumber++;
-      response = await requestCompilationError(systemAccount, receivedRow);
-      if (response.statusCode === 200 && response.body) {
-        return response.body;
-      }
-    }
-    return null;
-  });
-}
+export async function getCompilationError(systemAccount, contextRow) {
+  let { jar, sid } = systemAccount;
+  let { solutionId } = contextRow;
+  let clearedSolutionId = getClearedSolutionId(solutionId);
 
-async function requestCompilationError(systemAccount, receivedRow) {
-  let endpoint = getEndpoint(ACM_JUDGE_PROTOCOL_PATH);
-  let { jar } = systemAccount;
-  return await request({
-    method: 'POST',
-    headers: {
-      'Accept-Language': 'ru,en;q=0.8'
-    },
+  let endpoint = getEndpoint(ACM_SOLUTIONS_ENDPOINT);
+  let response = await request({
+    method: 'GET',
     uri: endpoint,
-    form: buildForm(systemAccount, receivedRow),
+    qs: {
+      SID: sid,
+      run_id: clearedSolutionId,
+      action: 37
+    },
     simple: false,
-    followAllRedirects: true,
-    json: true,
     resolveWithFullResponse: true,
+    followAllRedirects: true,
+    encoding: 'utf8',
     jar
   });
-}
+  if (!response.body || ![ 200 ].includes(response.statusCode)) {
+    return 'Service Unavailable';
+  }
 
-function buildForm(systemAccount, receivedRow) {
-  return {
-    submissionId: receivedRow.solutionId,
-    csrf_token: systemAccount.csrfToken
-  };
+  let $ = cheerio.load(response.body);
+  return $('div#container pre').text();
 }
 
 function getEndpoint(pathTo = '') {
-  return `${ACM_PROTOCOL}://${ACM_HOST}${pathTo}`;
+  let { host, protocol } = config.ejudge;
+  return `${protocol}://${host}${pathTo}`;
 }
