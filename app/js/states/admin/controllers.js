@@ -13,14 +13,14 @@
 
 /* global angular */
 angular.module('Qemy.controllers.admin', [])
-  
+
   .controller('AdminBaseController', ['$scope', '$rootScope', '$state', '_', 'UserManager',
     function ($scope, $rootScope, $state, _, UserManager) {
       $scope.$emit('change_title', {
         title: 'Панель администратора | ' + _('app_name')
       });
       $scope.user = {};
-      
+
       $rootScope.$broadcast('data loading');
       UserManager.getCurrentUser().then(function (user) {
         $rootScope.$broadcast('data loaded');
@@ -35,7 +35,7 @@ angular.module('Qemy.controllers.admin', [])
       });
     }
   ])
-  
+
   .controller('AdminMenuController', ['$scope', '$rootScope', '$state', '_',
     function ($scope, $rootScope, $state, _) {
       $scope.menu = [{
@@ -66,18 +66,18 @@ angular.module('Qemy.controllers.admin', [])
        uiSref: 'admin.index',
        name: 'Аккаунты в тестирующих системах'
        }*/];
-      
+
       $rootScope.$state = $state;
     }
   ])
-  
+
   .controller('AdminIndexController', ['$scope', '$rootScope', '$state', '_', 'ContestsManager', 'AdminManager', '$mdDialog',
     function ($scope, $rootScope, $state, _, ContestsManager, AdminManager, $mdDialog) {
       $scope.$emit('change_title', {
         title: 'Управление контестами | ' + _('app_name')
       });
       var defaultCount = 10;
-      
+
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {
         count: defaultCount,
@@ -86,12 +86,12 @@ angular.module('Qemy.controllers.admin', [])
         sort: 'byId',
         sort_order: 'desc'
       };
-      
+
       $scope.all_items_count = 0;
       $scope.pagination = [];
       $scope.contestsList = [];
       $scope.allPages = 0;
-      
+
       $scope.curSortItem = null;
       $scope.sortCategories = [{
         name: 'По дате создания',
@@ -100,7 +100,7 @@ angular.module('Qemy.controllers.admin', [])
         name: 'По времени начала',
         sort: 'byStart'
       }];
-      
+
       $scope.curSortOrder = null;
       $scope.sortOrders = [{
         name: 'По убыванию',
@@ -109,7 +109,7 @@ angular.module('Qemy.controllers.admin', [])
         name: 'По возрастанию',
         order: 'asc'
       }];
-      
+
       $scope.curCategory = null;
       $scope.contestCategories = [{
         name: 'Все',
@@ -136,7 +136,7 @@ angular.module('Qemy.controllers.admin', [])
         name: 'Только удалённые',
         category: 'showOnlyRemoved'
       }];
-      
+
       function generatePaginationArray(offsetCount) {
         var pages = [],
           curPage = $scope.pageNumber,
@@ -158,7 +158,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         return pages;
       }
-      
+
       var firstInvokeStateChanged = true;
       $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
         if (firstInvokeStateChanged) {
@@ -169,7 +169,7 @@ angular.module('Qemy.controllers.admin', [])
         $scope.params.offset = ($scope.pageNumber - 1) * defaultCount;
         updateContestsList();
       });
-      
+
       function updateContestsList() {
         $rootScope.$broadcast('data loading');
         var contestsPromise = ContestsManager.getContests($scope.params);
@@ -185,9 +185,9 @@ angular.module('Qemy.controllers.admin', [])
           console.log(err);
         });
       }
-      
+
       updateContestsList();
-      
+
       $scope.$watch('curCategory', function (newVal, oldVal) {
         if (!newVal) {
           return;
@@ -197,7 +197,7 @@ angular.module('Qemy.controllers.admin', [])
           $state.go('contests.list') : updateContestsList();
         console.log('updating contests list...');
       });
-      
+
       $scope.$watch('curSortItem', function (newVal, oldVal) {
         if (!newVal) {
           return;
@@ -206,7 +206,7 @@ angular.module('Qemy.controllers.admin', [])
         updateContestsList();
         console.log('updating contests list...');
       });
-      
+
       $scope.$watch('curSortOrder', function (newVal, oldVal) {
         if (!newVal) {
           return;
@@ -215,28 +215,28 @@ angular.module('Qemy.controllers.admin', [])
         updateContestsList();
         console.log('updating contests list...');
       });
-      
+
       $scope.$on('admin update contest list', function () {
         updateContestsList();
       });
     }
   ])
-  
+
   .controller('AdminEditContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Редактирование контеста | ' + _('app_name')
       });
-      
+
       var contestId = $state.params.contestId;
       var zF = function (num) { return num < 10 ? '0' + num : num };
       var currentDate = new Date();
-      
+
       $scope.form = {};
       $scope.startTimes = [];
       $scope.startTimesMinutes = [];
       $scope.durationMinutes = [];
-      
+
       $scope.$watch('form.contestStartTime', function (newVal) {
         if (newVal > 1 && newVal < 6) {
           var confirm = $mdDialog.confirm()
@@ -245,11 +245,11 @@ angular.module('Qemy.controllers.admin', [])
             .ariaLabel('Lucky day')
             .ok('Да')
             .cancel('Нет');
-          
+
           $mdDialog.show(confirm);
         }
       });
-      
+
       for (var i = 0; i < 24; ++i) {
         $scope.startTimes.push({
           time: i,
@@ -266,18 +266,18 @@ angular.module('Qemy.controllers.admin', [])
           name: zF(i)
         });
       }
-      
+
       $scope.chips = {
         selectedItem: '',
         searchText: ''
       };
-      
+
       $scope.groupSearch = function (query) {
         return AdminManager.searchGroups({ q: query }).then(function (data) {
           return data.groups;
         });
       };
-      
+
       $scope.systemType = 'all';
       $scope.problems = [];
       $scope.qProblems = '';
@@ -303,9 +303,9 @@ angular.module('Qemy.controllers.admin', [])
         type: 'yandex',
         name: 'Яндекс.Контест'
       }];
-      
+
       $scope.selectedProblems = [];
-      
+
       var newQ = '';
       $scope.searchProblems = function () {
         newQ = $scope.qProblems;
@@ -338,21 +338,21 @@ angular.module('Qemy.controllers.admin', [])
           });
         });
       };
-      
+
       $scope.$watch('qProblems', function () {
         $scope.searchProblems();
       });
-      
+
       $scope.$watch('systemType', function () {
         $scope.searchProblems();
       });
-      
+
       $scope.existsProblem = function (problem, selectedProblems) {
         return selectedProblems.some(function (curProblem) {
           return curProblem.id === problem.id;
         });
       };
-      
+
       $scope.toggleProblem = function (problem, selectedProblems) {
         var exists = $scope.existsProblem(problem, selectedProblems);
         if (exists) {
@@ -365,12 +365,12 @@ angular.module('Qemy.controllers.admin', [])
           selectedProblems.push(problem);
         }
       };
-      
+
       $scope.showProblem = function (ev, problem) {
         ev.stopPropagation();
         ev.preventDefault();
         ev.cancelBubble = true;
-        
+
         $mdDialog.show({
           controller: 'AdminProblemDialogController',
           templateUrl: templateUrl('admin', 'admin-problem-dialog'),
@@ -381,7 +381,7 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
-      
+
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;
@@ -389,11 +389,11 @@ angular.module('Qemy.controllers.admin', [])
         ev.preventDefault();
         ev.cancelBubble = true;
       };
-      
+
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
         var form = angular.copy($scope.form);
-  
+
         var contestStartDate = form.contestStartDate;
         contestStartDate = {
           year: contestStartDate.getFullYear(),
@@ -408,12 +408,12 @@ angular.module('Qemy.controllers.admin', [])
           contestStartDate.day, contestStartDate.hours,
           contestStartDate.minutes
         );
-  
+
         var problems = $scope.selectedProblems;
         form.groups = (form.groups || []).map(function (group) {
           return group.id;
         });
-  
+
         var durationTimeMs = (form.contestRelativeFinishTimeHours * 3600 + Number(form.contestRelativeFinishTimeMinutes) * 60) * 1000;
         var data = {
           startTimeMs: contestStartDate.getTime(),
@@ -428,7 +428,7 @@ angular.module('Qemy.controllers.admin', [])
           contestId: contestId,
           isRated: form.isRated
         };
-        
+
         AdminManager.updateContest(data)
           .then(function (result) {
             $rootScope.$broadcast('data loaded');
@@ -441,7 +441,7 @@ angular.module('Qemy.controllers.admin', [])
             $rootScope.$broadcast('data loaded');
           });
       };
-      
+
       $scope.indexGenerator = function (curIndex) {
         var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split(''),
           symbolsNumber = Math.floor(curIndex / alphabet.length) + 1;
@@ -451,9 +451,9 @@ angular.module('Qemy.controllers.admin', [])
           return alphabet[ symbolsNumber - 2 ] + alphabet[ curIndex % alphabet.length ];
         }
       };
-      
+
       $scope.objectRow = {};
-      
+
       function getContestInfo() {
         $rootScope.$broadcast('data loading');
         AdminManager.getContestInfo({ contestId: contestId })
@@ -496,7 +496,7 @@ angular.module('Qemy.controllers.admin', [])
             });
           });
       }
-      
+
       getContestInfo();
     }
   ])
@@ -778,16 +778,16 @@ angular.module('Qemy.controllers.admin', [])
       getContestInfo();
     }
   ])
-  
+
   .controller('AdminCreateContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Создание контеста | ' + _('app_name')
       });
-  
+
       var zF = function (num) { return num < 10 ? '0' + num : num };
       var currentDate = new Date();
-      
+
       $scope.form = {
         contestRelativeFinishTimeHours: 5,
         //contestRelativeFinishTimeMinutes: 0,
@@ -801,7 +801,7 @@ angular.module('Qemy.controllers.admin', [])
       $scope.startTimes = [];
       $scope.startTimesMinutes = [];
       $scope.durationMinutes = [];
-      
+
       $scope.$watch('form.contestStartTime', function (newVal) {
         if (newVal > 1 && newVal < 6) {
           var confirm = $mdDialog.confirm()
@@ -810,11 +810,11 @@ angular.module('Qemy.controllers.admin', [])
             .ariaLabel('Lucky day')
             .ok('Да')
             .cancel('Нет');
-          
+
           $mdDialog.show(confirm);
         }
       });
-      
+
       for (var i = 0; i < 24; ++i) {
         $scope.startTimes.push({
           time: i,
@@ -831,18 +831,18 @@ angular.module('Qemy.controllers.admin', [])
           name: zF(i)
         });
       }
-      
+
       $scope.chips = {
         selectedItem: '',
         searchText: ''
       };
-      
+
       $scope.groupSearch = function (query) {
         return AdminManager.searchGroups({ q: query }).then(function (data) {
           return data.groups;
         });
       };
-      
+
       $scope.systemType = 'all';
       $scope.problems = [];
       $scope.qProblems = '';
@@ -868,9 +868,9 @@ angular.module('Qemy.controllers.admin', [])
         type: 'yandex',
         name: 'Яндекс.Контест'
       }];
-      
+
       $scope.selectedProblems = [];
-      
+
       var newQ = '';
       $scope.searchProblems = function () {
         newQ = $scope.qProblems;
@@ -903,21 +903,21 @@ angular.module('Qemy.controllers.admin', [])
           });
         });
       };
-      
+
       $scope.$watch('qProblems', function () {
         $scope.searchProblems();
       });
-      
+
       $scope.$watch('systemType', function () {
         $scope.searchProblems();
       });
-      
+
       $scope.existsProblem = function (problem, selectedProblems) {
         return selectedProblems.some(function (curProblem) {
           return curProblem.id === problem.id;
         });
       };
-      
+
       $scope.toggleProblem = function (problem, selectedProblems) {
         var exists = $scope.existsProblem(problem, selectedProblems);
         if (exists) {
@@ -930,12 +930,12 @@ angular.module('Qemy.controllers.admin', [])
           selectedProblems.push(problem);
         }
       };
-      
+
       $scope.showProblem = function (ev, problem) {
         ev.stopPropagation();
         ev.preventDefault();
         ev.cancelBubble = true;
-        
+
         $mdDialog.show({
           controller: 'AdminProblemDialogController',
           templateUrl: templateUrl('admin', 'admin-problem-dialog'),
@@ -946,7 +946,7 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
-      
+
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;
@@ -954,11 +954,11 @@ angular.module('Qemy.controllers.admin', [])
         ev.preventDefault();
         ev.cancelBubble = true;
       };
-      
+
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
         var form = angular.copy($scope.form);
-        
+
         var contestStartDate = form.contestStartDate;
         contestStartDate = {
           year: contestStartDate.getFullYear(),
@@ -973,12 +973,12 @@ angular.module('Qemy.controllers.admin', [])
           contestStartDate.day, contestStartDate.hours,
           contestStartDate.minutes
         );
-        
+
         var problems = $scope.selectedProblems;
         form.groups = (form.groups || []).map(function (group) {
           return group.id;
         });
-        
+
         var durationTimeMs = (form.contestRelativeFinishTimeHours * 3600 + Number(form.contestRelativeFinishTimeMinutes) * 60) * 1000;
         var data = {
           startTimeMs: contestStartDate.getTime(),
@@ -992,7 +992,7 @@ angular.module('Qemy.controllers.admin', [])
           }),
           isRated: form.isRated
         };
-        
+
         AdminManager.createContest(data)
           .then(function (result) {
             $rootScope.$broadcast('data loaded');
@@ -1005,7 +1005,7 @@ angular.module('Qemy.controllers.admin', [])
             $rootScope.$broadcast('data loaded');
           });
       };
-      
+
       $scope.indexGenerator = function (curIndex) {
         var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split(''),
           symbolsNumber = Math.floor(curIndex / alphabet.length) + 1;
@@ -1017,7 +1017,7 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminProblemDialogController', [
     '$scope', 'condition', '$mdDialog',
     function ($scope, condition, $mdDialog) {
@@ -1027,26 +1027,26 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminUsersListController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Список пользователей | ' + _('app_name')
       });
-      
+
       var defaultCount = 10;
-      
+
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {
         count: defaultCount,
         offset: ($scope.pageNumber - 1) * defaultCount
       };
-      
+
       $scope.all_items_count = 0;
       $scope.pagination = [];
       $scope.usersList = [];
       $scope.allPages = 0;
-      
+
       function generatePaginationArray(offsetCount) {
         var pages = [],
           curPage = $scope.pageNumber,
@@ -1068,7 +1068,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         return pages;
       }
-      
+
       var firstInvokeStateChanged = true;
       $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
         if (firstInvokeStateChanged) {
@@ -1079,18 +1079,18 @@ angular.module('Qemy.controllers.admin', [])
         $scope.params.offset = ($scope.pageNumber - 1) * defaultCount;
         loadUsers();
       });
-      
+
       $scope.$on('admin update users list', function () {
         loadUsers();
       });
-      
+
       $scope.query = '';
-      
+
       function loadUsers(params) {
         $scope.dataLoading = true;
         $scope.params.q = $scope.query;
         angular.extend($scope.params, params);
-        
+
         return AdminManager.getUsers($scope.params).then(function (result) {
           if (!result || !result.hasOwnProperty('usersNumber') || $scope.query !== result.q) {
             return;
@@ -1103,34 +1103,34 @@ angular.module('Qemy.controllers.admin', [])
           ErrorService.show(err);
         });
       }
-      
+
       $scope.$watch('query', function () {
         loadUsers();
       })
     }
   ])
-  
+
   .controller('AdminCreateUserController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter) {
       $scope.$emit('change_title', {
         title: 'Создание пользователя | ' + _('app_name')
       });
-      
+
       $scope.form = {
         groups: []
       };
-      
+
       $scope.chips = {
         selectedItem: '',
         searchText: ''
       };
-      
+
       $scope.groupSearch = function (query) {
         return AdminManager.searchGroups({ q: query }).then(function (data) {
           return data.groups;
         });
       };
-      
+
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
         var form = angular.copy($scope.form);
@@ -1153,7 +1153,7 @@ angular.module('Qemy.controllers.admin', [])
             $state.go('admin.users-list');
           });
       };
-      
+
       var fioChanged = function () {
         var firstName = $scope.form.firstName || '',
           lastName = $scope.form.lastName || '',
@@ -1172,33 +1172,33 @@ angular.module('Qemy.controllers.admin', [])
         $scope.form.username = username;
         $scope.form.password = username;
       };
-      
+
       $scope.$watch('form.firstName', fioChanged);
       $scope.$watch('form.lastName', fioChanged);
     }
   ])
-  
+
   .controller('AdminCreateUsersIntoGroupController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter', 'Upload', 'ErrorService', '$mdToast',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter, Upload, ErrorService, $mdToast) {
       $scope.$emit('change_title', {
         title: 'Регистрация пользователей в группу | ' + _('app_name')
       });
-      
+
       $scope.form = {
         groups: []
       };
-      
+
       $scope.chips = {
         selectedItem: '',
         searchText: ''
       };
-      
+
       $scope.groupSearch = function (query) {
         return AdminManager.searchGroups({ q: query }).then(function (data) {
           return data.groups;
         });
       };
-      
+
       $scope.upload = function (file) {
         $rootScope.$broadcast('data loading');
         var form = angular.copy($scope.form);
@@ -1222,7 +1222,7 @@ angular.module('Qemy.controllers.admin', [])
             .highlightAction(true)
             .highlightClass('md-warn')
             .position('top right');
-  
+
           $mdToast.show(toast).catch(function (error) {
             console.log('Toast rejected');
           });
@@ -1236,7 +1236,7 @@ angular.module('Qemy.controllers.admin', [])
           ErrorService.show(result);
         });
       };
-      
+
       $scope.files = [{
         type: 'spreadsheet',
         url: '/files/docs/users.csv',
@@ -1244,18 +1244,18 @@ angular.module('Qemy.controllers.admin', [])
       }];
     }
   ])
-  
+
   .controller('AdminEditUserController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter', '$timeout',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter, $timeout) {
       $scope.$emit('change_title', {
         title: 'Редактирование пользователя | ' + _('app_name')
       });
-      
+
       $scope.user = {
         groups: []
       };
       var userId = $state.params.userId;
-      
+
       AdminManager.getUser({ userId: userId })
         .then(function (user) {
           user.password = '';
@@ -1264,12 +1264,12 @@ angular.module('Qemy.controllers.admin', [])
           $scope.$watch('user.firstName', fioChanged);
           $scope.$watch('user.lastName', fioChanged);
         });
-      
+
       $scope.chips = {
         selectedItem: '',
         searchText: ''
       };
-      
+
       $scope.accessGroups = [{
         mask: 256,
         name: 'Обычный пользователь'
@@ -1277,13 +1277,13 @@ angular.module('Qemy.controllers.admin', [])
         mask: 4096,
         name: 'Администратор'
       }];
-      
+
       $scope.groupSearch = function (query) {
         return AdminManager.searchGroups({ q: query }).then(function (data) {
           return data.groups;
         });
       };
-      
+
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
         var form = angular.copy($scope.user);
@@ -1291,7 +1291,7 @@ angular.module('Qemy.controllers.admin', [])
           return group.id;
         });
         form.userId = +userId;
-        
+
         var data = {
           username: form.username,
           password: form.password,
@@ -1310,7 +1310,7 @@ angular.module('Qemy.controllers.admin', [])
             $state.go('admin.users-list');
           });
       };
-      
+
       var fioChangesNumber = 0;
       var fioChanged = function () {
         if (fioChangesNumber++ < 2) {
@@ -1334,7 +1334,7 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminUserListItemCtrl', ['$scope', '$rootScope', '$mdDialog', 'ContestsManager', '$state', 'AdminManager',
     function($scope, $rootScope, $mdDialog, ContestsManager, $state, AdminManager) {
       $scope.deleteUser = function () {
@@ -1344,7 +1344,7 @@ angular.module('Qemy.controllers.admin', [])
           .ariaLabel('Lucky day')
           .ok('Да')
           .cancel('Отмена');
-        
+
         $mdDialog.show(confirm).then(function () {
           $rootScope.$broadcast('data loading');
           AdminManager.deleteUser({ userId: $scope.user.id })
@@ -1359,12 +1359,94 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
+  .controller('AdminYandexContestImportController', ['$scope', '$rootScope', '$mdDialog', 'ContestsManager', '$state', 'AdminManager', 'Upload', 'ErrorService',
+    function($scope, $rootScope, $mdDialog, ContestsManager, $state, AdminManager, Upload, ErrorService) {
+
+      $scope.fileExt = '';
+      $scope.$watch('file', function (file) {
+        if (file && file.name) {
+          $scope.fileExt = (file.name || '').match(/\.(\w+)$/i)[1];
+        }
+      });
+
+      // reset file
+      $scope.clearFile = function () {
+        $scope.file = null;
+      };
+
+      // upload later on form submit or something similar
+      $scope.submit = function () {
+        if ($scope.importForm.file.$valid && $scope.file) {
+          console.log($scope.file);
+          $scope.sending = true;
+          $scope.upload($scope.file);
+        }
+      };
+
+      // upload on file select or drop
+      $scope.upload = function (file) {
+        $rootScope.$broadcast('data loading');
+        Upload.upload({
+          url: '/files/yandex-polygon-import',
+          data: {
+            file: file
+          }
+        }).then(function (response) {
+          console.log(response);
+          $scope.sent = true;
+        }, function (result) {
+          console.error('Error status: ' + result);
+        }, function (evt) {
+          var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+          console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(function () {
+          $scope.sending = false;
+          $rootScope.$broadcast('data loaded');
+        });
+      };
+    }
+  ])
+
+  .controller('AdminYandexContestImportByLinkController', ['$scope', '$rootScope', '$mdDialog', 'ContestsManager', '$state', 'AdminManager', 'Upload', 'ErrorService',
+    function($scope, $rootScope, $mdDialog, ContestsManager, $state, AdminManager, Upload, ErrorService) {
+
+      $scope.$watch('link', function (link) {
+        if (!link) {
+          return;
+        }
+        var yandexContestIdRegexp =
+          /(?:https?:\/\/)?contest\.yandex\.(?:ru|com)(?:\/[a-zA-Z0-9а-яА-Я_.-]+)?\/contest\/(\d+)(?:.*)?/i;
+        if (yandexContestIdRegexp.test(link)) {
+          $scope.linkError = false;
+          $scope.contestId = Number(link.match(yandexContestIdRegexp)[1]);
+        } else {
+          $scope.linkError = true;
+        }
+      });
+
+      $scope.submit = function () {
+        if (!$scope.contestId) {
+          return;
+        }
+        $scope.$emit('data loading');
+        $scope.sent = true;
+        $scope.sending = true;
+        AdminManager.yandexImportByContestId({ contestId: $scope.contestId }).catch(function (error) {
+          ErrorService.show(error);
+        }).finally(function () {
+          $scope.sending = false;
+          $scope.$emit('data loaded');
+        });
+      }
+    }
+  ])
+
   .controller('AdminProblemsController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager', 'ErrorService', 'SocketService', '$timeout',
     function($scope, $rootScope, $mdDialog, $state, AdminManager, ErrorService, SocketService, $timeout) {
       $scope.loading = false;
-
-      $scope.consoleRows = [];
 
       $scope.scanParams = {
         update: false, // updating exists problems (rewrite exists problems)
@@ -1387,12 +1469,9 @@ angular.module('Qemy.controllers.admin', [])
           .ariaLabel('Подтверждение')
           .ok('Да')
           .cancel('Отмена');
-        
+
         $mdDialog.show(confirm).then(function () {
           $scope.$emit('data loading');
-          $scope.consoleRows.unshift({
-            message: '----'
-          });
           var params = $scope.availableSystems.filter(function (value, index) {
             return value.systemType === $scope.selectedSystemType;
           })[0];
@@ -1410,18 +1489,6 @@ angular.module('Qemy.controllers.admin', [])
       };
 
       $scope.$on('scanner-console.log', function (ev, args) {
-        if (args.messageHash && args.messageHash.length) {
-          var messageIndex = $scope.consoleRows.findIndex(function (val) {
-            return val.messageHash === args.messageHash;
-          });
-          if (messageIndex >= 0) {
-            $scope.consoleRows[ messageIndex ] = args;
-          } else {
-            $scope.consoleRows.unshift( args );
-          }
-        } else {
-          $scope.consoleRows.unshift( args );
-        }
         if (args.message === 'finished'
           || args.message.indexOf('error') >= 0) {
           $scope.scanning = false;
@@ -1429,43 +1496,6 @@ angular.module('Qemy.controllers.admin', [])
         safeApply($scope);
       });
 
-      var socketId,
-        scannerConsoleLogListener;
-
-      SocketService.onConnect(function () {
-        socketId = SocketService.getSocket().id;
-        console.log('Connected:', socketId);
-
-        SocketService.listenScanningConsole();
-        SocketService.getSocket().on('reconnect', function (data) {
-          console.log('Reconnected:', SocketService.getSocket().id);
-          $timeout(function () {
-            SocketService.listenScanningConsole();
-          }, 500);
-        });
-        attachEvents();
-      });
-
-      function attachEvents() {
-        scannerConsoleLogListener = SocketService.setListener('scanner-console.log', function (data) {
-          $rootScope.$broadcast('scanner-console.log', data);
-        });
-      }
-
-      function removeEvents() {
-        try {
-          scannerConsoleLogListener.removeListener();
-          console.log('Scanner listeners have been removed.');
-        } catch (err) {
-          console.log(err);
-        }
-      }
-
-      $scope.$on('$destroy', function () {
-        SocketService.stopListenScanningConsole();
-        removeEvents();
-      });
-      
       $scope.systemType = 'all';
       $scope.problems = [];
       $scope.qProblems = '';
@@ -1491,9 +1521,9 @@ angular.module('Qemy.controllers.admin', [])
         type: 'yandex',
         name: 'Яндекс.Контест'
       }];
-      
+
       $scope.selectedProblems = [];
-      
+
       var newQ = '';
       $scope.searchProblems = function () {
         newQ = $scope.qProblems;
@@ -1524,16 +1554,16 @@ angular.module('Qemy.controllers.admin', [])
           return $scope.problems;
         });
       };
-      
+
       $scope.$watch('qProblems', function () {
         $scope.searchProblems();
       });
-      
+
       $scope.showProblem = function (ev, problem) {
         ev.stopPropagation();
         ev.preventDefault();
         ev.cancelBubble = true;
-        
+
         $mdDialog.show({
           controller: 'AdminProblemDialogController',
           templateUrl: templateUrl('admin', 'admin-problem-dialog'),
@@ -1544,32 +1574,32 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
-  
+
       $scope.deleteProblem = function (ev, problem) {
         ev.stopPropagation();
         ev.preventDefault();
         ev.cancelBubble = true;
-  
+
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
           .content('Вы действительно хотите удалить эту задачу? В случае удаления, эта задача удалится из каждого контеста.')
           .ariaLabel('Confirm dialog')
           .ok('Да')
           .cancel('Отмена');
-  
+
         $mdDialog.show(confirm).then(function () {
           return AdminManager.deleteProblem({ problemId: problem.id });
         }).then(function () {
           return $scope.searchProblems();
         });
       };
-      
+
       $scope.editProblem = function (ev, problem) {
         if (problem) {
           $state.go('admin.problems-edit', { problemId: problem.id });
         }
       };
-      
+
       $scope.createEjudgeProblem = function (problem) {
         if (problem) {
           AdminManager.createEjudgeProblem(problem)
@@ -1587,16 +1617,16 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminProblemsItemEditController', ['$scope', '$rootScope', '_', '$mdDialog', '$state', 'AdminManager', 'ContestItemManager',
     function($scope, $rootScope, _, $mdDialog, $state, AdminManager, ContestItemManager) {
       $scope.$emit('change_title', {
         title: 'Редактирование задачи | ' + _('app_name')
       });
-      
+
       $scope.confirmExit = false;
       $scope.problemId = $state.params.problemId;
-      
+
       $scope.action = function(name, ev) {
         var actions = {
           exit: exitAction,
@@ -1606,11 +1636,11 @@ angular.module('Qemy.controllers.admin', [])
           actions[name].call(this, ev);
         }
       };
-      
+
       function exitAction(ev) {
         $state.go('admin.problems');
       }
-      
+
       function saveAction(ev) {
         syncWithCondition();
         $scope.confirmExit = false;
@@ -1630,7 +1660,7 @@ angular.module('Qemy.controllers.admin', [])
             );
           });
       }
-      
+
       $scope.settings = {
         replace: false,
         merge: true,
@@ -1644,7 +1674,7 @@ angular.module('Qemy.controllers.admin', [])
           text: ''
         }
       };
-      
+
       $scope.$watch('settings.mode.own', function (newVal, oldVal) {
         $scope.settings.mode.original = !newVal;
         $scope.confirmExit = true;
@@ -1653,7 +1683,7 @@ angular.module('Qemy.controllers.admin', [])
         $scope.settings.mode.own = !newVal;
         $scope.confirmExit = true;
       });
-      
+
       $scope.$watch('settings.replace', function (newVal, oldVal) {
         $scope.settings.merge = !newVal;
         $scope.confirmExit = true;
@@ -1662,7 +1692,7 @@ angular.module('Qemy.controllers.admin', [])
         $scope.settings.replace = !newVal;
         $scope.confirmExit = true;
       });
-      
+
       $scope.condition = {};
       $rootScope.$broadcast('data loading');
       AdminManager.getCondition({ problemId: $scope.problemId })
@@ -1687,7 +1717,7 @@ angular.module('Qemy.controllers.admin', [])
             $scope.settings.content.text = result.attachments.content.text;
           }
         });
-      
+
       $scope.addFile = function (ev) {
         $mdDialog.show({
           controller: ['$scope', '$parentScope', function ($scope, $parentScope) {
@@ -1703,7 +1733,7 @@ angular.module('Qemy.controllers.admin', [])
               $parentScope.settings.files.push($scope.file);
               $scope.close();
             };
-            
+
             $scope.types = [ 'pdf', 'txt', 'doc', 'image', 'spreadsheet' ];
           }],
           templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
@@ -1716,7 +1746,7 @@ angular.module('Qemy.controllers.admin', [])
         });
         $scope.confirmExit = true;
       };
-      
+
       $scope.deleteFile = function (file) {
         $scope.settings.files.splice(
           $scope.settings.files.reduce(function (acc, cur, i) {
@@ -1732,7 +1762,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         syncWithCondition();
       });
-      
+
       function syncWithCondition() {
         if (!$scope.condition.attachments.config) {
           $scope.condition.attachments = {};
@@ -1747,7 +1777,7 @@ angular.module('Qemy.controllers.admin', [])
         $scope.condition.attachments.files = $scope.settings.files;
         $scope.condition.attachments.content.text = $scope.settings.content.text;
       }
-      
+
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
         if ($scope.confirmExit) {
           var confirm = window.confirm('Вы действительно хотите выйти без сохранения?');
@@ -1760,10 +1790,10 @@ angular.module('Qemy.controllers.admin', [])
       })
     }
   ])
-  
+
   .controller('AdminServerController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager', '$timeout',
     function($scope, $rootScope, $mdDialog, $state, AdminManager, $timeout) {
-      
+
       $scope.restart = function () {
         var confirm = $mdDialog.confirm()
           .title('Подтверждение')
@@ -1771,11 +1801,11 @@ angular.module('Qemy.controllers.admin', [])
           .ariaLabel('Seriously?')
           .ok('Да')
           .cancel('Отмена');
-        
+
         $mdDialog.show(confirm).then(function () {
           $scope.loading = true;
           $scope.$emit('data loading');
-          
+
           AdminManager.restart().then(function (data) {
             $timeout(function () {
               $scope.loading = false;
@@ -1789,19 +1819,19 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   /* Base rating controller */
   .controller('AdminRatingBaseController', ['$scope', '$rootScope', '$state', 'AdminManager',
     function($scope, $rootScope, $state, AdminManager) {}
   ])
-  
+
   /* Base create rating controller */
   .controller('AdminRatingCreateBaseController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', 'ErrorService', '$mdToast',
     function($scope, $rootScope, $state, AdminManager, _, ErrorService, $mdToast) {
       $scope.$emit('change_title', {
         title: 'Создание рейтинга | ' + _('app_name')
       });
-  
+
       $scope.isComputing = false;
       $scope.computeRatings = function () {
         $scope.isComputing = true;
@@ -1813,7 +1843,7 @@ angular.module('Qemy.controllers.admin', [])
           .highlightAction(true)
           .highlightClass('md-warn')
           .position('top right');
-  
+
         $mdToast.show(toast).catch(function (error) {
           console.log('Toast rejected');
         });
@@ -1823,15 +1853,15 @@ angular.module('Qemy.controllers.admin', [])
           $scope.isComputing = false;
         });
       };
-      
+
       $scope.selectedContests = [];
-      
+
       $scope.existsContest = function (contest, selectedContests) {
         return selectedContests.some(function (curItem) {
           return curItem.id === contest.id;
         });
       };
-      
+
       $scope.toggleContest = function (contest, selectedContests) {
         var exists = $scope.existsContest(contest, selectedContests);
         if (exists) {
@@ -1844,7 +1874,7 @@ angular.module('Qemy.controllers.admin', [])
           selectedContests.push(contest);
         }
       };
-      
+
       $scope.createRating = function () {
         if (!$scope.selectedContests.length) {
           return;
@@ -1857,11 +1887,11 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminRatingCreateController', ['$scope', '$rootScope', '$state', 'AdminManager', 'ContestsManager', '_',
     function($scope, $rootScope, $state, AdminManager, ContestsManager, _) {
       var defaultCount = 10;
-      
+
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {
         count: defaultCount,
@@ -1870,12 +1900,12 @@ angular.module('Qemy.controllers.admin', [])
         sort: 'byId',
         sort_order: 'desc'
       };
-      
+
       $scope.all_items_count = 0;
       $scope.pagination = [];
       $scope.contestsList = [];
       $scope.allPages = 0;
-      
+
       $scope.curSortItem = null;
       $scope.sortCategories = [{
         name: 'По дате создания',
@@ -1884,7 +1914,7 @@ angular.module('Qemy.controllers.admin', [])
         name: 'По времени начала',
         sort: 'byStart'
       }];
-      
+
       $scope.curSortOrder = null;
       $scope.sortOrders = [{
         name: 'По убыванию',
@@ -1893,7 +1923,7 @@ angular.module('Qemy.controllers.admin', [])
         name: 'По возрастанию',
         order: 'asc'
       }];
-      
+
       $scope.curCategory = null;
       $scope.contestCategories = [{
         name: 'Все',
@@ -1920,7 +1950,7 @@ angular.module('Qemy.controllers.admin', [])
         name: 'Только удалённые',
         category: 'showOnlyRemoved'
       }];
-      
+
       function generatePaginationArray(offsetCount) {
         var pages = [],
           curPage = $scope.pageNumber,
@@ -1942,7 +1972,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         return pages;
       }
-      
+
       var firstInvokeStateChanged = true;
       $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
         if (firstInvokeStateChanged) {
@@ -1953,7 +1983,7 @@ angular.module('Qemy.controllers.admin', [])
         $scope.params.offset = ($scope.pageNumber - 1) * defaultCount;
         updateContestsList();
       });
-      
+
       function updateContestsList() {
         $rootScope.$broadcast('data loading');
         var contestsPromise = ContestsManager.getContests($scope.params);
@@ -1969,9 +1999,9 @@ angular.module('Qemy.controllers.admin', [])
           console.log(err);
         });
       }
-      
+
       updateContestsList();
-      
+
       $scope.$watch('curCategory', function (newVal, oldVal) {
         if (!newVal) {
           return;
@@ -1981,7 +2011,7 @@ angular.module('Qemy.controllers.admin', [])
           $state.go('contests.list') : updateContestsList();
         console.log('updating contests list...');
       });
-      
+
       $scope.$watch('curSortItem', function (newVal, oldVal) {
         if (!newVal) {
           return;
@@ -1990,7 +2020,7 @@ angular.module('Qemy.controllers.admin', [])
         updateContestsList();
         console.log('updating contests list...');
       });
-      
+
       $scope.$watch('curSortOrder', function (newVal, oldVal) {
         if (!newVal) {
           return;
@@ -1999,36 +2029,36 @@ angular.module('Qemy.controllers.admin', [])
         updateContestsList();
         console.log('updating contests list...');
       });
-      
+
       $scope.$on('admin update contest list', function () {
         updateContestsList();
       })
     }
   ])
-  
+
   .controller('AdminRatingTableController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
         title: 'Рейтинг | ' + _('app_name')
       });
-      
+
       var contestIds = ( $state.params.contests || '' ).split( ',' ) || [ ];
-      
+
       contestIds = contestIds.map(function (element) {
         return +element;
       }).filter(function (element) {
         return typeof element === 'number' && element > 0;
       });
-      
+
       if (!contestIds.length) {
         return $state.go('admin.contests-rating.create.index');
       }
-      
+
       $scope.scoreInTime = 2;
       $scope.scoreInPractice = 1;
-      
+
       $scope.table = {};
-      
+
       function updateRatingTable() {
         $rootScope.$broadcast('data loading');
         AdminManager.getRatingTable({
@@ -2047,7 +2077,7 @@ angular.module('Qemy.controllers.admin', [])
       updateRatingTable();
     }
   ])
-  
+
   .controller('AdminGroupsBaseController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
@@ -2055,26 +2085,26 @@ angular.module('Qemy.controllers.admin', [])
       });
     }
   ])
-  
+
   .controller('AdminGroupsController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog',
     function($scope, $rootScope, $state, AdminManager, _, $mdDialog) {
       $scope.$emit('change_title', {
         title: 'Группы пользователей | ' + _('app_name')
       });
-      
+
       var defaultCount = 10;
-      
+
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {
         count: defaultCount,
         offset: ($scope.pageNumber - 1) * defaultCount
       };
-      
+
       $scope.all_items_count = 0;
       $scope.pagination = [];
       $scope.groups = [];
       $scope.allPages = 0;
-      
+
       function generatePaginationArray(offsetCount) {
         var pages = [],
           curPage = $scope.pageNumber,
@@ -2096,7 +2126,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         return pages;
       }
-      
+
       var firstInvokeStateChanged = true;
       $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
         if (firstInvokeStateChanged) {
@@ -2107,7 +2137,7 @@ angular.module('Qemy.controllers.admin', [])
         $scope.params.offset = ($scope.pageNumber - 1) * defaultCount;
         updateGroupsList();
       });
-      
+
       function updateGroupsList() {
         $rootScope.$broadcast('data loading');
         var contestsPromise = AdminManager.getGroups($scope.params);
@@ -2123,9 +2153,9 @@ angular.module('Qemy.controllers.admin', [])
           console.log(err);
         });
       }
-      
+
       updateGroupsList();
-      
+
       $scope.deleteGroup = function (ev, group) {
         if (!group) {
           return;
@@ -2136,7 +2166,7 @@ angular.module('Qemy.controllers.admin', [])
           .ariaLabel('Lucky day')
           .ok('Да')
           .cancel('Отмена');
-        
+
         $mdDialog.show(confirm).then(function () {
           $rootScope.$broadcast('data loading');
           AdminManager.deleteGroup({ groupId: group.id })
@@ -2151,18 +2181,18 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminGroupsCreateController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
         title: 'Создания группы | ' + _('app_name')
       });
-      
+
       $scope.group = {
         color: '#EF9A9A',
         users: []
       };
-      
+
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
         var group = angular.copy($scope.group);
@@ -2183,31 +2213,31 @@ angular.module('Qemy.controllers.admin', [])
             $state.go('admin.groups.index');
           });
       };
-      
+
       $scope.$on('users sync', function (e, args) {
         $scope.group.users = args.users;
       });
     }
   ])
-  
+
   .controller('AdminGroupsUserControlController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
-      
+
       var defaultCount = 10;
-      
+
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {
         count: defaultCount,
         offset: ($scope.pageNumber - 1) * defaultCount
       };
-      
+
       $scope.all_items_count = 0;
       $scope.pagination = [];
       $scope.users = [];
       $scope.selectedUsers = [];
       $scope.allPages = 0;
       $scope.searchUserText = '';
-      
+
       function generatePaginationArray(offsetCount) {
         var pages = [],
           curPage = $scope.pageNumber,
@@ -2233,7 +2263,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         return pages;
       }
-      
+
       function updateUsersList() {
         var requestPromise;
         if (!$scope.searchUserText) {
@@ -2255,26 +2285,26 @@ angular.module('Qemy.controllers.admin', [])
           console.log(err);
         });
       }
-      
+
       updateUsersList();
-      
+
       $scope.searchUsers = function (ev, q) {
         $scope.searchUserText = q;
         updateUsersList();
       };
-      
+
       $scope.setPageNumber = function (ev, pageNumber) {
         $scope.pageNumber = pageNumber;
         $scope.params.offset = (pageNumber - 1) * defaultCount;
         updateUsersList();
       };
-      
+
       $scope.existsUser = function (user, selected) {
         return selected.some(function (item) {
           return item.id === user.id;
         });
       };
-      
+
       $scope.toggleUser = function (user, selected) {
         var foundUserIndex, foundUser = selected.filter(function (item, index) {
           if (item.id === user.id) {
@@ -2290,42 +2320,42 @@ angular.module('Qemy.controllers.admin', [])
         }
         $scope.sync();
       };
-      
+
       $scope.onSwipeLeft = function () {
         var tabIndexLimit = 1;
         $scope.selectedIndex = $scope.selectedIndex < tabIndexLimit ?
         $scope.selectedIndex + 1 : $scope.selectedIndex;
       };
-      
+
       $scope.onSwipeRight = function () {
         $scope.selectedIndex = $scope.selectedIndex > 0 ?
         $scope.selectedIndex - 1 : $scope.selectedIndex;
       };
-      
+
       $scope.sync = function () {
         $scope.$emit('users sync', {
           users: $scope.selectedUsers
         });
       };
-      
+
       $scope.$on('users sync', function (e, args) {
         $scope.selectedUsers = args.users;
       });
     }
   ])
-  
+
   .controller('AdminGroupsEditController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
         title: 'Редактирование группы | ' + _('app_name')
       });
-      
+
       var groupId = $state.params.groupId;
       $scope.group = {
         color: '#EF9A9A',
         users: []
       };
-      
+
       function fetchGroupData() {
         $rootScope.$broadcast('data loading');
         AdminManager.getGroup({ groupId: groupId })
@@ -2344,9 +2374,9 @@ angular.module('Qemy.controllers.admin', [])
             });
           });
       }
-      
+
       fetchGroupData(); // initialize
-      
+
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
         var group = angular.copy($scope.group);
@@ -2371,7 +2401,7 @@ angular.module('Qemy.controllers.admin', [])
       };
     }
   ])
-  
+
   .controller('AdminAddProblemDialogController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog', 'ErrorService', '$q',
     function($scope, $rootScope, $state, AdminManager, _, $mdDialog, ErrorService, $q) {
       var contestId = $state.params.contestId;
@@ -2394,7 +2424,7 @@ angular.module('Qemy.controllers.admin', [])
           $rootScope.$broadcast('data loaded');
         });
       };
-  
+
       $scope.indexGenerator = function (index) {
         var alphabetLength = 26, symbolIndex = '';
         while (index >= 0) {
@@ -2403,7 +2433,7 @@ angular.module('Qemy.controllers.admin', [])
         }
         return symbolIndex.split('').reverse().join('');
       };
-  
+
       $scope.systemType = 'all';
       $scope.problems = [];
       $scope.qProblems = '';
@@ -2429,13 +2459,13 @@ angular.module('Qemy.controllers.admin', [])
         type: 'yandex',
         name: 'Яндекс.Контест'
       }];
-  
+
       $scope.selectedProblems = [];
-  
+
       var newQ = '';
       $scope.dataLoading = false;
       var currentOutgoingRequest;
-      
+
       $scope.searchProblems = function () {
         newQ = $scope.qProblems;
         if (currentOutgoingRequest) {
@@ -2479,21 +2509,21 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
-  
+
       $scope.$watch('qProblems', function () {
         $scope.searchProblems();
       });
-  
+
       $scope.$watch('systemType', function () {
         $scope.searchProblems();
       });
-  
+
       $scope.existsProblem = function (problem, selectedProblems) {
         return selectedProblems.some(function (curProblem) {
           return curProblem.id === problem.id;
         });
       };
-  
+
       $scope.toggleProblem = function (problem, selectedProblems) {
         var exists = $scope.existsProblem(problem, selectedProblems);
         if (exists) {
@@ -2506,12 +2536,12 @@ angular.module('Qemy.controllers.admin', [])
           selectedProblems.push(problem);
         }
       };
-  
+
       $scope.showProblem = function (ev, problem) {
         ev.stopPropagation();
         ev.preventDefault();
         ev.cancelBubble = true;
-    
+
         $mdDialog.show({
           controller: 'AdminProblemDialogController',
           templateUrl: templateUrl('admin', 'admin-problem-dialog'),
@@ -2522,7 +2552,7 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
-  
+
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;
@@ -2530,7 +2560,7 @@ angular.module('Qemy.controllers.admin', [])
         ev.preventDefault();
         ev.cancelBubble = true;
       };
-  
+
       function getContestInfo() {
         $rootScope.$broadcast('data loading');
         AdminManager.getContestInfo({ contestId: contestId }).then(function (result) {
@@ -2556,7 +2586,7 @@ angular.module('Qemy.controllers.admin', [])
           ErrorService.show(result);
         });
       }
-  
+
       getContestInfo();
     }
   ])

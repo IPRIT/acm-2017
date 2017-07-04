@@ -13,21 +13,21 @@ const consoleMessagePattern = '[{systemType}] {message}';
 const SYSTEM_TYPE = 'yandex';
 
 export async function importFromPolygon(fileStream, systemAccount) {
-  socket.emitScannerConsoleLog(buildConsoleMessage(`Проверка пользователя...`));
+  socket.emitYandexContestImportConsoleLog(buildConsoleMessage(`Проверка пользователя...`));
   let isAuth = await accountMethods.isAuth(systemAccount);
   if (!isAuth) {
-    socket.emitScannerConsoleLog(buildConsoleMessage(`Пользователь не залогинен. Повтор входа...`));
+    socket.emitYandexContestImportConsoleLog(buildConsoleMessage(`Пользователь не залогинен. Повтор входа...`));
     await accountMethods.login(systemAccount);
   }
 
-  socket.emitScannerConsoleLog(buildConsoleMessage(`Получение CSRF токена...`));
+  socket.emitYandexContestImportConsoleLog(buildConsoleMessage(`Получение CSRF токена...`));
   let csrfToken = await accountMethods.getCsrfToken(systemAccount);
-  socket.emitScannerConsoleLog(buildConsoleMessage(`Яндекс CSRF токен: ${csrfToken}`));
+  socket.emitYandexContestImportConsoleLog(buildConsoleMessage(`Яндекс CSRF токен: ${csrfToken}`));
   let form = buildPostForm('polygon', fileStream, csrfToken);
   let endpoint = getEndpoint(YANDEX_CONTEST_HOST, YANDEX_IMPORT_CONTEST_PATH, {}, {}, YANDEX_PROTOCOL);
   let { jar } = systemAccount;
 
-  socket.emitScannerConsoleLog(buildConsoleMessage(`Идет отправка архива...`));
+  socket.emitYandexContestImportConsoleLog(buildConsoleMessage(`Идет отправка архива...`));
   let response = await request({
     method: 'POST',
     uri: endpoint,
@@ -44,7 +44,7 @@ export async function importFromPolygon(fileStream, systemAccount) {
     throw new Error('Import id not found');
   }
   let importId = ensureNumber( location.match(importIdRegexp)[1] );
-  socket.emitScannerConsoleLog(buildConsoleMessage(`Архив отправлен. Получен Import ID: ${importId}`));
+  socket.emitYandexContestImportConsoleLog(buildConsoleMessage(`Архив отправлен. Получен Import ID: ${importId}`));
   return importId;
 }
 
@@ -73,6 +73,10 @@ export async function observeImportUntilDone(importId, systemAccount) {
     }
     const $ = cheerio.load( response.body );
     let successAlert = $('.alert-success');
+    let failedAlert = $('.alert-danger');
+    if (failedAlert.length) {
+      throw new Error('Import Failed');
+    }
     if (successAlert.length) {
       let linkElement = successAlert.find('a.pull-right');
       let href = linkElement.attr('href');
@@ -80,7 +84,7 @@ export async function observeImportUntilDone(importId, systemAccount) {
       if (contestId) {
         isProcessDone = true;
         console.log('Contest ID:', contestId);
-        socket.emitScannerConsoleLog(
+        socket.emitYandexContestImportConsoleLog(
           buildConsoleMessage(`Импорт завершен: <a target='_blank' href='https://contest.yandex.ru/admin/edit-contest?contestId=${contestId}'>Редактировать</a>`)
         );
         return contestId;
@@ -132,5 +136,5 @@ function printRows(rows, hash) {
     message += `${buildConsoleMessage(row)}
     `;
   }
-  socket.emitScannerConsoleLog( message, hash );
+  socket.emitYandexContestImportConsoleLog( message, hash );
 }

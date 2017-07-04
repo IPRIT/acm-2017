@@ -1,5 +1,5 @@
 import * as yandex from "../../../../../systems/yandex";
-import { parseIdentifier } from "../../../../../utils";
+import { parseYandexIdentifier } from "../../../../../utils";
 import * as models from '../../../../../models';
 
 export async function rescanYandexProblem(params) {
@@ -13,7 +13,7 @@ export async function rescanYandexProblem(params) {
       throw HttpError('Problem not found');
     }
   }
-  let parsedIdentifier = parseIdentifier(problem.foreignProblemIdentifier);
+  let parsedIdentifier = parseYandexIdentifier(problem.foreignProblemIdentifier);
   let systemAccount = await yandex.getSomeAccount();
   let taskMeta = await yandex.getTaskMeta(parsedIdentifier, systemAccount);
   let { htmlStatement, textStatement } = await yandex.retrieveProblem(taskMeta, systemAccount);

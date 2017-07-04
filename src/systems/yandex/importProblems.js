@@ -4,10 +4,10 @@ import cheerio from 'cheerio';
 import * as yandex from "./index";
 import * as socket from '../../socket';
 import * as models from '../../models';
-import { getEndpoint, parseIdentifier } from "../../utils/utils";
+import { getEndpoint, parseYandexIdentifier } from "../../utils/utils";
 
 export async function importProblems(contestNumber, systemAccount) {
-  socket.emitScannerConsoleLog( yandex.buildConsoleMessage('Импортирование задач...') );
+  socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage('Импортирование задач...') );
 
   let problems = await getAllTasksMeta(contestNumber, systemAccount);
 
@@ -131,7 +131,7 @@ export async function retrieveProblem(problem, systemAccount) {
   });
   let htmlStatement = statement.html(),
     textStatement = statement.text(),
-    foreignProblemIdentifier = `${problem.contestNumber}${problem.symbolIndex}`;
+    foreignProblemIdentifier = `${problem.contestNumber}:${problem.symbolIndex}`;
 
   return {
     htmlStatement,
@@ -148,7 +148,7 @@ function printResults(inserted) {
     | ------------- | :------------- |
   `;
   for (let insertedProblem of inserted) {
-    let parsedProblemIdentifier = parseIdentifier(insertedProblem.foreignProblemIdentifier);
+    let parsedProblemIdentifier = parseYandexIdentifier(insertedProblem.foreignProblemIdentifier);
     message += `| <a target="_blank" href='/problems/${insertedProblem.id}'>${insertedProblem.title}</a> (<a target="_blank" href='https://contest.yandex.ru/contest/${parsedProblemIdentifier.contestNumber}/problems/${parsedProblemIdentifier.symbolIndex}'>yandex</a>) | добавлена |
     `;
   }
@@ -156,5 +156,5 @@ function printResults(inserted) {
     message += `| - | - |
     `;
   }
-  socket.emitScannerConsoleLog( message );
+  socket.emitYandexContestImportConsoleLog( message );
 }

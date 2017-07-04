@@ -1,36 +1,39 @@
-div.contest-creation
-  div.contests-list__title Редактирование задач
+div.admin-content-layer
+  div.admin-content-layer__inner
 
-  div.contest-creation__row
-    div.contest-creation__row-title Поиск задач
-    span.sublabel Выберите задачу, которую хотите редактировать.
-    div(layout, layout-sm="column")
-      md-input-container(flex='2')
-        label Поиск по задачам
-        input(md-maxlength='200', ng-model='qProblems')
-      md-input-container.contest-creation__field-inline-fix(flex='4')
-        Label Система
-        md-select(ng-model='systemType')
-          md-option(ng-repeat='system in systems', value='{{system.type}}', ng-bind='system.name')
+    div.contest-creation
+      div.contests-list__title Редактирование задач
 
-    div(ng-if='problems.length > 0')
-      div.contest-creation__row-title Найденные задачи:
-      md-content
-        md-list-item.md-2-line(ng-repeat="problem in problems", ng-click="editProblem($event, problem)")
-          div.md-list-item-text(layout="column")
-            span {{problem.task_number + ". " + problem.title + " "}}
-            span(style='color: #999;', ng-switch='problem.system_type')
-              span(ng-switch-when='timus') Timus
-              span(ng-switch-when='cf') Codeforces
-              span(ng-switch-when='acmp') ACMP.ru
-              span(ng-switch-when='sgu') SGU Online Judge
-              span(ng-switch-when='ejudge') ejudge
-              span(ng-switch-when='yandex') Яндекс.Контест
-          md-icon.md-secondary(
-            ng-click="showProblem($event, problem)",
-            aria-label="Secondary action",
-            md-svg-src="/img/icons/ic_visibility_48px.svg")
-          md-icon.md-secondary.md-accent(
-            ng-click="deleteProblem($event, problem)",
-            aria-label="Delete problem",
-            md-svg-src="/img/icons/ic_delete_48px.svg")
+      div.contest-creation__row
+        div.contest-creation__row-title Поиск задач
+        span.sublabel Выберите задачу, которую хотите редактировать.
+        div(layout, layout-sm="column")
+          md-input-container(flex='2')
+            label Поиск по задачам
+            input(md-maxlength='200', ng-model='qProblems')
+          md-input-container.contest-creation__field-inline-fix(flex='4')
+            Label Система
+            md-select(ng-model='systemType')
+              md-option(ng-repeat='system in systems', value='{{system.type}}', ng-bind='system.name')
+
+        div(ng-if='problems.length > 0')
+          div.contest-creation__row-title Найденные задачи:
+          md-content
+            md-list-item.md-2-line(ng-repeat="problem in problems", ng-click="editProblem($event, problem)")
+              div.md-list-item-text(layout="column")
+                span {{problem.task_number + ". " + problem.title + " "}}
+                span(style='color: #999;', ng-switch='problem.system_type')
+                  span(ng-switch-when='timus') Timus
+                  span(ng-switch-when='cf') Codeforces
+                  span(ng-switch-when='acmp') ACMP.ru
+                  span(ng-switch-when='sgu') SGU Online Judge
+                  span(ng-switch-when='ejudge') ejudge
+                  span(ng-switch-when='yandex') Яндекс.Контест
+              md-icon.md-secondary(
+                ng-click="showProblem($event, problem)",
+                aria-label="Secondary action",
+                md-svg-src="/img/icons/ic_visibility_48px.svg")
+              md-icon.md-secondary.md-accent(
+                ng-click="deleteProblem($event, problem)",
+                aria-label="Delete problem",
+                md-svg-src="/img/icons/ic_delete_48px.svg")

@@ -1,19 +1,19 @@
-div.contest-creation
-  div.contests-list__title Сканирование задач
+div.admin-content-layer
+  div.admin-content-layer__inner
 
-  div(style='padding: 30px;', layout='row')
-    md-input-container.contest-creation__field-inline-fix(flex='4')
-      Label Система
-      md-select(ng-model='selectedSystemType')
-        md-option(ng-repeat='system in availableSystems', value='{{system.systemType}}', ng-bind='system.name')
+    div.contest-creation
+      div.contests-list__title Сканирование задач
 
-    md-button.md-raised.md-primary(ng-click='scan()', flex='1', ng-disabled='scanning') Старт
+      div(style='padding: 30px;', layout='row')
+        md-input-container.contest-creation__field-inline-fix(flex='4')
+          Label Система
+          md-select(ng-model='selectedSystemType')
+            md-option(ng-repeat='system in availableSystems', value='{{system.systemType}}', ng-bind='system.name')
 
-  div(style='padding: 30px;', layout='row')
-    md-checkbox.md-primary(ng-model='scanParams.insert', flex='1') Добавить новые задачи
-    md-checkbox.md-primary(ng-model='scanParams.update', flex='1') Заменить условия задач на новые
+        md-button.md-raised.md-primary(ng-click='scan()', flex='1', ng-disabled='scanning') Старт
 
-  div.scan-console
-    div.problem-info__title.scan-console__title Консоль
-    div.scan-console__inner
-      div.scan-console__row.markdown(ng-repeat='consoleRow in consoleRows track by $index', marked='consoleRow.message')
+      div(style='padding: 30px;', layout='row')
+        md-checkbox.md-primary(ng-model='scanParams.insert', flex='1') Добавить новые задачи
+        md-checkbox.md-primary(ng-model='scanParams.update', flex='1') Заменить условия задач на новые
+
+      div(console-log-monitor, room='"console.log.scanner"')

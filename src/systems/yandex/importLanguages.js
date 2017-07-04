@@ -5,17 +5,24 @@ import * as models from '../../models';
 import { getEndpoint } from "../../utils/utils";
 
 export async function importLanguages(contestNumber, systemAccount) {
-  let languages = await retrieveLanguages({ contestNumber, symbolIndex: 'A' }, systemAccount);
+  let languages = await retrieveLanguages({ contestNumber }, systemAccount);
   for (let language of languages) {
-    await models.Language.create(language);
+    let existingLanguage = await models.Language.findOne({
+      where: {
+        systemType: 'yandex',
+        foreignLanguageId: language.foreignLanguageId
+      }
+    });
+    if (language.foreignLanguageId && language.name && !existingLanguage) {
+      await models.Language.create(language);
+    }
   }
   return contestNumber;
 }
 
 export async function retrieveLanguages(taskMeta, systemAccount) {
-  let endpoint = getEndpoint(yandex.YANDEX_CONTEST_HOST, yandex.YANDEX_CONTEST_PROBLEM, {
-    contestNumber: taskMeta.contestNumber,
-    symbolIndex: taskMeta.symbolIndex
+  let endpoint = getEndpoint(yandex.YANDEX_CONTEST_HOST, yandex.YANDEX_CONTEST_PROBLEMS, {
+    contestNumber: taskMeta.contestNumber
   }, {}, yandex.YANDEX_PROTOCOL);
   let { jar } = systemAccount;
 

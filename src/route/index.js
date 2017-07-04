@@ -6,6 +6,7 @@ import { HttpError } from '../utils/http-error';
 
 import indexRouter from './index/index';
 import cdnRouter from './cdn';
+import filesRouter from './files';
 import { repairDb } from '../utils';
 
 import cors from './cors';
@@ -32,7 +33,7 @@ router.use('/user', user);
 router.use('/contest', contest);
 router.use('/problems', problems);
 router.use('/admin', admin);
-router.post('/repair', repairDb);
+//router.post('/repair', repairDb);
 
 router.all('/*', function(req, res, next) {
   next(new HttpError('Not found', 404));
@@ -43,5 +44,6 @@ let apiRouter = router;
 export {
   apiRouter,
   indexRouter,
+  filesRouter,
   cdnRouter
 };

@@ -21,29 +21,14 @@ async function test(req, res, next) {
 }
 
 async function _test(req, res) {
-  let fileStream = req.stream.file;
-  let account = await yandex.getFreeAccount();
-  account.busy();
-
-  // we can run these operations in background
-  // cause we have socket.io console
-  /*yandex.importFromPolygon(fileStream, account).then(importId => {
-    return yandex.observeImportUntilDone(importId, account);
-  })*/
-  Promise.resolve(560).then(contestId => {
-    return yandex.enterContest(contestId, account);
-  })/*.then(contestId => {
-    return yandex.importLanguages(contestId, account);
-  })*/.then(contestId => {
-    return yandex.importProblems(contestId, account);
-  }).then(_ => {
-    socket.emitScannerConsoleLog( yandex.buildConsoleMessage(`Импортирование полностью завершено.`) );
-  }).catch(err => {
-    socket.emitScannerConsoleLog( yandex.buildConsoleMessage(`Ошибка при импортировании: ${err.message}`) );
-  }).finally(() => {
-    account.free();
+  let solution = await models.Solution.findByPrimary(14323, {
+    include: [{
+      model: models.Problem,
+      required: true
+    }, models.Language ]
   });
-  return { result: 'ok' };
+
+  return yandex.handle(solution);
 }
 
 export default router;

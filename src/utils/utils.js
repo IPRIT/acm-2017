@@ -42,6 +42,34 @@ export function makeSourceWatermark({ solutionInstance, commentLiteral = SYNTAX_
   }
 }
 
+export function getSourceCodeWithWatermark(solution) {
+  let { Language, language } = solution;
+  if (!Language) {
+    if (language) {
+      Language = language;
+    } else {
+      throw new Error('Language not found');
+    }
+  }
+  let whitespace = false;
+  let commentLiteral;
+  if ([ 'c_cpp', 'java', 'javascript', 'php', 'csharp' ].includes( Language.languageFamily )) {
+    commentLiteral = SYNTAX_C_LIKE_LITERAL_COMMENT;
+  } else if ([ 'python' ].includes( Language.languageFamily )) {
+    commentLiteral = SYNTAX_PYTHON_LITERAL_COMMENT;
+  } else {
+    whitespace = true;
+  }
+  if (whitespace) {
+    let whitespacesNumber = Math.floor(Math.random() * 100) + 1;
+    let watermark = '\n'.repeat(whitespacesNumber);
+    return solution.sourceCode + watermark;
+  } else {
+    let watermark = new Date().toString();
+    return solution.sourceCode + watermark.replace(/^(.*)$/gi, commentLiteral);
+  }
+}
+
 export function appendWatermark(solutionInstance, language = solutionInstance.Language) {
   if ([ 'c_cpp', 'csharp', 'java', 'javascript', 'php' ].includes(language.languageFamily)) {
     return makeSourceWatermark({ solutionInstance });
@@ -85,6 +113,13 @@ export function parseProblemIdentifier(problemIdentifier = '') {
 export function parseIdentifier(identifier = '') {
   let contestNumber = ensureNumber(identifier.match(/^(\d+)/i)[1]);
   let symbolIndex = identifier.match(/\d+([a-zA-Zа-яА-Я0-9]+)$/i)[1];
+  return { contestNumber, symbolIndex };
+}
+
+export function parseYandexIdentifier(identifier = '') {
+  let twoParts = identifier.split(':');
+  let contestNumber = ensureNumber(twoParts[0]);
+  let symbolIndex = twoParts[1];
   return { contestNumber, symbolIndex };
 }
 

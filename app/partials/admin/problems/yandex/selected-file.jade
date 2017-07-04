@@ -1,0 +1,13 @@
+div.task__files
+  div.task__file-wrap(ng-if='file')
+
+    div.task__file-delete
+      md-button.md-icon-button(ng-click='clearFile()')
+        md-icon(md-svg-src='/img/icons/ic_close_48px.svg', aria-label='Remove File')
+
+    div
+      div.task__file
+        div.task__file-title {{ file.name }}
+        div.task__file-ext(ng-if='fileExt')
+          div(class='task__file-ext-icon task__file-ext-icon_type_txt')
+          span {{ fileExt }}

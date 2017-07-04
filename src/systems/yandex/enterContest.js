@@ -2,25 +2,26 @@ import request from 'request-promise';
 import cheerio from 'cheerio';
 import * as yandex from "./index";
 import { getEndpoint } from "../../utils/utils";
+import * as socket from '../../socket';
 
 export async function enterContest(contestNumber, systemAccount) {
+  socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage(`Выполняется вход в контест...`) );
   let $contestMainPage = await getContestMainPage(contestNumber, systemAccount);
   if (hasRegisterForm($contestMainPage)) {
     let $registerForm = getRegisterForm($contestMainPage);
-    let form = getFormObject( $registerForm );
-    $contestMainPage = await submitForm(form, yandex.YANDEX_CONTEST_ENTER, { contestNumber }, {}, systemAccount);
+    $contestMainPage = await submitForm($registerForm, yandex.YANDEX_CONTEST_ENTER, { contestNumber }, {}, systemAccount);
   }
   if (hasVirtualForm($contestMainPage)) {
     let $virtualForm = getVirtualForm($contestMainPage);
-    let form = getFormObject( $virtualForm );
-    await submitForm(form, yandex.YANDEX_CONTEST_ENTER, { contestNumber }, {}, systemAccount);
+    await submitForm($virtualForm, yandex.YANDEX_CONTEST_ENTER, { contestNumber }, {}, systemAccount);
   }
 
   // checking new forms
   $contestMainPage = await getContestMainPage(contestNumber, systemAccount);
   if (hasForm($contestMainPage)) {
-    throw new Error('Something went wrong');
+    throw new Error('Невозможно войти в контест');
   }
+  socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage(`Вход в контест выполнен.`) );
   return contestNumber;
 }
 
@@ -99,7 +100,8 @@ function getFormObject($form) {
   return form;
 }
 
-async function submitForm(form = {}, pathTo, params, qs, systemAccount) {
+async function submitForm($form, pathTo, params, qs, systemAccount) {
+  let form = getFormObject( $form );
   let authEndpoint = getEndpoint(yandex.YANDEX_CONTEST_HOST, pathTo, params, qs, yandex.YANDEX_PROTOCOL);
   let { jar } = systemAccount;
 
