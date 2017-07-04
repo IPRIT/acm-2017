@@ -39,7 +39,7 @@ let Problem = sequelize.define('Problem', {
     }
   },
   textStatement: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT('medium'),
     get() {
       return this.getDataValue('textStatement') || '';
     }

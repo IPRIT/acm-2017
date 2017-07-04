@@ -36,3 +36,5 @@ export * from './restart';
 export * from './scan';
 export * from './rescanProblem';
 export * from './rollbackProblem';
+export * from './yandexPolygonImport';
+export * from './yandexImportById';

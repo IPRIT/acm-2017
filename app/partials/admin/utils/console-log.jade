@@ -1,0 +1,4 @@
+div.scan-console
+  div.problem-info__title.scan-console__title Консоль
+  div.scan-console__inner
+    div.scan-console__row.markdown(ng-repeat='consoleRow in consoleRows track by $index', marked='consoleRow.message')

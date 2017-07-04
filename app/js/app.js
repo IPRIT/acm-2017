@@ -80,8 +80,6 @@ angular.module('Qemy', [
       renderer.hr = function () {
         return '<div class="markdown__divider"></div>';
       };
-
-      console.log(renderer);
       
       renderer.link = function(href, title, text) {
         return "<a class='link markdown__link' href='" + href + "'" + (title ? " title='" + title + "'" : '') + " target='_blank'>" + text + "</a>";

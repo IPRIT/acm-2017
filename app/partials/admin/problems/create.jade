@@ -1,29 +1,32 @@
-div
-  form.contest-creation__form(name='problemForm')
+div.admin-content-layer
+  div.admin-content-layer__inner
 
-    div.contest-creation__row
-      div.contest-creation__row-title Название задачи
-      md-input-container
-        label Имя
-        input(required, name='title', ng-model='problem.title')
-        div(ng-messages='problemForm.title.$error')
-          div(ng-message='required') Поле не может быть пустым.
+    div
+      form.contest-creation__form(name='problemForm')
 
-    div.contest-creation__row
-      div.contest-creation__row-title ID контеста на ejudge (число)
-      md-input-container
-        label Contest id
-        input(required, name='contest_id', type='number', ng-model='problem.ejudgeContestId')
-        div(ng-messages='problemForm.ejudgeContestId.$error')
-          div(ng-message='required') Поле не может быть пустым.
+        div.contest-creation__row
+          div.contest-creation__row-title Название задачи
+          md-input-container
+            label Имя
+            input(required, name='title', ng-model='problem.title')
+            div(ng-messages='problemForm.title.$error')
+              div(ng-message='required') Поле не может быть пустым.
 
-    div.contest-creation__row
-      div.contest-creation__row-title Номер задачи в контесте на ejudge (начиная с 1)
-      md-input-container
-        label Problem number
-        input(required, name='problem_index', type='number', ng-model='problem.ejudgeProblemIndex')
-        div(ng-messages='problemForm.ejudgeProblemIndex.$error')
-          div(ng-message='required') Поле не может быть пустым.
+        div.contest-creation__row
+          div.contest-creation__row-title ID контеста на ejudge (число)
+          md-input-container
+            label Contest id
+            input(required, name='contest_id', type='number', ng-model='problem.ejudgeContestId')
+            div(ng-messages='problemForm.ejudgeContestId.$error')
+              div(ng-message='required') Поле не может быть пустым.
 
-    div.contest-creation__row
-      md-button.md-primary(ng-click='createEjudgeProblem(problem)', ng-disabled='!problemForm.$valid') Создать задачу
+        div.contest-creation__row
+          div.contest-creation__row-title Номер задачи в контесте на ejudge (начиная с 1)
+          md-input-container
+            label Problem number
+            input(required, name='problem_index', type='number', ng-model='problem.ejudgeProblemIndex')
+            div(ng-messages='problemForm.ejudgeProblemIndex.$error')
+              div(ng-message='required') Поле не может быть пустым.
+
+        div.contest-creation__row
+          md-button.md-primary(ng-click='createEjudgeProblem(problem)', ng-disabled='!problemForm.$valid') Создать задачу

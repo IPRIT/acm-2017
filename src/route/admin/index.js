@@ -51,4 +51,6 @@ router.post('/computeRatings', [ userRetriever, rightsAllocator('admin') ], admi
 
 router.post('/restart', [ userRetriever, rightsAllocator('admin') ], adminMethods.restartRequest);
 
+router.post('/yandex-import-by-id', [ userRetriever, rightsAllocator('admin') ], adminMethods.yandexImportByIdRequest);
+
 export default router;

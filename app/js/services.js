@@ -167,7 +167,7 @@ angular.module('Qemy.services', [
   .service('SocketService', ['$rootScope', '$q', '$http', function ($rootScope, $q, $http) {
     var socket = io();
     var queue = [];
-    var connectCallback = angular.noop;
+    var connectCallbacks = [];
     var connected = false;
     var connectionChangeListeners = [];
     var isListening = false;
@@ -177,7 +177,9 @@ angular.module('Qemy.services', [
     var interval = setInterval(function () {
       console.log('Check socket connection...');
       if (socket && socket.connected) {
-        connectCallback();
+        connectCallbacks.forEach(function (callback) {
+          callback();
+        });
         connectionChangeListeners.forEach(function (observer) {
           var args = Array.prototype.slice.call( arguments );
           observer.apply(null, [ 'connect' ].concat(args));
@@ -212,7 +214,7 @@ angular.module('Qemy.services', [
       if (socket.connected) {
         return callback();
       }
-      connectCallback = callback;
+      connectCallbacks.push( callback );
     }
     
     function getSocket() {
@@ -249,12 +251,12 @@ angular.module('Qemy.services', [
       });
     }
 
-    function listenScanningConsole() {
-      emitEvent('scanner-console.listenLogs', {});
+    function listenConsole() {
+      emitEvent('console.listenLogs', {});
     }
 
-    function stopListenScanningConsole() {
-      emitEvent('scanner-console.stopListenLogs', {});
+    function stopListenConsole() {
+      emitEvent('console.stopListenLogs', {});
     }
     
     function setListener(eventName, callback) {
@@ -309,8 +311,8 @@ angular.module('Qemy.services', [
       leaveContest: leaveContest,
       listenSolutions: listenSolutions,
       stopListenSolutions: stopListenSolutions,
-      listenScanningConsole: listenScanningConsole,
-      stopListenScanningConsole: stopListenScanningConsole,
+      listenConsole: listenConsole,
+      stopListenConsole: stopListenConsole,
       setListener: setListener,
       removeListener: removeListener,
       onConnect: onConnect,

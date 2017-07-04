@@ -1,6 +1,6 @@
 {
   "name": "MISIS-ACM",
-  "version": "0.10.0",
+  "version": "1.0.0",
   "main": "bin/www",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -43,6 +43,7 @@
     "encodehtml": "^0.1.0",
     "encoding": "^0.1.12",
     "express": "^4.14.0",
+    "express-fileupload": "^0.1.4",
     "express-form-data": "0.0.2",
     "express-light-limiter": "^1.0.1",
     "express-session": "^1.14.0",

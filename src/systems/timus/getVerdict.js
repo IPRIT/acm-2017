@@ -72,7 +72,7 @@ export async function getVerdict(solution, systemAccount, receivedRow) {
     let { testNumber, executionTime, memory, verdictName } = contextRow;
     let verdictId = getVerdictId(verdictName);
     return {
-      id: getVerdictId(verdictName),
+      id: verdictId,
       isTerminal: isTerminal(verdictName),
       name: verdictId === 1 ? 'OK' : verdictName,
       testNumber: verdictId === 1 ? 0 : testNumber,

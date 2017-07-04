@@ -1,0 +1,35 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Импортирование Яндекс.Контест по ссылке
+
+      div
+        form.contest-creation__form(name='importForm', ng-submit='submit()')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Ссылка на контест
+            md-input-container
+              label Ссылка
+              input(required, name='link', ng-model='link')
+              div(ng-messages='importForm.link.$error')
+                div(ng-message='required') Вставьте Вашу ссылку на Яндекс.Контест
+
+          div.contest-creation__row(ng-if='link')
+            div.contest-creation__row-title(ng-if='!linkError') ID контеста: {{ contestId }}
+            div.contest-creation__row-title(ng-show='linkError') Неверная ссылка
+              div.contest-creation__row
+                div.contest-creation__row-title Впишите ID контеста руками
+                md-input-container
+                  label ID
+                  input(required, type='number', name='contestId', ng-model='contestId')
+                  div(ng-messages='importForm.contestId.$error')
+                    div(ng-message='required') Вставьте ID
+                    div(ng-message='number') Введите число
+
+          div.contest-creation__row
+            md-button.md-raised.md-primary(style='margin-left: 0;', type='submit', ng-disabled='sent || !importForm.$valid')
+              md-icon(style='margin-right: 8px;', md-svg-src='/img/icons/ic_backup_48px.svg')
+              | Начать импорт
+
+        div(console-log-monitor, room='"console.log.yandex-import"')

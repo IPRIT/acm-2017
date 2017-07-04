@@ -1,0 +1,23 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div.contest-creation
+      div.contests-list__title Импортирование в Яндекс.Контест из Полигона
+
+      div
+        form.contest-creation__form(name='importForm', ng-show='!sent')
+
+          div.contest-creation__row
+            div.contest-creation__row-title Выберите архив, скачанный из полигона:
+            md-button.md-primary(style='margin-left: 0;', ngf-select, ng-model='file', name='file', ngf-accept="'.zip,.rar'", ngf-max-size='200MB')
+              md-icon(style='margin-right: 8px;', md-svg-src='/img/icons/ic_attach_file_48px.svg')
+              | Выбрать файл
+            div(style='margin-top: 10px;')
+              include ./selected-file
+
+          div.contest-creation__row
+            md-button.md-raised.md-primary(style='margin-left: 0;', ng-click='submit()', ng-disabled='sending || !file')
+              md-icon(style='margin-right: 8px;', md-svg-src='/img/icons/ic_backup_48px.svg')
+              | Начать импорт
+
+        div(console-log-monitor, room='"console.log.yandex-import"')
