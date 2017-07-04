@@ -13,7 +13,8 @@ export function rescanProblemRequest(req, res, next) {
 const availableMethods = {
   timus: scanMethods.rescanTimusProblem,
   cf: scanMethods.rescanCfProblem,
-  yandex: scanMethods.rescanYandexProblem
+  yandex: scanMethods.rescanYandexProblem,
+  yandexOfficial: scanMethods.rescanYandexOfficialProblem
 };
 
 export async function rescanProblem(params) {

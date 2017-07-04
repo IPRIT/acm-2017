@@ -302,6 +302,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'yandex',
         name: 'Яндекс.Контест'
+      }, {
+        type: 'yandexOfficial',
+        name: 'Яндекс.Контест (Official)'
       }];
 
       $scope.selectedProblems = [];
@@ -581,6 +584,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'yandex',
         name: 'Яндекс.Контест'
+      }, {
+        type: 'yandexOfficial',
+        name: 'Яндекс.Контест (Official)'
       }];
 
       $scope.selectedProblems = [];
@@ -867,6 +873,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'yandex',
         name: 'Яндекс.Контест'
+      }, {
+        type: 'yandexOfficial',
+        name: 'Яндекс.Контест (Official)'
       }];
 
       $scope.selectedProblems = [];
@@ -1413,6 +1422,8 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminYandexContestImportByLinkController', ['$scope', '$rootScope', '$mdDialog', 'ContestsManager', '$state', 'AdminManager', 'Upload', 'ErrorService',
     function($scope, $rootScope, $mdDialog, ContestsManager, $state, AdminManager, Upload, ErrorService) {
 
+      $scope.official = false;
+
       $scope.$watch('link', function (link) {
         if (!link) {
           return;
@@ -1434,7 +1445,10 @@ angular.module('Qemy.controllers.admin', [])
         $scope.$emit('data loading');
         $scope.sent = true;
         $scope.sending = true;
-        AdminManager.yandexImportByContestId({ contestId: $scope.contestId }).catch(function (error) {
+        var promise = $scope.official ?
+          AdminManager.yandexOfficialImportByContestId({ contestId: $scope.contestId })
+          : AdminManager.yandexImportByContestId({ contestId: $scope.contestId });
+        promise.catch(function (error) {
           ErrorService.show(error);
         }).finally(function () {
           $scope.sending = false;
@@ -1520,6 +1534,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'yandex',
         name: 'Яндекс.Контест'
+      }, {
+        type: 'yandexOfficial',
+        name: 'Яндекс.Контест (Official)'
       }];
 
       $scope.selectedProblems = [];
@@ -2458,6 +2475,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         type: 'yandex',
         name: 'Яндекс.Контест'
+      }, {
+        type: 'yandexOfficial',
+        name: 'Яндекс.Контест (Official)'
       }];
 
       $scope.selectedProblems = [];

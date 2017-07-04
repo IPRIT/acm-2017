@@ -433,6 +433,16 @@ angular.module('Qemy.services.admin', [
       });
     }
 
+    function yandexOfficialImportByContestId(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/yandex-official-import-by-id',
+        data: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
     return {
       searchGroups: searchGroups,
       searchProblems: searchProblems,
@@ -476,7 +486,8 @@ angular.module('Qemy.services.admin', [
       deleteUserFromContest: deleteUserFromContest,
       computeRatings: computeRatings,
       scanProblems: scanProblems,
-      yandexImportByContestId: yandexImportByContestId
+      yandexImportByContestId: yandexImportByContestId,
+      yandexOfficialImportByContestId: yandexOfficialImportByContestId
     }
   }])
 ;

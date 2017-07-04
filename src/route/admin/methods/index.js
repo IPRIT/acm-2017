@@ -38,3 +38,4 @@ export * from './rescanProblem';
 export * from './rollbackProblem';
 export * from './yandexPolygonImport';
 export * from './yandexImportById';
+export * from './yandexOfficialImportById';
