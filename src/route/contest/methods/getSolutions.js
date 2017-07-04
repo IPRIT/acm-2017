@@ -91,8 +91,10 @@ export async function getSolutions(params) {
     required: true,
     attributes: { exclude: [ 'password' ] }
   };
-  
-  if (solutionsType === 'my') {
+
+  // added !user.isAdmin to ensure that user will get
+  // only own solutions
+  if (solutionsType === 'my' || !user.isAdmin) {
     deap.extend(where, { userId: user.id });
   }
   if (!user.isAdmin) {

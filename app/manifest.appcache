@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 86
+# 87
 
 CACHE:
 
@@ -38,6 +38,17 @@ CACHE:
 /partials/admin/groups/create.html
 /partials/admin/groups/edit.html
 /partials/admin/admin-problem-dialog.html
+/partials/admin/problems/edit-section/add-file.html
+/partials/admin/problems/edit-section/files.html
+/partials/admin/problems/edit-section/text.html
+/partials/admin/problems/edit-section/view-result.html
+/partials/admin/problems/scan/index.html
+/partials/admin/problems/yandex/import-by-link.html
+/partials/admin/problems/yandex/import-polygon.html
+/partials/admin/problems/yandex/selected-file.html
+/partials/admin/problems/create.html
+/partials/admin/problems/edit-item.html
+/partials/admin/problems/index.html
 /partials/index/index.html
 /partials/header/index.html
 /partials/page/wrapper.html
@@ -85,13 +96,13 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
 /js/locales/ru-ru.json
-/prod/js/build.min.js?0.10.0
+/prod/js/build.min.js?1.0.0
 
 # CSS
 http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
-/prod/css/style.css?0.10.0
+/prod/css/style.css?1.0.0
 
 # Images
 /img/acm-logo.svg

@@ -25,8 +25,9 @@ export const YANDEX_CONTEST_RUN_REPORT = '/contest/:contestNumber/run-report/:so
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 15 * 1000;
 const serviceUnavailableVerdictId = 13;
+const solutionWithWarningVerdictId = 18;
 const verdictCheckTimeoutMs = 100;
-const maxAccountWaitingMs = 60 * 1000;
+const maxAccountWaitingMs = 2 * 60 * 1000;
 
 export async function handle(solution) {
   let systemAccount = await yandex.getFreeAccount();
@@ -34,7 +35,6 @@ export async function handle(solution) {
 
   try {
     let contextRow = await yandex.sendSolution(solution, systemAccount);
-    console.log('Context Row:', contextRow);
 
     let verdict;
     while (!verdict || !verdict.isTerminal) {
@@ -82,13 +82,24 @@ export async function $getPage(endpoint, systemAccount) {
 }
 
 async function handleError(error, solution, systemAccount) {
-  console.log(error);
-  console.log(`[System report] Refreshing Yandex account [${systemAccount.instance.systemLogin}]...`);
-  await yandex.login(systemAccount);
-  await Promise.resolve().delay(30 * 1000);
+  console.log('handleError:', error);
+  await models.Error.create({
+    errorTrace: error && (error.stack || error.message || error.description || '')
+  });
+  let isAuth = await yandex.isAuth(systemAccount);
+  if (!isAuth) {
+    console.log(`[System report] Refreshing Yandex account [${systemAccount.instance.systemLogin}]...`);
+    await yandex.login(systemAccount);
+  }
+  Promise.delay(10 * 1000).then(_ => systemAccount.free());
 
-  systemAccount.free();
-  solution.retriesNumber++;
+  let verdictId = getVerdictIdByError(error);
+  if ([ solutionWithWarningVerdictId ].includes( verdictId )) {
+    solution.retriesNumber = maxAttemptsNumber;
+  } else {
+    solution.retriesNumber++;
+  }
+
   if (solution.retriesNumber >= maxAttemptsNumber) {
     let verdict = await models.Verdict.findByPrimary(serviceUnavailableVerdictId);
     await solution.update({
@@ -131,6 +142,16 @@ async function handleError(error, solution, systemAccount) {
     sockets.emitVerdictUpdateEvent(socketData);
     sockets.emitUserSolutionsEvent(solution.userId, 'verdict updated', socketData.solution);
     sockets.emitAdminSolutionsEvent('verdict updated', socketData.solution);
+  }
+}
+
+function getVerdictIdByError(error) {
+  if (!error || !error.message) {
+    return serviceUnavailableVerdictId;
+  } else if (error.message.includes( 'Solution has warning' )) {
+    return solutionWithWarningVerdictId;
+  } else {
+    return serviceUnavailableVerdictId;
   }
 }
 

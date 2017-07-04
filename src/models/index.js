@@ -15,6 +15,7 @@ import Solution from './Solution';
 import SystemAccount from './SystemAccount';
 import RatingChange from './RatingChange';
 import ProblemVersionControl from './ProblemVersionControl';
+import Error from './Error';
 
 /*
 import {
@@ -149,7 +150,7 @@ export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
   Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
-  ProblemVersionControl
+  ProblemVersionControl, Error
 
   /*OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,

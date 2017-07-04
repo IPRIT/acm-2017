@@ -2,6 +2,8 @@ import * as utils from "../../utils/utils";
 import * as yandex from './index';
 import * as models from '../../models';
 
+const testingFailedVerdictName = 'не удалось протестировать';
+
 // [verdict name] -> [verdict id]
 const terminalStatesMapping = {
   'OK': 1,
@@ -13,7 +15,8 @@ const terminalStatesMapping = {
   'OL': 5,
   'TL': 6,
   'ML': 7,
-  'IL': 8
+  'IL': 8,
+  [testingFailedVerdictName]: 19
 };
 
 export async function getVerdict(solution, systemAccount, receivedRow) {

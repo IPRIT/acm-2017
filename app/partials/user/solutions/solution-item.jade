@@ -2,7 +2,7 @@ div.sent-list__item.animation(ng-repeat='solution in solutions track by solution
 ng-class='{"sent-list__success": solution.verdictId === 1, \
    "sent-list__failed": [2, 4, 5, 6, 7, 8, 9, 12].indexOf(solution.verdictId) !== -1, \
    "sent-list__failed_type_highlighted": solution.verdictId === 12, \
-   "sent-list__unknown": [3, 10, 11, 13, 14, 15, 16, 17].indexOf(solution.verdictId) !== -1}')
+   "sent-list__unknown": [3, 10, 11, 13, 14, 15, 16, 17, 18, 19].indexOf(solution.verdictId) !== -1}')
     div.sent-list__indicator(ng-if='solution.duplicatedFromId')
         md-tooltip Переотправленное решение №{{solution.duplicatedFromId}}
         span

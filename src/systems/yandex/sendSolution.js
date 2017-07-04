@@ -26,7 +26,7 @@ export async function sendSolution(solution, systemAccount) {
       internalSolutionIdentifier: `${systemAccount.instance.systemType}${contextRow.solutionId}`
     });
     return contextRow;
-  }).catch(err => console.log(err));
+  });
 }
 
 async function getYandexProblemId(solution, systemAccount) {
@@ -86,7 +86,7 @@ async function submitSolution(yandexProblemId, solutionForm, solution, systemAcc
     jar
   });
   if (!response.body || ![ 200, 302 ].includes(response.statusCode)) {
-    throw new Error('Solution didn\'t send');
+    throw new Error('Solution did not send');
   }
   const $ = cheerio.load( response.body );
   let rows = getSubmits($, parsedProblemIdentifier.symbolIndex);
@@ -114,7 +114,7 @@ export function getSubmitsEndpoint(solution) {
 export function getSubmits($page, parsedSymbolIndex) {
   let $warning = $page('.msg_type_warn');
   if ($warning.length) {
-    throw new Error('Same solution');
+    throw new Error(`Solution has warning. ${$warning.text()}`);
   }
   let submitRows = Array.from(
     $page('.table.table_role_submits').find('tr').slice(1)
