@@ -23,6 +23,7 @@ div.contest
                 span(ng-switch-when='sgu') SGU Online Judge
                 span(ng-switch-when='ejudge') ejudge
                 span(ng-switch-when='yandex') Яндекс.Контест
+                span(ng-switch-when='yandexOfficial') Яндекс.Контест (Official)
           div.contest__condition-send-button-wrap(layout, layout-align='center center')
             md-button.md-icon-button.md-primary(aria-label='Eat cake', ui-sref='contest.send-item({problemIndex: condition.internalSymbolIndex})')
               md-tooltip(md-direction="left") Отправить решение

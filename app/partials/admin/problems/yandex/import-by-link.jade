@@ -28,6 +28,9 @@ div.admin-content-layer
                     div(ng-message='number') Введите число
 
           div.contest-creation__row
+            md-checkbox.md-primary(ng-model='official', flex='1') Official
+
+          div.contest-creation__row
             md-button.md-raised.md-primary(style='margin-left: 0;', type='submit', ng-disabled='sent || !importForm.$valid')
               md-icon(style='margin-right: 8px;', md-svg-src='/img/icons/ic_backup_48px.svg')
               | Начать импорт
