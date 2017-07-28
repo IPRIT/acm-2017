@@ -1,8 +1,8 @@
-import { v1 as uuidv1 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export class Commit {
 
-  hash = uuidv1();
+  hash = uuidv4();
   createdAtMs = Date.now();
   realCreatedAtMs;
   value = {};
@@ -12,5 +12,16 @@ export class Commit {
   constructor(value, realCreatedAtMs = Date.now()) {
     this.value = value;
     this.realCreatedAtMs = realCreatedAtMs;
+  }
+
+  get({ plain = false }) {
+    if (plain) {
+      let objectClone = Object.assign({}, this);
+      // remove circular references
+      objectClone.child = objectClone.child ? objectClone.child.hash : null;
+      objectClone.parent = objectClone.parent ? objectClone.parent.hash : null;
+      return objectClone;
+    }
+    return this;
   }
 }

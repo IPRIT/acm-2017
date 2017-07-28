@@ -7,36 +7,43 @@ export class Repository {
   constructor() {
   }
 
-  getCommits() {
-    return this._commits;
+  getCommits(params = {}) {
+    return this._commits.map(commit => {
+      return commit.get( params );
+    });
+  }
+
+  getPlainCommits(commits) {
+    return (commits || this._commits).map(commit => {
+      return commit.get({ plain: true });
+    });
   }
 
   commit(object, realCommitTimeMs) {
     let commit = new Commit(object, realCommitTimeMs);
-    commit.parent = this.master;
-    if (this.masterIndex >= 0) {
-      this.master.child = commit;
+    commit.parent = this.head;
+    if (this.headIndex >= 0) {
+      this.head.child = commit;
     }
     this._commits.push( commit );
     return commit;
   }
 
   rollback() {
-    let masterIndex = this.masterIndex;
-    if (masterIndex >= 0) {
+    if (this.headIndex >= 0) {
       let deletingCommit = this._commits.pop();
-      this.master.child = null;
+      this.head.child = null;
       deletingCommit.parent = null;
     }
     return this;
   }
 
   revertTo(commitOrHash) {
-    let futureMasterIndex = this._searchIndexByCommit(commitOrHash);
-    if (futureMasterIndex >= 0
-      && futureMasterIndex < this.masterIndex) {
-      this._commits.splice(futureMasterIndex + 1);
-      this.master.child = null;
+    let futureHeadIndex = this._searchIndexByCommit(commitOrHash);
+    if (futureHeadIndex >= 0
+      && futureHeadIndex < this.headIndex) {
+      this._commits.splice(futureHeadIndex + 1);
+      this.head.child = null;
     }
     return this;
   }
@@ -64,14 +71,6 @@ export class Repository {
     });
   }
 
-  _lowerBoundByRealTimeMs(timeMs) {
-
-  }
-
-  _upperBoundByRealTimeMs(timeMs) {
-
-  }
-
   _resolveCommitHash(commitOrHash) {
     let hash = commitOrHash;
     if (typeof commitOrHash === 'object') {
@@ -80,15 +79,15 @@ export class Repository {
     return hash;
   }
 
-  get masterIndex() {
+  get headIndex() {
     return this._commits.length - 1;
   }
 
-  get master() {
+  get head() {
     if (!this._commits.length) {
       return null;
     }
-    return this._commits[ this._commits.length - 1 ];
+    return this._commits[ this.headIndex ];
   }
 
   reset() {
