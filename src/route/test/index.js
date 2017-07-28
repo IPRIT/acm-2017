@@ -1,25 +1,21 @@
 import express from 'express';
+import { Cell } from "../../services/table/cell";
+import { extractAllParams } from "../../utils/utils";
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  var options = {
-    root: __dirname,
-    dotfiles: 'deny',
-    headers: {
-      'x-timestamp': Date.now(),
-      'x-sent': true
-    }
-  };
-  let fileName = 'index.html';
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.error(err);
-      return res.status(err.status).end();
-    } else {
-      console.log('Sent:', fileName);
-    }
-  });
+router.get('/', (req, res, next) => {
+  return _test(
+    extractAllParams(req)
+  ).then(result => {
+    res.json(result);
+  }).catch(next);
 });
+
+async function _test(params) {
+  let cell = new Cell();
+  cell.dispose();
+  return cell;
+}
 
 export default router;
