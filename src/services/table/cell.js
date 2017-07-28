@@ -7,6 +7,7 @@ export class Cell extends Disposable {
   isAccepted = false;
   acceptedCommit;
   wrongAttempts = 0;
+  contestStartsAtMs;
 
   /* possible commit value and his properties:
   * 1. sentAtMs
@@ -38,5 +39,14 @@ export class Cell extends Disposable {
     // 1. remove from commit list
     // 2. if accepted commit then find new accepted commit and set it as accepted
     // 3. if wrong attempt then decrease the number of wrong attempts
+  }
+
+  get penalty() {
+    if (!this.isAccepted) {
+      return 0;
+    }
+    const PENALTY_MINUTES_NUMBER = 20;
+    return Math.floor((this.acceptedCommit.value.sentAtMs - this.contestStartsAtMs) / (60 * 1000))
+      + PENALTY_MINUTES_NUMBER * this.wrongAttempts;
   }
 }
