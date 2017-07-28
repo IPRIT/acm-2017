@@ -9,6 +9,9 @@ export class Cell extends Disposable {
   wrongAttempts = 0;
   contestStartsAtMs;
 
+  userId;
+  problemId;
+
   /* possible commit value and his properties:
   * 1. sentAtMs
   * 2. solutionId
@@ -16,8 +19,10 @@ export class Cell extends Disposable {
   * */
 
 
-  constructor() {
+  constructor(userId, problemId) {
     super();
+    this.userId = userId;
+    this.problemId = problemId;
   }
 
   addWrongAttempt(object) {
@@ -48,5 +53,13 @@ export class Cell extends Disposable {
     const PENALTY_MINUTES_NUMBER = 20;
     return Math.floor((this.acceptedCommit.value.sentAtMs - this.contestStartsAtMs) / (60 * 1000))
       + PENALTY_MINUTES_NUMBER * this.wrongAttempts;
+  }
+
+  useListOfSolutions(solutions) {
+
+  }
+
+  clear() {
+
   }
 }
