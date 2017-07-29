@@ -1,4 +1,5 @@
 import express from 'express';
+import * as models from '../../models';
 import { Cell } from "../../services/table/cell";
 import { extractAllParams } from "../../utils/utils";
 
@@ -13,26 +14,37 @@ router.get('/', (req, res, next) => {
 });
 
 async function _test(params) {
-  let b = 1;
-  let cell = new Cell();
-  //cell.repository.commit({ a: b++ }, 10000);
-  //cell.repository.commit({ a: b++ }, 20000);
-  //cell.repository.commit({ a: b++ }, 30000);
-  /*cell.repository.commit({ a: b++ }, 50000);
-  cell.repository.commit({ a: b++ }, 60000);
-  cell.repository.commit({ a: b++ }, 70000);
-  cell.repository.commit({ a: b++ }, 80000);
-  cell.repository.commit({ a: b++ }, 80002);
-  cell.repository.commit({ a: b++ }, 81000);
-  cell.repository.commit({ a: b++ }, 90000);
-  cell.repository.commit({ a: b++ }, 100000);
-  cell.repository.commit({ a: b++ }, 110000);*/
+  let userId = 17,
+    problemId = 2532,
+    contestId = 118;
 
-  /* actions */
-  //let commits1 = cell.repository.getPlainCommits();
-  //cell.repository.ejectCommitByRealTimeMs( cell.repository.getCommits()[2].realCreatedAtMs );
-  //let commits2 = cell.repository.getPlainCommits();
-  //return { commits1, commits2 };
+  let cell = new Cell(userId, problemId, 'E');
+
+  let solutions = await models.Solution.findAll({
+    where: {
+      contestId,
+      problemId,
+      userId,
+      verdictId: {
+        $ne: null
+      }
+    },
+    include: [ models.Verdict ]
+  });
+
+  let contest = await models.Contest.findByPrimary(contestId);
+
+  cell.setContest( contest );
+
+  for (let solution of solutions) {
+    if (solution.Verdict.scored || solution.Verdict.id === 1) {
+      cell.addSolution( solution );
+    }
+  }
+
+  return cell.getDisplayCellValue(
+    cell.repository.getCommits()[0].realCreatedAtMs - 1
+  );
 }
 
 export default router;

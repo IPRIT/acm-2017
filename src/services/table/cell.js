@@ -50,8 +50,8 @@ export class Cell extends Disposable {
         this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
         this.isForceUpdateNeeded = true;
       } else {
-        this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
         this._decreaseWrongAttemptsNextTo(commit);
+        this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
       }
     }
     return this;
