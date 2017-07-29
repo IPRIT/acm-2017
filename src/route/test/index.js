@@ -15,10 +15,10 @@ router.get('/', (req, res, next) => {
 async function _test(params) {
   let b = 1;
   let cell = new Cell();
-  cell.repository.commit({ a: b++ }, 10000);
-  cell.repository.commit({ a: b++ }, 20000);
-  cell.repository.commit({ a: b++ }, 30000);
-  cell.repository.commit({ a: b++ }, 50000);
+  //cell.repository.commit({ a: b++ }, 10000);
+  //cell.repository.commit({ a: b++ }, 20000);
+  //cell.repository.commit({ a: b++ }, 30000);
+  /*cell.repository.commit({ a: b++ }, 50000);
   cell.repository.commit({ a: b++ }, 60000);
   cell.repository.commit({ a: b++ }, 70000);
   cell.repository.commit({ a: b++ }, 80000);
@@ -26,13 +26,13 @@ async function _test(params) {
   cell.repository.commit({ a: b++ }, 81000);
   cell.repository.commit({ a: b++ }, 90000);
   cell.repository.commit({ a: b++ }, 100000);
-  cell.repository.commit({ a: b++ }, 110000);
+  cell.repository.commit({ a: b++ }, 110000);*/
 
   /* actions */
-
-  return cell.repository.getPlainCommits(
-    cell.repository.getCommitsBeforeTimeMs(89999)
-  )
+  //let commits1 = cell.repository.getPlainCommits();
+  //cell.repository.ejectCommitByRealTimeMs( cell.repository.getCommits()[2].realCreatedAtMs );
+  //let commits2 = cell.repository.getPlainCommits();
+  //return { commits1, commits2 };
 }
 
 export default router;

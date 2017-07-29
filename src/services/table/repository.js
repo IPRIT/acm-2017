@@ -1,6 +1,6 @@
 import { Commit } from "./commit";
 
-export class Repository {
+export class RepositoryBranch {
 
   _commits = [];
 
@@ -48,6 +48,14 @@ export class Repository {
     return this;
   }
 
+  ejectCommit(commitOrHash) {
+    let commitIndex = this._searchIndexByCommit(commitOrHash);
+    if (commitIndex < 0) {
+      return null;
+    }
+    return this._ejectCommitByIndex( commitIndex );
+  }
+
   getCommitsAfterCommit(commitOrHash) {
     let searchIndex = this._searchIndexByCommit(commitOrHash);
     if (searchIndex < 0) {
@@ -62,6 +70,39 @@ export class Repository {
       return [];
     }
     return this._commits.slice( 0, searchIndex + 1 );
+  }
+
+  /**
+   * @param {Commit} commit
+   */
+  isHeadCommit(commit) {
+    return commit && this._commits.length > 0
+      && commit.hash === this.head.hash;
+  }
+
+  _ejectCommitByIndex(commitIndex) {
+    if (commitIndex < 0) {
+      return null;
+    }
+    let ejectingCommit = this._commits[ commitIndex ];
+    this._disconnectCommit(ejectingCommit);
+    this._commits.splice( commitIndex, 1 );
+    return ejectingCommit;
+  }
+
+  _disconnectCommit(commit) {
+    if (commit.parent) {
+      if (commit.child) {
+        commit.parent.child = commit.child;
+        commit.child.parent = commit.parent;
+      } else {
+        commit.parent.child = null;
+      }
+    } else if (commit.child) {
+      commit.child.parent = null;
+    }
+    commit.child = null;
+    commit.parent = null;
   }
 
   _searchIndexByCommit(commitOrHash) {
