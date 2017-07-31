@@ -2,8 +2,21 @@ import Disposable from "./disposable";
 import { CellRepositoryBranch } from "./cell-repository";
 import { ContestValue } from "./contest-value";
 import { CellCommitValue } from "./cell-commit-value";
+import EventEmitter from 'events';
 
-export class Cell extends Disposable {
+class AbstractCell extends EventEmitter {
+
+  constructor() {
+    super();
+  }
+
+  dispose() {
+    let disposable = new Disposable();
+    disposable._deleteObject( this );
+  }
+}
+
+export class Cell extends AbstractCell {
 
   repository = new CellRepositoryBranch();
   contestValue;
@@ -29,29 +42,35 @@ export class Cell extends Disposable {
   }
 
   setContest(contest) {
-    this.contestValue = new ContestValue(contest);
+    if (contest instanceof ContestValue) {
+      this.contestValue = contest;
+    } else {
+      this.contestValue = new ContestValue(contest);
+    }
   }
 
-  addSolution(solution) {
+  addSolution(solution, isInitAction = false) {
     if (!this.isCellAccepted) {
       if (solution.verdictId === 1) {
-        this._accept(solution);
+        this._accept(solution, isInitAction);
       } else {
-        this._addWrongAttempt(solution);
+        this._addWrongAttempt(solution, isInitAction);
       }
     }
     return this;
   }
 
-  removeAttempt(solutionId) {
+  removeSolution(solutionId) {
     let commit = this._findCommitBySolutionId( solutionId );
     if (commit) {
       if (commit.value.isAccepted) {
         this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
         this.isForceUpdateNeeded = true;
+        this.emit('cell.forceUpdateNeeded', this);
       } else {
         this._decreaseWrongAttemptsNextTo(commit);
-        this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
+        let commit = this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
+        this.emit('cell.solutionRemoved', this, commit);
       }
     }
     return this;
@@ -62,7 +81,7 @@ export class Cell extends Disposable {
     if (!commitValue) {
       return {
         result: '—',
-        problemSymbol: this.problemSymbol,
+        problemSymbol: this.problemSymbol.toUpperCase(),
         cellFrozen: this.repository.getCommits().length > 0
       }
     }
@@ -71,15 +90,15 @@ export class Cell extends Disposable {
       return {
         result: commitValue.wrongAttempts > 0
           ? '+' + commitValue.wrongAttempts : '+',
-        problemSymbol: this.problemSymbol,
+        problemSymbol: this.problemSymbol.toUpperCase(),
         acceptedAt: this._getAcceptTime(commitValue),
         inPractice
       }
     } else {
       return {
         result: commitValue.wrongAttempts > 0
-          ? '—' + commitValue.wrongAttempts : '—',
-        problemSymbol: this.problemSymbol,
+          ? '-' + commitValue.wrongAttempts : '—',
+        problemSymbol: this.problemSymbol.toUpperCase(),
         cellFrozen: !this.isHeadValue( commitValue )
       }
     }
@@ -114,17 +133,23 @@ export class Cell extends Disposable {
     }
   }
 
-  _addWrongAttempt(solution) {
+  _addWrongAttempt(solution, isInitAction = false) {
     let { wrongAttempts = 0 } = this.currentValue || {};
     let commitValue = new CellCommitValue(solution.id, false, wrongAttempts + 1, solution.sentAtMs);
     this.repository.commit( commitValue );
+    if (!isInitAction) {
+      this.emit('cell.newWrongAttempt', this, commitValue);
+    }
     return this;
   }
 
-  _accept(solution) {
+  _accept(solution, isInitAction = false) {
     let { wrongAttempts = 0 } = this.currentValue || {};
     let commitValue = new CellCommitValue(solution.id, true, wrongAttempts, solution.sentAtMs);
     this.repository.commit( commitValue );
+    if (!isInitAction) {
+      this.emit('cell.accepted', this, solution);
+    }
     return this;
   }
 
@@ -170,6 +195,13 @@ export class Cell extends Disposable {
       .replace(/(mm)/gi, zeroFill(minutes));
   }
 
+  _removeAllEventListeners() {
+    this.removeAllListeners('cell.accepted');
+    this.removeAllListeners('cell.newWrongAttempt');
+    this.removeAllListeners('cell.forceUpdateNeeded');
+    this.removeAllListeners('cell.solutionRemoved');
+  }
+
   get penalty() {
     return this._computePenaltyByCommitValue( this.currentValue );
   }
@@ -188,5 +220,10 @@ export class Cell extends Disposable {
   get isCellAccepted() {
     return this.currentValue
       ? this.currentValue.isAccepted : false;
+  }
+
+  dispose() {
+    this._removeAllEventListeners();
+    super.dispose();
   }
 }

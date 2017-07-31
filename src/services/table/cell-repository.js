@@ -50,7 +50,6 @@ export class CellRepositoryBranch extends RepositoryBranch {
     return lowerIndex;
   }
 
-
   _lowerBoundByRealTimeMs(array, timeMs) {
     let [ lowerIndex ] = this._binarySearchIndexes(array, timeMs);
     return lowerIndex;

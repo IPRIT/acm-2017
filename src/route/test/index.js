@@ -1,7 +1,11 @@
 import express from 'express';
 import * as models from '../../models';
+import * as contestMethods from '../../route/contest/methods';
 import { Cell } from "../../services/table/cell";
 import { extractAllParams } from "../../utils/utils";
+import { ContestValue } from "../../services/table/contest-value";
+import { Row } from "../../services/table/row";
+import { ContestTable } from "../../services/table/table";
 
 const router = express.Router();
 
@@ -14,17 +18,11 @@ router.get('/', (req, res, next) => {
 });
 
 async function _test(params) {
-  let userId = 17,
-    problemId = 2532,
-    contestId = 118;
-
-  let cell = new Cell(userId, problemId, 'E');
+  let { contestId, userId } = params;
 
   let solutions = await models.Solution.findAll({
     where: {
       contestId,
-      problemId,
-      userId,
       verdictId: {
         $ne: null
       }
@@ -32,19 +30,26 @@ async function _test(params) {
     include: [ models.Verdict ]
   });
 
+  solutions = solutions.map(solution => solution.get({ plain: true }));
+
+  let filteredSolutions = solutions.filter(solution => {
+    return solution.Verdict.scored && solution.Verdict.id !== 1;
+  });
+
+  let acceptedSolutions = solutions.filter(solution => {
+    return solution.Verdict.id === 1;
+  });
+
   let contest = await models.Contest.findByPrimary(contestId);
+  let contestProblems = await contestMethods.getProblems({ contest, userId });
+  let contestParticipants = await contest.getContestants().map(user => user.get({ plain: true }));
+  let viewAs = await models.User.findByPrimary(userId).then(user => user.get({plain: true}));
 
-  cell.setContest( contest );
+  let table = new ContestTable(contest, contestProblems, contestParticipants, filteredSolutions);
 
-  for (let solution of solutions) {
-    if (solution.Verdict.scored || solution.Verdict.id === 1) {
-      cell.addSolution( solution );
-    }
-  }
+  acceptedSolutions.forEach(solution => table.addSolution(solution, false));
 
-  return cell.getDisplayCellValue(
-    cell.repository.getCommits()[0].realCreatedAtMs - 1
-  );
+  return table.render(viewAs, params);
 }
 
 export default router;
