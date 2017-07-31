@@ -41,6 +41,8 @@ export class ContestTable extends AbstractTable {
       offset: 0
     };
     deap.merge(params, defaultParams);
+    params.count = Math.max(0, Math.min(200, Number(params.count)));
+    params.offset = Math.max(0, Number(params.offset));
     return {
       /*header: this._problems.map((problem, index) => {
         return {
@@ -149,6 +151,7 @@ export class ContestTable extends AbstractTable {
   _assembleRanksAndGroups(rows) {
     let currentPlaceCounter = 1, buffer = 0, currentGroupCounter = 1;
     for (let i = 0; i < rows.length; ++i) {
+      rows[i].globalIndex = i;
       if (!i) {
         rows[i].rank = currentPlaceCounter;
         rows[i].groupNumber = currentGroupCounter;

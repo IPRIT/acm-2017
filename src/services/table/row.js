@@ -22,6 +22,7 @@ export class Row extends AbstractRow {
 
   rank;
   groupNumber;
+  globalIndex;
 
   _cells = [];
 
@@ -45,6 +46,7 @@ export class Row extends AbstractRow {
   getDisplayRowValue(viewAs, timeMs = Infinity) {
     return {
       groupNumber: this.groupNumber,
+      globalIndex: this.globalIndex,
       rank: this.rank,
       penalty: this.getPenalty( viewAs, timeMs ),
       acceptedSolutions: this.getAcceptedSolutions( viewAs, timeMs ),

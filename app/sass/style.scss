@@ -112,7 +112,7 @@ html {
   padding: 21px;
   cursor: pointer;
   border-radius: 4px;
-  color: #219CF5;
+  color: #00acec;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -2881,6 +2881,7 @@ md-sidenav {
       height: 2px;
       position: absolute;
       width: 30px;
+      left: 13px;
       top: 4px;
       background-color: #00acec;
     }
@@ -2891,7 +2892,7 @@ md-sidenav {
       position: absolute;
       width: 30px;
       top: 4px;
-      left: -30px;
+      left: -33px;
       background-color: #00acec;
     }
 
