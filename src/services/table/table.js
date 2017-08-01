@@ -1,9 +1,10 @@
 import Disposable from "./disposable";
 import { ContestValue } from "./contest-value";
 import { Row } from "./row";
-import { getSymbolIndex } from "../../utils/utils";
+import * as utils from "../../utils/utils";
 import deap from "deap";
 import EventEmitter from 'events';
+import { v4 as uuidv4 } from 'uuid';
 
 const TABLE_PAGE_SIZE = 20;
 
@@ -22,49 +23,46 @@ class AbstractTable extends EventEmitter {
 export class ContestTable extends AbstractTable {
 
   contestValue;
-  hash;
 
+  _hashMap = new Map();
   _problems = [];
   _rows = [];
 
   constructor(contest, problems, users, solutions) {
     super();
     this.contestValue = new ContestValue(contest);
-    this.setProblems(problems);
+    this.setProblems(problems, true);
     this.initializeRows(users);
     this.initializeWithSolutions(solutions);
+
+    this._updateAllUsersHashes();
   }
 
   render(viewAs, params = {}) {
-    let defaultParams = {
-      count: TABLE_PAGE_SIZE,
-      offset: 0
-    };
-    deap.merge(params, defaultParams);
-    params.count = Math.max(0, Math.min(200, Number(params.count)));
-    params.offset = Math.max(0, Number(params.offset));
+    this._mergeDefaultParams( params );
+    let isPastQuery = this._getTableHash( viewAs ).createdAtMs > params.showInTimeMs;
     return {
-      /*header: this._problems.map((problem, index) => {
-        return {
-          problemIndex: getSymbolIndex( index ).toUpperCase(),
-          name: problem.title
-        }
-      }),*/
-      rows: this._getOrderedRows(viewAs, params)
-    }
+      header: this._getTableHeader(),
+      rows: this._getOrderedRows(viewAs, params, isPastQuery),
+      actualTableHash: this._getTableHash( viewAs ),
+      isPastQuery
+    };
   }
 
-  setProblems(problems) {
+  setProblems(problems, isInitAction = false) {
     this._problems = problems;
     for (let row of this._rows) {
       row.resetProblems(problems);
+    }
+    if (!isInitAction) {
+      this._updateAllUsersHashes();
     }
   }
 
   initializeRows(users) {
     users
-      .sort((a, b) => b.UserContestEnter.joinTimeMs - a.UserContestEnter.joinTimeMs)
-      .forEach(user => this.addRow(user));
+      .sort((a, b) => a.UserContestEnter.joinTimeMs - b.UserContestEnter.joinTimeMs)
+      .forEach(user => this.addRow(user, true));
   }
 
   initializeWithSolutions(solutions = []) {
@@ -72,9 +70,14 @@ export class ContestTable extends AbstractTable {
     this._initializeTableSort();
   }
 
-  addRow(user) {
+  addRow(user, isInitAction = false) {
     let row = new Row(user, this._problems, this.contestValue);
     this._rows.push( row );
+    if (!isInitAction) {
+      row.isAdminRow
+        ? this._updateHashForAdminUsers() : this._updateHashForRegularUsers();
+    }
+    return row;
   }
 
   addSolution(solution, isInitAction = false) {
@@ -84,6 +87,23 @@ export class ContestTable extends AbstractTable {
     if (!isInitAction) {
       this._rearrangeRow(row);
     }
+  }
+
+  _initializeTableSort() {
+    this._orderEntireTable(this._rows, this._mockAdminUser);
+    this._assembleRanksAndGroups(this._rows);
+  }
+
+  _mergeDefaultParams(params) {
+    let defaultParams = {
+      count: TABLE_PAGE_SIZE,
+      offset: 0,
+      showInTimeMs: Date.now()
+    };
+    deap.merge(params, defaultParams);
+    params.count = Math.max(0, Math.min(200, utils.ensureNumber(params.count)));
+    params.offset = Math.max(0, utils.ensureNumber(params.offset));
+    params.showInTimeMs = Math.max(0, utils.ensureNumber(params.showInTimeMs));
   }
 
   _getRowByUserId(userId) {
@@ -96,28 +116,37 @@ export class ContestTable extends AbstractTable {
     });
   }
 
-  _getOrderedRows(viewAs, { count, offset }) {
-    if (this.contestValue.isContestFrozen) {
-      let rows = this._orderEntireTable(this._rows.slice(0), viewAs).filter(row => {
-        return row.canView(viewAs);
-      }).map(row => {
-        return row.getDisplayRowValue(viewAs, this.currentContestTimeForUsersMs);
-      });
-      return this._assembleRanksAndGroups(rows).slice(offset, offset + count);
+  _getTableHeader() {
+    return this._problems.map((problem, index) => {
+      return {
+        problemIndex: utils.getSymbolIndex( index ).toUpperCase(),
+        name: problem.title
+      }
+    });
+  }
+
+  _getOrderedRows(viewAs, { count, offset, showInTimeMs }, isPastQuery = false) {
+    let sourceRows = [];
+    if (isPastQuery || this.contestValue.isContestFrozen) {
+      sourceRows = this._orderEntireTable(this._rows.slice(0), viewAs, showInTimeMs);
+    } else {
+      sourceRows = this._rows;
     }
     return this._assembleRanksAndGroups(
-      this._rows.filter(row => row.canView(viewAs)).map(row => {
-        return row.getDisplayRowValue(viewAs, this.currentContestTimeForUsersMs);
+      sourceRows.filter(row => row.canView(viewAs)).map(row => {
+        return row.getDisplayRowValue(viewAs, showInTimeMs);
       })
     ).slice(offset, offset + count);
   }
 
-  _orderEntireTable(rows, viewAs, timeMs = this.currentContestTimeForUsersMs) {
+  _orderEntireTable(rows, viewAs, timeMs = Date.now()) {
     let rowsMap = new Map();
     for (let row of rows) {
+      let changedTimeMs = this.contestValue.isFrozenIn( timeMs ) && !row.canViewFully( viewAs )
+        ? this.contestValue.absoluteFreezeTimeMs : timeMs;
       rowsMap.set(row.user.id, {
-        acceptedSolutions: row.getAcceptedSolutions(viewAs, timeMs),
-        penalty: row.getPenalty(viewAs, timeMs)
+        acceptedSolutions: row.getAcceptedSolutions(changedTimeMs),
+        penalty: row.getPenalty(changedTimeMs)
       });
     }
     return rows.sort((y, x) => {
@@ -130,22 +159,20 @@ export class ContestTable extends AbstractTable {
         rowsMap.get( y.user.id ).penalty
       ];
       if (xAcceptedSolutions === yAcceptedSolutions) {
-        return xPenalty === yPenalty ? 0 : (
+        let [ xJoinedTime, yJoinedTime ] = [
+          x.user.UserContestEnter.joinTimeMs,
+          y.user.UserContestEnter.joinTimeMs
+        ];
+        return xPenalty === yPenalty ? (
+          xJoinedTime === yJoinedTime ? 0 : (
+            (xJoinedTime > yJoinedTime) ? -1 : 1
+          )
+        ) : (
           (xPenalty > yPenalty) ? -1 : 1
         );
       }
       return xAcceptedSolutions < yAcceptedSolutions ? -1 : 1;
     });
-  }
-
-  _initializeTableSort() {
-    // mock object just for table rendering when init
-    let adminUser = {
-      id: 1,
-      isAdmin: true
-    };
-    this._orderEntireTable(this._rows, adminUser, this.currentContestTimeForUsersMs);
-    this._assembleRanksAndGroups(this._rows);
   }
 
   _assembleRanksAndGroups(rows) {
@@ -182,11 +209,15 @@ export class ContestTable extends AbstractTable {
   _rearrangeRow(row) {
     let oldIndex = this._rows.findIndex(_row => _row.user.id === row.user.id);
     let futureIndex = this._findFutureIndex(row);
-    console.log('Ranks:', oldIndex, futureIndex);
     if (oldIndex !== futureIndex) {
       let deletedRows = this._rows.splice(oldIndex, 1);
       let shiftValue = Number(oldIndex < futureIndex);
       this._rows.splice(futureIndex - shiftValue, 0, ...deletedRows);
+      if (row.isAdminRow) {
+        this._updateHashForAdminUsers();
+      } else {
+        this._updateHashForRegularUsers();
+      }
     }
   }
 
@@ -255,9 +286,64 @@ export class ContestTable extends AbstractTable {
     return [ left, right ];
   }
 
-  get currentContestTimeForUsersMs() {
-    return this.contestValue.isContestFrozen
-      ? this.contestValue.absoluteFreezeTimeMs : Date.now();
+  _computeRandomHash() {
+    return utils.passwordHash( uuidv4() );
+  }
+
+  _updateHashForRegularUsers() {
+    this._hashMap.set('user', {
+      hash: this._computeRandomHash(),
+      createdAtMs: Date.now()
+    });
+    this._updateHashForAdminUsers();
+  }
+
+  _updateHashForAdminUsers() {
+    this._hashMap.set('admin', {
+      hash: this._computeRandomHash(),
+      createdAtMs: Date.now()
+    });
+  }
+
+  _updateAllUsersHashes() {
+    this._updateHashForRegularUsers();
+  }
+
+  _getTableHash(viewAs) {
+    return viewAs.isAdmin
+      ? this.adminUsersHash : this.regularUsersHash;
+  }
+
+  get regularUsersHash() {
+    return this._hashMap.get( 'user' );
+  }
+
+  get adminUsersHash() {
+    return this._hashMap.get( 'admin' );
+  }
+
+  /**
+   * mock admin user just for table rendering when init
+   * @return {{id: number, isAdmin: boolean}}
+   * @private
+   */
+  get _mockAdminUser() {
+    return {
+      id: 1,
+      isAdmin: true
+    };
+  }
+
+  /**
+   * mock regular user
+   * @return {{id: number, isAdmin: boolean}}
+   * @private
+   */
+  get _mockRegularUser() {
+    return {
+      id: 1e9,
+      isAdmin: false
+    };
   }
 
   dispose() {

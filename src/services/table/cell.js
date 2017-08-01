@@ -76,23 +76,25 @@ export class Cell extends AbstractCell {
     return this;
   }
 
-  getDisplayCellValue(timeMs = Infinity) {
+  getDisplayCellValue(viewAs, timeMs = Date.now()) {
+    let canViewFully = viewAs.id === this.userId || viewAs.isAdmin;
     let commitValue = this.getCellValue( timeMs );
     if (!commitValue) {
       return {
         result: '—',
         problemSymbol: this.problemSymbol.toUpperCase(),
         cellFrozen: this.repository.getCommits().length > 0
+          && this.contestValue.isFrozenIn( timeMs )
+          && !canViewFully
       }
     }
-    let inPractice = commitValue.sentAtMs > this.contestValue.absoluteDurationTimeMs;
     if (commitValue.isAccepted) {
       return {
         result: commitValue.wrongAttempts > 0
           ? '+' + commitValue.wrongAttempts : '+',
         problemSymbol: this.problemSymbol.toUpperCase(),
         acceptedAt: this._getAcceptTime(commitValue),
-        inPractice
+        inPractice: this.contestValue.isPracticeIn( commitValue.sentAtMs )
       }
     } else {
       return {
@@ -100,11 +102,13 @@ export class Cell extends AbstractCell {
           ? '-' + commitValue.wrongAttempts : '—',
         problemSymbol: this.problemSymbol.toUpperCase(),
         cellFrozen: !this.isHeadValue( commitValue )
+          && this.contestValue.isFrozenIn( timeMs )
+          && !canViewFully
       }
     }
   }
 
-  getCellValue(timeMs = Infinity) {
+  getCellValue(timeMs = Date.now()) {
     let { value } = this.repository.getFirstCommitBeforeTimeMs( timeMs ) || { };
     return value;
   }
@@ -119,7 +123,7 @@ export class Cell extends AbstractCell {
     return commitValue.sentAtMs === this.currentValue.sentAtMs;
   }
 
-  computePenaltyBeforeTimeMs(timeMs = Infinity) {
+  computePenaltyBeforeTimeMs(timeMs = Date.now()) {
     let commit = this.repository.getFirstCommitBeforeTimeMs( timeMs );
     return commit
       ? this._computePenaltyByCommitValue(commit.value) : 0;

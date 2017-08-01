@@ -9,6 +9,8 @@ import { ContestTable } from "../../services/table/table";
 
 const router = express.Router();
 
+let table;
+
 router.get('/', (req, res, next) => {
   return _test(
     extractAllParams(req)
@@ -19,6 +21,11 @@ router.get('/', (req, res, next) => {
 
 async function _test(params) {
   let { contestId, userId } = params;
+  let viewAs = await models.User.findByPrimary(userId).then(user => user.get({ plain: true }));
+
+  if (table) {
+    return table.render(viewAs, params);
+  }
 
   let solutions = await models.Solution.findAll({
     where: {
@@ -43,11 +50,18 @@ async function _test(params) {
   let contest = await models.Contest.findByPrimary(contestId);
   let contestProblems = await contestMethods.getProblems({ contest, userId });
   let contestParticipants = await contest.getContestants().map(user => user.get({ plain: true }));
-  let viewAs = await models.User.findByPrimary(userId).then(user => user.get({plain: true}));
 
-  let table = new ContestTable(contest, contestProblems, contestParticipants, []);
+  table = new ContestTable(contest, contestProblems, contestParticipants, []);
 
-  filteredSolutions.forEach(solution => table.addSolution(solution, false));
+  //filteredSolutions.forEach(solution => table.addSolution(solution, false));
+
+  let index = 0;
+  let interval = setInterval(() => {
+    if (index >= filteredSolutions.length - 1) {
+      clearInterval(interval);
+    }
+    table.addSolution(filteredSolutions[ index++ ]);
+  }, 1);
 
   return table.render(viewAs, params);
 }

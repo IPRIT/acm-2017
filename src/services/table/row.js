@@ -43,25 +43,24 @@ export class Row extends AbstractRow {
    * @param {number} timeMs
    * @return {{groupNumber: number, rank: number, penalty: number, acceptedSolutions: number, acceptedSolutionsInTime: number, user: User, cells: Cell[]}}
    */
-  getDisplayRowValue(viewAs, timeMs = Infinity) {
+  getDisplayRowValue(viewAs, timeMs = Date.now()) {
+    let changedTimeMs = this.contestValue.isFrozenIn( timeMs ) && !this.canViewFully( viewAs )
+      ? this.contestValue.absoluteFreezeTimeMs : timeMs;
     return {
       groupNumber: this.groupNumber,
       globalIndex: this.globalIndex,
       rank: this.rank,
-      penalty: this.getPenalty( viewAs, timeMs ),
-      acceptedSolutions: this.getAcceptedSolutions( viewAs, timeMs ),
-      acceptedSolutionsInTime: this.getAcceptedSolutionsInTime( viewAs, timeMs ),
+      penalty: this.getPenalty( changedTimeMs ),
+      acceptedSolutions: this.getAcceptedSolutions( changedTimeMs ),
+      acceptedSolutionsInTime: this.getAcceptedSolutionsInTime( changedTimeMs ),
       user: this.user,
-      cells: this.getPlainCells( viewAs, timeMs )
+      cells: this.getPlainCells( viewAs, changedTimeMs )
     }
   }
 
-  getPlainCells(viewAs, timeMs) {
-    let viewFully = this.canViewFully(viewAs);
+  getPlainCells(viewAs, timeMs = Date.now()) {
     return this._cells.map(cell => {
-      return cell.getDisplayCellValue(
-        viewFully ? Infinity : timeMs
-      );
+      return cell.getDisplayCellValue( viewAs, timeMs );
     });
   }
 
@@ -135,30 +134,23 @@ export class Row extends AbstractRow {
     });
   }
 
-  getPenalty(viewAs, timeMs = Infinity) {
-    let viewFully = this.canViewFully(viewAs);
+  getPenalty(timeMs = Date.now()) {
     return this._cells.reduce((sum, cell) => {
-      return sum + cell.computePenaltyBeforeTimeMs(
-        viewFully ? Infinity : timeMs
-      );
+      return sum + cell.computePenaltyBeforeTimeMs( timeMs );
     }, 0);
   }
 
-  getAcceptedSolutions(viewAs, timeMs = Infinity) {
-    let viewFully = this.canViewFully(viewAs);
+  getAcceptedSolutions(timeMs = Date.now()) {
     return this._cells.reduce((sum, cell) => {
-      let cellValue = cell.getCellValue(
-        viewFully ? Infinity : timeMs
-      );
+      let cellValue = cell.getCellValue( timeMs );
       return sum + (cellValue ? Number(cellValue.isAccepted) : 0);
     }, 0);
   }
 
-  getAcceptedSolutionsInTime(viewAs, timeMs = this.contestValue.absoluteFreezeTimeMs) {
-    let viewFully = this.canViewFully(viewAs);
+  getAcceptedSolutionsInTime(timeMs = this.contestValue.absoluteDurationTimeMs) {
     return this._cells.reduce((sum, cell) => {
       let cellValue = cell.getCellValue(
-        viewFully ? this.contestValue.absoluteDurationTimeMs : timeMs
+        Math.min(this.contestValue.absoluteDurationTimeMs, timeMs)
       );
       return sum + (cellValue ? Number(cellValue.isAccepted) : 0);
     }, 0);
@@ -251,15 +243,15 @@ export class Row extends AbstractRow {
   }
 
   get penalty() {
-    return this.getPenalty( this.user );
+    return this.getPenalty();
   }
 
   get acceptedSolutions() {
-    return this.getAcceptedSolutions( this.user );
+    return this.getAcceptedSolutions();
   }
 
   get acceptedSolutionsInTime() {
-    return this.getAcceptedSolutionsInTime( this.user );
+    return this.getAcceptedSolutionsInTime();
   }
 
   get acceptedSolutionsInPracticeTime() {
