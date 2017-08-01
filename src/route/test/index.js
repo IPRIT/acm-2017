@@ -6,6 +6,8 @@ import { extractAllParams } from "../../utils/utils";
 import { ContestValue } from "../../services/table/contest-value";
 import { Row } from "../../services/table/row";
 import { ContestTable } from "../../services/table/table";
+import { TableManager } from "../../services/table/table-manager";
+import Promise from 'bluebird';
 
 const router = express.Router();
 
@@ -19,51 +21,18 @@ router.get('/', (req, res, next) => {
   }).catch(next);
 });
 
+/*let tableManager = new TableManager(6);
+tableManager.selfDestructSubject$.subscribe(tableDestroyed => {
+  console.log('Table table destroyed event:', tableDestroyed);
+});*/
+
+let tableManager = new TableManager(6);
+
 async function _test(params) {
-  let { contestId, userId } = params;
+  let { userId } = params;
   let viewAs = await models.User.findByPrimary(userId).then(user => user.get({ plain: true }));
 
-  if (table) {
-    return table.render(viewAs, params);
-  }
-
-  let solutions = await models.Solution.findAll({
-    where: {
-      contestId,
-      verdictId: {
-        $ne: null
-      }
-    },
-    include: [ models.Verdict ]
-  });
-
-  solutions = solutions.map(solution => solution.get({ plain: true }));
-
-  let filteredSolutions = solutions.filter(solution => {
-    return solution.Verdict.scored || solution.Verdict.id === 1;
-  });
-
-  let acceptedSolutions = solutions.filter(solution => {
-    return solution.Verdict.id === 1;
-  });
-
-  let contest = await models.Contest.findByPrimary(contestId);
-  let contestProblems = await contestMethods.getProblems({ contest, userId });
-  let contestParticipants = await contest.getContestants().map(user => user.get({ plain: true }));
-
-  table = new ContestTable(contest, contestProblems, contestParticipants, []);
-
-  //filteredSolutions.forEach(solution => table.addSolution(solution, false));
-
-  let index = 0;
-  let interval = setInterval(() => {
-    if (index >= filteredSolutions.length - 1) {
-      clearInterval(interval);
-    }
-    table.addSolution(filteredSolutions[ index++ ]);
-  }, 1);
-
-  return table.render(viewAs, params);
+  return tableManager.renderAs(viewAs, params);
 }
 
 export default router;

@@ -1,4 +1,5 @@
 import { RepositoryBranch } from "./repository";
+import * as utils from '../../utils';
 
 export class CellRepositoryBranch extends RepositoryBranch {
 
@@ -6,10 +7,18 @@ export class CellRepositoryBranch extends RepositoryBranch {
     super();
   }
 
+  /**
+   * @param {CellCommitValue} commitValue
+   * @return {Commit}
+   */
   commit(commitValue) {
     return super.commit(commitValue, commitValue.sentAtMs);
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {Commit[]}
+   */
   getCommitsAfterTimeMs(timeMs) {
     let commits = this.getCommits();
     return commits.slice(
@@ -17,11 +26,19 @@ export class CellRepositoryBranch extends RepositoryBranch {
     );
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {Commit}
+   */
   getFirstCommitAfterTimeMs(timeMs) {
     let commits = this.getCommits();
     return commits[ this._upperBoundByRealTimeMs(commits, timeMs) ];
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {Commit[]}
+   */
   getCommitsBeforeTimeMs(timeMs) {
     let commits = this.getCommits();
     return commits.slice(
@@ -29,19 +46,32 @@ export class CellRepositoryBranch extends RepositoryBranch {
     );
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {Commit}
+   */
   getFirstCommitBeforeTimeMs(timeMs) {
     let commits = this.getCommits();
     return commits[ this._lowerBoundByRealTimeMs(commits, timeMs) ];
   }
 
-  ejectCommitByRealTimeMs(realTimeMs) {
-    let commitIndex = this._searchIndexByRealTimeMs(realTimeMs);
+  /**
+   * @param {number} timeMs
+   * @return {Commit}
+   */
+  ejectCommitByRealTimeMs(timeMs) {
+    let commitIndex = this._searchIndexByRealTimeMs(timeMs);
     if (commitIndex < 0) {
       return null;
     }
     return this._ejectCommitByIndex( commitIndex );
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {number}
+   * @private
+   */
   _searchIndexByRealTimeMs(timeMs) {
     let [ lowerIndex, upperIndex ] = this._binarySearchIndexes(this._commits, timeMs);
     if (lowerIndex !== upperIndex) {
@@ -50,36 +80,35 @@ export class CellRepositoryBranch extends RepositoryBranch {
     return lowerIndex;
   }
 
+  /**
+   * @param {*[]} array
+   * @param {number} timeMs
+   * @return {number}
+   * @private
+   */
   _lowerBoundByRealTimeMs(array, timeMs) {
     let [ lowerIndex ] = this._binarySearchIndexes(array, timeMs);
     return lowerIndex;
   }
 
+  /**
+   * @param {*[]} array
+   * @param {number} timeMs
+   * @return {number}
+   * @private
+   */
   _upperBoundByRealTimeMs(array, timeMs) {
     let [ , upperIndex ] = this._binarySearchIndexes(array, timeMs);
     return upperIndex;
   }
 
+  /**
+   * @param {*[]} array
+   * @param {number} value
+   * @return {[number, number]}
+   * @private
+   */
   _binarySearchIndexes(array, value) {
-    let [ left, right ] = [ 0, array.length - 1 ];
-    if (!array.length || value < array[ left ].realCreatedAtMs) {
-      return [ -1, 0 ];
-    } else if (value > array[ right ].realCreatedAtMs) {
-      return [ right, right + 1 ];
-    }
-    while (right - left > 1) {
-      let mid = left + Math.floor( ( right - left ) / 2 );
-      if (value <= array[ mid ].realCreatedAtMs) {
-        right = mid;
-      } else {
-        left = mid;
-      }
-    }
-    if (array[ right ].realCreatedAtMs === value) {
-      left = right;
-    } else if (array[ left ].realCreatedAtMs === value) {
-      right = left;
-    }
-    return [ left, right ];
+    return utils.binarySearchIndexes(array, value, 'realCreatedAtMs', 1);
   }
 }

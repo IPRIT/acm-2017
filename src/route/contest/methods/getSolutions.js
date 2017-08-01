@@ -94,7 +94,7 @@ export async function getSolutions(params) {
 
   // ensure that user will get
   // only own solutions
-  if (solutionsType === 'all' && !user.isAdmin) {
+  if (!user.isAdmin) {
     solutionsType = 'my';
   }
 

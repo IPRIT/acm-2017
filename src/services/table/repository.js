@@ -7,18 +7,29 @@ export class RepositoryBranch {
   constructor() {
   }
 
+  /**
+   * @param {*} params
+   */
   getCommits(params = {}) {
     return this._commits.map(commit => {
       return commit.get( params );
     });
   }
 
+  /**
+   * @param {Commit[]|null} commits
+   */
   getPlainCommits(commits) {
     return (commits || this._commits).map(commit => {
       return commit.get({ plain: true });
     });
   }
 
+  /**
+   * @param {*} object
+   * @param {number} realCommitTimeMs
+   * @return {Commit}
+   */
   commit(object, realCommitTimeMs) {
     let commit = new Commit(object, realCommitTimeMs);
     commit.parent = this.head;
@@ -29,6 +40,9 @@ export class RepositoryBranch {
     return commit;
   }
 
+  /**
+   * @return {RepositoryBranch}
+   */
   rollback() {
     if (this.headIndex >= 0) {
       let deletingCommit = this._commits.pop();
@@ -38,6 +52,10 @@ export class RepositoryBranch {
     return this;
   }
 
+  /**
+   * @param {Commit|string} commitOrHash
+   * @return {RepositoryBranch}
+   */
   revertTo(commitOrHash) {
     let futureHeadIndex = this._searchIndexByCommit(commitOrHash);
     if (futureHeadIndex >= 0
@@ -48,6 +66,10 @@ export class RepositoryBranch {
     return this;
   }
 
+  /**
+   * @param {Commit|string} commitOrHash
+   * @return {Commit}
+   */
   ejectCommit(commitOrHash) {
     let commitIndex = this._searchIndexByCommit(commitOrHash);
     if (commitIndex < 0) {
@@ -56,6 +78,10 @@ export class RepositoryBranch {
     return this._ejectCommitByIndex( commitIndex );
   }
 
+  /**
+   * @param {Commit|string} commitOrHash
+   * @return {Commit[]}
+   */
   getCommitsAfterCommit(commitOrHash) {
     let searchIndex = this._searchIndexByCommit(commitOrHash);
     if (searchIndex < 0) {
@@ -64,6 +90,10 @@ export class RepositoryBranch {
     return this._commits.slice( searchIndex );
   }
 
+  /**
+   * @param {Commit|string} commitOrHash
+   * @return {Commit[]}
+   */
   getCommitsBeforeCommit(commitOrHash) {
     let searchIndex = this._searchIndexByCommit(commitOrHash);
     if (searchIndex < 0) {
@@ -74,12 +104,18 @@ export class RepositoryBranch {
 
   /**
    * @param {Commit} commit
+   * @return {boolean}
    */
   isHeadCommit(commit) {
     return commit && this._commits.length > 0
       && commit.hash === this.head.hash;
   }
 
+  /**
+   * @param {index} commitIndex
+   * @return {Commit|null}
+   * @private
+   */
   _ejectCommitByIndex(commitIndex) {
     if (commitIndex < 0) {
       return null;
@@ -90,6 +126,10 @@ export class RepositoryBranch {
     return ejectingCommit;
   }
 
+  /**
+   * @param {Commit} commit
+   * @private
+   */
   _disconnectCommit(commit) {
     if (commit.parent) {
       if (commit.child) {
@@ -105,6 +145,11 @@ export class RepositoryBranch {
     commit.parent = null;
   }
 
+  /**
+   * @param {Commit|string} commitOrHash
+   * @return {number}
+   * @private
+   */
   _searchIndexByCommit(commitOrHash) {
     let hash = this._resolveCommitHash(commitOrHash);
     return this._commits.findIndex(commit => {
@@ -112,6 +157,11 @@ export class RepositoryBranch {
     });
   }
 
+  /**
+   * @param {Commit|string} commitOrHash
+   * @return {string}
+   * @private
+   */
   _resolveCommitHash(commitOrHash) {
     let hash = commitOrHash;
     if (typeof commitOrHash === 'object') {
@@ -120,10 +170,16 @@ export class RepositoryBranch {
     return hash;
   }
 
+  /**
+   * @return {number}
+   */
   get headIndex() {
     return this._commits.length - 1;
   }
 
+  /**
+   * @return {Commit|null}
+   */
   get head() {
     if (!this._commits.length) {
       return null;

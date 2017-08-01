@@ -37,10 +37,13 @@ export class Cell extends AbstractCell {
     super();
     this.userId = userId;
     this.problemId = problemId;
-    this.contestValue = contestValue;
     this.problemSymbol = problemSymbol;
+    this.contestValue = contestValue;
   }
 
+  /**
+   * @param {Contest|ContestValue|*} contest
+   */
   setContest(contest) {
     if (contest instanceof ContestValue) {
       this.contestValue = contest;
@@ -49,6 +52,11 @@ export class Cell extends AbstractCell {
     }
   }
 
+  /**
+   * @param {Solution} solution
+   * @param {boolean} isInitAction
+   * @return {Cell}
+   */
   addSolution(solution, isInitAction = false) {
     if (!this.isCellAccepted) {
       if (solution.verdictId === 1) {
@@ -60,6 +68,10 @@ export class Cell extends AbstractCell {
     return this;
   }
 
+  /**
+   * @param {number} solutionId
+   * @return {Cell}
+   */
   removeSolution(solutionId) {
     let commit = this._findCommitBySolutionId( solutionId );
     if (commit) {
@@ -76,8 +88,13 @@ export class Cell extends AbstractCell {
     return this;
   }
 
+  /**
+   * @param {User} viewAs
+   * @param {number} timeMs
+   * @return {{result: string, problemSymbol: string, cellFrozen?: boolean, acceptedAt?: string, inPractice?: boolean}}
+   */
   getDisplayCellValue(viewAs, timeMs = Date.now()) {
-    let canViewFully = viewAs.id === this.userId || viewAs.isAdmin;
+    let canViewFully = this.canViewFully( viewAs );
     let commitValue = this.getCellValue( timeMs );
     if (!commitValue) {
       return {
@@ -108,6 +125,9 @@ export class Cell extends AbstractCell {
     }
   }
 
+  /**
+   * @param {number} timeMs
+   */
   getCellValue(timeMs = Date.now()) {
     let { value } = this.repository.getFirstCommitBeforeTimeMs( timeMs ) || { };
     return value;
@@ -123,12 +143,29 @@ export class Cell extends AbstractCell {
     return commitValue.sentAtMs === this.currentValue.sentAtMs;
   }
 
+  /**
+   * @param {User} viewAs
+   * @return {boolean}
+   */
+  canViewFully(viewAs) {
+    return viewAs.id === this.userId || viewAs.isAdmin;
+  }
+
+  /**
+   * @param {Number} timeMs
+   * @return {number}
+   */
   computePenaltyBeforeTimeMs(timeMs = Date.now()) {
     let commit = this.repository.getFirstCommitBeforeTimeMs( timeMs );
     return commit
       ? this._computePenaltyByCommitValue(commit.value) : 0;
   }
 
+  /**
+   * @param {Commit} commit
+   * @param {number} by
+   * @private
+   */
   _decreaseWrongAttemptsNextTo(commit, by = 1) {
     let nextCommit = commit.child;
     while (nextCommit) {
@@ -137,6 +174,12 @@ export class Cell extends AbstractCell {
     }
   }
 
+  /**
+   * @param {Solution} solution
+   * @param {boolean} isInitAction
+   * @return {Cell}
+   * @private
+   */
   _addWrongAttempt(solution, isInitAction = false) {
     let { wrongAttempts = 0 } = this.currentValue || {};
     let commitValue = new CellCommitValue(solution.id, false, wrongAttempts + 1, solution.sentAtMs);
@@ -147,6 +190,12 @@ export class Cell extends AbstractCell {
     return this;
   }
 
+  /**
+   * @param {Solution} solution
+   * @param {boolean} isInitAction
+   * @return {Cell}
+   * @private
+   */
   _accept(solution, isInitAction = false) {
     let { wrongAttempts = 0 } = this.currentValue || {};
     let commitValue = new CellCommitValue(solution.id, true, wrongAttempts, solution.sentAtMs);
@@ -157,6 +206,10 @@ export class Cell extends AbstractCell {
     return this;
   }
 
+  /**
+   * @param {number} solutionId
+   * @private
+   */
   _findCommitBySolutionId(solutionId) {
     return this.repository.getCommits().find(commit => {
       return commit.value.solutionId === solutionId;
@@ -186,6 +239,11 @@ export class Cell extends AbstractCell {
     return this._formatAcceptTime(commitValue.sentAtMs - this.contestValue.startTimeMs);
   }
 
+  /**
+   * @param {number} diffTime Difference between contest's start time and solution's accept time
+   * @return {string}
+   * @private
+   */
   _formatAcceptTime(diffTime) {
     let allSeconds = Math.floor(diffTime / 1000),
       minutes = Math.floor(allSeconds / 60),
@@ -199,6 +257,9 @@ export class Cell extends AbstractCell {
       .replace(/(mm)/gi, zeroFill(minutes));
   }
 
+  /**
+   * @private
+   */
   _removeAllEventListeners() {
     this.removeAllListeners('cell.accepted');
     this.removeAllListeners('cell.newWrongAttempt');
@@ -206,6 +267,9 @@ export class Cell extends AbstractCell {
     this.removeAllListeners('cell.solutionRemoved');
   }
 
+  /**
+   * @return {number}
+   */
   get penalty() {
     return this._computePenaltyByCommitValue( this.currentValue );
   }

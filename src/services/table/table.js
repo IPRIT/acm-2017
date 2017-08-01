@@ -256,7 +256,7 @@ export class ContestTable extends AbstractTable {
   }
 
   /**
-   * @param {Row[]|any[]} array
+   * @param {Row[]|*[]} array
    * @param {number} value
    * @param {string} key
    * @param {number} order
@@ -264,26 +264,7 @@ export class ContestTable extends AbstractTable {
    * @private
    */
   _binarySearchIndexes(array, value, key, order = -1) {
-    let [ left, right ] = [ 0, array.length - 1 ];
-    if (!array.length || order * value < order * array[ left ][ key ]) {
-      return [ -1, 0 ];
-    } else if (order * value > order * array[ right ][ key ]) {
-      return [ right, right + 1 ];
-    }
-    while (right - left > 1) {
-      let mid = left + Math.floor( ( right - left ) / 2 );
-      if (order * value <= order * array[ mid ][ key ]) {
-        right = mid;
-      } else {
-        left = mid;
-      }
-    }
-    if (array[ right ][ key ] === value) {
-      left = right;
-    } else if (array[ left ][ key ] === value) {
-      right = left;
-    }
-    return [ left, right ];
+    return utils.binarySearchIndexes(array, value, key, order);
   }
 
   _computeRandomHash() {

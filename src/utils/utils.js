@@ -105,6 +105,38 @@ export function ensureNumber(value) {
   return value;
 }
 
+/**
+ * @description Finds boundary indexes for element in array
+ * @param {*[]} array
+ * @param {number} value
+ * @param {string} key
+ * @param {number} order
+ * @return {[number, number]} Indexes
+ * @private
+ */
+export function binarySearchIndexes(array, value, key, order = -1) {
+  let [ left, right ] = [ 0, array.length - 1 ];
+  if (!array.length || order * value < order * array[ left ][ key ]) {
+    return [ -1, 0 ];
+  } else if (order * value > order * array[ right ][ key ]) {
+    return [ right, right + 1 ];
+  }
+  while (right - left > 1) {
+    let mid = left + Math.floor( ( right - left ) / 2 );
+    if (order * value <= order * array[ mid ][ key ]) {
+      right = mid;
+    } else {
+      left = mid;
+    }
+  }
+  if (array[ right ][ key ] === value) {
+    left = right;
+  } else if (array[ left ][ key ] === value) {
+    right = left;
+  }
+  return [ left, right ];
+}
+
 export function parseProblemIdentifier(problemIdentifier = '') {
   let [ type, problem ] = problemIdentifier.split(':');
   return { type, ...parseIdentifier(problem) };
