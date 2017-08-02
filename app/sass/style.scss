@@ -50,8 +50,6 @@ html {
   width: 100%;
   width: 100vw;
   z-index: 77;
-  -webkit-transform: translateZ(0);
-  transition: transform .25s ease-in-out;
 
   &_collapsed {
     .contest-menu {

@@ -35,6 +35,8 @@ export async function send(solution) {
   }
   inProcessSolutionsMap.set(solution.id, solution);
   await system.handle( solution ).finally(() => {
+    // todo: investigate with this place for update table
+    // probably it's proper place to update but im not sure
     inProcessSolutionsMap.delete(solution.id)
   });
   return solution;

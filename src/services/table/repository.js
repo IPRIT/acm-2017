@@ -36,6 +36,7 @@ export class RepositoryBranch {
    */
   commit(object, realCommitTimeMs) {
     let commit = new Commit(object, realCommitTimeMs);
+    // todo: insert commit in appropriate place (binary search by real commit time)
     commit.parent = this.head;
     if (this.headIndex >= 0) {
       this.head.child = commit;
@@ -188,6 +189,16 @@ export class RepositoryBranch {
       return null;
     }
     return this._commits[ this.headIndex ];
+  }
+
+  /**
+   * @return {Commit|null}
+   */
+  get tail() {
+    if (!this._commits.length) {
+      return null;
+    }
+    return this._commits[ 0 ];
   }
 
   reset() {

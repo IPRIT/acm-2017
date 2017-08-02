@@ -70,7 +70,7 @@ export class ContestTable extends AbstractTable {
     this._mergeDefaultParams( params );
     let isPastQuery = this._getTableHash( viewAs ).createdAtMs > params.showInTimeMs;
     return {
-      header: this._getTableHeader(),
+      //header: this._getTableHeader(),
       rows: this._getOrderedRows(viewAs, params, isPastQuery),
       actualTableHash: this._getTableHash( viewAs ),
       isPastQuery

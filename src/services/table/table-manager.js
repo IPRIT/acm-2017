@@ -2,6 +2,8 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/of';
 import { ContestTable } from "./table";
 import * as models from '../../models';
@@ -86,6 +88,7 @@ export class TableManager {
   /**
    * @param {Solution} solution
    * @param {boolean} followForceUpdate
+   * @return {Promise<*>}
    */
   removeSolution(solution, followForceUpdate = true) {
     return this._wrapActionOnInit(async () => {
@@ -120,6 +123,7 @@ export class TableManager {
 
     this._tableInstance.dispose();
     this._tableInstance = null;
+    console.log(this._tableInstance);
   }
 
   /**
@@ -139,6 +143,7 @@ export class TableManager {
 
     let contest = await this._getContest( this._contestId );
     if (!contest) {
+      this._tableInitializing = false;
       throw new HttpError('Contest not found', 404);
     }
     let contestSolutions = await this._getAllSolutionsForContest( contest );
@@ -185,11 +190,12 @@ export class TableManager {
         return;
       }
     }
-    return new Promise((resolve, reject) => {
-      this._tableInitialized$.asObservable().filter(value => value).subscribe(_ => {
-        resolve( afterInitAction() );
-      }, reject);
-    });
+    return this._tableInitialized$
+      .asObservable()
+      .filter(value => value)
+      .take(1)
+      .toPromise()
+      .then(() => afterInitAction());
   }
 
   /**

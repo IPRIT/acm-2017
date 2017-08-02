@@ -31,6 +31,10 @@ export async function refreshSolution(params) {
       }]
     });
   }
+
+  if (!solution || !solution.Problem) {
+    return solution;
+  }
   
   await solution.update({
     nextAttemptWillBeAtMs: Date.now(),
