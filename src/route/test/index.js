@@ -13,11 +13,20 @@ router.get('/', (req, res, next) => {
   }).catch(next);
 });
 
+let timeoutId;
+
 async function _test(params) {
   let { userId = 1, contestId = 6 } = params;
   let viewAs = await models.User.findByPrimary(userId).then(user => user.get({ plain: true }));
 
-  return await services.GlobalTablesManager.getInstance().getTableManager(contestId).renderAs(viewAs, params);
+  //await services.GlobalTablesManager.getInstance().getTableManager(contestId).renderAs(viewAs, params);
+  timeoutId = setTimeout(async () => {
+    let solution = await models.Solution.findByPrimary( 450 );
+    for (let i = 1; i < 200; ++i) {
+      //await services.GlobalTablesManager.getInstance().getTableManager(contestId).removeRow( i );
+    }
+  }, 2000);
+  return services.GlobalTablesManager.getInstance().getTableManager(contestId).renderAs(viewAs, params);
 }
 
 export default router;

@@ -2,6 +2,10 @@ import { Commit } from "./commit";
 
 export class RepositoryBranch {
 
+  /**
+   * @type {Commit[]}
+   * @private
+   */
   _commits = [];
 
   constructor() {
@@ -187,6 +191,9 @@ export class RepositoryBranch {
   }
 
   reset() {
+    while (this._commits.length) {
+      this._ejectCommitByIndex( 0 );
+    }
     this._commits = [];
   }
 }

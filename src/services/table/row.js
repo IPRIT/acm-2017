@@ -24,6 +24,10 @@ export class Row extends AbstractRow {
   groupNumber;
   globalIndex;
 
+  /**
+   * @type {Cell[]}
+   * @private
+   */
   _cells = [];
 
   /**
@@ -58,27 +62,48 @@ export class Row extends AbstractRow {
     }
   }
 
+  /**
+   * @param {User} viewAs
+   * @param {number} timeMs
+   * @return {Cell[]}
+   */
   getPlainCells(viewAs, timeMs = Date.now()) {
     return this._cells.map(cell => {
       return cell.getDisplayCellValue( viewAs, timeMs );
     });
   }
 
+  /**
+   * @param {number} problemId
+   * @return {Cell}
+   */
   getCellByProblemId(problemId) {
     return this.getCellByIndex(
       this._getCellIndexByProblemId(problemId)
     );
   }
 
+  /**
+   * @param {string} problemSymbol
+   * @return {Cell}
+   */
   getCellByProblemSymbol(problemSymbol) {
     let cellIndex = getIntegerIndex( problemSymbol );
     return this.getCellByIndex( cellIndex );
   }
 
+  /**
+   * @param {number} cellIndex
+   * @return {Cell}
+   */
   getCellByIndex(cellIndex) {
     return this._cells[ cellIndex ];
   }
 
+  /**
+   * @param {Problem} problem
+   * @return {Cell}
+   */
   addCell(problem) {
     let existCell = this.getCellByProblemId(problem.id);
     if (existCell) {
@@ -88,6 +113,9 @@ export class Row extends AbstractRow {
     return this._addCell(problem, futureIndex);
   }
 
+  /**
+   * @param {number} problemId
+   */
   removeCellByProblemId(problemId) {
     let removingCell = this.getCellByProblemId(problemId);
     if (removingCell) {
@@ -97,6 +125,9 @@ export class Row extends AbstractRow {
     }
   }
 
+  /**
+   * @param {string} problemSymbol
+   */
   removeCellByProblemSymbol(problemSymbol) {
     let removingCell = this.getCellByProblemSymbol(problemSymbol);
     if (removingCell) {
@@ -106,6 +137,9 @@ export class Row extends AbstractRow {
     }
   }
 
+  /**
+   * @param {Problem[]} newProblems
+   */
   resetProblems(newProblems) {
     let oldCellsMap = new Map();
     for (let cell of this._cells) {
@@ -134,12 +168,20 @@ export class Row extends AbstractRow {
     });
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {number}
+   */
   getPenalty(timeMs = Date.now()) {
     return this._cells.reduce((sum, cell) => {
       return sum + cell.computePenaltyBeforeTimeMs( timeMs );
     }, 0);
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {number}
+   */
   getAcceptedSolutions(timeMs = Date.now()) {
     return this._cells.reduce((sum, cell) => {
       let cellValue = cell.getCellValue( timeMs );
@@ -147,6 +189,10 @@ export class Row extends AbstractRow {
     }, 0);
   }
 
+  /**
+   * @param {number} timeMs
+   * @return {number}
+   */
   getAcceptedSolutionsInTime(timeMs = this.contestValue.absoluteDurationTimeMs) {
     return this._cells.reduce((sum, cell) => {
       let cellValue = cell.getCellValue(
@@ -156,11 +202,28 @@ export class Row extends AbstractRow {
     }, 0);
   }
 
+  /**
+   * @param {Solution} solution
+   * @param {boolean} isInitAction
+   */
   addSolution(solution, isInitAction = false) {
     let cell = this.getCellByProblemId(solution.problemId);
     cell.addSolution( solution, isInitAction );
   }
 
+  /**
+   * @param {Solution} solution
+   * @return {Cell}
+   */
+  removeSolution(solution) {
+    let cell = this.getCellByProblemId(solution.problemId);
+    cell.removeSolution(solution.id);
+    return cell;
+  }
+
+  /**
+   * @param {Solution[]} solutions
+   */
   initializeWithSolutions(solutions = []) {
     let cellsMap = new Map();
     for (let cell of this._cells) {
@@ -172,10 +235,18 @@ export class Row extends AbstractRow {
     }
   }
 
+  /**
+   * @param {User} user
+   * @return {boolean}
+   */
   canView(user) {
     return !this.isAdminRow || user.isAdmin;
   }
 
+  /**
+   * @param {User} user
+   * @return {boolean}
+   */
   canViewFully(user) {
     return this.user.id === user.id || user.isAdmin;
   }
@@ -210,6 +281,11 @@ export class Row extends AbstractRow {
     // todo
   }
 
+  /**
+   * @param {Problem[]} problems
+   * @return {Row}
+   * @private
+   */
   _createCells(problems) {
     for (let problemIndex in problems) {
       let problem = problems[ problemIndex ];
@@ -218,6 +294,12 @@ export class Row extends AbstractRow {
     return this;
   }
 
+  /**
+   * @param {Problem} problem
+   * @param {number} cellFutureIndex
+   * @return {Cell}
+   * @private
+   */
   _addCell(problem, cellFutureIndex) {
     let symbolIndex = getSymbolIndex( cellFutureIndex );
     let newCell = new Cell(this.user.id, problem.id, symbolIndex, this.contestValue);
@@ -229,12 +311,21 @@ export class Row extends AbstractRow {
     return newCell;
   }
 
+  /**
+   * @param {number} problemId
+   * @return {number}
+   * @private
+   */
   _getCellIndexByProblemId(problemId) {
     return this._cells.findIndex(cell => {
       return cell.problemId === problemId;
     });
   }
 
+  /**
+   * @param {Cell} cell
+   * @private
+   */
   _addCellListeners(cell) {
     cell.on('cell.accepted', this.onCellAccepted.bind(this));
     cell.on('cell.newWrongAttempt', this.onCellNewWrongAttempt.bind(this));
@@ -242,22 +333,37 @@ export class Row extends AbstractRow {
     cell.on('cell.solutionRemoved', this.onCellSolutionRemoved.bind(this));
   }
 
+  /**
+   * @return {number}
+   */
   get penalty() {
     return this.getPenalty();
   }
 
+  /**
+   * @return {number}
+   */
   get acceptedSolutions() {
     return this.getAcceptedSolutions();
   }
 
+  /**
+   * @return {number}
+   */
   get acceptedSolutionsInTime() {
     return this.getAcceptedSolutionsInTime();
   }
 
+  /**
+   * @return {number}
+   */
   get acceptedSolutionsInPracticeTime() {
     return this.acceptedSolutions - this.acceptedSolutionsInTime;
   }
 
+  /**
+   * @return {boolean}
+   */
   get isAdminRow() {
     return this.user.isAdmin;
   }

@@ -42,6 +42,43 @@ export class Cell extends AbstractCell {
   }
 
   /**
+   * @param {User} viewAs
+   * @param {number} timeMs
+   * @return {{result: string, problemSymbol: string, cellFrozen?: boolean, acceptedAt?: string, inPractice?: boolean}}
+   */
+  getDisplayCellValue(viewAs, timeMs = Date.now()) {
+    let canViewFully = this.canViewFully( viewAs );
+    let commitValue = this.getCellValue( timeMs );
+    if (!commitValue) {
+      return {
+        result: '—',
+        problemSymbol: this.problemSymbol.toUpperCase(),
+        cellFrozen: this.repository.getCommits().length > 0
+        && this.contestValue.isFrozenIn( timeMs )
+        && !canViewFully
+      }
+    }
+    if (commitValue.isAccepted) {
+      return {
+        result: commitValue.wrongAttempts > 0
+          ? '+' + commitValue.wrongAttempts : '+',
+        problemSymbol: this.problemSymbol.toUpperCase(),
+        acceptedAt: this._getAcceptTime(commitValue),
+        inPractice: this.contestValue.isPracticeIn( commitValue.sentAtMs )
+      }
+    } else {
+      return {
+        result: commitValue.wrongAttempts > 0
+          ? '-' + commitValue.wrongAttempts : '—',
+        problemSymbol: this.problemSymbol.toUpperCase(),
+        cellFrozen: !this.isHeadValue( commitValue )
+        && this.contestValue.isFrozenIn( timeMs )
+        && !canViewFully
+      }
+    }
+  }
+
+  /**
    * @param {Contest|ContestValue|*} contest
    */
   setContest(contest) {
@@ -50,6 +87,14 @@ export class Cell extends AbstractCell {
     } else {
       this.contestValue = new ContestValue(contest);
     }
+  }
+
+  /**
+   * @param {Solution[]} solutions
+   */
+  initializeWithSolutions(solutions) {
+    this.clear();
+    solutions.forEach(solution => this.addSolution(solution));
   }
 
   /**
@@ -81,48 +126,11 @@ export class Cell extends AbstractCell {
         this.emit('cell.forceUpdateNeeded', this);
       } else {
         this._decreaseWrongAttemptsNextTo(commit);
-        let commit = this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
+        this.repository.ejectCommitByRealTimeMs(commit.realCreatedAtMs);
         this.emit('cell.solutionRemoved', this, commit);
       }
     }
     return this;
-  }
-
-  /**
-   * @param {User} viewAs
-   * @param {number} timeMs
-   * @return {{result: string, problemSymbol: string, cellFrozen?: boolean, acceptedAt?: string, inPractice?: boolean}}
-   */
-  getDisplayCellValue(viewAs, timeMs = Date.now()) {
-    let canViewFully = this.canViewFully( viewAs );
-    let commitValue = this.getCellValue( timeMs );
-    if (!commitValue) {
-      return {
-        result: '—',
-        problemSymbol: this.problemSymbol.toUpperCase(),
-        cellFrozen: this.repository.getCommits().length > 0
-          && this.contestValue.isFrozenIn( timeMs )
-          && !canViewFully
-      }
-    }
-    if (commitValue.isAccepted) {
-      return {
-        result: commitValue.wrongAttempts > 0
-          ? '+' + commitValue.wrongAttempts : '+',
-        problemSymbol: this.problemSymbol.toUpperCase(),
-        acceptedAt: this._getAcceptTime(commitValue),
-        inPractice: this.contestValue.isPracticeIn( commitValue.sentAtMs )
-      }
-    } else {
-      return {
-        result: commitValue.wrongAttempts > 0
-          ? '-' + commitValue.wrongAttempts : '—',
-        problemSymbol: this.problemSymbol.toUpperCase(),
-        cellFrozen: !this.isHeadValue( commitValue )
-          && this.contestValue.isFrozenIn( timeMs )
-          && !canViewFully
-      }
-    }
   }
 
   /**
@@ -208,6 +216,7 @@ export class Cell extends AbstractCell {
 
   /**
    * @param {number} solutionId
+   * @return {Commit}
    * @private
    */
   _findCommitBySolutionId(solutionId) {
@@ -265,6 +274,10 @@ export class Cell extends AbstractCell {
     this.removeAllListeners('cell.newWrongAttempt');
     this.removeAllListeners('cell.forceUpdateNeeded');
     this.removeAllListeners('cell.solutionRemoved');
+  }
+
+  clear() {
+    this.repository.reset();
   }
 
   /**

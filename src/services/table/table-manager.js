@@ -6,6 +6,7 @@ import 'rxjs/add/observable/of';
 import { ContestTable } from "./table";
 import * as models from '../../models';
 import Promise from 'bluebird';
+import deap from 'deap';
 
 export class TableManager {
 
@@ -63,16 +64,48 @@ export class TableManager {
    * @param {*} params
    * @return {Promise<*>}
    */
-  async renderAs(as, params = {}) {
-    if (!this._tableInitializing && !this._tableInitialized$.value) {
+  renderAs(as, params = {}) {
+    return this._wrapActionOnInit(async () => {
+      this._updateSelfDestructTimer();
+      return this._tableInstance.render(as, params);
+    }, async () => {
       await this._createTableInstance();
       this.selfDestruct$.next(false);
-    }
-    return new Promise((resolve, reject) => {
-      this._tableInitialized$.asObservable().filter(value => value).subscribe(_ => {
-        this._updateSelfDestructTimer();
-        resolve( this._tableInstance.render(as, params) );
-      }, reject);
+    });
+  }
+
+  /**
+   * @param {Solution} solution
+   */
+  addSolution(solution) {
+    return this._wrapActionOnInit(async () => {
+      this._tableInstance.addSolution( solution );
+    });
+  }
+
+  /**
+   * @param {Solution} solution
+   * @param {boolean} followForceUpdate
+   */
+  removeSolution(solution, followForceUpdate = true) {
+    return this._wrapActionOnInit(async () => {
+      let { cell, row } = this._tableInstance.removeSolution( solution );
+      if (cell.isForceUpdateNeeded && followForceUpdate) {
+        let solutions = await this._getSolutions({
+          contestId: this._contestId,
+          userId: cell.userId,
+          problemId: cell.problemId
+        });
+        cell.initializeWithSolutions( solutions );
+        cell.isForceUpdateNeeded = false;
+      }
+      this._tableInstance.rearrangeRow( row );
+    });
+  }
+
+  removeRow(userId) {
+    return this._wrapActionOnInit(async () => {
+      this._tableInstance.removeRow( userId );
     });
   }
 
@@ -87,6 +120,14 @@ export class TableManager {
 
     this._tableInstance.dispose();
     this._tableInstance = null;
+  }
+
+  /**
+   * @description Resets table instance and clears self-destruct timer
+   */
+  reset() {
+    this._clearSelfDestructTimer();
+    this.selfDestruct();
   }
 
   /**
@@ -116,13 +157,39 @@ export class TableManager {
    * @private
    */
   _updateSelfDestructTimer() {
+    this._clearSelfDestructTimer();
+    this._tableSelfDestructTimerSubscription = Observable.of(1)
+      .delay( this._tableSelfDestructTimeoutMs )
+      .subscribe(observer => this.selfDestruct());
+  }
+
+  /**
+   * @private
+   */
+  _clearSelfDestructTimer() {
     if (this._tableSelfDestructTimerSubscription) {
       this._tableSelfDestructTimerSubscription.unsubscribe();
       this._tableSelfDestructTimerSubscription = null;
     }
-    this._tableSelfDestructTimerSubscription = Observable.of(1)
-      .delay( this._tableSelfDestructTimeoutMs )
-      .subscribe(observer => this.selfDestruct());
+  }
+
+  /**
+   * @param {function} afterInitAction
+   * @param {function} initAction
+   * @private
+   */
+  async _wrapActionOnInit(afterInitAction, initAction = async () => true) {
+    if (!this._tableInitializing && !this._tableInitialized$.value) {
+      let cancellationToken = await initAction();
+      if (cancellationToken) {
+        return;
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this._tableInitialized$.asObservable().filter(value => value).subscribe(_ => {
+        resolve( afterInitAction() );
+      }, reject);
+    });
   }
 
   /**
@@ -138,6 +205,31 @@ export class TableManager {
           $ne: null
         }
       },
+      include: [ models.Verdict ],
+      order: [
+        [ 'id', 'ASC']
+      ]
+    }).map(solution => {
+      return solution.get({ plain: true })
+    }).filter(solution => {
+      return solution.Verdict.scored || solution.Verdict.id === 1;
+    });
+  }
+
+  /**
+   * @param {*} whereParams
+   * @return {Solution[]}
+   * @private
+   */
+  _getSolutions(whereParams) {
+    let defaultParams = {
+      verdictId: {
+        $ne: null
+      }
+    };
+    deap.merge(whereParams, defaultParams);
+    return models.Solution.findAll({
+      where: whereParams,
       include: [ models.Verdict ],
       order: [
         [ 'id', 'ASC']
