@@ -75,7 +75,7 @@ export class RepositoryBranch {
     if (commitIndex < 0) {
       return null;
     }
-    return this._ejectCommitByIndex( commitIndex );
+    return this.ejectCommitByIndex( commitIndex );
   }
 
   /**
@@ -112,9 +112,8 @@ export class RepositoryBranch {
   }
 
   /**
-   * @param {index} commitIndex
+   * @param {number} commitIndex
    * @return {Commit|null}
-   * @private
    */
   _ejectCommitByIndex(commitIndex) {
     if (commitIndex < 0) {

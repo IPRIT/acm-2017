@@ -1,25 +1,59 @@
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ContestTable } from "./table";
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/observable/of';
+import { ContestTable } from "./table";
 import * as models from '../../models';
 import Promise from 'bluebird';
 
 export class TableManager {
 
+  /**
+   * @type {boolean}
+   * @private
+   */
   _tableInitializing = false;
+
+  /**
+   * @type {number}
+   * @private
+   */
   _contestId;
 
+  /**
+   * @type {ContestTable}
+   * @private
+   */
   _tableInstance;
+
+  /**
+   * @type {BehaviorSubject}
+   * @private
+   */
   _tableSelfDestruct$ = new BehaviorSubject(false);
+
+  /**
+   * @type {Subscription}
+   * @private
+   */
   _tableSelfDestructTimerSubscription;
+
+  /**
+   * @type {number}
+   * @private
+   */
   _tableSelfDestructTimeoutMs = 15000; // 60 * 60 * 1000; // 60 minutes
 
+  /**
+   * @type {BehaviorSubject}
+   * @private
+   */
   _tableInitialized$ = new BehaviorSubject(false);
 
+  /**
+   * @param {number} contestId
+   */
   constructor(contestId) {
     this._contestId = contestId;
   }
@@ -27,11 +61,12 @@ export class TableManager {
   /**
    * @param {User} as
    * @param {*} params
+   * @return {Promise<*>}
    */
   async renderAs(as, params = {}) {
     if (!this._tableInitializing && !this._tableInitialized$.value) {
       await this._createTableInstance();
-      this.selfDestructSubject$.next(false);
+      this.selfDestruct$.next(false);
     }
     return new Promise((resolve, reject) => {
       this._tableInitialized$.asObservable().filter(value => value).subscribe(_ => {
@@ -45,7 +80,7 @@ export class TableManager {
    * @description Disposing entire table from the memory
    */
   selfDestruct() {
-    console.log(`[Table Manager][ContestId = ${this._contestId}] Running self destruct sequence for table...`);
+    console.log(`[Table Manager][ContestId = ${this._contestId}] Running self destruct sequence...`);
 
     this._tableSelfDestruct$.next(true);
     this._tableInitialized$.next(false);
@@ -62,6 +97,9 @@ export class TableManager {
     this._tableInitializing = true;
 
     let contest = await this._getContest( this._contestId );
+    if (!contest) {
+      throw new HttpError('Contest not found', 404);
+    }
     let contestSolutions = await this._getAllSolutionsForContest( contest );
     let contestProblems = await this._getContestProblems( contest );
     let contestParticipants = await this._getContestants( contest );
@@ -87,7 +125,12 @@ export class TableManager {
       .subscribe(observer => this.selfDestruct());
   }
 
-  async _getAllSolutionsForContest(contest) {
+  /**
+   * @param {Contest} contest
+   * @return {Promise<Solution[]>}
+   * @private
+   */
+  _getAllSolutionsForContest(contest) {
     return models.Solution.findAll({
       where: {
         contestId: contest.id,
@@ -106,15 +149,30 @@ export class TableManager {
     });
   }
 
-  async _getContest(contestId) {
+  /**
+   * @param {number} contestId
+   * @return {Promise<Contest>}
+   * @private
+   */
+  _getContest(contestId) {
     return models.Contest.findByPrimary(contestId);
   }
 
-  async _getContestants(contest) {
+  /**
+   * @param {Contest} contest
+   * @return {Promise<User[]>}
+   * @private
+   */
+  _getContestants(contest) {
     return contest.getContestants().map(user => user.get({ plain: true }));
   }
 
-  async _getContestProblems(contest) {
+  /**
+   * @param {Contest} contest
+   * @return {Promise<Problem[]>}
+   * @private
+   */
+  _getContestProblems(contest) {
     return contest.getProblems({
       include: [{
         model: models.ProblemToContest,
@@ -128,10 +186,16 @@ export class TableManager {
     });
   }
 
-  get selfDestructSubject$() {
+  /**
+   * @return {BehaviorSubject}
+   */
+  get selfDestruct$() {
     return this._tableSelfDestruct$;
   }
 
+  /**
+   * @return {ContestTable}
+   */
   get tableInstance() {
     return this._tableInstance;
   }

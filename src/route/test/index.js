@@ -1,7 +1,7 @@
 import express from 'express';
 import * as models from '../../models';
 import { extractAllParams } from "../../utils/utils";
-import { TableManager } from "../../services/table/table-manager";
+import * as services from "../../services";
 
 const router = express.Router();
 
@@ -13,13 +13,11 @@ router.get('/', (req, res, next) => {
   }).catch(next);
 });
 
-let tableManager = new TableManager(6);
-
 async function _test(params) {
-  let { userId } = params;
+  let { userId = 1, contestId = 6 } = params;
   let viewAs = await models.User.findByPrimary(userId).then(user => user.get({ plain: true }));
 
-  return tableManager.renderAs(viewAs, params);
+  return await services.GlobalTablesManager.getInstance().getTableManager(contestId).renderAs(viewAs, params);
 }
 
 export default router;

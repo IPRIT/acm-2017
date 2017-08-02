@@ -1,2 +1,1 @@
-export * from './cell';
-export * from './table-manager';
+export * from './global-manager'
