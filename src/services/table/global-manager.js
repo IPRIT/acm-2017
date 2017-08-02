@@ -1,5 +1,5 @@
 import { TableManager } from "./table-manager";
-import * as utils from '../../utils';
+import * as utils from "../../utils";
 
 export class GlobalTablesManager {
 
