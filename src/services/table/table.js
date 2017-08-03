@@ -91,6 +91,7 @@ export class ContestTable extends AbstractTable {
    */
   initializeWithSolutions(solutions = []) {
     solutions.forEach(solution => this.addSolution(solution, true));
+    this._normalizeWrongAttempts();
     this._initializeTableSort();
   }
 
@@ -181,6 +182,10 @@ export class ContestTable extends AbstractTable {
         this._updateHashForRegularUsers();
       }
     }
+  }
+
+  _normalizeWrongAttempts() {
+    this._rows.forEach(row => row.normalizeWrongAttempts());
   }
 
   /**
@@ -318,6 +323,7 @@ export class ContestTable extends AbstractTable {
       rows[i].globalIndex = i;
       if (!i) {
         rows[i].rank = currentPlaceCounter;
+        rows[i].displayRank = rows[i].rank;
         rows[i].groupNumber = currentGroupCounter;
         continue;
       }
@@ -325,10 +331,22 @@ export class ContestTable extends AbstractTable {
         && rows[i].acceptedSolutions === rows[i - 1].acceptedSolutions) {
         buffer++;
         rows[i].rank = currentPlaceCounter;
+        rows[i].displayRank = rows[i].rank;
       } else {
+        if (buffer >= 1) {
+          for (let index = i - buffer; index < i; ++index) {
+            rows[ index ].displayRank = `${currentPlaceCounter}-${currentPlaceCounter + buffer}`;
+          }
+        }
         currentPlaceCounter += buffer + 1;
         buffer = 0;
         rows[i].rank = currentPlaceCounter;
+        rows[i].displayRank = rows[i].rank;
+      }
+      if (buffer >= 1) {
+        for (let index = i - buffer; index <= i; ++index) {
+          rows[ index ].displayRank = `${currentPlaceCounter}-${currentPlaceCounter + buffer}`;
+        }
       }
       if (rows[i].acceptedSolutions === rows[i - 1].acceptedSolutions) {
         rows[i].groupNumber = currentGroupCounter;

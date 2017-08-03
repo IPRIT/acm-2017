@@ -4,6 +4,7 @@ import * as cf from './cf';
 import * as ejudge from './ejudge';
 import * as yandex from './yandex';
 import * as yandexOfficial from './yandex.official';
+import * as services from '../services';
 
 const systems = { timus, acmp, cf, ejudge, yandex, yandexOfficial };
 let inProcessSolutionsMap = new Map();
@@ -34,10 +35,18 @@ export async function send(solution) {
     throw new Error('System not found');
   }
   inProcessSolutionsMap.set(solution.id, solution);
-  await system.handle( solution ).finally(() => {
-    // todo: investigate with this place for update table
-    // probably it's proper place to update but im not sure
-    inProcessSolutionsMap.delete(solution.id)
+  await system.handle( solution ).then(() => {
+    return _updateContestTable(solution);
+  }).finally(async () => {
+    inProcessSolutionsMap.delete(solution.id);
   });
   return solution;
+}
+
+function _updateContestTable(solution) {
+  console.log('Updating contest table...');
+  return services.GlobalTablesManager
+    .getInstance()
+    .getTableManager( solution.contestId )
+    .addSolution( solution );
 }

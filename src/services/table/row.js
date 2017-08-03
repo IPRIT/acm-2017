@@ -21,6 +21,7 @@ export class Row extends AbstractRow {
   contestValue;
 
   rank;
+  displayRank;
   groupNumber;
   globalIndex;
 
@@ -54,6 +55,7 @@ export class Row extends AbstractRow {
       groupNumber: this.groupNumber,
       globalIndex: this.globalIndex,
       rank: this.rank,
+      displayRank: this.displayRank,
       penalty: this.getPenalty( changedTimeMs ),
       acceptedSolutions: this.getAcceptedSolutions( changedTimeMs ),
       acceptedSolutionsInTime: this.getAcceptedSolutionsInTime( changedTimeMs ),
@@ -233,6 +235,10 @@ export class Row extends AbstractRow {
       let cell = cellsMap.get( solution.problemId );
       cell.addSolution( solution, true );
     }
+  }
+
+  normalizeWrongAttempts() {
+    this._cells.forEach(cell => cell.normalizeWrongAttempts());
   }
 
   /**

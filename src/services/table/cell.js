@@ -163,6 +163,21 @@ export class Cell extends AbstractCell {
   }
 
   /**
+   * @return {Cell}
+   */
+  normalizeWrongAttempts() {
+    if (this.repository.getCommits().length) {
+      let commitRef = this.repository.getCommits()[0];
+      let wrongAttempts = 0;
+      do {
+        commitRef.value.wrongAttempts = commitRef.value.isAccepted
+          ? wrongAttempts : ++wrongAttempts;
+      } while (commitRef = commitRef.child);
+    }
+    return this;
+  }
+
+  /**
    * @param {Commit} commit
    * @param {number} by
    * @private
@@ -198,24 +213,9 @@ export class Cell extends AbstractCell {
     }
     let commitValue = new CellCommitValue(solution.id, isCurrentSolutionAccepted, 0, solution.sentAtMs);
     this.repository.commit( commitValue );
-    this._normalizeWrongAttempts();
     if (!isInitAction) {
+      this.normalizeWrongAttempts();
       this.emit('cell.changed', this, commitValue);
-    }
-    return this;
-  }
-
-  /**
-   * @private
-   */
-  _normalizeWrongAttempts() {
-    if (this.repository.getCommits().length) {
-      let commitRef = this.repository.getCommits()[0];
-      let wrongAttempts = 0;
-      do {
-        commitRef.value.wrongAttempts = commitRef.value.isAccepted
-          ? wrongAttempts : ++wrongAttempts;
-      } while (commitRef = commitRef.child);
     }
     return this;
   }

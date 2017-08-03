@@ -1,6 +1,7 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
 import * as admin from './index';
+import { GlobalTablesManager } from "../../../services/table/global-manager";
 
 export function deleteUserFromContestRequest(req, res, next) {
   let params = Object.assign(
@@ -32,5 +33,6 @@ export async function deleteUserFromContest(params) {
     throw new HttpError('You have no permissions');
   }
   await admin.deleteSolutionsForUser({ initiatorUser, contest, user, broadcastUpdate: false });
+  await GlobalTablesManager.getInstance().getTableManager(contest.id).removeRow( user.id );
   return contest.removeContestant(user);
 }

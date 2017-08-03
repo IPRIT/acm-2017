@@ -30,7 +30,8 @@ export async function getSolutions(params) {
     solutionsType,
     filterUserIds, filterProblemIds, filterVerdictIds,
     ignoreFreeze, sort = 'DESC',
-    withRatings = true
+    withRatings = true,
+    forTable = false
   } = params;
   
   offset = Number(offset) || 0;
@@ -94,7 +95,7 @@ export async function getSolutions(params) {
 
   // ensure that user will get
   // only own solutions
-  if (!user.isAdmin) {
+  if (!forTable && !user.isAdmin) {
     solutionsType = 'my';
   }
 

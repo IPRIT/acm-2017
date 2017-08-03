@@ -65,7 +65,10 @@ export async function getTable(params) {
     });
   });
   
-  let { solutions } = await contests.getSolutions({ contest, user, count: 1e9, ignoreFreeze: true, sort: 'ASC', withRatings: false });
+  let { solutions } = await contests.getSolutions({
+    contest, user, count: 1e9, ignoreFreeze: true,
+    sort: 'ASC', withRatings: false, forTable: true
+  });
   let contestants = await contest.getContestants({
     order: 'UserContestEnter.id ASC'
   });

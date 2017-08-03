@@ -39,7 +39,6 @@ export class RepositoryBranch {
     let commit = new Commit(object, realCommitTimeMs);
     let futureIndex = this._findInsertIndex(commit);
     this._insertCommit(futureIndex, commit);
-    this._assertOrder();
     return commit;
   }
 
@@ -48,9 +47,7 @@ export class RepositoryBranch {
    */
   rollback() {
     if (this.headIndex >= 0) {
-      let deletingCommit = this._commits.pop();
-      this.head.child = null;
-      deletingCommit.parent = null;
+      this._ejectCommitByIndex( this.headIndex );
     }
     return this;
   }
@@ -112,18 +109,6 @@ export class RepositoryBranch {
   isHeadCommit(commit) {
     return commit && this._commits.length > 0
       && commit.hash === this.head.hash;
-  }
-
-  _assertOrder() {
-    let isCorrectOrder = true;
-    for (let i = 1; i < this._commits.length; ++i) {
-      if (this._commits[i].value.sentAtMs < this._commits[i - 1].value.sentAtMs) {
-        isCorrectOrder = false;
-      }
-    }
-    if (!isCorrectOrder) {
-      throw HttpError('Not correct order');
-    }
   }
 
   /**

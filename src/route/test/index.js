@@ -14,8 +14,6 @@ router.get('/', (req, res, next) => {
   }).catch(next);
 });
 
-let timeoutId;
-
 async function _test(params) {
   let { userId = 1, contestId = 6 } = params;
   let viewAs = await models.User.findByPrimary(userId).then(user => user.get({ plain: true }));

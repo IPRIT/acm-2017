@@ -2,6 +2,7 @@ import * as models from "../../../models";
 import Promise from 'bluebird';
 import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
+import { GlobalTablesManager } from "../../../services/table/global-manager";
 
 export function updateContestRequest(req, res, next) {
   let { contestId } = req.params;
@@ -48,6 +49,8 @@ export async function updateContest(params) {
   await contest.setProblems(problemIds);
   await contest.setGroups([]);
   await contest.setGroups(groupIds);
+
+  await GlobalTablesManager.getInstance().getTableManager(contest.id).reset();
   
   return contests.getById({ contestId: contest.id });
 }

@@ -2,6 +2,7 @@ import * as models from "../../../models";
 import Promise from 'bluebird';
 import * as sockets from "../../../socket/socket";
 import { appendWatermark } from "../../../utils/utils";
+import { GlobalTablesManager } from "../../../services/table/global-manager";
 
 export function refreshSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -52,6 +53,8 @@ export async function refreshSolution(params) {
   if (solution.Problem.systemType === 'cf') {
     await appendWatermark(solution);
   }
+
+  await GlobalTablesManager.getInstance().getTableManager(solution.contestId).removeSolution( solution );
   
   sockets.emitResetSolutionEvent({
     contestId: solution.contestId,
