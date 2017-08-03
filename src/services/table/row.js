@@ -253,16 +253,9 @@ export class Row extends AbstractRow {
 
   /**
    * @param {Cell} cell
-   */
-  onCellAccepted(cell) {
-    // todo
-  }
-
-  /**
-   * @param {Cell} cell
    * @param {CellCommitValue} commitValue
    */
-  onCellNewWrongAttempt(cell, commitValue) {
+  onCellChanged(cell, commitValue) {
     // todo
   }
 
@@ -327,8 +320,7 @@ export class Row extends AbstractRow {
    * @private
    */
   _addCellListeners(cell) {
-    cell.on('cell.accepted', this.onCellAccepted.bind(this));
-    cell.on('cell.newWrongAttempt', this.onCellNewWrongAttempt.bind(this));
+    cell.on('cell.changed', this.onCellChanged.bind(this));
     cell.on('cell.forceUpdateNeeded', this.onCellForceUpdateNeeded.bind(this));
     cell.on('cell.solutionRemoved', this.onCellSolutionRemoved.bind(this));
   }

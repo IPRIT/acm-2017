@@ -209,16 +209,15 @@ export class Cell extends AbstractCell {
    * @private
    */
   _normalizeWrongAttempts() {
-    if (!this.repository.getCommits().length) {
-      return this;
+    if (this.repository.getCommits().length) {
+      let commitRef = this.repository.getCommits()[0];
+      let wrongAttempts = 0;
+      do {
+        commitRef.value.wrongAttempts = commitRef.value.isAccepted
+          ? wrongAttempts : ++wrongAttempts;
+      } while (commitRef = commitRef.child);
     }
-    let commitRef = this.repository.getCommits()[0];
-    let wrongAttempts = 0;
-    while (commitRef.child) {
-      commitRef.value.wrongAttempts = commitRef.value.isAccepted
-        ? wrongAttempts : ++wrongAttempts;
-      commitRef = commitRef.child;
-    }
+    return this;
   }
 
   /**
