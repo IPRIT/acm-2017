@@ -103,14 +103,7 @@ export class Cell extends AbstractCell {
    * @return {Cell}
    */
   addSolution(solution, isInitAction = false) {
-    if (!this.isCellAccepted) {
-      if (solution.verdictId === 1) {
-        this._accept(solution, isInitAction);
-      } else {
-        this._addWrongAttempt(solution, isInitAction);
-      }
-    }
-    return this;
+    return this._insertSolution(solution, isInitAction);
   }
 
   /**
@@ -188,30 +181,44 @@ export class Cell extends AbstractCell {
    * @return {Cell}
    * @private
    */
-  _addWrongAttempt(solution, isInitAction = false) {
-    let { wrongAttempts = 0 } = this.currentValue || {};
-    let commitValue = new CellCommitValue(solution.id, false, wrongAttempts + 1, solution.sentAtMs);
+  _insertSolution(solution, isInitAction = false) {
+    let { isAccepted, sentAtMs } = this.currentValue || {};
+    let isCurrentSolutionAccepted = solution.verdictId === 1;
+    if (isAccepted) {
+      if (isCurrentSolutionAccepted) {
+        if (sentAtMs > solution.sentAtMs) {
+          this.repository.ejectCommitByRealTimeMs( sentAtMs );
+        } else {
+          return this;
+        }
+      }
+      if (sentAtMs < solution.sentAtMs) {
+        return this;
+      }
+    }
+    let commitValue = new CellCommitValue(solution.id, isCurrentSolutionAccepted, 0, solution.sentAtMs);
     this.repository.commit( commitValue );
+    this._normalizeWrongAttempts();
     if (!isInitAction) {
-      this.emit('cell.newWrongAttempt', this, commitValue);
+      this.emit('cell.changed', this, commitValue);
     }
     return this;
   }
 
   /**
-   * @param {Solution} solution
-   * @param {boolean} isInitAction
-   * @return {Cell}
    * @private
    */
-  _accept(solution, isInitAction = false) {
-    let { wrongAttempts = 0 } = this.currentValue || {};
-    let commitValue = new CellCommitValue(solution.id, true, wrongAttempts, solution.sentAtMs);
-    this.repository.commit( commitValue );
-    if (!isInitAction) {
-      this.emit('cell.accepted', this, solution);
+  _normalizeWrongAttempts() {
+    if (!this.repository.getCommits().length) {
+      return this;
     }
-    return this;
+    let commitRef = this.repository.getCommits()[0];
+    let wrongAttempts = 0;
+    while (commitRef.child) {
+      commitRef.value.wrongAttempts = commitRef.value.isAccepted
+        ? wrongAttempts : ++wrongAttempts;
+      commitRef = commitRef.child;
+    }
   }
 
   /**

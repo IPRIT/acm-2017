@@ -1,4 +1,5 @@
 import { Commit } from "./commit";
+import * as utils from '../../utils';
 
 export class RepositoryBranch {
 
@@ -36,12 +37,9 @@ export class RepositoryBranch {
    */
   commit(object, realCommitTimeMs) {
     let commit = new Commit(object, realCommitTimeMs);
-    // todo: insert commit in appropriate place (binary search by real commit time)
-    commit.parent = this.head;
-    if (this.headIndex >= 0) {
-      this.head.child = commit;
-    }
-    this._commits.push( commit );
+    let futureIndex = this._findInsertIndex(commit);
+    this._insertCommit(futureIndex, commit);
+    this._assertOrder();
     return commit;
   }
 
@@ -80,7 +78,7 @@ export class RepositoryBranch {
     if (commitIndex < 0) {
       return null;
     }
-    return this.ejectCommitByIndex( commitIndex );
+    return this._ejectCommitByIndex( commitIndex );
   }
 
   /**
@@ -116,6 +114,51 @@ export class RepositoryBranch {
       && commit.hash === this.head.hash;
   }
 
+  _assertOrder() {
+    let isCorrectOrder = true;
+    for (let i = 1; i < this._commits.length; ++i) {
+      if (this._commits[i].value.sentAtMs < this._commits[i - 1].value.sentAtMs) {
+        isCorrectOrder = false;
+      }
+    }
+    if (!isCorrectOrder) {
+      throw HttpError('Not correct order');
+    }
+  }
+
+  /**
+   * @param {Commit} commit
+   * @param {boolean} removeDuplicate
+   * @private
+   */
+  _findInsertIndex(commit, removeDuplicate = true) {
+    let [ lowerIndex, upperIndex ] = utils.binarySearchIndexes(
+      this._commits, commit.realCreatedAtMs, 'realCreatedAtMs', 1
+    );
+    if (lowerIndex !== upperIndex) {
+      return upperIndex;
+    }
+    let foundCommit = this._commits[ lowerIndex ];
+    if (foundCommit.value.solutionId === commit.value.solutionId) {
+      if (removeDuplicate) {
+        this._ejectCommitByIndex( lowerIndex );
+      }
+      return removeDuplicate ? lowerIndex : lowerIndex + 1;
+    }
+    return foundCommit.value.solutionId > commit.value.solutionId
+      ? lowerIndex : lowerIndex + 1;
+  }
+
+  /**
+   * @param {number} index
+   * @param {Commit} commit
+   * @private
+   */
+  _insertCommit(index, commit) {
+    this._commits.splice(index, 0, commit);
+    this._connectCommit(index, commit);
+  }
+
   /**
    * @param {number} commitIndex
    * @return {Commit|null}
@@ -128,6 +171,24 @@ export class RepositoryBranch {
     this._disconnectCommit(ejectingCommit);
     this._commits.splice( commitIndex, 1 );
     return ejectingCommit;
+  }
+
+  /**
+   * @param {number} index
+   * @param {Commit} commit
+   * @private
+   */
+  _connectCommit(index, commit) {
+    let prevCommit = this._commits[ index - 1 ];
+    let nextCommit = this._commits[ index + 1 ];
+    if (prevCommit) {
+      commit.parent = prevCommit;
+      prevCommit.child = commit;
+    }
+    if (nextCommit) {
+      commit.child = nextCommit;
+      nextCommit.parent = commit;
+    }
   }
 
   /**
