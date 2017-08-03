@@ -19,6 +19,9 @@ let User = sequelize.define('User', {
     allowNull: false,
     set(value) {
       this.setDataValue('password', passwordHash(value));
+    },
+    get() {
+      return '(hidden)';
     }
   },
   firstName: {
@@ -141,6 +144,9 @@ let User = sequelize.define('User', {
     },
     setPasswordHash(hash) {
       this.setDataValue('password', hash);
+    },
+    getPasswordHash() {
+      this.getDataValue('password');
     }
   }
 });
