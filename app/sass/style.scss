@@ -1,3 +1,6 @@
+@import "helpers/all";
+@import "table/table";
+
 $media: screen;
 $laptop_min_width: 1024px;
 $phone_max_width: 799px;
@@ -22,7 +25,7 @@ $primary-color-theme: #00acec;
   transition: $params;
 }
 body, html {
-  background: #F4F4F4 !important;
+  background: $page-background-color !important;
   min-height: 100% !important;
 }
 html {
@@ -2093,6 +2096,7 @@ md-input-container {
 .rating-info, .group-rating-table__rating {
   background: white;
   margin-bottom: 16px;
+  line-height: 1.6em;
 
   &__group {
     background: #ccc;

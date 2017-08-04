@@ -1,0 +1,15 @@
+div.acm-table-row
+  div.acm-table-row__block
+    div.acm-table-row__cell
+      span {{ row.displayRank }}
+    div.acm-table-row__cell
+      span {{ row.user.fullName }}
+
+  div.acm-table-row__block
+    table-cell(ng-repeat='cell in row.cells', cell='cell')
+
+  div.acm-table-row__block
+    div.acm-table-row__cell
+      span {{ row.acceptedSolutions }}
+    div.acm-table-row__cell
+      span {{ row.penalty }}

@@ -1,0 +1,273 @@
+@import "variables";
+@import "functions";
+@import "classes";
+
+@mixin bem-block($block, $at-root: true) {
+  $scope: unwrap-scope(&);
+  $is-class: str-index($block, unquote('.'));
+  $selector: $block;
+  @if (not $is-class) {
+    $selector: unquote('.')#{$bem-block-prefix}#{$selector};
+  }
+  @if ($at-root) {
+    @at-root #{$selector} {
+      @content;
+    }
+  } @else {
+    #{$selector} {
+      @content;
+    }
+  }
+}
+
+@mixin bem-element($element, $at-root: true) {
+  $scope: unwrap-scope(&);
+  $selector: #{$scope}#{$bem-element-prefix}#{$element};
+  @if ($at-root) {
+    @at-root #{$selector} {
+      @content;
+    }
+  } @else {
+    #{$selector} {
+      @content;
+    }
+  }
+}
+
+@mixin bem-modifier($modifier, $at-root: true) {
+  $scope: unwrap-scope(&);
+  $selector: #{$scope}#{$bem-modifier-prefix}#{$modifier};
+  @if ($at-root) {
+    @at-root &#{$selector} {
+      @content;
+    }
+  } @else {
+    &#{$selector} {
+      @content;
+    }
+  }
+}
+
+/**
+ * Usage example:
+ *
+ * @include bem(block) {
+ *   background: #faf;
+ *   @include bem($element: element) {
+ *     color: #8496F3;
+ *     @include bem($modifier: modifier_key_value) {
+ *       border: 1px solid #f5f;
+ *       &:hover {
+ *         background: #000;
+ *       }
+ *     }
+ *   }
+ * }
+ */
+@mixin bem($block: null, $element: null, $modifier: null, $at-root: true) {
+  @if ($element and $modifier) {
+    @include bem-element($element, $at-root) {
+      @include bem-modifier($modifier, $at-root) {
+        @content;
+      }
+    }
+  } @else if ($element) {
+    @include bem-element($element, $at-root) {
+      @content;
+    }
+  } @else if ($modifier) {
+    @include bem-modifier($modifier, $at-root) {
+      @content;
+    }
+  } @else {
+    @include bem-block($block, $at-root) {
+      @content;
+    }
+  }
+}
+
+@mixin transition-default($duration: .1s, $property: all, $delay: .0s) {
+  transition: $property $duration $transitionDefaultTimingFunction $delay;
+}
+
+@mixin transition-series($params...) {
+  transition: $params;
+}
+
+@mixin transition-only-for($duration: .5s, $properties: (all), $delay: 0s, $transitionTimingFunction: $transitionDefaultTimingFunction) {
+  $scaffold: ();
+  @each $property in $properties {
+    $scaffold: append($scaffold, #{$property} #{$duration} #{$transitionTimingFunction} #{$delay}, comma);
+  }
+  transition: $scaffold;
+}
+
+/**
+ * Extended mixin taken from angular-material (@see )
+ * @param {string} $color - color for input placeholder
+ * @param {:hover|:active|:focus|null} $target-pseudo - parent pseudo-class
+ * E.g.: @include input-placeholder-color(#faf);
+ * E.g.: @include input-placeholder-color(#faf, (hover: #ff0));
+ * E.g.: @include input-placeholder-color(#faf, (hover: #ff0, active: #0ff), false) {
+ *    transition: all .2s ease;
+ * }
+ */
+@mixin input-placeholder-color($color, $target-pseudo-colors: (), $contentInBase: true) {
+  $pseudos: '::-webkit-input-placeholder', ':-moz-placeholder', '::-moz-placeholder',
+    ':-ms-input-placeholder',  '::-webkit-input-placeholder';
+
+  @each $pseudo in $pseudos {
+    &#{$pseudo} {
+      color: $color;
+      @if ($contentInBase) {
+        @content;
+      }
+    }
+    @each $target-pseudo, $target-pseudo-color in $target-pseudo-colors {
+      &:#{$target-pseudo}#{$pseudo} {
+        color: $target-pseudo-color;
+        @if (not $contentInBase) {
+          @content;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Four points:
+ * ----------------
+ * xs: 600px
+ * sm: 1024px
+ * md: 1280px
+ * lg or xl: 1920px
+ * ----------------
+ *
+ * xs
+ * lt-xs
+ * gt-xs
+ * sm
+ * lt-sm
+ * gt-sm
+ * md
+ * lt-md
+ * gt-md
+ * lg
+ * lt-lg
+ * gt-lg
+ * xl
+ * gt-xl
+ */
+@mixin media-query($media, $orientation: null) {
+  @if $media == xs or $media == lt-xs {
+    @if ($orientation) {
+      @media screen and (max-width: $layout-breakpoint-xs - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (max-width: $layout-breakpoint-xs - 1) { @content; }
+    }
+  }
+  @else if $media == gt-xs {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-xs) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-xs) { @content; }
+    }
+  }
+  @else if $media == sm {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-xs) and (max-width: $layout-breakpoint-sm - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-xs) and (max-width: $layout-breakpoint-sm - 1) { @content; }
+    }
+  }
+  @else if $media == lt-sm {
+    @if ($orientation) {
+      @media screen and (max-width: $layout-breakpoint-sm - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (max-width: $layout-breakpoint-sm - 1) { @content; }
+    }
+  }
+  @else if $media == gt-sm {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-sm) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-sm) { @content; }
+    }
+  }
+  @else if $media == md {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-sm) and (max-width: $layout-breakpoint-md - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-sm) and (max-width: $layout-breakpoint-md - 1) { @content; }
+    }
+  }
+  @else if $media == lt-md {
+    @if ($orientation) {
+      @media screen and (max-width: $layout-breakpoint-md - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (max-width: $layout-breakpoint-md - 1) { @content; }
+    }
+  }
+  @else if $media == gt-md {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-md) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-md) { @content; }
+    }
+  }
+  @else if $media == lg {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-md) and (max-width: $layout-breakpoint-lg - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-md) and (max-width: $layout-breakpoint-lg - 1) { @content; }
+    }
+  }
+  @else if $media == lt-lg or $media == lt-xl {
+    @if ($orientation) {
+      @media screen and (max-width: $layout-breakpoint-lg - 1) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (max-width: $layout-breakpoint-lg - 1) { @content; }
+    }
+  }
+  @else if $media == gt-lg {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-lg) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-lg) { @content; }
+    }
+  }
+  @else if $media == xl or $media == gt-xl {
+    @if ($orientation) {
+      @media screen and (min-width: $layout-breakpoint-lg) and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen and (min-width: $layout-breakpoint-lg) { @content; }
+    }
+  }
+  @else {
+    @if ($orientation) {
+      @media screen and (orientation: $orientation) { @content; }
+    }
+    @else {
+      @media screen { @content; }
+    }
+  }
+}
+
+@mixin mock-text($color: gray, $height: 1em, $width: 100%) {
+  @extend %ab-layer-block;
+  height: $height;
+  width: $width;
+  background: $color;
+}

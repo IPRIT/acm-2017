@@ -46,7 +46,7 @@ export class TableManager {
    * @type {number}
    * @private
    */
-  _tableSelfDestructTimeoutMs = 150000; // 60 * 60 * 1000; // 60 minutes
+  _tableSelfDestructTimeoutMs = 6 * 60 * 60 * 1000; // 6 hours
 
   /**
    * @type {BehaviorSubject}

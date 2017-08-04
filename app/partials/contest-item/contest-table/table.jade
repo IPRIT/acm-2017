@@ -1,0 +1,15 @@
+div.acm-contest-table(md-whiteframe="1")
+  div.acm-contest-table__header
+    div.acm-contest-table__title
+      span(qemy-i18n='contest-table-title')
+    div.acm-contest-table__actions
+      span 1
+      span 2
+
+  div.acm-contest-table__inner
+    div.acm-contest-table__header-row
+      table-header-row
+    div.acm-contest-table__rows
+      table-row(ng-repeat="row in table.rows" row="row")
+
+

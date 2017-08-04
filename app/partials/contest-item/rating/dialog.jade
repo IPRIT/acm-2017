@@ -2,7 +2,7 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
   form
     md-toolbar.md-accent
       div.md-toolbar-tools
-        h2 Рейтинг {{user.fullName}}
+        h2 Рейтинг «{{user.fullName}}»
         span(flex)
         md-button.md-icon-button(ng-click="close()")
           md-icon(md-svg-src="/img/icons/ic_close_48px.svg", aria-label="Close dialog")
@@ -23,6 +23,9 @@ md-dialog(aria-label="Verdict selection", style='overflow-y: hidden; max-width: 
           div
             span(style='vertical-align: middle;') Место в группе:&nbsp;
             span(style='vertical-align: middle; font-weight: bold;') \#{{ratingHistory.currentRating.groupRank}}
+          div
+            span(style='vertical-align: middle;') Ожидаемое место не менее&nbsp;
+            span(style='vertical-align: middle; font-weight: bold;') {{ratingHistory.currentRating.expectedRank.toFixed(1)}}
           div
             span(style='vertical-align: middle;') Текущий рейтинг:&nbsp;
             span(style='vertical-align: middle; font-size: {{ratingHistory.currentRating.ratingAfter / 1000}}em')

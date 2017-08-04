@@ -1,0 +1,33 @@
+%ab-layer-block {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+%ab-layer-flex {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+%ab-layer-absolute-fill {
+  position: absolute;
+  @extend %ab-layer-block;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+%magic-link {
+  text-decoration: none;
+  background-image: linear-gradient(to bottom, white 50%, white 50%);
+  background-repeat: repeat-x;
+  background-size: 2px .1em;
+  background-position: 0 1.04em;
+}
+
+%reset-magic-link {
+  background: none;
+}

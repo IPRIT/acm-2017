@@ -70,8 +70,9 @@ export class ContestTable extends AbstractTable {
     this._mergeDefaultParams( params );
     let isPastQuery = this._getTableHash( viewAs ).createdAtMs > params.showInTimeMs;
     return {
-      //header: this._getTableHeader(),
+      header: this._getTableHeader(),
       rows: this._getOrderedRows(viewAs, params, isPastQuery),
+      rowsNumber: this._getRowsNumber( viewAs ),
       actualTableHash: this._getTableHash( viewAs ),
       isPastQuery
     };
@@ -267,6 +268,15 @@ export class ContestTable extends AbstractTable {
         return row.getDisplayRowValue(viewAs, showInTimeMs);
       })
     ).slice(offset, offset + count);
+  }
+
+  /**
+   * @param {User} viewAs
+   * @return {number}
+   * @private
+   */
+  _getRowsNumber(viewAs) {
+    return this._rows.filter(row => row.canView(viewAs)).length;
   }
 
   /**

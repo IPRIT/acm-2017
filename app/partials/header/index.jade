@@ -11,7 +11,8 @@ div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
   div.contest-menu__layer
     div.contest-menu__items
       a.contest-menu__item(ui-sref='^.item', ui-sref-active='contest-menu__item_state_active') Информация
-      a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active') Таблица результатов
+      a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active') Таблица
+      a.contest-menu__item(ui-sref='^.table', ui-sref-active='contest-menu__item_state_active', ng-class='{"contest-menu__item_state_active": $state.includes("contest.table")}') Таблица (new)
       a.contest-menu__item(ui-sref='^.problems', ui-sref-active='contest-menu__item_state_active') Условия задач
       a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isAdmin') Отправить
       a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}') Решения

@@ -109,6 +109,16 @@ angular.module('Qemy.services.contest-item', [
         return data.data;
       });
     }
+
+    function getTable2(params) {
+      return $http({
+        method: 'get',
+        url: '/api/contest/' + params.contestId + '/table2',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     function getSentsForCell(params) {
       return $http({
@@ -136,6 +146,7 @@ angular.module('Qemy.services.contest-item', [
       getSents: getSents,
       getSourceCode: getSourceCode,
       getTable: getTable,
+      getTable2: getTable2,
       getSentsForCell: getSentsForCell,
       getMessages: getMessages,
       markAsRead: markAsRead,
