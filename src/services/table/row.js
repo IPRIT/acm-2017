@@ -210,6 +210,9 @@ export class Row extends AbstractRow {
    */
   addSolution(solution, isInitAction = false) {
     let cell = this.getCellByProblemId(solution.problemId);
+    if (!cell) {
+      return;
+    }
     cell.addSolution( solution, isInitAction );
   }
 
