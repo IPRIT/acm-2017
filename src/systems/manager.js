@@ -5,6 +5,7 @@ import * as ejudge from './ejudge';
 import * as yandex from './yandex';
 import * as yandexOfficial from './yandex.official';
 import * as services from '../services';
+import * as models from '../models';
 
 const systems = { timus, acmp, cf, ejudge, yandex, yandexOfficial };
 let inProcessSolutionsMap = new Map();
@@ -36,14 +37,25 @@ export async function send(solution) {
   }
   inProcessSolutionsMap.set(solution.id, solution);
   await system.handle( solution ).then(() => {
-    return _updateContestTable(solution);
+    return models.Verdict.findByPrimary(solution.verdictId);
+  }).then(verdict => {
+    return _updateContestTable(solution, verdict);
   }).finally(async () => {
     inProcessSolutionsMap.delete(solution.id);
   });
   return solution;
 }
 
-function _updateContestTable(solution) {
+/**
+ * @param {Solution} solution
+ * @param {Verdict} verdict
+ * @return {*}
+ * @private
+ */
+function _updateContestTable(solution, verdict) {
+  if (verdict.id !== 1 && !verdict.scored) {
+    return;
+  }
   console.log('Updating contest table...');
   return services.GlobalTablesManager
     .getInstance()

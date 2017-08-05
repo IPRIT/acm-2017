@@ -3,6 +3,7 @@ import * as models from '../../models';
 import Promise from 'bluebird';
 import { parseProblemIdentifier } from "../../utils/utils";
 import * as api from './api';
+import * as cf from "./cf";
 import { capitalize } from "../../utils/utils";
 
 const terminalStatesMapping = {
@@ -82,7 +83,28 @@ async function getContextRow(solution, systemAccount, receivedRow) {
     if (!contextRow.length) {
       continue;
     }
-    return contextRow[0];
+    let foundRow = contextRow[0];
+    try {
+      foundRow.testNumber = await getTestNumber(systemAccount, receivedRow);
+    } catch (err) {
+      console.error(err);
+    }
+    return foundRow;
   }
   return null;
+}
+
+export async function getTestNumber(systemAccount, receivedRow) {
+  let endpoint = `http://codeforces.com/submissions/${systemAccount.instance.systemLogin}`;
+  let $ = await cf.$getPage(endpoint, systemAccount);
+  let $row = $(`[data-submission-id="${receivedRow.solutionId}"]`);
+  if (!$row.length) {
+    return 0;
+  }
+  let testNumberText = $row.find('.status-verdict-cell').text().trim();
+  let testNumberRegex = /(\d+)$/i;
+  if (testNumberRegex.test( testNumberText )) {
+    return ensureNumber( testNumberText.match( testNumberRegex )[1] );
+  }
+  return 0;
 }

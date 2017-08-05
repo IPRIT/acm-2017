@@ -25,6 +25,9 @@ angular.module('Qemy.directives.contest-item.table', [])
   .directive('tableHeaderRow', function () {
     return {
       restrict: 'EA',
+      scope: {
+        row: '='
+      },
       templateUrl: templateUrl('contest-item/contest-table', 'header-row'),
       controller: 'ContestTableHeaderRow'
     }
@@ -34,7 +37,8 @@ angular.module('Qemy.directives.contest-item.table', [])
     return {
       restrict: 'EA',
       scope: {
-        row: '='
+        row: '=',
+        viewAs: '='
       },
       templateUrl: templateUrl('contest-item/contest-table', 'row'),
       controller: 'ContestTableRow'
@@ -45,10 +49,24 @@ angular.module('Qemy.directives.contest-item.table', [])
     return {
       restrict: 'EA',
       scope: {
-        cell: '='
+        cell: '=',
+        row: '=',
+        viewAs: '='
       },
       templateUrl: templateUrl('contest-item/contest-table', 'cell'),
       controller: 'ContestTableCell'
+    }
+  })
+
+  .directive('tableFooter', function () {
+    return {
+      restrict: 'EA',
+      scope: {
+        params: '=',
+        table: '='
+      },
+      templateUrl: templateUrl('contest-item/contest-table', 'footer'),
+      controller: 'ContestTableFooter'
     }
   })
 ;

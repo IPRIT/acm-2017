@@ -4,6 +4,7 @@
   @extend %ab-layer-block;
   border-radius: 2px;
   background-color: white;
+  min-width: 900px;
 
   @include bem-element(header) {
     @extend %ab-layer-flex;
@@ -11,7 +12,7 @@
     align-items: stretch;
     justify-content: flex-start;
     height: 64px;
-    padding: 0 14px 0 24px;
+    padding: 0 0 0 24px;
     box-sizing: border-box;
   }
 
@@ -33,10 +34,28 @@
     align-items: center;
     justify-content: flex-end;
   }
+
+  @include bem-element(inner) {
+    position: relative;
+  }
+
+  @include bem-element(overlay) {
+    @extend %ab-layer-absolute-fill;
+    z-index: 100;
+    background-color: transparentize(white, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 table-row {
   display: block;
+  border-top: 1px solid #e0e0e0;
+
+  &:last-of-type {
+    border-bottom: 1px solid #e0e0e0;
+  }
 }
 @include bem(table-row) {
   @extend %ab-layer-flex;
@@ -44,35 +63,201 @@ table-row {
   justify-content: space-around;
   align-items: stretch;
   height: 48px;
+  padding: 0 24px;
+  box-sizing: border-box;
+  font-size: 15px;
+  font-weight: 400;
+  color: transparentize(black, .13);
+
+  &:hover {
+    background-color: #eee;
+  }
 
   @include bem-element(block) {
     @extend %ab-layer-flex;
     flex-direction: row;
     align-items: stretch;
     justify-content: space-around;
+
+    &:first-of-type {
+      margin-right: 10px;
+    }
+    &:first-of-type, &:last-of-type {
+      width: auto;
+    }
+
+    $first: 10;
+    $last: 50;
+    @for $i from 10 through 50 {
+      $index: $i - $first;
+      &[data-cells='#{$i}'] {
+        font-size: #{.8 + ($last - $first - $index) * (.2 / ($last - $first))}em;
+      }
+    }
   }
 
   @include bem-element(cell) {
     @extend %ab-layer-flex;
     align-items: center;
     justify-content: center;
+    min-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @include bem-element(rank) {
+    max-width: 50px;
+    align-items: flex-start;
+  }
+
+  @include bem-element(contestant) {
+    min-width: 150px;
+    max-width: 150px;
+    align-items: flex-start;
+
+    * {
+      @extend %ab-layer-flex;
+      align-items: stretch;
+      justify-content: center;
+      text-decoration: none !important;
+    }
+
+    & > span {
+      display: inline-block;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  @include bem-element(accepted-solutions) {
+    min-width: 80px;
+    max-width: 80px;
+    align-items: flex-end;
+  }
+
+  @include bem-element(penalty) {
+    min-width: 80px;
+    max-width: 80px;
+    align-items: flex-end;
+    margin-left: 10px;
+  }
+
+  @include bem-element(type_even) {
+    background-color: transparentize(#607d8b, .95);
+  }
+}
+
+@include bem(table-header-row) {
+  font-size: 14px;
+  font-weight: 500;
+  color: #757575;
+
+  &:hover {
+    background: none;
+  }
+
+  @include bem-element(cell) {
+    min-width: 5px !important;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      color: transparentize(black, .13);
+    }
   }
 }
 
 table-cell {
   display: block;
+  min-width: 5px !important;
+  outline: none;
 }
 @include bem(table-cell) {
   @extend %ab-layer-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  outline: none;
 
   @include bem-element(result) {
     font-size: 1em;
   }
 
   @include bem-element(accepted-at) {
-    font-size: .6em;
+    font-size: .7em;
+  }
+
+  @include bem-element(type_clickable) {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  @include bem-element(type_practice) {
+    color: #009688;
+  }
+
+  @include bem-element(type_frozen) {
+    color: #FF9800;
+  }
+
+  @include bem-element(loading-overlay) {
+    @extend %ab-layer-absolute-fill;
+    z-index: 100;
+    background-color: transparentize(white, .3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+table-footer {
+  display: block;
+}
+@include bem(table-footer) {
+  @extend %ab-layer-flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-end;
+  height: 56px;
+  font-size: 13px;
+  color: #757575;
+
+  @include bem-element(block) {
+    @extend %ab-layer-flex;
+    justify-content: center;
+    width: auto;
+  }
+
+  @include bem-element(pagination-control) {
+    @extend %ab-layer-flex;
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+  }
+
+  @include bem-element(rows-showing) {
+    margin-right: 18px;
+  }
+
+  @include bem-element(rows-number) {
+    margin-right: 32px;
+
+    md-select {
+      margin: 0;
+    }
+
+    .md-select-value {
+      min-width: initial;
+    }
+  }
+
+  @include bem-element(rows-number-label) {
+    margin-right: 40px;
   }
 }

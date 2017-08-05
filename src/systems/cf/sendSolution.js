@@ -21,7 +21,7 @@ export async function sendSolution(solution, systemAccount) {
     }
     
     let { csrfToken, jar } = systemAccount;
-    let { type, contestNumber, symbolIndex } = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
+    let { type, contestNumber } = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
   
     let endpoint = getContestEndpoint(type, { contestNumber, pathTo: ACM_SOLUTIONS_POST_ENDPOINT });
     let solutionForm = buildSolutionForm(solution, systemAccount);
@@ -46,26 +46,24 @@ export async function sendSolution(solution, systemAccount) {
     });
     if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
       throw new Error('Service unavailable');
-    } else {
-      let $ = cheerio.load(response.body),
-        submitForm = $('.submit-form'),
-        submitErrorRepeat = $('.error.for__source');
-      if (submitForm.length || submitErrorRepeat.length) {
-        let errorTextForSameSolutions = 'Ранее вы отсылали абсолютно такой же код';
-        if (submitErrorRepeat.text().includes( errorTextForSameSolutions )) {
-          throw new Error('Same solution');
-        }
-        let roundbox = $('.submit-form .roundbox');
-        if (roundbox.length) {
-          throw new Error('Warning');
-        }
-        let errorTextForTooMuchSolutions = 'Вы можете отсылать решения не более 20 раз в 5 минут';
-        if (submitErrorRepeat.text().includes( errorTextForTooMuchSolutions )) {
-          throw new Error('Too much solutions');
-        }
-        console.log(response.body);
-        throw new Error('Unhandled error');
+    }
+    let $ = cheerio.load(response.body),
+      submitForm = $('.submit-form'),
+      submitErrorRepeat = $('.error.for__source');
+    if (submitForm.length || submitErrorRepeat.length) {
+      let errorTextForSameSolutions = 'Ранее вы отсылали абсолютно такой же код';
+      if (submitErrorRepeat.text().includes( errorTextForSameSolutions )) {
+        throw new Error('Same solution');
       }
+      let roundbox = $('.submit-form .roundbox');
+      if (roundbox.length) {
+        throw new Error('Warning');
+      }
+      let errorTextForTooMuchSolutions = 'Вы можете отсылать решения не более 20 раз в 5 минут';
+      if (submitErrorRepeat.text().includes( errorTextForTooMuchSolutions )) {
+        throw new Error('Too much solutions');
+      }
+      throw new Error('Unhandled error');
     }
     console.log(`[System report] Solution [${solution.id}] has been sent`);
     

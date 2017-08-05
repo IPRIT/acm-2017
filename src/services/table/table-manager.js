@@ -106,6 +106,20 @@ export class TableManager {
     });
   }
 
+  /**
+   * @param {User} user
+   * @return {*}
+   */
+  addRow(user) {
+    return this._wrapActionOnInit(async () => {
+      this._tableInstance.addRow( user );
+    });
+  }
+
+  /**
+   * @param {number} userId
+   * @return {*}
+   */
   removeRow(userId) {
     return this._wrapActionOnInit(async () => {
       this._tableInstance.removeRow( userId );

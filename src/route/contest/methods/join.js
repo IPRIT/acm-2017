@@ -1,7 +1,7 @@
 import * as models from '../../../models';
 import Promise from 'bluebird';
-import * as contests from './index';
 import * as sockets from '../../../socket';
+import * as services from "../../../services";
 
 export function joinRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -27,6 +27,8 @@ export async function join(params) {
   }
   
   let enterItem = await contest.addContestant(user);
+
+  await services.GlobalTablesManager.getInstance().getTableManager(contest.id).addRow( user );
   
   sockets.emitTableUpdateEvent({ contestId });
   

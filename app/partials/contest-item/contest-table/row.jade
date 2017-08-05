@@ -1,15 +1,19 @@
-div.acm-table-row
+div.acm-table-row(
+  ng-class='{\
+    "acm-table-row__type_even": !(row.groupNumber % 2)\
+  }'
+)
   div.acm-table-row__block
-    div.acm-table-row__cell
-      span {{ row.displayRank }}
-    div.acm-table-row__cell
-      span {{ row.user.fullName }}
+    div.acm-table-row__cell.acm-table-row__rank
+      span {{ ::row.displayRank }}
+    div.acm-table-row__cell.acm-table-row__contestant
+      rated-user-with-dialog(user='::row.user')
+
+  div.acm-table-row__block(data-cells='{{ ::row.cells.length }}')
+    table-cell.acm-table-row__cell(ng-repeat='cell in row.cells', cell='::cell', row='::row', , view-as='::viewAs')
 
   div.acm-table-row__block
-    table-cell(ng-repeat='cell in row.cells', cell='cell')
-
-  div.acm-table-row__block
-    div.acm-table-row__cell
-      span {{ row.acceptedSolutions }}
-    div.acm-table-row__cell
-      span {{ row.penalty }}
+    div.acm-table-row__cell.acm-table-row__accepted-solutions
+      span {{ ::row.acceptedSolutions }}
+    div.acm-table-row__cell.acm-table-row__penalty
+      span {{ ::row.penalty }}

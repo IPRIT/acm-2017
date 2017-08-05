@@ -22,13 +22,13 @@ angular.module('Qemy.controllers', [
         $rootScope.$broadcast('data loaded');
         if (!user || !user.id) {
           $rootScope.$broadcast('user updated', { user: {} });
-          return $state.go('auth.form');
+          return $state.go('auth.form', { test: 1 });
         }
         $rootScope.$broadcast('user updated', { user: user });
         console.log('User data updated.');
       }).catch(function (err) {
         $rootScope.$broadcast('data loaded');
-        $state.go('auth.form');
+        $state.go('auth.form', { test: 1 });
       });
     }
     updateUserData();
