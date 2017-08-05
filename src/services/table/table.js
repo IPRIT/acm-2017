@@ -118,6 +118,9 @@ export class ContestTable extends AbstractTable {
   addSolution(solution, isInitAction = false) {
     let { userId } = solution;
     let row = this._getRowByUserId(userId);
+    if (!row) {
+      return;
+    }
     row.addSolution( solution, isInitAction );
     if (!isInitAction) {
       row.isAdminRow
