@@ -1,0 +1,36 @@
+div.acm-contest-table(md-whiteframe="1")
+  div.acm-contest-table__header
+    div.acm-contest-table__title
+      span(qemy-i18n='contest-table-title')
+    div.acm-contest-table__actions(ng-if='user.isAdmin')
+      md-menu
+        md-button.md-icon-button(aria-label='Open table menu', ng-click='$mdMenu.open($event)')
+          md-icon(md-menu-origin, md-svg-src='/img/icons/ic_more_vert_48px.svg')
+        md-menu-content(width='4')
+          md-menu-item
+            md-button(ng-disabled='true')
+              div(layout='row', flex)
+                md-icon(md-svg-src='/img/icons/ic_history_48px.svg')
+                p(flex) Переотправить решения
+          md-menu-item
+            md-button(ng-disabled='true')
+              div(layout='row', flex)
+                md-icon(md-svg-src='/img/icons/ic_delete_sweep_48px.svg')
+                p(flex) Удалить из контеста
+
+  div.acm-contest-table__inner
+    div.acm-contest-table__overlay(ng-show='isRowsLoading')
+      md-progress-circular.md-accent.md-hue-1(md-diameter='30px')
+    div.acm-contest-table__header-row
+      table-header-row(row='table.header')
+    div.acm-contest-table__rows
+      table-row(ng-repeat="row in table.rows" row="::row", view-as='::user')
+    div.acm-contest-table__footer
+      table-footer(params='params', table='table')
+
+  style(ng-if='table.header.length > 10').
+    .page__inner {
+      width: auto;
+    }
+
+

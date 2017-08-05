@@ -9,6 +9,7 @@ export * from './sendSolution';
 export * from './getSolutions';
 export * from './getSolution';
 export * from './getTable';
+export * from './getTable2';
 export * from './getSolutionsForCell';
 export * from './postMessage';
 export * from './getMessages';

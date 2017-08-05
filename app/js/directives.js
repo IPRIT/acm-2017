@@ -180,6 +180,10 @@ angular.module('Qemy.directives', [])
       scope: true,
       link: function (scope, element, attrs) {
         window.addEventListener('scroll', function (ev) {
+          var $body = $('body');
+          if ($body.css('position') === 'fixed') {
+            return;
+          }
           var scrollTop = angular.element(document.body).scrollTop();
           var headerHeight = element.height();
           var headerOffset = Math.max(

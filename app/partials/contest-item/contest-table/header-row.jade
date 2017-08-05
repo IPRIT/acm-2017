@@ -1,0 +1,17 @@
+div.acm-table-row.acm-table-header-row
+  div.acm-table-row__block
+    div.acm-table-row__cell.acm-table-row__rank
+      | №
+    div.acm-table-row__cell.acm-table-row__contestant
+      | Участник
+
+  div.acm-table-row__block
+    a.acm-table-row__cell.acm-table-header-row__cell(ng-repeat='cell in row', ui-sref='^.problems-item({problemIndex: cell.problemIndex})')
+      span {{ cell.problemIndex }}
+      md-tooltip {{ cell.problemIndex }}. {{ cell.name }}
+
+  div.acm-table-row__block
+    div.acm-table-row__cell.acm-table-row__accepted-solutions
+      | Решения
+    div.acm-table-row__cell.acm-table-row__penalty
+      | Штраф

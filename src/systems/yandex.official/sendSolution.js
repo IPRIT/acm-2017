@@ -126,7 +126,11 @@ export function getSubmits($page, parsedSymbolIndex) {
     let solutionId = utils.ensureNumber( $row.find('td').eq(1).text().trim() );
     let symbolIndex = $row.find('td').eq(2).text().trim();
     let verdictName = $row.find('td').eq(4).text().trim();
-    let executionTime = utils.ensureNumber( clearNumber( $row.find('td').eq(6).text().trim() ) ) / 1000;
+    let _executionTimeRaw = $row.find('td').eq(6).text().trim();
+    let _isSeconds = !_executionTimeRaw.includes( 'ms' );
+    let _executionTimeNumber = utils.ensureNumber( clearNumber( $row.find('td').eq(6).text().trim() ) );
+    let executionTime = _isSeconds
+      ? _executionTimeNumber : _executionTimeNumber / 1000;
     let memory = utils.ensureNumber( clearNumber( $row.find('td').eq(7).text().trim() ) );
     let testNumber = utils.ensureNumber( $row.find('td').eq(8).text().trim() );
 

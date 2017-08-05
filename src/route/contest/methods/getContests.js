@@ -15,7 +15,7 @@ export function getContestsRequest(req, res, next) {
 const DEFAULT_CONTESTS_COUNT = 20;
 const DEFAULT_CONTESTS_OFFSET = 0;
 const DEFAULT_CONTESTS_CATEGORY = 'all';
-const DEFAULT_CONTESTS_SORT = 'byId';
+const DEFAULT_CONTESTS_SORT = 'byStart';
 const DEFAULT_CONTESTS_SORT_ORDER = 'desc';
 
 export async function getContests(params) {
@@ -56,9 +56,9 @@ export async function getContests(params) {
     category = DEFAULT_CONTESTS_CATEGORY;
   }
   let availableSorts = {
-    byId: ['id', sort_order.toUpperCase()], //'contests.id',
-    byStart: ['startTimeMs', sort_order.toUpperCase()], //'contests.start_time',
-    byCreation: ['createdAt', sort_order.toUpperCase()], //'contests.creation_time'
+    byId: ['id', sort_order.toUpperCase()],
+    byStart: ['startTimeMs', sort_order.toUpperCase()],
+    byCreation: ['createdAt', sort_order.toUpperCase()],
   };
   if (!(sort in availableSorts)) {
     sort = DEFAULT_CONTESTS_SORT;

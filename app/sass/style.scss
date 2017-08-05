@@ -1,3 +1,6 @@
+@import "helpers/all";
+@import "table/table";
+
 $media: screen;
 $laptop_min_width: 1024px;
 $phone_max_width: 799px;
@@ -22,7 +25,7 @@ $primary-color-theme: #00acec;
   transition: $params;
 }
 body, html {
-  background: #F4F4F4 !important;
+  background: $page-background-color !important;
   min-height: 100% !important;
 }
 html {
@@ -50,8 +53,6 @@ html {
   width: 100%;
   width: 100vw;
   z-index: 77;
-  -webkit-transform: translateZ(0);
-  transition: transform .25s ease-in-out;
 
   &_collapsed {
     .contest-menu {
@@ -112,7 +113,7 @@ html {
   padding: 21px;
   cursor: pointer;
   border-radius: 4px;
-  color: #219CF5;
+  color: #00acec;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1988,7 +1989,6 @@ md-input-container {
   }
   .page__inner {
     width: 100%;
-    min-width: initial;
   }
   .status-content {
     font-size: 0.8em;
@@ -2095,6 +2095,7 @@ md-input-container {
 .rating-info, .group-rating-table__rating {
   background: white;
   margin-bottom: 16px;
+  line-height: 1.6em;
 
   &__group {
     background: #ccc;
@@ -2881,6 +2882,7 @@ md-sidenav {
       height: 2px;
       position: absolute;
       width: 30px;
+      left: 13px;
       top: 4px;
       background-color: #00acec;
     }
@@ -2891,7 +2893,7 @@ md-sidenav {
       position: absolute;
       width: 30px;
       top: 4px;
-      left: -30px;
+      left: -33px;
       background-color: #00acec;
     }
 

@@ -11,7 +11,9 @@
 
 /* Directives */
 
-angular.module('Qemy.directives.contest-item', [])
+angular.module('Qemy.directives.contest-item', [
+  'Qemy.directives.contest-item.table'
+])
   
   .directive('xTest', function() {
     return {
@@ -48,7 +50,7 @@ angular.module('Qemy.directives.contest-item', [])
         function onConnectionChange(eventName) {
           if (eventName === 'connect' || eventName === 'reconnect') {
             $scope.status = 'on';
-          } else if (['disconnect', 'connect_error']) {
+          } else /*if (['disconnect', 'connect_error'])*/ {
             $scope.status = 'off';
           }
           safeApply($scope);

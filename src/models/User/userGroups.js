@@ -19,7 +19,7 @@ const groups = {
 
 let utils = {
   resolveGroup: group => group.mask 
-    ? group : Number.isInteger(group) ? utils.groupByMask(group) : groups[ group ],
+    ? group : (Number.isInteger(group) ? utils.groupByMask(group) : groups[ group ]),
   
   resolveAllGroups: (...groups) => groups.map(utils.resolveGroup),
 

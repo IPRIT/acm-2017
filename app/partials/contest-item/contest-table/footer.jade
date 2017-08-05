@@ -1,0 +1,23 @@
+div.acm-table-footer
+  div.acm-table-footer__block.acm-table-footer__rows-number-label
+    | Показать на странице:
+  div.acm-table-footer__block.acm-table-footer__rows-number
+    md-select.md-no-underline(ng-model='params.count', placeholder='Количество')
+      md-option(value='{{ number }}', ng-repeat='number in rowNumbers track by $index') {{ number }}
+  div.acm-table-footer__block.acm-table-footer__rows-showing(ng-show='table')
+    | {{ params.offset + 1 }}-{{ Math.min(params.offset + table.rows.length, table.rowsNumber) }} из {{ table.rowsNumber }}
+  div.acm-table-footer__block.acm-table-footer__pagination-control
+    div.acm-table-footer__pagination-button
+      md-button.md-icon-button(
+        aria-label='Previous page',
+        ng-disabled='!params.offset',
+        ng-click='prevPage($event)'
+      )
+        md-icon(md-svg-src='/img/icons/ic_navigate_before_48px.svg')
+    div.acm-table-footer__pagination-button
+      md-button.md-icon-button(
+        aria-label='Next page',
+        ng-disabled='params.offset + params.count >= table.rowsNumber',
+        ng-click='nextPage($event)'
+      )
+        md-icon(md-svg-src='/img/icons/ic_navigate_next_48px.svg')

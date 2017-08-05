@@ -55,7 +55,7 @@ function handleData(lines, req, res, next) {
     username = username || generateUsername(firstName, lastName);
     password = password || username;
     isAdmin = isAdmin == 1;
-    console.log(firstName, lastName, username, password, isAdmin);
+    //console.log(firstName, lastName, username, password, isAdmin);
     return models.User.create({
       username,
       firstName,

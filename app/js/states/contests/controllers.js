@@ -25,7 +25,7 @@ angular.module('Qemy.controllers.contests', [])
                 count: defaultCount,
                 offset: ($scope.pageNumber - 1) * defaultCount,
                 category: 'all',
-                sort: 'byId',
+                sort: 'byStart',
                 sort_order: 'desc'
             };
 

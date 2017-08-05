@@ -11,11 +11,12 @@ div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
   div.contest-menu__layer
     div.contest-menu__items
       a.contest-menu__item(ui-sref='^.item', ui-sref-active='contest-menu__item_state_active') Информация
-      a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active') Таблица результатов
+      a.contest-menu__item(ui-sref='^.table', ui-sref-active='contest-menu__item_state_active', ng-class='{"contest-menu__item_state_active": $state.includes("contest.table")}') Таблица результатов
       a.contest-menu__item(ui-sref='^.problems', ui-sref-active='contest-menu__item_state_active') Условия задач
       a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isAdmin') Отправить
       a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}') Решения
       a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isAdmin') Массовое оповещение
+      a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active', ng-if='user.isAdmin') Таблица (устарев.)
       a.contest-menu__item(ng-if='user.isAdmin')
         .contest-fab-menu(layout='row', layout-align='center center')
           md-fab-speed-dial.md-scale.md-fab-top-right(md-direction='down', md-open='contestMenu.opened', ng-mouseenter='contestMenu.opened = true', ng-mouseleave='contestMenu.opened = false')

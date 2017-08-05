@@ -3,6 +3,8 @@ import * as accountsPool from './accountsPool';
 import * as models from '../../models';
 import * as sockets from '../../socket';
 import * as accountMethods from './account';
+import request from 'request-promise';
+import cheerio from 'cheerio';
 import { sendSolution, getVerdict, getCompilationError  } from './index';
 import { appendWatermark, filterEntity as filter } from "../../utils";
 
@@ -13,7 +15,7 @@ const sameSolutionVerdictId = 15;
 const solutionWithWarningVerdictId = 16;
 const tooMuchSolutionsVerdictId = 17;
 const verdictCheckTimeoutMs = 100;
-const maxAccountWaitingMs = 120 * 1000;
+const maxAccountWaitingMs = 3 * 60 * 1000;
 
 export async function handle(solution) {
   let systemAccount = await accountsPool.getFreeAccount();
@@ -149,4 +151,21 @@ async function saveVerdict(solution, systemAccount, verdict) {
     contestId: solution.contestId
   });
   return solution;
+}
+
+export async function $getPage(endpoint, systemAccount) {
+  let { jar } = systemAccount;
+
+  let response = await request({
+    method: 'GET',
+    uri: endpoint,
+    simple: false,
+    resolveWithFullResponse: true,
+    followAllRedirects: true,
+    jar
+  });
+  if (!response.body || ![ 200, 302 ].includes(response.statusCode)) {
+    throw new Error('Server is not available');
+  }
+  return cheerio.load( response.body );
 }

@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 import userGroups from './../../../models/User/userGroups';
 import * as contests from '../../contest/methods';
 import * as sockets from '../../../socket';
+import { GlobalTablesManager } from "../../../services/table/global-manager";
 
 export function setVerdictRequest(req, res, next) {
   let params = Object.assign(
@@ -24,7 +25,8 @@ export async function setVerdict(params) {
   await solution.update({
     verdictId
   });
-  
+  await GlobalTablesManager.getInstance().getTableManager(solution.contestId).reset();
+
   let contest = await solution.getContest();
   let isContestFrozen = contest.isFrozen;
   if (!isContestFrozen) {

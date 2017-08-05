@@ -36,6 +36,11 @@ angular.module('Qemy.ui.contest-item', [
           templateUrl: templateUrl('contest-item', 'contest-monitor'),
           controller: 'ContestItemMonitorController'
         })
+        .state('contest.table', {
+          url: '/table',
+          templateUrl: templateUrl('contest-item', 'contest-table'),
+          controller: 'ContestItemTableController'
+        })
         .state('contest.problems', {
           url: '/problems',
           templateUrl: templateUrl('contest-item', 'contest-conditions'),

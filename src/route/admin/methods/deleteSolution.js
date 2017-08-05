@@ -1,6 +1,7 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
 import * as sockets from '../../../socket';
+import { GlobalTablesManager } from "../../../services/table/global-manager";
 
 export function deleteSolutionRequest(req, res, next) {
   let params = Object.assign(
@@ -28,7 +29,9 @@ export async function deleteSolution(params) {
   
   let contest = await solution.getContest();
   let result = await solution.destroy();
-  
+
+  await GlobalTablesManager.getInstance().getTableManager(contest.id).removeSolution( result );
+
   let isContestFrozen = contest.isFrozen;
   if (!isContestFrozen && broadcastUpdate) {
     sockets.emitTableUpdateEvent({

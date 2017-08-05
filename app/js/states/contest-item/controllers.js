@@ -11,7 +11,9 @@
 
 /* Controllers */
 
-angular.module('Qemy.controllers.contest-item', [])
+angular.module('Qemy.controllers.contest-item', [
+  'Qemy.controllers.contest-item.table'
+])
   
   .controller('ContestItemBaseController', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'SocketService', 'Battery', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService',
     function ($scope, $rootScope, $state, ContestsManager, UserManager, _, SocketService, Battery, $mdToast, $mdSidenav, $log, $timeout, ErrorService) {
@@ -395,6 +397,14 @@ angular.module('Qemy.controllers.contest-item', [])
         
         $panelRef = $mdPanel.open(config);
       };
+    }
+  ])
+
+  .controller('ContestItemTableController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService', '$mdPanel',
+    function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService, $mdPanel) {
+      $scope.$emit('change_title', {
+        title: 'Таблица результатов | ' + _('app_name')
+      });
     }
   ])
   

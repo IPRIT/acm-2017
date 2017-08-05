@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 89
+# 91
 
 CACHE:
 
@@ -9,6 +9,12 @@ CACHE:
 /partials/user/auth-form.html
 /partials/contest-item/contest-info.html
 /partials/contest-item/contest-monitor.html
+/partials/contest-item/contest-table.html
+/partials/contest-item/contest-table/cell.html
+/partials/contest-item/contest-table/footer.html
+/partials/contest-item/contest-table/header-row.html
+/partials/contest-item/contest-table/row.html
+/partials/contest-item/contest-table/table.html
 /partials/contest-item/contest-conditions.html
 /partials/contest-item/contest-conditions-item.html
 /partials/contest-item/contest-send.html
@@ -132,6 +138,9 @@ http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyril
 /img/icons/ic_skip_previous_48px.svg
 /img/icons/ic_fast_rewind_48px.svg
 /img/icons/ic_person_48px.svg
+/img/icons/ic_delete_sweep_48px.svg
+/img/icons/ic_navigate_next_48px.svg
+/img/icons/ic_navigate_before_48px.svg
 
 # fonts
 http://fonts.gstatic.com/s/roboto/v16/CWB0XYA8bzo0kSThX0UTuA.woff2

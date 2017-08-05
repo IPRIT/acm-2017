@@ -1,0 +1,14 @@
+div.acm-table-cell(
+  ng-class='{\
+    "acm-table-cell__type_clickable": cell.result !== "—" && (row.user.id === viewAs.id || viewAs.isAdmin), \
+    "acm-table-cell__type_practice": cell.inPractice, \
+    "acm-table-cell__type_frozen": cell.cellFrozen \
+  }',
+  ng-click='openStatusDialog($event, cell, row.user)'
+)
+  div.acm-table-cell__loading-overlay(ng-if='cell._loading')
+    md-progress-circular.md-accent.md-hue-1(md-diameter='20px')
+  div.acm-table-cell__result
+    span {{ ::cell.result }}
+  div.acm-table-cell__accepted-at(ng-if='::cell.acceptedAt')
+    span {{ ::cell.acceptedAt }}
