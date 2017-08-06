@@ -5,7 +5,7 @@ div.acm-table-row(
   }'
 )
   div.acm-table-row__select-overlay(ng-click='toggle(row, rowsSelected)')
-    md-checkbox(ng-checked='isSelectionState && exists(row, rowsSelected)')
+    md-checkbox(ng-checked='isSelectionState && exists(row, rowsSelected)', aria-label='{{ row.user.fullName }}')
 
   div.acm-table-row__selection-space
   div.acm-table-row__blocks

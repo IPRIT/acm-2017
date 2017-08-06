@@ -13,9 +13,10 @@
 
 angular.module('Qemy.controllers.contest-item.table', [])
 
-  .controller('ContestTable', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'UserManager', 'Storage', '$mdDialog', 'AdminManager', '$q', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, UserManager, Storage, $mdDialog, AdminManager, $q, ErrorService) {
+  .controller('ContestTable', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'ContestsManager', 'UserManager', 'Storage', '$mdDialog', 'AdminManager', '$q', '$timeout', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestItemManager, ContestsManager, UserManager, Storage, $mdDialog, AdminManager, $q, $timeout, ErrorService) {
       var contestId = $state.params.contestId;
+
       $scope.params = {
         contestId: contestId,
         count: 5,
@@ -23,8 +24,16 @@ angular.module('Qemy.controllers.contest-item.table', [])
         showInTimeMs: Infinity
       };
 
+      $scope.Math = window.Math;
+
+      $scope.currentTimeMs = Date.now();
+      $scope.rewindTimeMs = $scope.currentTimeMs;
+      $scope.timelineIntervals = [];
+      $scope.intervalIndex = 0;
+
       $scope.rowsSelected = [];
       $scope.isSelectionState = false;
+      $scope.isRewindingState = false;
 
       function updateTable(withoutLoading, overlay) {
         if (!withoutLoading) {
@@ -38,9 +47,20 @@ angular.module('Qemy.controllers.contest-item.table', [])
           return UserManager.getCurrentUser();
         }).then(function (user) {
           $scope.user = user;
+          if ($scope.contest && $scope.contest.id) {
+            return $q.when($scope.contest);
+          }
+          return ContestsManager.getContest({ contestId: contestId }).then(function (result) {
+            return result.contest;
+          });
+        }).then(function (contest) {
+          $scope.contest = contest;
           return ContestItemManager.getTable2($scope.params);
         }).then(function (table) {
           $scope.table = table;
+          if (!$scope.isRewindingState) {
+            $scope.updateRewindingTimeline();
+          }
           return table;
         }).catch(function (result) {
           ErrorService.show(result);
@@ -150,6 +170,73 @@ angular.module('Qemy.controllers.contest-item.table', [])
           .targetEvent(ev);
         return $mdDialog.show(confirm);
       }
+
+      $scope.toggleRewindingLine = function () {
+        $scope.isRewindingState = !$scope.isRewindingState;
+        if (!$scope.isRewindingState) {
+          $scope.params.showInTimeMs = Infinity;
+        } else {
+          $scope.updateRewindingTimeline();
+          $scope.params.showInTimeMs = $scope.rewindTimeMs;
+        }
+        $timeout(function () {
+          updateTable(false, true);
+        }, 450);
+      };
+
+      var updateTableDebounced = debounce(function () {
+        updateTable(false, true);
+      }, 400);
+
+      function debounce(func, wait, context) {
+        var timer;
+        return function debounced() {
+          var context = $scope,
+            args = Array.prototype.slice.call(arguments);
+          $timeout.cancel(timer);
+          timer = $timeout(function() {
+            timer = undefined;
+            func.apply(context, args);
+          }, wait || 10);
+        };
+      }
+
+      $scope.$watch('rewindTimeMs', function (newVal, oldVal) {
+        $scope.params.showInTimeMs = newVal;
+      });
+
+      $scope.$watch('params.showInTimeMs', function (newVal, oldVal) {
+        if ($scope.isRewindingState) {
+          updateTableDebounced(false, true);
+        }
+      });
+
+      $scope.updateRewindingTimeline = function () {
+        $scope.timelineIntervals = [{
+          name: 'От начала до конца основного времени',
+          minTimeMs: $scope.contest.startTimeMs,
+          maxTimeMs: Math.min($scope.contest.absoluteDurationTimeMs, $scope.currentTimeMs)
+        }, {
+          name: 'От начала до последнего решения',
+          minTimeMs: $scope.contest.startTimeMs,
+          maxTimeMs: Math.max($scope.table.lastSolutionSentAtMs, $scope.contest.startTimeMs)
+        }];
+        $scope.rewindTimeMs = Math.floor((
+          $scope.timelineIntervals[ $scope.intervalIndex ].maxTimeMs +
+          $scope.timelineIntervals[ $scope.intervalIndex ].minTimeMs
+        ) / 2);
+      };
+
+      $scope.$watch('intervalIndex', function (newVal) {
+        if ($scope.isRewindingState) {
+          $timeout(function () {
+            $scope.rewindTimeMs = Math.floor((
+              $scope.timelineIntervals[ newVal ].maxTimeMs +
+              $scope.timelineIntervals[ newVal ].minTimeMs
+            ) / 2);
+          });
+        }
+      });
     }
   ])
 
@@ -179,7 +266,6 @@ angular.module('Qemy.controllers.contest-item.table', [])
         } else {
           rowsSelected.push(row);
         }
-        console.log(rowsSelected);
       };
     }
   ])
