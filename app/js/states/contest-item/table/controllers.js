@@ -219,7 +219,7 @@ angular.module('Qemy.controllers.contest-item.table', [])
         }, {
           name: 'От начала до последнего решения',
           minTimeMs: $scope.contest.startTimeMs,
-          maxTimeMs: Math.max($scope.table.lastSolutionSentAtMs, $scope.contest.startTimeMs)
+          maxTimeMs: Math.max($scope.table.lastSolutionSentAtMs + 10000, $scope.contest.startTimeMs)
         }];
         $scope.rewindTimeMs = Math.floor((
           $scope.timelineIntervals[ $scope.intervalIndex ].maxTimeMs +
