@@ -2,7 +2,7 @@ div.acm-table-footer
   div.acm-table-footer__block.acm-table-footer__rows-number-label
     | Показать на странице:
   div.acm-table-footer__block.acm-table-footer__rows-number
-    md-select.md-no-underline(ng-model='params.count', placeholder='Количество')
+    md-select.md-no-underline(ng-model='count', placeholder='Количество')
       md-option(value='{{ number }}', ng-repeat='number in rowNumbers track by $index') {{ number }}
   div.acm-table-footer__block.acm-table-footer__rows-showing(ng-show='table')
     | {{ params.offset + 1 }}-{{ Math.min(params.offset + table.rows.length, table.rowsNumber) }} из {{ table.rowsNumber }}

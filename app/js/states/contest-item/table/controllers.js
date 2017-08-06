@@ -58,27 +58,19 @@ angular.module('Qemy.controllers.contest-item.table', [])
       });
 
       $scope.$watch('params.count', function (newVal, oldVal) {
-        if (newVal == oldVal) {
+        if (oldVal === newVal) {
           return;
         }
-        if (typeof newVal !== 'number') {
-          $scope.params.count = Number(newVal);
-        } else {
-          saveSettings().then(function () {
-            updateTable(true, true);
-          });
-        }
+        saveSettings().then(function () {
+          updateTable(true, true);
+        });
       });
 
       $scope.$watch('params.offset', function (newVal, oldVal) {
-        if (newVal == oldVal) {
+        if (oldVal === newVal) {
           return;
         }
-        if (typeof newVal !== 'number') {
-          $scope.params.offset = Number(newVal);
-        } else {
-          updateTable(true, true);
-        }
+        updateTable(true, true);
       });
 
       function saveSettings() {
@@ -145,6 +137,16 @@ angular.module('Qemy.controllers.contest-item.table', [])
   .controller('ContestTableFooter', ['$scope', '$rootScope', '$state', 'ErrorService',
     function ($scope, $rootScope, $state, ErrorService) {
       $scope.Math = window.Math;
+
+      $scope.count = $scope.params.count;
+
+      $scope.$watch('count', function (newVal, oldVal) {
+        if (!oldVal) {
+          return;
+        }
+        $scope.params.count = Number($scope.count);
+        safeApply($scope);
+      });
 
       $scope.prevPage = function (ev) {
         $scope.params.offset = Math.max($scope.params.offset - $scope.params.count, 0);
