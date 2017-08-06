@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 import * as contestMethods from '../../contest/methods';
 import { extractAllParams } from "../../../utils/utils";
 import { RatingsStore } from "../../../utils/ratings-store";
+import * as services from "../../../services";
 
 export function computeRatingsRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -40,18 +41,18 @@ export async function computeRatings(params) {
     });
     
     for (let contest of contests) {
-      let table = await contestMethods.getTable({ contest, user, withRatings: false });
+      let table = await services.GlobalTablesManager.getInstance().getTableManager(contest.id).renderAs( user.get({ plain: true }), { count: Infinity } );
   
       let rank = 1, lastScore;
       table.rows = table.rows.filter(tableRow => {
         return groupUsersIds.includes( tableRow.user.id );
       }).map(tableRow => {
         if (typeof lastScore !== 'undefined'
-          && tableRow.score !== lastScore) {
+          && tableRow.penalty !== lastScore) {
           rank++;
         }
         tableRow.rank = rank;
-        lastScore = tableRow.score;
+        lastScore = tableRow.penalty;
         tableRow.rating = ratingsMap.has(getUserToGroupKey(tableRow, group))
           ? ratingsMap.get(getUserToGroupKey(tableRow, group)) : INITIAL_RATING;
         return tableRow;
@@ -96,7 +97,7 @@ export async function computeRatings(params) {
   
   results.sort((a, b) => b.contest.startTimeMs - a.contest.startTimeMs);
   
-  return results;
+  return results.length;
 }
 
 /**
@@ -205,7 +206,7 @@ async function saveResults(contest, group, contestants, { versionNumber, version
       models.RatingChange.create({
         realRank: contestant.rank,
         expectedRank: contestant.seed,
-        score: contestant.score,
+        score: contestant.penalty,
         ratingBefore: contestant.ratingBefore,
         ratingAfter: contestant.rating,
         ratingChange: contestant.ratingChange,

@@ -211,7 +211,7 @@ export class ContestTable extends AbstractTable {
       showInTimeMs: Date.now()
     };
     deap.merge(params, defaultParams);
-    params.count = Math.max(0, Math.min(200, utils.ensureNumber(params.count)));
+    params.count = Math.max(0, utils.ensureNumber(params.count));
     params.offset = Math.max(0, utils.ensureNumber(params.offset));
     params.showInTimeMs = Math.max(0, utils.ensureNumber(params.showInTimeMs));
     return params;
