@@ -213,7 +213,7 @@ export class ContestTable extends AbstractTable {
     deap.merge(params, defaultParams);
     params.count = Math.max(0, utils.ensureNumber(params.count));
     params.offset = Math.max(0, utils.ensureNumber(params.offset));
-    params.showInTimeMs = Math.max(0, utils.ensureNumber(params.showInTimeMs));
+    params.showInTimeMs = Math.max(0, Math.min(Date.now(), utils.ensureNumber(params.showInTimeMs)));
     return params;
   }
 
@@ -310,8 +310,8 @@ export class ContestTable extends AbstractTable {
       ];
       if (xAcceptedSolutions === yAcceptedSolutions) {
         let [ xJoinedTime, yJoinedTime ] = [
-          x.user.UserContestEnter.joinTimeMs,
-          y.user.UserContestEnter.joinTimeMs
+          (x.user.UserContestEnter && x.user.UserContestEnter.joinTimeMs) || 0,
+          (y.user.UserContestEnter && y.user.UserContestEnter.joinTimeMs) || 0
         ];
         return xPenalty === yPenalty ? (
           xJoinedTime === yJoinedTime ? 0 : (
