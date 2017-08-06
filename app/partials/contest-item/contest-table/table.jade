@@ -1,22 +1,39 @@
-div.acm-contest-table(md-whiteframe="1")
+div.acm-contest-table(md-whiteframe="1", ng-class='{"acm-contest-table_state_select": isSelectionState}')
   div.acm-contest-table__header
+    div.acm-contest-table__header-overlay
+      div.acm-contest-table__selection-number-label
+        md-checkbox(
+          ng-checked='rowsSelected.length === table.rowsNumber',
+          ng-click='toggleAll()',
+          md-indeterminate="rowsSelected.length !== table.rowsNumber && rowsSelected.length > 0"
+        )
+        span {{ rowsSelected.length }} выбрано
+      div.acm-contest-table__selection-buttons
+        md-button.md-primary(ng-if='selectionStateFor === "refresh"', ng-click='refreshSolutionsForRows($event, rowsSelected)', ng-disabled='isActionExecuting || !rowsSelected.length')
+          | Переотправить
+        md-button.md-accent(ng-if='selectionStateFor === "delete"', ng-click='deleteRowsFromContest($event, rowsSelected)', ng-disabled='isActionExecuting || !rowsSelected.length')
+          | Удалить из контеста
+        md-button(ng-click='toggleSelectionState()', ng-disabled='isActionExecuting')
+          | Отменить
+
     div.acm-contest-table__title
       span(qemy-i18n='contest-table-title')
-    div.acm-contest-table__actions(ng-if='user.isAdmin')
-      md-menu
+    div.acm-contest-table__actions(ng-if='user.isAdmin', ng-show='!isSelectionState')
+      md-menu(md-position-mode="target-right target")
         md-button.md-icon-button(aria-label='Open table menu', ng-click='$mdMenu.open($event)')
           md-icon(md-menu-origin, md-svg-src='/img/icons/ic_more_vert_48px.svg')
         md-menu-content(width='4')
           md-menu-item
-            md-button(ng-disabled='true')
+            md-button(ng-click='setSelectionStateFor("refresh")')
               div(layout='row', flex)
                 md-icon(md-svg-src='/img/icons/ic_history_48px.svg')
-                p(flex) Переотправить решения
+                p(flex, md-menu-align-target) Переотправить выбранное
+          md-menu-divider
           md-menu-item
-            md-button(ng-disabled='true')
+            md-button.md-accent(ng-click='setSelectionStateFor("delete")')
               div(layout='row', flex)
                 md-icon(md-svg-src='/img/icons/ic_delete_sweep_48px.svg')
-                p(flex) Удалить из контеста
+                p(flex, md-menu-align-target) Удалить из контеста
 
   div.acm-contest-table__inner
     div.acm-contest-table__overlay(ng-show='isRowsLoading')
@@ -24,7 +41,7 @@ div.acm-contest-table(md-whiteframe="1")
     div.acm-contest-table__header-row
       table-header-row(row='table.header')
     div.acm-contest-table__rows
-      table-row(ng-repeat="row in table.rows" row="::row", view-as='::user')
+      table-row(ng-repeat="row in table.rows" row="::row", view-as='::user', rows-selected='rowsSelected', is-selection-state='isSelectionState')
     div.acm-contest-table__footer
       table-footer(params='params', table='table')
 

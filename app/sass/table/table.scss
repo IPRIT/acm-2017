@@ -12,8 +12,8 @@
     align-items: stretch;
     justify-content: flex-start;
     height: 64px;
-    padding: 0 0 0 24px;
     box-sizing: border-box;
+    position: relative;
   }
 
   @include bem-element(title) {
@@ -22,6 +22,7 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+    padding: 0 0 0 24px;
     font-size: 20px;
     color: transparentize(black, .13);
     font-weight: 500;
@@ -47,6 +48,39 @@
     align-items: center;
     justify-content: center;
   }
+
+  @include bem-element(header-overlay) {
+    @extend %ab-layer-absolute-fill;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+
+    #{get-bem-block-full(contest-table_state_select)} & {
+      display: flex;
+    }
+  }
+
+  @include bem-element(selection-number-label) {
+    margin-left: 24px;
+    color: #2196f3;
+
+    > md-checkbox {
+      margin: 0;
+    }
+
+    > span {
+      margin-left: 31px;
+    }
+  }
+
+  @include bem-element(selection-buttons) {
+    margin-left: 24px;
+    position: relative;
+    top: 2px;
+  }
 }
 
 table-row {
@@ -68,9 +102,20 @@ table-row {
   font-size: 15px;
   font-weight: 400;
   color: transparentize(black, .13);
+  position: relative;
 
   &:hover {
     background-color: #eee;
+  }
+
+  @include bem-element(type_even) {
+    background-color: transparentize(#607d8b, .95);
+  }
+
+  @include bem-element(type_selected) {
+    #{get-bem-block-full(contest-table_state_select)} & {
+      background-color: #E8F0FE;
+    }
   }
 
   @include bem-element(block) {
@@ -144,8 +189,43 @@ table-row {
     margin-left: 10px;
   }
 
-  @include bem-element(type_even) {
-    background-color: transparentize(#607d8b, .95);
+  @include bem-element(select-overlay) {
+    @extend %ab-layer-absolute-fill;
+    display: none;
+    z-index: 99;
+    cursor: pointer;
+    outline: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-left: 24px;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    #{get-bem-block-full(contest-table_state_select)} & {
+      display: flex;
+    }
+
+    md-checkbox {
+      margin: 0;
+    }
+  }
+
+  @include bem-element(blocks) {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  @include bem-element(selection-space) {
+    width: 0;
+    @include transition-only-for(.3s, (width));
+
+    #{get-bem-block-full(contest-table_state_select)} & {
+      width: 24px + 18px + 24px; // see http://md.gl/guidelines/components/data-tables.html#data-tables-specs
+    }
   }
 }
 

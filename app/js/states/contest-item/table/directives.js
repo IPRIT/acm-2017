@@ -38,7 +38,9 @@ angular.module('Qemy.directives.contest-item.table', [])
       restrict: 'EA',
       scope: {
         row: '=',
-        viewAs: '='
+        viewAs: '=',
+        rowsSelected: '=',
+        isSelectionState: '='
       },
       templateUrl: templateUrl('contest-item/contest-table', 'row'),
       controller: 'ContestTableRow'
