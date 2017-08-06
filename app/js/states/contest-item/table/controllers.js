@@ -32,7 +32,6 @@ angular.module('Qemy.controllers.contest-item.table', [])
         }
         return Storage.get('table-settings').then(function (settings) {
           angular.extend($scope.params, settings);
-          console.log($scope.params);
           return UserManager.getCurrentUser();
         }).then(function (user) {
           $scope.user = user;
@@ -58,7 +57,10 @@ angular.module('Qemy.controllers.contest-item.table', [])
         updateTable(true);
       });
 
-      $scope.$watch('params.count', function (newVal) {
+      $scope.$watch('params.count', function (newVal, oldVal) {
+        if (newVal == oldVal) {
+          return;
+        }
         if (typeof newVal !== 'number') {
           $scope.params.count = Number(newVal);
         } else {
@@ -68,7 +70,10 @@ angular.module('Qemy.controllers.contest-item.table', [])
         }
       });
 
-      $scope.$watch('params.offset', function (newVal) {
+      $scope.$watch('params.offset', function (newVal, oldVal) {
+        if (newVal == oldVal) {
+          return;
+        }
         if (typeof newVal !== 'number') {
           $scope.params.offset = Number(newVal);
         } else {
