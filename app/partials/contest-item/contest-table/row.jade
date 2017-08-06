@@ -1,19 +1,25 @@
 div.acm-table-row(
   ng-class='{\
-    "acm-table-row__type_even": !(row.groupNumber % 2)\
+    "acm-table-row__type_even": !(row.groupNumber % 2),\
+    "acm-table-row__type_selected": isSelectionState && exists(row, rowsSelected)\
   }'
 )
-  div.acm-table-row__block
-    div.acm-table-row__cell.acm-table-row__rank
-      span {{ ::row.displayRank }}
-    div.acm-table-row__cell.acm-table-row__contestant
-      rated-user-with-dialog(user='::row.user')
+  div.acm-table-row__select-overlay(ng-click='toggle(row, rowsSelected)')
+    md-checkbox(ng-checked='isSelectionState && exists(row, rowsSelected)')
 
-  div.acm-table-row__block(data-cells='{{ ::row.cells.length }}')
-    table-cell.acm-table-row__cell(ng-repeat='cell in row.cells', cell='::cell', row='::row', , view-as='::viewAs')
+  div.acm-table-row__selection-space
+  div.acm-table-row__blocks
+    div.acm-table-row__block
+      div.acm-table-row__cell.acm-table-row__rank
+        span {{ ::row.displayRank }}
+      div.acm-table-row__cell.acm-table-row__contestant
+        rated-user-with-dialog(user='::row.user')
 
-  div.acm-table-row__block
-    div.acm-table-row__cell.acm-table-row__accepted-solutions
-      span {{ ::row.acceptedSolutions }}
-    div.acm-table-row__cell.acm-table-row__penalty
-      span {{ ::row.penalty }}
+    div.acm-table-row__block(data-cells='{{ ::row.cells.length }}')
+      table-cell.acm-table-row__cell(ng-repeat='cell in row.cells', cell='::cell', row='::row', , view-as='::viewAs')
+
+    div.acm-table-row__block
+      div.acm-table-row__cell.acm-table-row__accepted-solutions
+        span {{ ::row.acceptedSolutions }}
+      div.acm-table-row__cell.acm-table-row__penalty
+        span {{ ::row.penalty }}

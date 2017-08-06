@@ -13,8 +13,8 @@
 
 angular.module('Qemy.controllers.contest-item.table', [])
 
-  .controller('ContestTable', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'UserManager', 'Storage', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, UserManager, Storage, ErrorService) {
+  .controller('ContestTable', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'UserManager', 'Storage', '$mdDialog', 'AdminManager', '$q', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestItemManager, UserManager, Storage, $mdDialog, AdminManager, $q, ErrorService) {
       var contestId = $state.params.contestId;
       $scope.params = {
         contestId: contestId,
@@ -22,6 +22,9 @@ angular.module('Qemy.controllers.contest-item.table', [])
         offset: 0,
         showInTimeMs: Infinity
       };
+
+      $scope.rowsSelected = [];
+      $scope.isSelectionState = false;
 
       function updateTable(withoutLoading, overlay) {
         if (!withoutLoading) {
@@ -38,6 +41,7 @@ angular.module('Qemy.controllers.contest-item.table', [])
           return ContestItemManager.getTable2($scope.params);
         }).then(function (table) {
           $scope.table = table;
+          return table;
         }).catch(function (result) {
           ErrorService.show(result);
         }).finally(function () {
@@ -80,6 +84,72 @@ angular.module('Qemy.controllers.contest-item.table', [])
           }
         });
       }
+
+      $scope.toggleSelectionState = function (value) {
+        $scope.rowsSelected = [];
+        $scope.isSelectionState = typeof value !== 'undefined'
+          ? value : !this.isSelectionState;
+      };
+
+      $scope.setSelectionStateFor = function (stateFor) {
+        $scope.selectionStateFor = stateFor;
+        $scope.toggleSelectionState();
+      };
+
+      $scope.toggleAll = function () {
+        if ($scope.rowsSelected.length > 0) {
+          $scope.rowsSelected = [];
+        } else {
+          $scope.rowsSelected = $scope.table.rows.slice(0);
+        }
+        safeApply($scope);
+      };
+
+      $scope.isActionExecuting = false;
+
+      $scope.refreshSolutionsForRows = function (ev, rows) {
+        return showConfirmationDialogBeforeAction(ev).then(function () {
+          $scope.isActionExecuting = true;
+          var promises = rows.map(function (row) {
+            return AdminManager.refreshSolutionForUser({ contestId: contestId, userId: row.user.id })
+          });
+          return $q.all(promises).then(function () {
+            $scope.toggleSelectionState();
+          }).catch(function (err) {
+            ErrorService.show(err);
+          }).finally(function () {
+            $scope.isActionExecuting = false;
+          });
+        });
+      };
+
+      $scope.deleteRowsFromContest = function (ev, rows) {
+        return showConfirmationDialogBeforeAction(ev).then(function () {
+          $scope.isActionExecuting = true;
+          var promises = rows.map(function (row) {
+            return AdminManager.deleteUserFromContest({ contestId: contestId, userId: row.user.id })
+          });
+          return $q.all(promises).then(function () {
+            $scope.toggleSelectionState();
+            return updateTable(false, true);
+          }).catch(function (err) {
+            ErrorService.show(err);
+          }).finally(function () {
+            $scope.isActionExecuting = false;
+          });
+        });
+      };
+
+      function showConfirmationDialogBeforeAction(ev) {
+        var confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content('Вы действительно хотите это сделать?')
+          .ariaLabel('Подтверждение')
+          .ok('Да')
+          .cancel('Отмена')
+          .targetEvent(ev);
+        return $mdDialog.show(confirm);
+      }
     }
   ])
 
@@ -90,6 +160,27 @@ angular.module('Qemy.controllers.contest-item.table', [])
 
   .controller('ContestTableRow', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'UserManager', 'ErrorService',
     function ($scope, $rootScope, $state, ContestItemManager, UserManager, ErrorService) {
+
+      $scope.exists = function (row, rowsSelected) {
+        return (rowsSelected || []).filter(function (rowSelected) {
+          return rowSelected.user.id === row.user.id;
+        }).length > 0;
+      };
+
+      $scope.toggle = function (row, rowsSelected) {
+        var idx = -1;
+        for (var i = 0; i < rowsSelected.length; ++i) {
+          if (rowsSelected[i].user.id === row.user.id) {
+            idx = i;
+          }
+        }
+        if (idx > -1) {
+          rowsSelected.splice(idx, 1);
+        } else {
+          rowsSelected.push(row);
+        }
+        console.log(rowsSelected);
+      };
     }
   ])
 
