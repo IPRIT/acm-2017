@@ -14,6 +14,12 @@
     height: 64px;
     box-sizing: border-box;
     position: relative;
+
+    @include transition-only-for(.4s, (height));
+
+    #{get-bem-block-full(contest-table_state_timeline)} & {
+      height: 2 * 64px;
+    }
   }
 
   @include bem-element(title) {
@@ -80,6 +86,51 @@
     margin-left: 24px;
     position: relative;
     top: 2px;
+  }
+
+  @include bem-element(header-timeline) {
+    @extend %ab-layer-absolute-fill;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 0 0 24px;
+    box-sizing: border-box;
+
+    #{get-bem-block-full(contest-table_state_timeline)} & {
+      display: flex;
+    }
+
+    md-slider {
+      width: 100%;
+    }
+  }
+
+  @include bem-element(timeline-row) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+  }
+
+  @include bem-element(timeline) {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 24px;
+    position: relative;
+  }
+
+  @include bem-element(timeline-labels) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    box-sizing: border-box;
+    padding-right: 20px;
+    top: 40px;
+    width: 100%;
   }
 }
 

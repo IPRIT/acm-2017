@@ -46,6 +46,12 @@ export class ContestTable extends AbstractTable {
   _rows = [];
 
   /**
+   * @type {number}
+   * @private
+   */
+  _lastSolutionSentAtMs = 0;
+
+  /**
    * @param {Contest} contest
    * @param {Problem[]} problems
    * @param {User[]} users
@@ -74,7 +80,8 @@ export class ContestTable extends AbstractTable {
       rows: this._getOrderedRows(viewAs, params, isPastQuery),
       rowsNumber: this._getRowsNumber( viewAs ),
       actualTableHash: this._getTableHash( viewAs ),
-      isPastQuery
+      isPastQuery,
+      lastSolutionSentAtMs: this._lastSolutionSentAtMs
     };
   }
 
@@ -122,6 +129,8 @@ export class ContestTable extends AbstractTable {
       return;
     }
     row.addSolution( solution, isInitAction );
+    this._lastSolutionSentAtMs = Math.max(this._lastSolutionSentAtMs, solution.sentAtMs);
+
     if (!isInitAction) {
       row.isAdminRow
         ? this._updateHashForAdminUsers() : this._updateHashForRegularUsers();
