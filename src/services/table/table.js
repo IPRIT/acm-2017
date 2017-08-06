@@ -310,8 +310,8 @@ export class ContestTable extends AbstractTable {
       ];
       if (xAcceptedSolutions === yAcceptedSolutions) {
         let [ xJoinedTime, yJoinedTime ] = [
-          x.user.UserContestEnter.joinTimeMs,
-          y.user.UserContestEnter.joinTimeMs
+          (x.user.UserContestEnter && x.user.UserContestEnter.joinTimeMs) || 0,
+          (y.user.UserContestEnter && y.user.UserContestEnter.joinTimeMs) || 0
         ];
         return xPenalty === yPenalty ? (
           xJoinedTime === yJoinedTime ? 0 : (
