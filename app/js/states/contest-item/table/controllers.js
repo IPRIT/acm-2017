@@ -202,7 +202,9 @@ angular.module('Qemy.controllers.contest-item.table', [])
       }
 
       $scope.$watch('rewindTimeMs', function (newVal, oldVal) {
-        $scope.params.showInTimeMs = newVal;
+        if ($scope.isRewindingState) {
+          $scope.params.showInTimeMs = newVal;
+        }
       });
 
       $scope.$watch('params.showInTimeMs', function (newVal, oldVal) {
