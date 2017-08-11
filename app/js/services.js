@@ -320,131 +320,6 @@ angular.module('Qemy.services', [
     }
   }])
   
-  .provider('Battery', function () {
-    
-    var IS_SUPPORTED = window.navigator && window.navigator.getBattery
-      && typeof window.navigator.getBattery === 'function';
-    
-    function minErrMessage() {
-      console.error(minErrMessage.errorMessage);
-    }
-    
-    minErrMessage.errorMessage = 'Your browser is not supporting the Battery Status API. More info: ' +
-      'https://developer.mozilla.org/en-US/docs/Web/API/Battery_Status_API';
-    
-    var _battery;
-    
-    this.$get = ['$q', function ($q) {
-      var methods = {};
-      
-      var onChargingChangeCallbacks = [];
-      function setOnChargingChangeListener(callback) {
-        onChargingChangeCallbacks.push( callback );
-      }
-      
-      function removeOnChargingChangeListeners() {
-        onChargingChangeCallbacks = [];
-      }
-      
-      var onChargingTimeChangeCallbacks = [];
-      function setOnChargingTimeChangeListener(callback) {
-        onChargingTimeChangeCallbacks.push( callback );
-      }
-      
-      function removeOnChargingTimeChangeListeners() {
-        onChargingTimeChangeCallbacks = [];
-      }
-      
-      var onDischargingTimeChangeCallbacks = [];
-      function setOnDischargingTimeChangeListener(callback) {
-        onDischargingTimeChangeCallbacks.push( callback );
-      }
-      
-      function removeOnDischargingTimeChangeListeners() {
-        onDischargingTimeChangeCallbacks = [];
-      }
-      
-      var onLevelChangeCallbacks = [];
-      function setOnLevelChangeListener(callback) {
-        onLevelChangeCallbacks.push( callback );
-      }
-      
-      function removeOnLevelChangeListeners() {
-        onLevelChangeCallbacks = [];
-      }
-      
-      function onChargingChange() {
-        var args = Array.prototype.slice.call( arguments );
-        onChargingChangeCallbacks.forEach( function (callbackFn) {
-          callbackFn.apply( this, args );
-        } );
-      }
-      
-      function onChargingTimeChange() {
-        var args = Array.prototype.slice.call( arguments );
-        onChargingTimeChangeCallbacks.forEach( function (callbackFn) {
-          callbackFn.apply( this, args );
-        } );
-      }
-      
-      function onDischargingTimeChange() {
-        var args = Array.prototype.slice.call( arguments );
-        onDischargingTimeChangeCallbacks.forEach( function (callbackFn) {
-          callbackFn.apply( this, args );
-        } );
-      }
-      
-      function onLevelChange() {
-        var args = Array.prototype.slice.call( arguments );
-        onLevelChangeCallbacks.forEach( function (callbackFn) {
-          callbackFn.apply( this, args );
-        } );
-      }
-      
-      if (IS_SUPPORTED) {
-        navigator.getBattery().then(function (battery) {
-          _battery = battery;
-          battery.onchargingchange = onChargingChange;
-          battery.onchargingtimechange = onChargingTimeChange;
-          battery.ondischargingtimechange = onDischargingTimeChange;
-          battery.onlevelchange = onLevelChange;
-        });
-      } else {
-        minErrMessage();
-      }
-      
-      methods.supported = IS_SUPPORTED;
-      
-      methods.get = function () {
-        if (!IS_SUPPORTED) {
-          throw new Error(minErrMessage.errorMessage);
-        }
-        return navigator.getBattery();
-      };
-      
-      methods = angular.extend(methods, {
-        setOnChargingChangeListener: setOnChargingChangeListener,
-        setOnChargingTimeChangeListener: setOnChargingTimeChangeListener,
-        setOnDischargingTimeChangeListener: setOnDischargingTimeChangeListener,
-        setOnLevelChangeListener: setOnLevelChangeListener
-      });
-      var removeListeners = {
-        removeOnChargingChangeListeners: removeOnChargingChangeListeners,
-        removeOnChargingTimeChangeListeners: removeOnChargingTimeChangeListeners,
-        removeOnDischargingTimeChangeListeners: removeOnDischargingTimeChangeListeners,
-        removeOnLevelChangeListeners: removeOnLevelChangeListeners
-      };
-      methods = angular.extend(methods, removeListeners);
-      methods.dispose = function () {
-        for (var el in removeListeners) {
-          if (!removeListeners.hasOwnProperty(el)) continue;
-          removeListeners[ el ]();
-        }
-      };
-      return methods;
-    }];
-  })
-  
   .service('ErrorService', ['$rootScope', '$q', '$mdToast', function ($rootScope, $q, $mdToast) {
     var instance;
     var current;
@@ -452,7 +327,7 @@ angular.module('Qemy.services', [
     
     function show(error, params) {
       var errorObject = error && error.data && error.data.error || {};
-      var errorMessage = errorObject && (errorObject.description || errorObject.message) || 'Unhandled error';
+      var errorMessage = errorObject && (errorObject.description || errorObject.message) || 'Неизвестная ошибка';
       return showMessage(errorMessage, params);
     }
     

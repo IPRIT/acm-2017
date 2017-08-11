@@ -109,6 +109,10 @@ export class ContestTable extends AbstractTable {
    * @return {Row}
    */
   addRow(user, isInitAction = false) {
+    let existRow = this._getRowByUserId( user.id );
+    if (existRow) {
+      return existRow;
+    }
     let row = new Row(user, this._problems, this.contestValue);
     this._rows.push( row );
     if (!isInitAction) {

@@ -28,7 +28,15 @@ export async function join(params) {
   
   let enterItem = await contest.addContestant(user);
 
-  await services.GlobalTablesManager.getInstance().getTableManager(contest.id).addRow( user );
+  let plainUsers = await contest.getContestants({
+    where: {
+      id: user.id
+    }
+  }).map(user => user.get({ plain: true }));
+  if (!plainUsers.length) {
+    throw new HttpError('Contestant not found');
+  }
+  await services.GlobalTablesManager.getInstance().getTableManager(contest.id).addRow( plainUsers[0] );
   
   sockets.emitTableUpdateEvent({ contestId });
   

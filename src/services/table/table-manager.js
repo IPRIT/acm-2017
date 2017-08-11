@@ -135,9 +135,10 @@ export class TableManager {
     this._tableSelfDestruct$.next(true);
     this._tableInitialized$.next(false);
 
-    this._tableInstance.dispose();
-    this._tableInstance = null;
-    console.log(this._tableInstance);
+    if (this._tableInstance) {
+      this._tableInstance.dispose();
+      this._tableInstance = null;
+    }
   }
 
   /**
