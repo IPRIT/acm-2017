@@ -260,6 +260,8 @@ export class Cell extends AbstractCell {
    * @private
    */
   _formatAcceptTime(diffTime) {
+    let isNegative = diffTime < 0;
+    diffTime = Math.abs(diffTime);
     let allSeconds = Math.floor(diffTime / 1000),
       minutes = Math.floor(allSeconds / 60),
       hours = Math.floor(minutes / 60);
@@ -267,7 +269,7 @@ export class Cell extends AbstractCell {
     let leftPad = (number, zeros) => '0'.repeat(zeros) + number;
     let zeroFill = number => leftPad(number, 2 - Math.min(2, number.toString().length)),
       timeFormat = 'hh:mm';
-    return timeFormat
+    return (isNegative ? '-' : '') + timeFormat
       .replace(/(hh)/gi, zeroFill(hours))
       .replace(/(mm)/gi, zeroFill(minutes));
   }
