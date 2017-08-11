@@ -1644,6 +1644,19 @@ md-toolbar.md-theme-light {
   height: 1px;
   background: transparent;
   z-index: 1000000000;
+
+  md-toast {
+    min-width: 304px;
+    bottom: initial;
+
+    .md-top {
+      top: 0;
+    }
+    .md-right {
+      right: 0;
+    }
+  }
+
 }
 .admin-menu__item {
   text-transform: none;

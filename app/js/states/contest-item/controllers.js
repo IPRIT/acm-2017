@@ -15,8 +15,8 @@ angular.module('Qemy.controllers.contest-item', [
   'Qemy.controllers.contest-item.table'
 ])
   
-  .controller('ContestItemBaseController', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'SocketService', 'Battery', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestsManager, UserManager, _, SocketService, Battery, $mdToast, $mdSidenav, $log, $timeout, ErrorService) {
+  .controller('ContestItemBaseController', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'SocketService', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestsManager, UserManager, _, SocketService, $mdToast, $mdSidenav, $log, $timeout, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Контест | ' + _('app_name')
       });
@@ -154,48 +154,7 @@ angular.module('Qemy.controllers.contest-item', [
           allMessagesNumber: 0
         });
         SocketService.leaveContest(contestId, $scope.user.id);
-        Battery.dispose();
         removeEvents();
-      });
-      
-      var batteryLowEventDispatched = false;
-      if (Battery.supported) {
-        Battery.setOnLevelChangeListener(function (event) {
-          if (!event || !event.target || !event.target.level
-            || event.target.charging || !event.target.dischargingTime) {
-            return;
-          }
-          var level = event.target.level,
-            dischargingTime = Number.isNaN(event.target.dischargingTime) ? 0 : event.target.dischargingTime;
-          if (level < 1) {
-            level *= 100;
-          }
-          if (level <= 15 && !batteryLowEventDispatched) {
-            $rootScope.$broadcast( 'battery level low', { level: level, dischargingTime: dischargingTime } );
-          }
-        });
-      }
-      
-      $scope.$on('battery level low', function (ev, args) {
-        var position = [ 'left', 'bottom' ];
-        var toast = $mdToast.show({
-          hideDelay: 20000,
-          parent: document.body,
-          templateUrl: templateUrl('contest-item/toast', 'battery-charge-low'),
-          controller: ['$scope', function ($scope) {
-            $scope.dischargingTime = Date.now() + (args.dischargingTime || 0) * 1000;
-            $scope.closeToast = function() {
-              $mdToast.hide();
-            };
-          }],
-          position: position.join(' ')
-        });
-        
-        toast.then(function(response) {
-          if ( response == 'ok' ) {
-            batteryLowEventDispatched = true;
-          }
-        });
       });
       
       $timeout(function () {
