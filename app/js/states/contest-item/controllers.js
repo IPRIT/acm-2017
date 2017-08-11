@@ -1621,16 +1621,13 @@ angular.module('Qemy.controllers.contest-item', [
           editor.session.setMode("ace/mode/" + languageFamily);
           editor.setReadOnly(true);
           editor.setHighlightActiveLine(false);
-          editor.setAutoScrollEditorIntoView(true);
+          editor.focus();
           editor.setOptions({
             maxLines: Infinity,
             minLines: 2,
             fontSize: "12pt",
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
             enableSnippets: true,
             spellcheck: true,
-            animatedScroll: true,
             tabSize: 4
           });
           editor.renderer.setScrollMargin(0, 10, 10, 10);
