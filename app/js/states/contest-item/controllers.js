@@ -2225,10 +2225,12 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
 
-  .controller('RatingHistoryDialogController', ['$scope', 'user', '$mdDialog', 'ErrorService', 'UserManager', '$timeout', '$q',
-    function ($scope, user, $mdDialog, ErrorService, UserManager, $timeout, $q) {
-      
+  .controller('RatingHistoryDialogController', ['$scope', '$state', 'user', '$mdDialog', 'ErrorService', 'UserManager', '$timeout', '$q', 'ContestsManager',
+    function ($scope, $state, user, $mdDialog, ErrorService, UserManager, $timeout, $q, ContestsManager) {
+      var contestId = $state.params.contestId;
+
       $scope.userGroups = [];
+      $scope.contest = {};
       $scope.selectedGroupId = null;
       $scope.ratingHistory = {};
       $scope.groupTable = [];
@@ -2256,9 +2258,29 @@ angular.module('Qemy.controllers.contest-item', [
           return loadUserGroups();
         }).then(function (groups) {
           if (!groups.length) {
-            throw new Error('Пользователь не состоит ни в какой группе');
+            throw new Error('Пользователь не состоит ни в одной из групп');
           }
-          $scope.selectedGroupId = groupId || groups[0].id;
+          return ContestsManager.getContest({ contestId: contestId }).then(function (result) {
+            return [ groups, result.contest ];
+          });
+        }).then(function (fullfilledResults) {
+          var userGroups = fullfilledResults[0];
+          $scope.contest = fullfilledResults[1];
+          var contestGroups = $scope.contest.allowedGroups || [];
+          var selectedGroupId = userGroups[0].id;
+          if (groupId) {
+            selectedGroupId = groupId;
+          } else {
+            l1: for (var contestGroupIndex in contestGroups) {
+              for (var userGroupIndex in userGroups) {
+                if (contestGroups[ contestGroupIndex ].id === userGroups[ userGroupIndex ].id) {
+                  selectedGroupId = userGroups[ userGroupIndex ].id;
+                  break l1;
+                }
+              }
+            }
+          }
+          $scope.selectedGroupId = selectedGroupId;
           return loadRatingHistory($scope.selectedGroupId);
         }).then(function (ratingHistory) {
           var group = $scope.findGroupById($scope.selectedGroupId);
