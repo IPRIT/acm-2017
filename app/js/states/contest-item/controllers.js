@@ -1307,7 +1307,9 @@ angular.module('Qemy.controllers.contest-item', [
       $scope.$on('new solution', function (ev, data) {
         var solutions = $scope.solutions;
         for (var i = 0; i < solutions.length; ++i) {
-          if (solutions[i].id === data.id) {
+          if (solutions[i].id === data.id
+            || solutions[i].userId !== data.userId
+            || solutions[i].problemId !== data.problemId) {
             return;
           }
         }
