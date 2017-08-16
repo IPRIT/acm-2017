@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('Qemy', [
   'ng',
   'ngRoute',
@@ -46,9 +44,9 @@ angular.module('Qemy', [
           controller: 'IndexCtrl'
         });
 
-      var renderer = new marked.Renderer();
+      let renderer = new marked.Renderer();
       renderer.heading = function (text, level) {
-        var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+        let escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
         return '<h' + level + '><a name="' +
           escapedText +
@@ -68,11 +66,11 @@ angular.module('Qemy', [
           return '<div class="markdown__tex">' + katex.renderToString(text) + '</div>';
         }
 
-        var code = text;
+        let code = text;
         Rainbow.color(text, lang, function(highlighted_code) {
           code = highlighted_code;
         });
-        var cssStyles = '<link href="/js/lib/rainbow/themes/monokai.css" rel="stylesheet" type="text/css">' +
+        let cssStyles = '<link href="/js/lib/rainbow/themes/monokai.css" rel="stylesheet" type="text/css">' +
           '<link href="/js/lib/rainbow/themes/theme.css" rel="stylesheet" type="text/css">';
         return cssStyles + '<div class="markdown__lang-header">' + lang + '</div><pre><div class="rainbow markdown__rainbow" data-language="' + lang + '">' + code + '<div></pre>';
       };

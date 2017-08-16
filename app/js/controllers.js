@@ -14,11 +14,11 @@ angular.module('Qemy.controllers', [
   }])
   
   .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', function($scope, $rootScope, UserManager, $state) {
-    function updateUserData() {
+    async function updateUserData() {
       console.log('User data updating...');
       $rootScope.$broadcast('data loading');
-      var userPromise = UserManager.getCurrentUser({ cache: false });
-      userPromise.then(function (user) {
+      try {
+        let user = await UserManager.getCurrentUser({ cache: false });
         $rootScope.$broadcast('data loaded');
         if (!user || !user.id) {
           $rootScope.$broadcast('user updated', { user: {} });
@@ -26,10 +26,10 @@ angular.module('Qemy.controllers', [
         }
         $rootScope.$broadcast('user updated', { user: user });
         console.log('User data updated.');
-      }).catch(function (err) {
+      } catch (err) {
         $rootScope.$broadcast('data loaded');
         $state.go('auth.form', { test: 1 });
-      });
+      }
     }
     updateUserData();
     
