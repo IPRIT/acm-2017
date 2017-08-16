@@ -59,22 +59,38 @@ module.exports = function(grunt) {
           ]
         }
       }
+    },
+    autoprefixer: {
+      options: {
+        browserslist: [
+          "> 0%"
+        ]
+      },
+      dist: {
+        files: {
+          'app/prod/css/style.prod.css': [
+            'app/prod/css/style.css'
+          ]
+        }
+      }
     }
   });
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-autoprefixer');
   grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('process', [
     'newer:concat', 'uglify'
   ]);
   grunt.registerTask('sass-compile', [
-    'sass'//'newer:sass'
+    'sass',
+    'autoprefixer'
   ]);
   grunt.registerTask('default', [
-    'concat', 'uglify', 'sass', 'watch'
+    'concat', 'uglify', 'sass', 'autoprefixer', 'watch'
   ]);
 
   grunt.event.on('watch', function(action, filepath, target) {
