@@ -7,7 +7,7 @@ Config.App = {
     domains: [
         'localhost:3000',
         'acm.alexbelov.xyz',
-        'pat1.misis.ru'
+        'pat1.misis.ru:5048'
     ],
     current_domain: 2
 };

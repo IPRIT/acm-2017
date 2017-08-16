@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 101
+# 103
 
 CACHE:
 
@@ -102,7 +102,7 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
 /js/locales/ru-ru.json
-/prod/js/build.min.js?1.0.1
+/prod/js/build.prod.min.js?1.0.1
 
 # CSS
 http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin

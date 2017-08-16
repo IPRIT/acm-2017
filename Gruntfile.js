@@ -30,16 +30,44 @@ module.exports = function(grunt) {
         dest: 'app/prod/js/build.js'
       }
     },
+    babel: {
+      options: {
+        sourceMap: true,
+        presets: [ 'env', 'es2015', 'stage-0' ],
+        plugins: [
+          [ "transform-runtime", {
+            "polyfill": true,
+            "regenerator": true
+          }]
+        ]
+      },
+      dist: {
+        files: {
+          'app/prod/js/build.js': [
+            'app/prod/js/build.js'
+          ]
+        }
+      }
+    },
     uglify: {
       dist: {
         options: {
           banner: '/*!\n * <%= pkg.name %> \n * v<%= pkg.version %> - ' +
           '<%= grunt.template.today("dd.mm.yyyy") %> \n * Copyright (c) <%= pkg.author %>\n**/',
           sourceMap: true,
-          sourceMapName: 'app/prod/js/build.min.js.map'
+          sourceMapName: 'app/prod/js/build.prod.min.js.map'
         },
         files: {
-          'app/prod/js/build.min.js': [
+          'app/prod/js/build.prod.min.js': [
+            'app/prod/js/build.js'
+          ]
+        }
+      }
+    },
+    browserify: {
+      dist: {
+        files: {
+          'app/prod/js/build.js': [
             'app/prod/js/build.js'
           ]
         }
@@ -78,19 +106,21 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-autoprefixer');
   grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('process', [
-    'newer:concat', 'uglify'
+    'newer:concat', 'babel', 'browserify', 'uglify'
   ]);
   grunt.registerTask('sass-compile', [
     'sass',
     'autoprefixer'
   ]);
   grunt.registerTask('default', [
-    'concat', 'uglify', 'sass', 'autoprefixer', 'watch'
+    'concat', 'babel', 'browserify', 'uglify', 'sass', 'autoprefixer', 'watch'
   ]);
 
   grunt.event.on('watch', function(action, filepath, target) {
