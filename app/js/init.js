@@ -136,7 +136,7 @@ function initApplication () {
               var injector = angular
                 && angular.element(document.body)
                 && angular.element(document.body).injector();
-              let $mdDialog = injector.get('$mdDialog');
+              var $mdDialog = injector.get('$mdDialog');
             } catch (e) { console.log(e); }
             if (injector && $mdDialog) {
               // Angular Material is exists
