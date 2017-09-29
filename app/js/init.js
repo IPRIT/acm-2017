@@ -139,7 +139,6 @@ function initApplication () {
               var $mdDialog = injector.get('$mdDialog');
             } catch (e) { console.log(e); }
             if (injector && $mdDialog) {
-              // Angular Material is exists
               let confirmDialog = $mdDialog.confirm()
                 .title('Предупреждение')
                 .content('Доступна новая версия приложения. Обновить кэш?')
