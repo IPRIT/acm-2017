@@ -1,13 +1,15 @@
 import Promise from 'bluebird';
 import * as models from '../../models';
 
-const systemType = 'timus';
+export const systemType = 'timus';
+export let systemAccounts = [];
+export let isInitialized = false;
+export let isInitializing = false;
+
 const accountTimeoutMs = 15 * 1000;
 
-let systemAccounts = [];
-let isInitialized = false;
-
 function _initialize() {
+  isInitializing = true;
   return Promise.resolve().then(async () => {
     systemAccounts = await models.SystemAccount.findAll({
       where: {
@@ -16,6 +18,7 @@ function _initialize() {
       }
     }).map(account => _wrapAccount(account));
     isInitialized = true;
+    isInitializing = false;
     console.log('[System report] Timus accounts have been initialized');
   }).catch(console.error.bind(console));
 }

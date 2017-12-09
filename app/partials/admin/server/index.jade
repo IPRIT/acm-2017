@@ -1,0 +1,26 @@
+div.server-status(ng-controller='AdminServerStatusController')
+  div.server-status__header
+    socket-status
+
+  div.server-status__list
+    div.server-status__item(ng-repeat='system in systems')
+      div.server-status__system-info
+        div.server-status__system-type
+          span {{ system.type }}
+        div.server-status__accounts-status
+          span Доступно:&nbsp;
+          span {{ system.status.freeAccountsNumber }}/{{ system.status.allAccountsNumber }}
+
+      div.server-status__busy-accounts
+        div(ng-show='!system.status.busyAccounts.length')
+          h3 Решения в данный момент не проверяются
+        div(ng-show='system.status.busyAccounts.length > 0')
+          h3 Используются в данный момент:
+          div.server-status__account(ng-repeat='account in system.status.busyAccounts')
+            div.server-status__loading
+              div.search-spin.waiting
+            div.server-status__account-name
+              span {{ account.instance.systemNickname || account.instance.systemLogin }}
+              br
+              span.server-status__solution-sent-at отправлено в: {{ account.lastSentSolutionAtMs | date:'mediumTime':'ru-RU' }}
+

@@ -9,6 +9,8 @@
 
 'use strict';
 
+import md5 from 'md5';
+
 /* Controllers */
 
 /* global angular */
@@ -1834,6 +1836,34 @@ angular.module('Qemy.controllers.admin', [])
           });
         });
       };
+    }
+  ])
+
+  .controller('AdminServerStatusController', ['$scope', '$rootScope', '$interval', '$mdDialog', '$state', 'AdminManager', '$timeout',
+    function($scope, $rootScope, $interval, $mdDialog, $state, AdminManager, $timeout) {
+
+      let lastHash = '';
+
+      async function updateStatus() {
+        let systems = await AdminManager.getServerStatus();
+        let newHash = computeHash(JSON.stringify(systems));
+        if (lastHash !== newHash) {
+          $scope.systems = systems;
+          lastHash = newHash;
+        }
+      }
+
+      function computeHash( content ) {
+        return md5(content);
+      }
+
+      updateStatus();
+      let promise = $interval(updateStatus, 500);
+
+
+      $scope.$on('$destroy', _ => {
+        $interval.cancel(promise);
+      });
     }
   ])
 

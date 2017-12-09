@@ -179,9 +179,9 @@ export function capitalize(string = '') {
     .join(' ');
 }
 
-export function assignGroup(object, ...restArgs) {
-  restArgs.forEach(arg => Object.assign(object, arg));
-  return object;
+export function assignGroup(dest, ...restArgs) {
+  restArgs.forEach(arg => Object.assign(dest, arg));
+  return dest;
 }
 
 export function extractAllParams(req) {
