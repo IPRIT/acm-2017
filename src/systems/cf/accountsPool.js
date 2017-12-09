@@ -110,7 +110,7 @@ export async function tryLoginUntilDone( accounts, { repeat = Infinity, delay = 
       console.log(
         `[System report] ` +
         `${result.failed.length > 0 ? 'Some' : 'All' }` +
-        ` codeforces accounts [${result.success.map(x => x.instance.systemLogin).join(', ')}] have been initialized`
+        ` codeforces accounts have been initialized`
       );
       accounts = result.failed;
     }
