@@ -1,6 +1,8 @@
 import cheerio from 'cheerio';
 import request from 'request-promise';
 import Promise from 'bluebird';
+import util from 'util';
+import { Error as ErrorReporter } from '../../models';
 
 const ACM_PROTOCOL = 'http';
 const ACM_HOST = 'codeforces.com';
@@ -28,6 +30,9 @@ export async function login(systemAccount) {
     let csrfToken = $('meta[name=X-Csrf-Token]').attr('content');
   
     if (!csrfToken) {
+      await ErrorReporter.create({
+        errorTrace: 'No CSRF token provided'
+      });
       throw $loginFailedException;
     }
     
@@ -46,7 +51,7 @@ export async function login(systemAccount) {
         'Host': 'codeforces.com',
         'Connection': 'keep-alive',
         'Origin': 'http://codeforces.com',
-        'User-Agent': 'Mozilla/6.0 (Windows NT 11.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.2403.157 YaBrowser/45.9.2403.3043 Safari/737.36',
+        'User-Agent': 'Mozilla/7.0 (Windows NT 11.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.2403.157 YaBrowser/41.9.2403.3043 Safari/734.21',
         'Content-Type': 'application/x-www-form-urlencoded; utf-8',
         'Accept': '*/*',
         'Accept-Language': 'ru,en;q=0.8'
@@ -54,6 +59,10 @@ export async function login(systemAccount) {
     });
   
     if (!response.body || ![ 200 ].includes( response.statusCode )) {
+      console.log(response.statusCode, response.body);
+      await ErrorReporter.create({
+        errorTrace: util.inspect(response, false, null)
+      });
       throw $loginFailedException;
     }
   
