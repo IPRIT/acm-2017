@@ -60,9 +60,9 @@ export async function login(systemAccount) {
   
     if (!response.body || ![ 200 ].includes( response.statusCode )) {
       console.log(response.statusCode, response.body);
-      await ErrorReporter.create({
+      /*await ErrorReporter.create({
         errorTrace: util.inspect(response, false, null)
-      });
+      });*/
       throw $loginFailedException;
     }
   

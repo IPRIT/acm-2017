@@ -19,12 +19,21 @@ function _initialize() {
       }
     }).map(account => {
       return _wrapAccount(account);
-    }).map(account => {
-      return accountsMethods.login(account);
     });
-    isInitialized = true;
-    isInitializing = false;
-    console.log('[System report] Codeforces accounts have been initialized');
+    let { failed, success } = await tryLogin(systemAccounts);
+    if (success.length > 0) {
+      isInitialized = true;
+      isInitializing = false;
+      console.log(
+        `[System report] ` +
+        `${success.length !== systemAccounts.length ? 'Some' : 'All' }` +
+        ` codeforces accounts [${success.map(x => x.instance.systemLogin).join(', ')}] have been initialized`
+      );
+    }
+    if (failed.length > 0) {
+      // run worker
+      tryLoginUntilDone(failed, { repeat: 50, delay: 2000 });
+    }
   }).catch(console.error.bind(console));
 }
 
@@ -67,4 +76,44 @@ export async function getFreeAccounts() {
 export async function getFreeAccountsNumber() {
   let freeAccounts = await getFreeAccounts();
   return freeAccounts.length;
+}
+
+export async function tryLogin( accounts ) {
+  console.log(
+    `[System report [CF]] ` +
+    `Trying to login [${accounts.map(x => x.instance.systemLogin).join(', ')}]`
+  );
+  let result = {
+    success: [],
+    failed: []
+  };
+  let promises = [];
+  for (let account of accounts) {
+    let loginPromise = accountsMethods.login(account).then(account => {
+      result.success.push( account );
+    }).catch(() => {
+      result.failed.push( account );
+    });
+    promises.push( loginPromise );
+  }
+  return Promise.all( promises ).then(_ => result);
+}
+
+export async function tryLoginUntilDone( accounts, { repeat = Infinity, delay = 1000 } = {} ) {
+  let result = {};
+  do {
+    await Promise.resolve().delay( delay );
+    result = await tryLogin( accounts );
+    if (result.success.length > 0) {
+      isInitialized = true;
+      isInitializing = false;
+      console.log(
+        `[System report] ` +
+        `${result.failed.length > 0 ? 'Some' : 'All' }` +
+        ` codeforces accounts [${result.success.map(x => x.instance.systemLogin).join(', ')}] have been initialized`
+      );
+      accounts = result.failed;
+    }
+    repeat--;
+  } while (result.failed.length > 0 && repeat >= 0);
 }
