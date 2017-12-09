@@ -49,6 +49,7 @@ router.post('/contests/:contestId/solutions/refresh/:symbolIndex/:userId', [ use
 
 router.post('/computeRatings', [ userRetriever, rightsAllocator('admin') ], adminMethods.computeRatingsRequest);
 
+router.get('/status', [ userRetriever, rightsAllocator('admin') ], adminMethods.getSystemStatusRequest);
 router.post('/restart', [ userRetriever, rightsAllocator('admin') ], adminMethods.restartRequest);
 
 router.post('/yandex-import-by-id', [ userRetriever, rightsAllocator('admin') ], adminMethods.yandexImportByIdRequest);

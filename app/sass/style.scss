@@ -2954,3 +2954,67 @@ md-sidenav {
     }
   }
 }
+
+.server-status {
+  padding: 24px;
+  background: #f9f9f9;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+  margin-top: 15px;
+
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__item {
+    background: #fff;
+    padding: 16px;
+
+    &:not(:first-of-type) {
+      margin-top: 24px;
+    }
+  }
+
+  &__system-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__system-type {
+    text-transform: uppercase;
+    font-weight: 100;
+    font-size: 1.5em;
+  }
+
+  &__busy-accounts {
+    h3 {
+      font-size: .8em;
+      color: #444;
+      font-weight: 100;
+    }
+  }
+
+  &__loading {
+    width: 25px;
+    height: 25px;
+    margin-right: 15px;
+  }
+
+  &__account {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid rgba(0,0,0,.1);
+
+    &:not(:first-of-type) {
+      margin-top: 8px;
+    }
+  }
+
+  &__solution-sent-at {
+    color: #444;
+    font-size: .7em;
+  }
+}

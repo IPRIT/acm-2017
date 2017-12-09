@@ -2,12 +2,12 @@ import Promise from 'bluebird';
 import * as models from '../../models';
 import * as accountsMethods from './account';
 
-const systemType = 'acmp';
-const accountTimeoutMs = 45 * 1000;
+export const systemType = 'acmp';
+export let systemAccounts = [];
+export let isInitialized = false;
+export let isInitializing = false;
 
-let systemAccounts = [];
-let isInitialized = false;
-let isInitializing = false;
+const accountTimeoutMs = 45 * 1000;
 
 function _initialize() {
   isInitializing = true;

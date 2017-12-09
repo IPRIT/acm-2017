@@ -443,6 +443,15 @@ angular.module('Qemy.services.admin', [
       });
     }
 
+    function getServerStatus( params ) {
+      return $http({
+        method: 'get',
+        url: '/api/admin/status'
+      }).then(function (response) {
+        return response.data;
+      });
+    }
+
     return {
       searchGroups: searchGroups,
       searchProblems: searchProblems,
@@ -487,7 +496,8 @@ angular.module('Qemy.services.admin', [
       computeRatings: computeRatings,
       scanProblems: scanProblems,
       yandexImportByContestId: yandexImportByContestId,
-      yandexOfficialImportByContestId: yandexOfficialImportByContestId
+      yandexOfficialImportByContestId: yandexOfficialImportByContestId,
+      getServerStatus: getServerStatus
     }
   }])
 ;
