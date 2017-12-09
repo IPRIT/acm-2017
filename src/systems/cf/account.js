@@ -9,6 +9,9 @@ const ACM_HOST = 'codeforces.com';
 const ACM_AUTH_ENDPOINT = '/enter';
 
 export async function login(systemAccount) {
+  if (systemAccount.instance.systemLogin === '-1-') {
+    throw new Error('Error');
+  }
   return Promise.resolve().then(async () => {
     let csrfEndpoint = getEndpoint();
     let jar = request.jar();
@@ -60,9 +63,9 @@ export async function login(systemAccount) {
   
     if (!response.body || ![ 200 ].includes( response.statusCode )) {
       console.log(response.statusCode, response.body);
-      await ErrorReporter.create({
+      /*await ErrorReporter.create({
         errorTrace: util.inspect(response, false, null)
-      });
+      });*/
       throw $loginFailedException;
     }
   
