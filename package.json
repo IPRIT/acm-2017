@@ -34,7 +34,7 @@
     "grunt-newer": "^1.1.0",
     "grunt-sass": "^2.0.0",
     "morgan": "^1.7.0",
-    "node-sass": "^4.5.3"
+    "node-sass": "^4.7.2"
   },
   "dependencies": {
     "@reactivex/rxjs": "^5.4.2",
