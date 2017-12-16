@@ -23,8 +23,8 @@ angular.module('Qemy', [
   'Qemy.ui.contest-item',
   'Qemy.ui.admin'
 ])
-  .config(['$locationProvider', 'StorageProvider', '$stateProvider', '$urlRouterProvider', '$mdThemingProvider', 'markedProvider', '$mdIconProvider', 'lkGoogleSettingsProvider',
-    function($locationProvider, StorageProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, markedProvider, $mdIconProvider, lkGoogleSettingsProvider) {
+  .config(['$sceProvider', '$locationProvider', 'StorageProvider', '$stateProvider', '$urlRouterProvider', '$mdThemingProvider', 'markedProvider', '$mdIconProvider', 'lkGoogleSettingsProvider',
+    function($sceProvider, $locationProvider, StorageProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, markedProvider, $mdIconProvider, lkGoogleSettingsProvider) {
       if (Config.Modes.test) {
         StorageProvider.setPrefix('t_');
       }
@@ -129,6 +129,9 @@ angular.module('Qemy', [
           'DocsView(google.picker.ViewId.FOLDERS).setSelectFolderEnabled(true)'
         ]
       });
+
+      // Completely disable SCE.
+      $sceProvider.enabled(false);
     }
   ])
 ;
