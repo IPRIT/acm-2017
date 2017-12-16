@@ -440,13 +440,14 @@ angular.module('Qemy.controllers.contest-item', [
           && Array.isArray( result.attachments.files )) {
           result.attachments.files = result.attachments.files.map(file => {
             if (file.embedUrl) {
-              file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+              //file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
             } else if (file.type === 'pdf' && file.downloadUrl) {
-              file.embedUrl = $sce.trustAsResourceUrl(
+              /*file.embedUrl = $sce.trustAsResourceUrl(
                 file.downloadUrl.replace(/(export=download&)/i, '')
-              );
+              );*/
+              file.embedUrl = file.downloadUrl.replace(/(export=download&)/i, '');
             } else {
-              file.url = $sce.trustAsResourceUrl(file.url);
+              // file.url = $sce.trustAsResourceUrl(file.url);
             }
             return file;
           });
@@ -2058,13 +2059,14 @@ angular.module('Qemy.controllers.contest-item', [
           && Array.isArray( result.attachments.files )) {
           result.attachments.files = result.attachments.files.map(file => {
             if (file.embedUrl) {
-              file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+              //file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
             } else if (file.type === 'pdf' && file.downloadUrl) {
-              file.embedUrl = $sce.trustAsResourceUrl(
+              /*file.embedUrl = $sce.trustAsResourceUrl(
                 file.downloadUrl.replace(/(export=download&)/i, '')
-              );
+              );*/
+              file.embedUrl = file.downloadUrl.replace(/(export=download&)/i, '');
             } else {
-              file.url = $sce.trustAsResourceUrl(file.url);
+              // file.url = $sce.trustAsResourceUrl(file.url);
             }
             return file;
           });
