@@ -131,10 +131,18 @@ export function getSubmits($page, parsedSymbolIndex) {
     let _executionTimeNumber = utils.ensureNumber( clearNumber( $row.find('td').eq(6).text().trim() ) );
     let executionTime = _isSeconds
       ? _executionTimeNumber : _executionTimeNumber / 1000;
+    let memoryText = $row.find('td').eq(7).text().trim();
+    let isMemoryInMbytes = /(mb|мб)/i.test( memoryText );
+    let isMemoryInBytes = /\d+[bб]/i.test( memoryText );
     let memory = utils.ensureNumber( clearNumber( $row.find('td').eq(7).text().trim() ) );
+    if (isMemoryInMbytes) {
+      memory <<= 10; // Mb -> Kb
+    } else if (isMemoryInBytes) {
+      memory >>>= 10 // Kb -> Bytes
+    }
     let testNumber = utils.ensureNumber( $row.find('td').eq(8).text().trim() );
 
-    // using == cause we don't know what type `obj.symbolIndex` has
+    // using == cause we don't know what type `obj.symbolIndex` is
     if (parsedSymbolIndex == symbolIndex) {
       rows.push({
         solutionId, symbolIndex, verdictName,

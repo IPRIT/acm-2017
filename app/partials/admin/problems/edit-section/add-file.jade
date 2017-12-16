@@ -1,17 +1,24 @@
-md-dialog(aria-label='Add file', ng-cloak)
-  form
+md-dialog(aria-label='Add file')
+  form(name='fileForm')
     md-toolbar
-      .md-toolbar-tools
+      div.md-toolbar-tools
         h2 Добавить файл
         span(flex)
-        md-button.md-icon-button(ng-click='close()')
-          md-icon(md-svg-src='/img/icons/ic_close_48px.svg', aria-label='Close dialog')
+        md-button.md-icon-button(ng-click='close()', aria-label='Close dialog')
+          md-icon(md-svg-src='/img/icons/ic_close_48px.svg')
     md-dialog-content(style='min-width: 500px;')
-      .md-dialog-content
-        h2 Информация о файле
+      div.md-dialog-content(style='background: #f0f0f0')
 
-        form.contest-creation__form(name='fileForm')
+        md-content.md-whiteframe-1dp(style='background: #fff; padding: 12px;')
+          div.contest-creation__row
+            div.contest-creation__row-title Выбрать файл из Google Drive
+            md-button.md-primary.md-raised(lk-google-picker, on-picked="onPicked(docs)", aria-label='File picker')
+              md-icon(md-svg-src='/img/icons/ic_cloud_circle_48px.svg', style='margin-right: 5px; position: relative; top: 0px;')
+              span Google Drive
 
+        div(style='padding: 24px 0 12px; text-align: center; color: #777;') Или заполнить вручную
+
+        md-content.md-whiteframe-1dp(style='background: #fff; padding: 12px; margin-top: 16px;')
           div.contest-creation__row
             div.contest-creation__row-title Ссылка на файл
             md-input-container

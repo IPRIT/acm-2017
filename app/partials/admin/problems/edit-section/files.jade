@@ -5,6 +5,10 @@ div
   ng-false-value="'bottom'")
     | Показывать файлы сверху условия. Текущее положение: {{settings.files_location === 'top' ? "Сверху" : "Снизу"}}
 
+  md-checkbox(ng-model='settings.files_show_embed',
+  aria-label='File embed')
+    | Показать превью файлов в контесте
+
 div
   h4 Файлы: {{settings.files.length}}
 
@@ -23,7 +27,7 @@ div.task__files
       div(ng-switch-default)
         a.link(tabindex='{{$index}}', ng-href='{{file.url}}', target='_blank')
           div.task__file
-            div.task__file-title {{file.title ? file.title : "Приложение" + (settings.files.length > 1 ? (" " + ($index + 1)) : "")}}
+            div.task__file-title {{file.title ? file.title : "Statement" + (settings.files.length > 1 ? (" " + ($index + 1)) : "")}}
             div.task__file-ext
               div(class='task__file-ext-icon task__file-ext-icon_type_{{file.type}}')
               span {{file.type}}

@@ -7,17 +7,8 @@ md-toolbar.md-menu-toolbar
         | Файл:
         input.md-toolbar-input(type='text', ng-model='condition.title')
       md-menu-bar
-        md-menu
-          button(ng-click='$mdOpenMenu()')
-            | Файл
-          md-menu-content
-            md-menu-item
-              md-button(ng-click="action('save', $event)")
-                | Сохранить изменения
-            md-menu-divider
-            md-menu-item
-              md-button(ng-click="action('exit', $event)")
-                | Выход
+        button(ng-click="action('save', $event)")
+          | Сохранить
         md-menu
           button(ng-click='$mdOpenMenu()')
             | Редактирование
@@ -26,30 +17,26 @@ md-toolbar.md-menu-toolbar
               md-menu
                 md-button(ng-click='$mdOpenMenu()') Режим редактирования
                 md-menu-content(width='3')
-                  md-menu-item(type='checkbox', ng-model='settings.mode.original') Оригинальное условие
+                  md-menu-item(type='checkbox', ng-model='settings.mode.original') Оригинальное условие (HTML)
                   md-menu-item(type='checkbox', ng-model='settings.mode.own') Свое условие (Markdown)
             //md-menu-divider
             md-menu-item
               md-menu
                 md-button(ng-click='$mdOpenMenu()') Объединение условий
                 md-menu-content(width='3')
-                  md-menu-item(type='checkbox', ng-model='settings.replace') Заменить исходное условие своим
-                  md-menu-item(type='checkbox', ng-model='settings.merge') Последовательно объединить исходное и свое условие
+                  md-menu-item(type='checkbox', ng-model='settings.replace') Заменить HTML условие на Markdown
+                  md-menu-item(type='checkbox', ng-model='settings.merge') Последовательно объединить HTML и Markdown условие
 
-        md-menu
-          button(ng-click='$mdOpenMenu()')
-            | Справка
-          md-menu-content
-            md-menu-item
-              md-button(ng-href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet', target='_blank')
-                | Как пользоваться Markdown?
+.page-container
+  .page-container__wrap
+      include ../edit-section/files
 
 .page-container
   .page-container__wrap
 
     div.page-container__editing-mode-text(ng-switch='settings.mode.own')
-      span(ng-switch-when='true') Режим редактирования своего условия
-      span(ng-switch-default) Режим редактирования исходного условия задачи
+      span(ng-switch-when='true') Режим редактирования своего условия (Markdown)
+      span(ng-switch-default) Режим редактирования исходного условия задачи (HTML)
 
     div(ng-switch='settings.mode.original')
       div(ng-switch-when='true')
@@ -61,7 +48,7 @@ md-toolbar.md-menu-toolbar
                          "task__problem-yandex": condition.systemType === "yandex", \
                          "task__problem-yandexOfficial": condition.systemType === "yandexOfficial", \
                          "task__problem-cf_type_gym": condition.foreignProblemIdentifier.indexOf("gym") >= 0 }')
-          div(ng-bind-html='::condition.htmlStatement', task-contenteditable)
+          div(ng-bind-html='condition.htmlStatement', task-contenteditable)
       div(ng-switch-default)
         div.send-message__textarea.page-container__markdown-textarea-wrap
           md-input-container(flex, style='width: 100%;')

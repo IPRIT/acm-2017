@@ -55,7 +55,11 @@ module.exports = function(grunt) {
           banner: '/*!\n * <%= pkg.name %> \n * v<%= pkg.version %> - ' +
           '<%= grunt.template.today("dd.mm.yyyy") %> \n * Copyright (c) <%= pkg.author %>\n**/',
           sourceMap: true,
-          sourceMapName: 'app/prod/js/build.prod.min.js.map'
+          sourceMapName: 'app/prod/js/build.prod.min.js.map',
+          compress: {
+            drop_console: true
+          },
+          drop_console: true
         },
         files: {
           'app/prod/js/build.prod.min.js': [

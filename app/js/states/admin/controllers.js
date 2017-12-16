@@ -1688,6 +1688,7 @@ angular.module('Qemy.controllers.admin', [])
           original: true
         },
         files_location: 'top',
+        files_show_embed: true,
         files: [],
         content: {
           text: ''
@@ -1732,29 +1733,15 @@ angular.module('Qemy.controllers.admin', [])
             $scope.settings.mode.own = result.attachments.config.replaced;
             $scope.settings.mode.original = !result.attachments.config.replaced;
             $scope.settings.files_location = result.attachments.config.files_location;
+            $scope.settings.files_show_embed = result.attachments.config.files_show_embed;
             $scope.settings.files = result.attachments.files;
             $scope.settings.content.text = result.attachments.content.text;
           }
         });
-
       $scope.addFile = function (ev) {
+        $(document).scrollTop(0);
         $mdDialog.show({
-          controller: ['$scope', '$parentScope', function ($scope, $parentScope) {
-            $scope.close = function () {
-              $mdDialog.hide();
-            };
-            $scope.file = {
-              type: 'pdf',
-              url: 'https://',
-              title: 'Название файла'
-            };
-            $scope.save = function () {
-              $parentScope.settings.files.push($scope.file);
-              $scope.close();
-            };
-
-            $scope.types = [ 'pdf', 'txt', 'doc', 'image', 'spreadsheet' ];
-          }],
+          controller: 'AddFilesController',
           templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
           parent: angular.element(document.body),
           targetEvent: ev,
@@ -1793,13 +1780,14 @@ angular.module('Qemy.controllers.admin', [])
         }
         $scope.condition.attachments.config.replaced = $scope.settings.replace;
         $scope.condition.attachments.config.files_location = $scope.settings.files_location;
+        $scope.condition.attachments.config.files_show_embed = $scope.settings.files_show_embed;
         $scope.condition.attachments.files = $scope.settings.files;
         $scope.condition.attachments.content.text = $scope.settings.content.text;
       }
 
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
         if ($scope.confirmExit) {
-          var confirm = window.confirm('Вы действительно хотите выйти без сохранения?');
+          let confirm = window.confirm('Вы действительно хотите выйти без сохранения?');
           if (!confirm) {
             event.preventDefault();
           } else {
@@ -1809,6 +1797,58 @@ angular.module('Qemy.controllers.admin', [])
       })
     }
   ])
+
+  .controller('AddFilesController', ['$scope', '$parentScope', '$mdDialog', function ($scope, $parentScope, $mdDialog) {
+      $scope.close = function () {
+        $mdDialog.hide();
+      };
+      $scope.file = {
+        type: 'pdf',
+        url: '',
+        title: 'Statement'
+      };
+      $scope.save = function () {
+        $parentScope.settings.files.push($scope.file);
+        $scope.close();
+      };
+
+      function detectFileType( mimeType ) {
+        const defaultFileType = 'doc';
+        if (/(word|ms-word|officedocument|document)/i.test( mimeType )) {
+          return 'doc';
+        } else if (/(text)/i.test( mimeType )) {
+          return 'txt';
+        } else if (/(photo|image|jpe?g|png|gif|webp|svg|ico)/i.test( mimeType )) {
+          return 'image';
+        } else if (/(excel|xls|sheet)/i.test( mimeType )) { // https://stackoverflow.com/questions/974079/setting-mime-type-for-excel-document
+          return 'spreadsheet';
+        } else if (/(pdf)/i.test( mimeType )) {
+          return 'pdf';
+        }
+        return defaultFileType;
+      }
+
+      $scope.onPicked = function (docs) {
+        angular.forEach(docs, function (file, index) {
+          const {
+            url, mimeType, name, embedUrl,
+            downloadUrl
+          } = file;
+          const type = detectFileType( mimeType );
+          $parentScope.settings.files.push({
+            ...file,
+            url: type === 'image' && downloadUrl ? downloadUrl : url,
+            type,
+            title: name.replace(/(\.[a-z0-9]+)$/i, ''),
+          });
+        });
+        console.log($parentScope.settings.files);
+        $scope.close();
+      };
+
+      $scope.types = [ 'pdf', 'txt', 'doc', 'image', 'spreadsheet' ];
+    }]
+  )
 
   .controller('AdminServerController', ['$scope', '$rootScope', '$mdDialog', '$state', 'AdminManager', '$timeout',
     function($scope, $rootScope, $mdDialog, $state, AdminManager, $timeout) {

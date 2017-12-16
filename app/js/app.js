@@ -9,6 +9,7 @@ angular.module('Qemy', [
   'ngMessages',
   'hc.marked',
   'ngFileUpload',
+  'lk-google-picker',
   
   'Qemy.directives',
   'Qemy.controllers',
@@ -22,8 +23,8 @@ angular.module('Qemy', [
   'Qemy.ui.contest-item',
   'Qemy.ui.admin'
 ])
-  .config(['$locationProvider', 'StorageProvider', '$stateProvider', '$urlRouterProvider', '$mdThemingProvider', 'markedProvider', '$mdIconProvider',
-    function($locationProvider, StorageProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, markedProvider, $mdIconProvider) {
+  .config(['$locationProvider', 'StorageProvider', '$stateProvider', '$urlRouterProvider', '$mdThemingProvider', 'markedProvider', '$mdIconProvider', 'lkGoogleSettingsProvider',
+    function($locationProvider, StorageProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, markedProvider, $mdIconProvider, lkGoogleSettingsProvider) {
       if (Config.Modes.test) {
         StorageProvider.setPrefix('t_');
       }
@@ -114,6 +115,19 @@ angular.module('Qemy', [
         ready_callback: function () {
           console.log('All sounds have been loaded');
         }
+      });
+
+      lkGoogleSettingsProvider.configure({
+        apiKey   : 'AIzaSyAHaUeOI7o86wegkMPy4d2uAzjxAxAAWsk',
+        clientId : '474180600511-2of4r1gfshtu8h7bfilrq8j3pubci7h8.apps.googleusercontent.com',
+        scopes   : ['https://www.googleapis.com/auth/drive'],
+        locale   : 'ru',
+        features : ['MULTISELECT_ENABLED'],
+        views    : [
+          'DocsUploadView().setIncludeFolders(true)',
+          'DocsView()',
+          'DocsView(google.picker.ViewId.FOLDERS).setSelectFolderEnabled(true)'
+        ]
       });
     }
   ])

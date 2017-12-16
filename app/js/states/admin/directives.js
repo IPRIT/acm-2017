@@ -297,8 +297,8 @@ angular.module('Qemy.directives.admin', [])
           if (!ev.target) {
             return;
           }
-          scope.condition.htmlStatement = ev.target.innerHTML;
-          scope.condition.textStatement = angular.element(ev.target).text();
+          scope.condition.htmlStatement = element.html();
+          scope.condition.textStatement = element.text();
           scope.confirmExit = true;
         });
         element.attr('contenteditable', 'true');

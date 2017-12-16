@@ -1,3 +1,5 @@
+import "babel-polyfill";
+
 function initApplication () {
   var classes = [
     Config.Navigator.osX ? 'osx' : 'non_osx',
@@ -8,14 +10,14 @@ function initApplication () {
   }
   $(document.body).addClass(classes.join(' '));
 
-  const origConsoleLog = console.log;
-  console.log = (...args) => {
+  const origConsoleLog = console && console.log || (() => {});
+  console && (console.log = (...args) => {
     let curDate = new Date(),
       zF = (num, length = 2) => `${'0'.repeat(length - num.toString().length)}${num}`,
       timeArray = [ curDate.getHours(), curDate.getMinutes(), curDate.getSeconds() ],
       logTime = `[${timeArray.map(num => zF(num)).join(':')}.${zF(curDate.getMilliseconds(), 3)}]`;
     origConsoleLog.call(null, logTime, ...args);
-  };
+  });
 
   ConfigStorage.get('i18n_locale', function (params) {
     let locale = params,
