@@ -1,14 +1,15 @@
 div.task__files
-  div.task__file-wrap(ng-repeat='file in item.message.attachments.files | orderBy:" file.type"')
-    div(ng-switch='file.type')
-      div(ng-switch-when='image')
-        a.link(tabindex='{{$index}}', ng-click='openImage($event, file);', click='return false', ng-href='{{file.url}}', target='_blank', title='{{file.title ? file.title : "Приложение" + (item.message.attachments.files.length > 1 ? (" " + ($index + 1)) : "")}}')
-          div.task__file.task__file_type_image(ng-attr-style='background-image: url("{{file.url}}")')
+  div.task__file-wrap(ng-repeat='file in item.message.attachments.files | orderBy:" file.type"',
+  ng-class='{ "task__file-wrap_full": (file.embedUrl || (file.url && file.type === "pdf")) && item.message.attachments.config.files_show_embed }')
+    div(ng-switch='file.embedUrl && item.message.attachments.config.files_show_embed')
+      div(ng-switch-when='true')
+        div.task__file-preview
+          iframe(src='{{ file.embedUrl }}')
 
       div(ng-switch-default)
         a.link(tabindex='{{$index}}', ng-href='{{file.url}}', target='_blank')
           div.task__file
-            div.task__file-title {{file.title ? file.title : "Приложение" + (item.message.attachments.files.length > 1 ? (" " + ($index + 1)) : "")}}
+            div.task__file-title {{file.title ? file.title : "Statement" + (item.message.attachments.files.length > 1 ? (" " + ($index + 1)) : "")}}
             div.task__file-ext
               div(class='task__file-ext-icon task__file-ext-icon_type_{{file.type}}')
               span {{file.type}}

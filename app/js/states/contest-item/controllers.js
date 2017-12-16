@@ -425,8 +425,8 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
   
-  .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService) {
+  .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService', '$sce',
+    function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService, $sce) {
       $scope.$emit('change_title', {
         title: 'Условие | ' + _('app_name')
       });
@@ -436,6 +436,31 @@ angular.module('Qemy.controllers.contest-item', [
       $rootScope.$broadcast('data loading');
       ContestItemManager.getCondition({ contestId: contestId, symbolIndex: problemId }).then(function (result) {
         $rootScope.$broadcast('data loaded');
+        if (result.attachments
+          && Array.isArray( result.attachments.files )) {
+          result.attachments.files = result.attachments.files.map(file => {
+            if (file.embedUrl) {
+              file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+            } else if (file.type === 'pdf' && file.downloadUrl) {
+              file.embedUrl = $sce.trustAsResourceUrl(
+                file.downloadUrl.replace(/(export=download&)/i, '')
+              );
+            } else {
+              file.url = $sce.trustAsResourceUrl(file.url);
+            }
+            return file;
+          });
+          if (result.attachments.config.files_show_embed) {
+            result.attachments.files = result.attachments.files.sort((a, b) => {
+              if (a.embedUrl && b.embedUrl) {
+                return 0;
+              } else if (b.embedUrl) {
+                return 1;
+              }
+              return -1;
+            });
+          }
+        }
         result.htmlStatement = (result.htmlStatement || '')
           .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
         $scope.condition = result;
@@ -450,7 +475,7 @@ angular.module('Qemy.controllers.contest-item', [
       });
       
       $scope.openImage = function (ev, file) {
-        var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
+        let useFullScreen = $mdMedia('sm') || $mdMedia('xs');
         $mdDialog.show({
           controller: ['$scope', function ($scope) {
             $scope.file = file;
@@ -1923,8 +1948,8 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
   
-  .controller('RightSidenavCtrl', ['$scope', '$rootScope', '$timeout', '$mdSidenav', '$mdToast', '$log', '$state', 'ContestItemManager', 'ErrorService',
-    function ($scope, $rootScope, $timeout, $mdSidenav, $mdToast, $log, $state, ContestItemManager, ErrorService) {
+  .controller('RightSidenavCtrl', ['$sce', '$scope', '$rootScope', '$timeout', '$mdSidenav', '$mdToast', '$log', '$state', 'ContestItemManager', 'ErrorService',
+    function ($sce, $scope, $rootScope, $timeout, $mdSidenav, $mdToast, $log, $state, ContestItemManager, ErrorService) {
       
       $scope.close = function () {
         $mdSidenav('right').close()
@@ -1969,7 +1994,6 @@ angular.module('Qemy.controllers.contest-item', [
           .position(position.join(' '));
         
         toastInstance = $mdToast.show(toast).then(function (response) {
-          console.log(1, response);
           if ( response == 'ok' ) {
             $rootScope.$broadcast('toggleRightSidenav');
           }
@@ -1997,7 +2021,8 @@ angular.module('Qemy.controllers.contest-item', [
         var contestId = $state.params.contestId;
         ContestItemManager.getMessages({ contestId: contestId }).then(function (messages) {
           $scope.isMessagesLoading = false;
-          $scope.messages = messages;
+          $scope.messages = prepareMessages( messages );
+          console.log($scope.messages);
           $rootScope.$broadcast('inbox.messages.update-numbers', {
             unreadMessagesNumber: (messages.unread || []).length,
             allMessagesNumber: (messages.read || []).length + (messages.unread || []).length
@@ -2012,10 +2037,51 @@ angular.module('Qemy.controllers.contest-item', [
             });
           }
         }).catch(function (result) {
+          console.log(result);
           ErrorService.show(result);
         });
       });
-      
+
+      function prepareMessages( { read = [], unread = [] } ) {
+        read = read.map(item => {
+          return prepareFiles( item );
+        });
+        unread = unread.map(item => {
+          return prepareFiles( item );
+        });
+        return { read, unread };
+      }
+
+      function prepareFiles( item ) {
+        let result = item.message;
+        if (result.attachments
+          && Array.isArray( result.attachments.files )) {
+          result.attachments.files = result.attachments.files.map(file => {
+            if (file.embedUrl) {
+              file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+            } else if (file.type === 'pdf' && file.downloadUrl) {
+              file.embedUrl = $sce.trustAsResourceUrl(
+                file.downloadUrl.replace(/(export=download&)/i, '')
+              );
+            } else {
+              file.url = $sce.trustAsResourceUrl(file.url);
+            }
+            return file;
+          });
+          if (result.attachments.config.files_show_embed) {
+            result.attachments.files = result.attachments.files.sort((a, b) => {
+              if (a.embedUrl && b.embedUrl) {
+                return 0;
+              } else if (b.embedUrl) {
+                return 1;
+              }
+              return -1;
+            });
+          }
+        }
+        return item;
+      }
+
       /**
        * Supplies a function that will continue to operate until the
        * time is up.
@@ -2073,6 +2139,7 @@ angular.module('Qemy.controllers.contest-item', [
           original: true
         },
         files_location: 'bottom',
+        files_show_embed: true,
         files: [],
         content: {
           text: ''
@@ -2104,23 +2171,9 @@ angular.module('Qemy.controllers.contest-item', [
       });
       
       $scope.addFile = function (ev) {
+        $(document).scrollTop(0);
         $mdDialog.show({
-          controller: ['$scope', '$parentScope', function ($scope, $parentScope) {
-            $scope.close = function () {
-              $mdDialog.hide();
-            };
-            $scope.file = {
-              type: 'pdf',
-              url: '',
-              title: 'Statement'
-            };
-            $scope.save = function () {
-              $parentScope.settings.files.push($scope.file);
-              $scope.close();
-            };
-            
-            $scope.types = [ 'pdf', 'txt', 'doc', 'image', 'spreadsheet' ];
-          }],
+          controller: 'AddFilesController',
           templateUrl: templateUrl('admin', 'problems/edit-section/add-file'),
           parent: angular.element(document.body),
           targetEvent: ev,
@@ -2154,6 +2207,7 @@ angular.module('Qemy.controllers.contest-item', [
         }
         $scope.form.attachments.config.replaced = $scope.settings.replace;
         $scope.form.attachments.config.files_location = $scope.settings.files_location;
+        $scope.form.attachments.config.files_show_embed = $scope.settings.files_show_embed;
         $scope.form.attachments.files = $scope.settings.files;
         $scope.form.attachments.content.text = $scope.settings.content.text;
       }

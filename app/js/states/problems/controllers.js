@@ -28,8 +28,8 @@ angular.module('Qemy.controllers.problems', [])
     }
   ])
   
-  .controller('ProblemsItemController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ProblemsManager', 'SocketService', '$mdToast',
-    function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ProblemsManager, SocketService, $mdToast) {
+  .controller('ProblemsItemController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ProblemsManager', 'SocketService', '$mdToast', '$sce',
+    function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ProblemsManager, SocketService, $mdToast, $sce) {
 
       $scope.$emit('change_title', {
         title: 'Условие | ' + _('app_name')
@@ -42,6 +42,31 @@ angular.module('Qemy.controllers.problems', [])
       function updateProblem() {
         $rootScope.$broadcast('data loading');
         ProblemsManager.getProblem({ problemId: problemId, versionNumber: $scope.versionNumber }).then(function (result) {
+          if (result.attachments
+            && Array.isArray( result.attachments.files )) {
+            result.attachments.files = result.attachments.files.map(file => {
+              if (file.embedUrl) {
+                file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+              } else if (file.type === 'pdf' && file.downloadUrl) {
+                file.embedUrl = $sce.trustAsResourceUrl(
+                  file.downloadUrl.replace(/(export=download&)/i, '')
+                );
+              } else {
+                file.url = $sce.trustAsResourceUrl(file.url);
+              }
+              return file;
+            });
+            if (result.attachments.config.files_show_embed) {
+              result.attachments.files = result.attachments.files.sort((a, b) => {
+                if (a.embedUrl && b.embedUrl) {
+                  return 0;
+                } else if (b.embedUrl) {
+                  return 1;
+                }
+                return -1;
+              });
+            }
+          }
           result.htmlStatement = (result.htmlStatement || '')
             .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
           $scope.condition = result;

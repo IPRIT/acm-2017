@@ -758,6 +758,18 @@ my-timer-element {
 
   }
 }
+.task {
+  &__file-preview {
+    width: 100%;
+    height: 100%;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(black, .1);
+    }
+  }
+}
 .task__problem-timus {
   .sample {
     border-collapse: collapse;
@@ -2470,12 +2482,21 @@ md-chips {
     position: relative;
     text-decoration: none;
     vertical-align: top;
-    //-webkit-transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
-    //transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
+    // transition: background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1);
 
     &:not(:last-of-type) {
       margin-right: 8px;
       margin-bottom: 8px;
+    }
+
+    &_full {
+      width: 100%;
+      height: 600px;
+      margin-bottom: 18px !important;
+
+      div {
+        height: 100%;
+      }
     }
 
     .task__file-delete {
