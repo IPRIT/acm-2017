@@ -2,13 +2,13 @@ div.admin-content-layer(style='padding: 0')
   div.admin-content-layer__inner
 
     md-tabs(md-dynamic-height, md-border-bottom)
+      md-tab(label='Задачи')
+        md-content.md-padding
+          include ./problems/index
+
       md-tab(label='Сканирование')
         md-content.md-padding
           include ./problems/scan/index
-
-      md-tab(label='Редактирование')
-        md-content.md-padding
-          include ./problems/index
 
       md-tab(label='Ejudge Импорт')
         md-content.md-padding

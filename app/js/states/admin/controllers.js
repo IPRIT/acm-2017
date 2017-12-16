@@ -382,7 +382,7 @@ angular.module('Qemy.controllers.admin', [])
           targetEvent: ev,
           clickOutsideToClose: true,
           locals: {
-            condition: problem
+            condition: { ...problem }
           }
         });
       };
@@ -664,7 +664,7 @@ angular.module('Qemy.controllers.admin', [])
           targetEvent: ev,
           clickOutsideToClose: true,
           locals: {
-            condition: problem
+            condition: { ...problem }
           }
         });
       };
@@ -953,7 +953,7 @@ angular.module('Qemy.controllers.admin', [])
           targetEvent: ev,
           clickOutsideToClose: true,
           locals: {
-            condition: problem
+            condition: { ...problem }
           }
         });
       };
@@ -1030,12 +1030,43 @@ angular.module('Qemy.controllers.admin', [])
   ])
 
   .controller('AdminProblemDialogController', [
-    '$scope', 'condition', '$mdDialog',
-    function ($scope, condition, $mdDialog) {
-      $scope.condition = condition;
+    '$sce', '$scope', 'condition', '$mdDialog',
+    function ($sce, $scope, condition, $mdDialog) {
+      $scope.condition = prepareFiles( condition );
       $scope.close = function () {
         $mdDialog.hide();
       };
+
+      function prepareFiles( result ) {
+        if (result.attachments
+          && Array.isArray( result.attachments.files )) {
+          result.attachments.files = result.attachments.files.map(file => {
+            if (file.embedUrl && typeof file.embedUrl === 'string') {
+              file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+            } else if (file.type === 'pdf'
+              && file.downloadUrl
+              && typeof file.downloadUrl === 'string') {
+              file.embedUrl = $sce.trustAsResourceUrl(
+                file.downloadUrl.replace(/(export=download&)/i, '')
+              );
+            } else if (typeof file.downloadUrl === 'string') {
+              file.url = $sce.trustAsResourceUrl(file.url);
+            }
+            return file;
+          });
+          if (result.attachments.config.files_show_embed) {
+            result.attachments.files = result.attachments.files.sort((a, b) => {
+              if (a.embedUrl && b.embedUrl) {
+                return 0;
+              } else if (b.embedUrl) {
+                return 1;
+              }
+              return -1;
+            });
+          }
+        }
+        return result;
+      }
     }
   ])
 
@@ -1589,7 +1620,7 @@ angular.module('Qemy.controllers.admin', [])
           targetEvent: ev,
           clickOutsideToClose: true,
           locals: {
-            condition: problem
+            condition: { ...problem }
           }
         });
       };
@@ -1637,8 +1668,8 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
 
-  .controller('AdminProblemsItemEditController', ['$scope', '$rootScope', '_', '$mdDialog', '$state', 'AdminManager', 'ContestItemManager',
-    function($scope, $rootScope, _, $mdDialog, $state, AdminManager, ContestItemManager) {
+  .controller('AdminProblemsItemEditController', ['$scope', '$rootScope', '_', '$mdDialog', '$state', 'AdminManager', 'ContestItemManager', '$sce',
+    function($scope, $rootScope, _, $mdDialog, $state, AdminManager, ContestItemManager, $sce) {
       $scope.$emit('change_title', {
         title: 'Редактирование задачи | ' + _('app_name')
       });
@@ -1720,6 +1751,31 @@ angular.module('Qemy.controllers.admin', [])
           $rootScope.$broadcast('data loaded');
           if (result.error) {
             return $state.go('^.problems');
+          }
+          if (result.attachments
+            && Array.isArray( result.attachments.files )) {
+            result.attachments.files = result.attachments.files.map(file => {
+              if (file.embedUrl) {
+                file.embedUrl = $sce.trustAsResourceUrl(file.embedUrl);
+              } else if (file.type === 'pdf' && file.downloadUrl) {
+                file.embedUrl = $sce.trustAsResourceUrl(
+                  file.downloadUrl.replace(/(export=download&)/i, '')
+                );
+              } else {
+                file.url = $sce.trustAsResourceUrl(file.url);
+              }
+              return file;
+            });
+            if (result.attachments.config.files_show_embed) {
+              result.attachments.files = result.attachments.files.sort((a, b) => {
+                if (a.embedUrl && b.embedUrl) {
+                  return 0;
+                } else if (b.embedUrl) {
+                  return 1;
+                }
+                return -1;
+              });
+            }
           }
           result.htmlStatement = result.htmlStatement
             .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
@@ -2638,7 +2694,7 @@ angular.module('Qemy.controllers.admin', [])
           targetEvent: ev,
           clickOutsideToClose: true,
           locals: {
-            condition: problem
+            condition: { ...problem }
           }
         });
       };

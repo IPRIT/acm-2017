@@ -184,7 +184,7 @@ angular.module('Qemy.directives', [])
           if ($body.css('position') === 'fixed') {
             return;
           }
-          var scrollTop = angular.element(document.body).scrollTop();
+          var scrollTop = angular.element(document).scrollTop();
           var headerHeight = element.height();
           var headerOffset = Math.max(
             0, Math.min(headerHeight, scrollTop)
