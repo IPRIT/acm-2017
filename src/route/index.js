@@ -23,10 +23,10 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(formData.parse());
 router.use(formData.stream());
 router.use(formData.union());
-router.use(requestRestrict({
+/*router.use(requestRestrict({
   error: new HttpError('Too many requests', 429),
-  maxRequestsPerQuantum: 2000
-}));
+  maxRequestsPerQuantum: 20000
+}));*/
 
 router.all('*', cors);
 router.use('/test', test);
