@@ -57,9 +57,9 @@ module.exports = function(grunt) {
           sourceMap: true,
           sourceMapName: 'app/prod/js/build.prod.min.js.map',
           compress: {
-            // drop_console: true
+            drop_console: true
           },
-          // drop_console: true
+          drop_console: true
         },
         files: {
           'app/prod/js/build.prod.min.js': [
