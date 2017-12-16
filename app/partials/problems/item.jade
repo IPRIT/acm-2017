@@ -2,11 +2,11 @@ div
   div.contest__content.contest__min-width
     div.contest__inner
       div.task
-        div.task__title
+        div.task__title(ng-if='user.isAdmin')
           div.task__title-index
             span(ng-cloak, style='color: #777; font-size: .9em; text-transform: uppercase;')
              | Файл: {{ condition.title }}
-            div(style='margin: 10px 0;', ng-if='user.isAdmin')
+            div(style='margin: 10px 0;')
               md-button.md-primary.md-raised(style='margin-left: 0;', ng-if='condition.versionNumber === condition.latestVersionNumber', ui-sref='admin.problems-edit({ problemId: condition.id })')
                 md-icon(md-svg-src='/img/icons/ic_mode_edit_48px.svg', style='margin-right: 5px;')
                 span Редактировать
@@ -17,7 +17,7 @@ div
                 md-icon(md-svg-src='/img/icons/ic_replay_48px.svg', style='margin-right: 5px;')
                 span Восстановить версию \#{{ condition.versionNumber }}
 
-        div.problem-info(style='margin-top: 15px;')
+        div.problem-info(style='margin-top: 15px;', ng-if='user.isAdmin')
           div.problem-info__content
             div.problem-info__title Мета данные
             div.problem-info__inner

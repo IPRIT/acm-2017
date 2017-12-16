@@ -8,14 +8,8 @@ div.admin-content-layer.admin-content-layer__edit-problem
         md-tabs(md-dynamic-height, md-border-bottom, md-selected="tabIndex")
           md-tab(label='Редактирование')
             md-content.admin-content-layer__edit-problem_reset
-              md-tabs(md-dynamic-height, md-border-bottom)
-                md-tab(label='Текст')
-                  md-content.markdown__editor
-                    include ./edit-section/text
-
-                md-tab(label='Файлы')
-                  md-content.md-padding
-                    include ./edit-section/files
+              md-content.markdown__editor
+                include ./edit-section/text
 
 
           md-tab(label='Просмотр')

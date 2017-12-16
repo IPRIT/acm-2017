@@ -2111,8 +2111,8 @@ angular.module('Qemy.controllers.contest-item', [
             };
             $scope.file = {
               type: 'pdf',
-              url: 'https://',
-              title: 'Название файла'
+              url: '',
+              title: 'Statement'
             };
             $scope.save = function () {
               $parentScope.settings.files.push($scope.file);
@@ -2156,7 +2156,6 @@ angular.module('Qemy.controllers.contest-item', [
         $scope.form.attachments.config.files_location = $scope.settings.files_location;
         $scope.form.attachments.files = $scope.settings.files;
         $scope.form.attachments.content.text = $scope.settings.content.text;
-        console.log($scope.form);
       }
     }
   ])
