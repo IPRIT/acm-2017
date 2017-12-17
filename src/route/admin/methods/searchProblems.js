@@ -1,5 +1,6 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
+import sequelize from 'sequelize';
 import userGroups from './../../../models/User/userGroups';
 import { valueBetween } from "../../../utils/utils";
 import * as deap from "deap/lib/deap";
@@ -42,7 +43,21 @@ export async function searchProblems(params) {
     where,
     offset,
     limit,
-    attributes: { exclude: [ 'textStatement' ] }
+    attributes: {
+      exclude: [ 'textStatement' ]
+    },
+    include: [{
+      model: models.Solution,
+      group: [ 'problemId' ],
+      attributes: [ 'verdictId' ]
+    }]
+  }).map(problem => {
+    problem = problem.get({ plain: true });
+    problem.acceptedNumber = problem.Solutions.reduce((sum, verdictId) => sum + +(verdictId === 1), 0);
+    problem.solutionsNumber = problem.Solutions.length;
+    problem.Solutions = null;
+    delete problem.Solutions;
+    return problem;
   }).then(async problems => {
     return {
       problems,

@@ -386,7 +386,24 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
+      $scope.deleteProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
 
+        var confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content('Вы действительно хотите удалить эту задачу? В случае удаления, эта задача удалится из каждого контеста.')
+          .ariaLabel('Confirm dialog')
+          .ok('Да')
+          .cancel('Отмена');
+
+        $mdDialog.show(confirm).then(function () {
+          return AdminManager.deleteProblem({ problemId: problem.id });
+        }).then(function () {
+          return $scope.searchProblems();
+        });
+      };
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;
@@ -668,7 +685,24 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
+      $scope.deleteProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
 
+        var confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content('Вы действительно хотите удалить эту задачу? В случае удаления, эта задача удалится из каждого контеста.')
+          .ariaLabel('Confirm dialog')
+          .ok('Да')
+          .cancel('Отмена');
+
+        $mdDialog.show(confirm).then(function () {
+          return AdminManager.deleteProblem({ problemId: problem.id });
+        }).then(function () {
+          return $scope.searchProblems();
+        });
+      };
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;
@@ -957,7 +991,24 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
+      $scope.deleteProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
 
+        var confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content('Вы действительно хотите удалить эту задачу? В случае удаления, эта задача удалится из каждого контеста.')
+          .ariaLabel('Confirm dialog')
+          .ok('Да')
+          .cancel('Отмена');
+
+        $mdDialog.show(confirm).then(function () {
+          return AdminManager.deleteProblem({ problemId: problem.id });
+        }).then(function () {
+          return $scope.searchProblems();
+        });
+      };
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;
@@ -1681,7 +1732,8 @@ angular.module('Qemy.controllers.admin', [])
       $scope.action = function(name, ev) {
         var actions = {
           exit: exitAction,
-          save: saveAction
+          save: saveAction,
+          polygonify
         };
         if (name && name in actions) {
           actions[name].call(this, ev);
@@ -1690,6 +1742,31 @@ angular.module('Qemy.controllers.admin', [])
 
       function exitAction(ev) {
         $state.go('admin.problems');
+      }
+
+      function polygonify(ev) {
+        let htmlStatement = $scope.condition.htmlStatement;
+        let $html = $( htmlStatement );
+        if (!$html.find('.task__my-problem-statement').length) {
+          $html = $('<div class="task__my-problem-statement"></div>').prepend($html);
+          $html = $('<div></div>').prepend($html);
+        }
+        $html.find('*').each(function () {
+          let $this = $(this);
+          if (!this.className.includes('task__my-')) {
+            let classes = $this.attr('class');
+            if (!classes) {
+              return;
+            }
+            classes = classes.split(' ');
+            for (let j = 0; j < classes.length; ++j) {
+              classes[j] = 'task__my-' + classes[j];
+            }
+            $this.attr('class', classes.join(' '));
+          }
+        });
+        htmlStatement = $html.html();
+        $scope.condition.htmlStatement = htmlStatement;
       }
 
       function saveAction(ev) {
@@ -2700,7 +2777,24 @@ angular.module('Qemy.controllers.admin', [])
           }
         });
       };
+      $scope.deleteProblem = function (ev, problem) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.cancelBubble = true;
 
+        var confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content('Вы действительно хотите удалить эту задачу? В случае удаления, эта задача удалится из каждого контеста.')
+          .ariaLabel('Confirm dialog')
+          .ok('Да')
+          .cancel('Отмена');
+
+        $mdDialog.show(confirm).then(function () {
+          return AdminManager.deleteProblem({ problemId: problem.id });
+        }).then(function () {
+          return $scope.searchProblems();
+        });
+      };
       $scope.isShowingSelected = false;
       $scope.toggleSelected = function (ev) {
         $scope.isShowingSelected = !$scope.isShowingSelected;

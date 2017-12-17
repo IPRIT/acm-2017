@@ -1,12 +1,25 @@
 import "babel-polyfill";
 
 let httpsInterval = setInterval(() => {
-  if (!location.href.includes('https')) {
+  if (!location.href.includes('https')
+    && location.href.includes('misis.ru')) {
     location = location.href.replace('http', 'https');
   } else {
     clearInterval(httpsInterval);
   }
 }, 500);
+
+// Prevent click-jacking
+try {
+  if (window == window.top || window.chrome && chrome.app && chrome.app.window) {
+    document.documentElement.style.display = 'block';
+  } else {
+    document.write('<div style="text-align: center; font-weight: 100; padding: 10vw 0; color: #777;">Ожидание...</div>');
+    window.stop();
+  }
+} catch (e) {
+  console.error('CJ protection', e);
+}
 
 
 function initApplication () {
@@ -95,16 +108,6 @@ function initApplication () {
   });
 
   function initAutoUpgrade () {
-
-    // Prevent click-jacking
-    try {
-      if (window == window.top || window.chrome && chrome.app && chrome.app.window) {
-        document.documentElement.style.display = 'block';
-      } else {
-        window.write('CJ protection');
-      }
-    } catch (e) {console.error('CJ protection', e)}
-
     window.safeConfirm = function (params, callback) {
       if (typeof params === 'string') {
         params = {message: params};

@@ -125,6 +125,9 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'concat', 'babel', 'browserify', 'uglify', 'sass', 'autoprefixer', 'watch'
   ]);
+  grunt.registerTask('dev', [
+    'concat', 'babel', 'browserify', 'uglify', 'sass', 'watch'
+  ]);
 
   grunt.event.on('watch', function(action, filepath, target) {
     grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
