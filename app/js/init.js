@@ -1,8 +1,13 @@
 import "babel-polyfill";
 
-if (!location.href.includes('https')) {
-  location = location.href.replace('http', 'https');
-}
+let httpsInterval = setInterval(() => {
+  if (!location.href.includes('https')) {
+    location = location.href.replace('http', 'https');
+  } else {
+    clearInterval(httpsInterval);
+  }
+}, 500);
+
 
 function initApplication () {
   var classes = [
