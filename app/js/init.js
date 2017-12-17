@@ -1,5 +1,9 @@
 import "babel-polyfill";
 
+if (!location.href.includes('https')) {
+  location = location.href.replace('http', 'https');
+}
+
 function initApplication () {
   var classes = [
     Config.Navigator.osX ? 'osx' : 'non_osx',
@@ -95,10 +99,6 @@ function initApplication () {
         window.write('CJ protection');
       }
     } catch (e) {console.error('CJ protection', e)}
-
-    if (!location.href.includes('https')) {
-      location = location.href.replace('http', 'https');
-    }
 
     window.safeConfirm = function (params, callback) {
       if (typeof params === 'string') {
