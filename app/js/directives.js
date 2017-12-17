@@ -560,4 +560,104 @@ angular.module('Qemy.directives', [])
       }]
     };
   }])
+
+  .directive('embedDocument', () => {
+    return {
+      restrict: 'E',
+      controller: ['$scope', function ( $scope ) {
+        $scope.copyFileUrl = (file) => {
+          console.log('Copied', file);
+        };
+      }],
+      scope: {
+        file: '='
+      },
+      templateUrl: templateUrl('contest-item/embed', 'document')
+    }
+  })
+
+  .directive('copyText', () => {
+    return {
+      restrict: 'A',
+      scope: {
+        copyText: '='
+      },
+      link (scope, element, attrs) {
+        element.on('click', ev => {
+          const { copyText } = scope;
+          let input = createHiddenInput( copyText );
+          copyToClipboard( angular.element(input) );
+          scope.showCopySuccess( copyText );
+        });
+
+        function createHiddenInput( value ) {
+          let input = document.createElement('input');
+          input.value = value;
+          input.style.display = 'none';
+          return input;
+        }
+
+        function copyToClipboard(input) {
+          let success = true,
+            range = document.createRange(),
+            selection;
+
+          // For IE.
+          if (window.clipboardData) {
+            window.clipboardData.setData("Text", input.val());
+          } else {
+            // Create a temporary element off screen.
+            var tmpElem = $('<div>');
+            tmpElem.css({
+              position: "absolute",
+              left:     "-1000px",
+              top:      "-1000px",
+            });
+            // Add the input value to the temp element.
+            tmpElem.text(input.val());
+            $("body").append(tmpElem);
+            // Select temp element.
+            range.selectNodeContents(tmpElem.get(0));
+            selection = window.getSelection ();
+            selection.removeAllRanges ();
+            selection.addRange (range);
+            // Lets copy.
+            try {
+              success = document.execCommand ("copy", false, null);
+            }
+            catch (e) {
+              copyToClipboardFF(input.val());
+            }
+            if (success) {
+              // remove temp element.
+              tmpElem.remove();
+            }
+          }
+          input.remove();
+        }
+
+        function copyToClipboardFF(text) {
+          window.prompt("Скопировать в буфер обмена: Ctrl+C, Enter", text);
+        }
+      },
+      controller: ['$scope', ($scope) => {
+        $scope.showCopySuccess = (text) => {
+          try {
+            let injector = angular
+              && angular.element(document.body)
+              && angular.element(document.body).injector();
+            let $mdToast = injector.get('$mdToast');
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('Текст скопирован!')
+                .position('top right')
+                .hideDelay(3000)
+            );
+          } catch (e) {
+            alert('Текст скопирован')
+          }
+        }
+      }]
+    }
+  })
 ;

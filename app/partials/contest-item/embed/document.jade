@@ -1,0 +1,7 @@
+div.task__file-preview
+  div.task__file-preview-actions
+    md-button.md-raised.md-fab(copy-text='file.url')
+      md-icon(md-svg-src='/img/icons/ic_content_copy_48px.svg')
+    md-button.md-raised.md-fab.md-primary(target="_blank", href='{{ file.url }}')
+      md-icon(md-svg-src='/img/icons/ic_open_in_new_48px.svg')
+  iframe(ng-if='file.embedUrl', src='{{ file.embedUrl }}')

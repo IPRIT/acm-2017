@@ -27,11 +27,14 @@ md-toolbar.md-menu-toolbar
                   md-menu-item(type='checkbox', ng-model='settings.replace') Заменить HTML условие на Markdown
                   md-menu-item(type='checkbox', ng-model='settings.merge') Последовательно объединить HTML и Markdown условие
 
+        button(ng-click="action('polygonify', $event)")
+          | Полигонизировать
+
 .page-container
   .page-container__wrap
       include ../edit-section/files
 
-.page-container
+.page-container(style='position: relative; overflow: hidden; z-index: 1;')
   .page-container__wrap
 
     div.page-container__editing-mode-text(ng-switch='settings.mode.own')

@@ -132,14 +132,22 @@ div.admin-content-layer
                       span(ng-switch-when='timus') Timus
                       span(ng-switch-when='cf') Codeforces
                       span(ng-switch-when='acmp') ACMP.ru
-                      //span(ng-switch-when='sgu') SGU Online Judge
+                      span(ng-switch-when='sgu') SGU Online Judge
                       span(ng-switch-when='ejudge') ejudge
                       span(ng-switch-when='yandex') Яндекс.Контест
                       span(ng-switch-when='yandexOfficial') Яндекс.Контест (Official)
+                    p(style='color: #999;')
+                      span Accepted: {{ problem.acceptedNumber }}
+                      span &nbsp;|&nbsp;
+                      span Всего: {{ problem.solutionsNumber }}
                   md-icon.md-secondary(
-                  ng-click="showProblem($event, problem)",
-                  aria-label="Secondary action",
-                  md-svg-src="/img/icons/ic_visibility_48px.svg")
+                    ng-click="showProblem($event, problem)",
+                    aria-label="Secondary action",
+                    md-svg-src="/img/icons/ic_visibility_48px.svg")
+                  md-icon.md-secondary.md-accent(
+                    ng-click="deleteProblem($event, problem)",
+                    aria-label="Delete problem",
+                    md-svg-src="/img/icons/ic_delete_48px.svg")
 
             div(ng-if='selectedProblems.length > 0')
               div.contest-creation__row-title Отмеченные задачи:

@@ -3,8 +3,7 @@ div.task__files
                       ng-class='{ "task__file-wrap_full": (file.embedUrl || (file.url && file.type === "pdf")) && condition.attachments.config.files_show_embed }')
     div(ng-switch='file.embedUrl && condition.attachments.config.files_show_embed')
       div(ng-switch-when='true')
-        div.task__file-preview
-          iframe(ng-if='file.embedUrl', src='{{ file.embedUrl }}')
+        embed-document(file='file')
 
       div(ng-switch-default)
         a.link(tabindex='{{$index}}', ng-href='{{file.url}}', target='_blank')

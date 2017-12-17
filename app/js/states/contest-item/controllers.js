@@ -367,8 +367,8 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
   
-  .controller('ContestItemConditionsController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService) {
+  .controller('ContestItemConditionsController', ['AdminManager', '$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService',
+    function (AdminManager, $scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Условия | ' + _('app_name')
       });
@@ -403,7 +403,7 @@ angular.module('Qemy.controllers.contest-item', [
           }
         });
       };
-      
+
       $scope.user = {};
       UserManager.getCurrentUser().then(function (user) {
         $scope.user = user;

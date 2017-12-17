@@ -21,15 +21,19 @@ div.admin-content-layer
           md-content
             md-list-item.md-2-line(ng-repeat="problem in problems", ng-click="editProblem($event, problem)")
               div.md-list-item-text(layout="column")
-                span {{problem.task_number + ". " + problem.title + " "}}
-                span(style='color: #999;', ng-switch='problem.system_type')
+                p {{problem.task_number + ". " + problem.title + " "}}
+                p(style='color: #999;', ng-switch='problem.systemType')
                   span(ng-switch-when='timus') Timus
                   span(ng-switch-when='cf') Codeforces
                   span(ng-switch-when='acmp') ACMP.ru
-                  //span(ng-switch-when='sgu') SGU Online Judge
+                  span(ng-switch-when='sgu') SGU Online Judge
                   span(ng-switch-when='ejudge') ejudge
                   span(ng-switch-when='yandex') Яндекс.Контест
                   span(ng-switch-when='yandexOfficial') Яндекс.Контест (Official)
+                p(style='color: #999;')
+                  span Accepted: {{ problem.acceptedNumber }}
+                  span &nbsp;|&nbsp;
+                  span Всего: {{ problem.solutionsNumber }}
               md-icon.md-secondary(
                 ng-click="showProblem($event, problem)",
                 aria-label="Secondary action",
