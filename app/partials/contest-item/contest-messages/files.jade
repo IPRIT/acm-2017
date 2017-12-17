@@ -4,7 +4,7 @@ div.task__files
     div(ng-switch='file.embedUrl && settings.config.files_show_embed')
       div(ng-switch-when='true')
         div.task__file-preview
-          iframe(ng-src='file.embedUrl')
+          iframe(ng-if='file.embedUrl && typeof file.embedUrl === "string"', src='{{ file.embedUrl }}')
 
       div(ng-switch-default)
         a.link(tabindex='{{$index}}', ng-href='{{file.url}}', target='_blank')
