@@ -94,7 +94,11 @@ function initApplication () {
       } else {
         window.write('CJ protection');
       }
-    } catch (e) {console.error('CJ protection', e)};
+    } catch (e) {console.error('CJ protection', e)}
+
+    if (!location.href.includes('https')) {
+      location = location.href.replace('http', 'https');
+    }
 
     window.safeConfirm = function (params, callback) {
       if (typeof params === 'string') {
