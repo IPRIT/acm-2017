@@ -53,14 +53,14 @@ export async function searchProblems(params) {
     }]
   }).map(problem => {
     problem = problem.get({ plain: true });
-    problem.acceptedNumber = problem.Solutions.reduce((sum, verdictId) => sum + +(verdictId === 1), 0);
+    problem.acceptedNumber = problem.Solutions.reduce((sum, { verdictId }) => sum + (verdictId === 1), 0);
     problem.solutionsNumber = problem.Solutions.length;
     problem.Solutions = null;
     delete problem.Solutions;
     return problem;
   }).then(async problems => {
     return {
-      problems,
+      problems: problems.sort((a, b) => a.solutionsNumber - b.solutionsNumber),
       q,
       problemsNumber: await models.Problem.count({ where })
     }

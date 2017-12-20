@@ -6,8 +6,9 @@ import Promise from 'bluebird';
 import cheerio from 'cheerio';
 import {
   YANDEX_CONTEST_HOST, YANDEX_PROTOCOL, YANDEX_IMPORT_CONTEST_PATH,
-  YANDEX_IMPORT_PROCESSING_PATH
+  YANDEX_IMPORT_PROCESSING_PATH, YANDEX_ADMIN_CONTEST_SUBMISSIONS_NUMBER_PATH
 } from "./yandex";
+import * as yandex from "./index";
 
 const consoleMessagePattern = '[{systemType}] {message}';
 const SYSTEM_TYPE = 'yandex';
@@ -82,6 +83,11 @@ export async function observeImportUntilDone(importId, systemAccount) {
       let href = linkElement.attr('href');
       let contestId = ensureNumber( extractParam(href, 'contestId') );
       if (contestId) {
+        try {
+          await setContestNumberOfTries({ contestId, tries: 1e6 }, systemAccount);
+        } catch (err) {
+          console.log(err);
+        }
         isProcessDone = true;
         console.log('Contest ID:', contestId);
         socket.emitYandexContestImportConsoleLog(
@@ -105,6 +111,27 @@ export async function observeImportUntilDone(importId, systemAccount) {
   if (!isProcessDone) {
     throw new Error('Import failed');
   }
+}
+
+export async function setContestNumberOfTries( { contestId, tries = 1e6 }, systemAccount ) {
+  // https://contest.yandex.ru/admin/edit-contest/set-max-problem-submissions-count?contestId=6456&name=submissions-count&value=999999&pk=6458&submissions-count=999999&csrf-token=k%2F3tqjBVNKaai%2FpNi%2FIxSw%3D%3D
+  let endpoint = getEndpoint(YANDEX_CONTEST_HOST, YANDEX_ADMIN_CONTEST_SUBMISSIONS_NUMBER_PATH, {}, {
+    contestId,
+    name: 'submissions-count',
+    value: tries,
+    pk: 6458,
+    'submissions-count': tries,
+    'csrf-token': await yandex.getCsrfToken( systemAccount )
+  }, YANDEX_PROTOCOL);
+  let { jar } = systemAccount;
+  return request({
+    method: 'GET',
+    uri: endpoint,
+    simple: false,
+    resolveWithFullResponse: true,
+    followAllRedirects: true,
+    jar
+  });
 }
 
 function buildPostForm(systemType = 'polygon', fileStream, csrfToken) {

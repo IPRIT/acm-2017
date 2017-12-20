@@ -24,7 +24,7 @@ const nextAttemptAfterMs = 15 * 1000;
 const serviceUnavailableVerdictId = 13;
 const solutionWithWarningVerdictId = 18;
 const verdictCheckTimeoutMs = 100;
-const maxAccountWaitingMs = 2 * 60 * 1000;
+const maxAccountWaitingMs = 10 * 60 * 1000;
 
 const consoleMessagePattern = '[{systemType}] {message}';
 const SYSTEM_TYPE = 'yandexOfficial';
