@@ -12,6 +12,7 @@ export const YANDEX_CONTEST_HOST = 'contest.yandex.ru';
 
 export const YANDEX_AUTH_PATH = '/auth';
 export const YANDEX_ADMIN_CONTESTS_PATH = '/admin/contests';
+export const YANDEX_ADMIN_CONTEST_SUBMISSIONS_NUMBER_PATH = '/admin/edit-contest/set-max-problem-submissions-count';
 export const YANDEX_IMPORT_CONTEST_PATH = '/admin/create-contest/import-contest';
 export const YANDEX_IMPORT_PROCESSING_PATH = '/admin/create-contest/ejudge-import-request/:importId';
 
@@ -27,7 +28,7 @@ const nextAttemptAfterMs = 15 * 1000;
 const serviceUnavailableVerdictId = 13;
 const solutionWithWarningVerdictId = 18;
 const verdictCheckTimeoutMs = 100;
-const maxAccountWaitingMs = 2 * 60 * 1000;
+const maxAccountWaitingMs = 10 * 60 * 1000;
 
 export async function handle(solution) {
   let systemAccount = await yandex.getFreeAccount();

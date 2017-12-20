@@ -4,8 +4,10 @@ import * as yandex from "./index";
 import { getEndpoint } from "../../utils/utils";
 import * as socket from '../../socket';
 
-export async function enterContest(contestNumber, systemAccount) {
-  socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage(`Выполняется вход в контест...`) );
+export async function enterContest(contestNumber, systemAccount, consoleLogs = true) {
+  if (consoleLogs) {
+    socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage(`Выполняется вход в контест...`) );
+  }
   let $contestMainPage = await getContestMainPage(contestNumber, systemAccount);
   if (hasRegisterForm($contestMainPage)) {
     let $registerForm = getRegisterForm($contestMainPage);
@@ -21,7 +23,9 @@ export async function enterContest(contestNumber, systemAccount) {
   if (hasForm($contestMainPage)) {
     throw new Error('Невозможно войти в контест');
   }
-  socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage(`Вход в контест выполнен.`) );
+  if (consoleLogs) {
+    socket.emitYandexContestImportConsoleLog( yandex.buildConsoleMessage(`Вход в контест выполнен.`) );
+  }
   return contestNumber;
 }
 

@@ -62,6 +62,11 @@ async function getSolutionForm(yandexProblemId, solution, systemAccount) {
 }
 
 async function submitSolution(yandexProblemId, solutionForm, solution, systemAccount) {
+  let parsedProblemIdentifier = utils.parseYandexIdentifier(solution.Problem.foreignProblemIdentifier);
+
+  // always try to enter contest before
+  await yandex.enterContest(parsedProblemIdentifier.contestNumber, systemAccount, false);
+
   let form = {
     [`${yandexProblemId}@compilerId`]: solution.Language.foreignLanguageId,
     [`${yandexProblemId}@solution`]: 'text',
@@ -69,7 +74,6 @@ async function submitSolution(yandexProblemId, solutionForm, solution, systemAcc
     sk: solutionForm.sk,
     retpath: solutionForm.retpath
   };
-  let parsedProblemIdentifier = utils.parseYandexIdentifier(solution.Problem.foreignProblemIdentifier);
   let endpoint = utils.getEndpoint(yandex.YANDEX_CONTEST_HOST, yandex.YANDEX_CONTEST_SUBMIT, {
     contestNumber: parsedProblemIdentifier.contestNumber
   }, {}, yandex.YANDEX_PROTOCOL);

@@ -41,9 +41,9 @@ md-dialog(aria-label="Add new problem")
                     span(ng-switch-when='yandex') Яндекс.Контест
                     span(ng-switch-when='yandexOfficial') Яндекс.Контест (Official)
                   p(style='color: #999;')
-                    span Accepted: {{ problem.acceptedNumber }}
+                    span Принято: {{ problem.acceptedNumber }}
                     span &nbsp;|&nbsp;
-                    span Всего: {{ problem.solutionsNumber }}
+                    span Всего отправок: {{ problem.solutionsNumber }}
                 md-icon.md-secondary(
                   ng-click="showProblem($event, problem)",
                   aria-label="Secondary action",
