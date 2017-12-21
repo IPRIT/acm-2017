@@ -866,6 +866,10 @@ my-timer-element {
       line-height: 1;
       margin-top: 4px;
       font-size: 1.1em;
+
+      &:after {
+        content: ': ';
+      }
     }
     .task__my-header {
       text-align: center;
