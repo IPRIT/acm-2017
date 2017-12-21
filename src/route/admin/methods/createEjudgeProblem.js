@@ -33,7 +33,7 @@ export async function createEjudgeProblem(params) {
     systemType,
     foreignProblemIdentifier,
     title,
-    htmlStatement: `<h1>${title}</h1>`,
+    htmlStatement: `statement`,
     textStatement: '',
     attachments: JSON.stringify(attachments)
   });
