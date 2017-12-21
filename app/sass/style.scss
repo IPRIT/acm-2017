@@ -850,8 +850,20 @@ my-timer-element {
   }
 }
 
-.task__problem-cf,
 .task__problem-ejudge {
+  .task__my-property-title {
+    color: #474747;
+    line-height: 1;
+    margin-top: 4px;
+    font-size: 1.1em;
+
+    &:after {
+      content: ': ';
+    }
+  }
+}
+
+.task__problem-cf {
   .task__my-problem-statement {
 
     .task__my-title {
