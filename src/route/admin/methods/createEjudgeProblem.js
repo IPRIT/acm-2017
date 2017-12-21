@@ -34,7 +34,7 @@ export async function createEjudgeProblem(params) {
     foreignProblemIdentifier,
     title,
     htmlStatement: `statement`,
-    textStatement: '',
+    textStatement: 'statement',
     attachments: JSON.stringify(attachments)
   });
 }
