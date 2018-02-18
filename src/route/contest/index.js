@@ -1,9 +1,8 @@
 import express from 'express';
-import { rightsAllocator, userRetriever, canJoinContest, isJsonRequest } from '../../utils';
+import { rightsAllocator, userRetriever, canJoinContest } from '../../utils';
 import * as contest from './methods';
 
 const router = express.Router();
-
 
 router.get('/all', [ userRetriever, rightsAllocator('user') ], contest.getContestsRequest);
 router.get('/:contestId', [ userRetriever, rightsAllocator('user'), canJoinContest('can') ], contest.getByIdRequest);

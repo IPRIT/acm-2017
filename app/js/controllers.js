@@ -13,31 +13,98 @@ angular.module('Qemy.controllers', [
     $scope.isPageReady = true;
   }])
   
-  .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', function($scope, $rootScope, UserManager, $state) {
-    async function updateUserData() {
-      console.log('User data updating...');
-      $rootScope.$broadcast('data loading');
-      try {
-        let user = await UserManager.getCurrentUser({ cache: false });
-        $rootScope.$broadcast('data loaded');
-        if (!user || !user.id) {
-          $rootScope.$broadcast('user updated', { user: {} });
-          return $state.go('auth.form', { test: 1 });
-        }
-        $rootScope.$broadcast('user updated', { user: user });
-        console.log('User data updated.');
-      } catch (err) {
-        $rootScope.$broadcast('data loaded');
-        $state.go('auth.form', { test: 1 });
+  .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', 'SocketService', '$timeout', 'ErrorService',
+    async function($scope, $rootScope, UserManager, $state, SocketService, $timeout, ErrorService) {
+
+      let user = await asyncInit();
+
+      // chat event listeners
+      let socketId,
+        newChatMessageListener,
+        deleteChatMessageListener,
+        readChatMessageListener;
+
+      function attachEvents() {
+        newChatMessageListener = SocketService.setListener('new chat message', function (data) {
+          $rootScope.$broadcast('new chat message', data);
+        });
+        deleteChatMessageListener = SocketService.setListener('delete chat message', function (data) {
+          $rootScope.$broadcast('delete chat message', data);
+        });
+        readChatMessageListener = SocketService.setListener('read chat message', function (data) {
+          $rootScope.$broadcast('read chat message', data);
+        });
       }
+
+      function removeEvents() {
+        try {
+          newChatMessageListener.removeListener();
+          deleteChatMessageListener.removeListener();
+          readChatMessageListener.removeListener();
+          console.log('Chat listeners have been removed.');
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      async function asyncInit() {
+        return new Promise((resolve, reject) => {
+          SocketService.onConnect(async () => {
+            let user = await updateUserData();
+            if (!user) {
+              return resolve({});
+            }
+            socketId = SocketService.getSocket().id;
+            console.log('Connected:', socketId);
+
+            SocketService.listenChat(user.id);
+            SocketService.getSocket().on('reconnect', _ => {
+              console.log('Reconnected:', SocketService.getSocket().id);
+              $timeout(() => SocketService.listenChat(user.id), 500);
+            });
+
+            attachEvents();
+            resolve(user);
+          });
+        });
+      }
+
+      async function updateUserData() {
+        console.log('User data updating...');
+        $rootScope.$broadcast('data loading');
+        try {
+          let user = await UserManager.getCurrentUser({ cache: false });
+          $rootScope.$broadcast('data loaded');
+          if (!user || !user.id) {
+            $rootScope.$broadcast('user updated', { user: null });
+            return $state.go('auth.form');
+          }
+          $rootScope.$broadcast('user updated', { user });
+          console.log('User data updated.');
+          return user;
+        } catch (err) {
+          $rootScope.$broadcast('data loaded');
+          $state.go('auth.form');
+        }
+      }
+
+      $scope.$on('user update needed', async function (ev, args) {
+        console.log('User data update needed.', user);
+        if (user && user.id) {
+          SocketService.stopListenChat(user.id);
+          removeEvents();
+        }
+        user = await asyncInit();
+      });
+
+      $scope.$on('$destroy', function () {
+        if (user && user.id) {
+          SocketService.stopListenChat(user.id);
+          removeEvents();
+        }
+      });
     }
-    updateUserData();
-    
-    $scope.$on('user update needed', function (ev, args) {
-      console.log('User data update needed.');
-      updateUserData();
-    });
-  }])
+  ])
   
   .controller('IndexCtrl', ['$scope', '_', '$state', '$rootScope', 'UserManager',
     function($scope, _, $state, $rootScope, UserManager) {
@@ -73,10 +140,18 @@ angular.module('Qemy.controllers', [
       
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
+          $scope.user = {};
           return;
         }
-        $scope.user = args.user;
-        $scope.isAuth = !!args.user.id;
+        $scope.user = args.user || {};
+        $scope.isAuth = !!($scope.user && $scope.user.id);
+        safeApply($scope);
+      });
+
+      $scope.$on('user reset', function (ev, args) {
+        $scope.user = {};
+        $scope.isAuth = false;
+        safeApply($scope);
       });
 
       $scope.menuList = [{
@@ -124,7 +199,8 @@ angular.module('Qemy.controllers', [
           .targetEvent(ev);
         $mdDialog.show(confirm).then(function() {
           UserManager.logout().then(function (result) {
-            $scope.$emit('user update needed');
+            $rootScope.$broadcast('user update needed');
+            $rootScope.$broadcast('user reset');
           });
         });
       }

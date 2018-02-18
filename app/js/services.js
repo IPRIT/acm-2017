@@ -251,6 +251,18 @@ angular.module('Qemy.services', [
       });
     }
 
+    function listenChat(userId) {
+      emitEvent('chat.listen', {
+        userId: userId
+      });
+    }
+
+    function stopListenChat(userId) {
+      emitEvent('chat.stopListen', {
+        userId: userId
+      });
+    }
+
     function listenConsole() {
       emitEvent('console.listenLogs', {});
     }
@@ -313,6 +325,8 @@ angular.module('Qemy.services', [
       stopListenSolutions: stopListenSolutions,
       listenConsole: listenConsole,
       stopListenConsole: stopListenConsole,
+      listenChat: listenChat,
+      stopListenChat: stopListenChat,
       setListener: setListener,
       removeListener: removeListener,
       onConnect: onConnect,

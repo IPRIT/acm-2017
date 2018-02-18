@@ -15,6 +15,7 @@ div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
       a.contest-menu__item(ui-sref='^.problems', ui-sref-active='contest-menu__item_state_active') Условия задач
       a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isAdmin') Отправить
       a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}') Решения
+      a.contest-menu__item(ui-sref='^.chat', ng-class='{"contest-menu__item_state_active": $state.includes("contest.chat")}') Чат
       a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isAdmin') Массовое оповещение
       //a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active', ng-if='user.isAdmin') Таблица (устарев.)
       a.contest-menu__item(ng-if='user.isAdmin')

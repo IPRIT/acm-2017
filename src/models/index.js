@@ -10,6 +10,7 @@ import Problem from './Problem';
 import ProblemToContest from './ProblemToContest';
 import Message from './Message';
 import MessageRead from './MessageRead';
+import ChatMessage from './ChatMessage';
 import Language from './Language';
 import Solution from './Solution';
 import SystemAccount from './SystemAccount';
@@ -61,6 +62,11 @@ MessageRead.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
 Message.hasMany(MessageRead, { foreignKey: 'messageId', targetKey: 'id' });
 MessageRead.belongsTo(Message, { foreignKey: 'messageId', targetKey: 'id' });
+
+// --- ChatMessage ---
+User.hasMany(ChatMessage, { foreignKey: 'userId', targetKey: 'id' });
+ChatMessage.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+// ---
 
 User.belongsToMany(Group, {
   through: 'UsersToGroups',
@@ -149,7 +155,7 @@ RatingChange.belongsTo(Group, { foreignKey: 'groupId', targetKey: 'id' });
 export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
-  Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
+  ChatMessage, Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
   ProblemVersionControl, Error
 
   /*OldUser, OldLanguage, OldContest, OldProblem,
