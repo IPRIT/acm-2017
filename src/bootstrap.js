@@ -4,7 +4,6 @@
 
 import app from './app';
 import http from 'http';
-import socketIo from 'socket.io';
 import * as sockets from './socket';
 import { config } from './utils';
 
