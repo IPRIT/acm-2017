@@ -20,14 +20,14 @@ angular.module('Qemy.ui.chat', [
     function ($stateProvider, $urlRouterProvider) {
 
       $stateProvider
-        .state('im', {
-          url: '/im',
+        .state('chat', {
+          url: '/chat',
           templateUrl: templateUrl('chat', 'base'),
           abstract: true,
           controller: 'ChatBaseController'
         })
-        .state('im.index', {
-          url: '',
+        .state('chat.peer', {
+          url: '/{peerId}',
           templateUrl: templateUrl('chat', 'index'),
           controller: 'ChatIndexController'
         })

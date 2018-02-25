@@ -15,7 +15,7 @@ export async function getDialogMessages(params) {
   let {
     userId, user,
     peerUserId, peerUser,
-    limit = 20,
+    limit = 100,
     offset = 0
   } = params;
   
@@ -26,7 +26,7 @@ export async function getDialogMessages(params) {
     peerUser = await models.User.findByPrimary(peerUserId);
   }
   if (!user || !peerUser) {
-    throw new HttpError('User or Contest not found');
+    throw new HttpError('User not found');
   }
   let options = {
     where: {

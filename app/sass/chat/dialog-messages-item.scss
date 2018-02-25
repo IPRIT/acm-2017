@@ -1,0 +1,8 @@
+@import "../helpers/all";
+
+@include bem(dialog-messages-item) {
+  @extend %ab-layer-block;
+
+  @include bem-element(header) {
+  }
+}

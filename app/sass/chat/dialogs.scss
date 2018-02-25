@@ -1,0 +1,34 @@
+@import "../helpers/all";
+
+.dialogs {
+  @extend %ab-layer-block;
+
+  &__search {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+
+    input {
+      padding: 7px 16px;
+      background: #efefef;
+      border: 0;
+      font-weight: 100;
+      font-size: .95em;
+      line-height: 1.5;
+      width: 100%;
+      box-sizing: border-box;
+      transition: all .2s ease-in-out;
+      border-radius: 3px;
+      outline-color: #2196f3;
+
+      &:focus {
+        background: white;
+      }
+    }
+  }
+
+  &__items {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}

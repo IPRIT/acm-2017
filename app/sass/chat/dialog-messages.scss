@@ -1,0 +1,8 @@
+@import "../helpers/all";
+
+.dialog-messages {
+  max-height: 508px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+}

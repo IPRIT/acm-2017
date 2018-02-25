@@ -9,6 +9,7 @@
 
 import crypto from 'crypto';
 import * as models from "../models";
+import { getUser as retrieveUserByToken } from "../utils/user-retrieve-middleware";
 
 let io,
   hashSalt = 'misis_acm_belov_2017',
@@ -108,6 +109,8 @@ export function subscribeEvents(socket) {
     socket.join(userHashKey);
     console.info(`[${userId}:${socket.id}] started listening chat events.`);
   });
+
+  socket.on('chat.startTyping', chatStartTypingEvent.bind(null, socket));
 
   socket.on('chat.stopListen', data => {
     let { userId } = data;
@@ -260,4 +263,19 @@ export function emitConsoleLog(eventName, consoleLogMessage, messageHash = '') {
     messageHash,
     timestamp: Date.now()
   });
+}
+
+export async function chatStartTypingEvent(socket, data) {
+  const {
+    token,
+    peerUserId
+  } = data;
+  const user = await retrieveUserByToken(token);
+  if (!user || !peerUserId) {
+    return;
+  }
+  emitUserEvent('global', peerUserId, 'chat typing', {
+    peer: user.get({ plain: true })
+  });
+  console.info(`[${user.id}:${socket.id}] started typing.`);
 }

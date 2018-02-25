@@ -41,7 +41,7 @@ async function retrieveUser(req, res, next) {
   next();
 }
 
-async function getUser(token) {
+export async function getUser(token) {
   let tokenInstance = await AuthToken.findOne({
     where: { token }
   });

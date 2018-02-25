@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
       idle: config.db.idleTimeoutMs || 10000
     },
 
-    logging: config.env === 'development' ? false && log.debug.bind(log) : false
+    logging: config.env === 'development' ? true && log.debug.bind(log) : false
   }
 );
 

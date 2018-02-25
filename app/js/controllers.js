@@ -22,17 +22,21 @@ angular.module('Qemy.controllers', [
       let socketId,
         newChatMessageListener,
         deleteChatMessageListener,
-        readChatMessageListener;
+        readChatMessageListener,
+        typingListener;
 
       function attachEvents() {
-        newChatMessageListener = SocketService.setListener('new chat message', function (data) {
+        newChatMessageListener = SocketService.setListener('new chat message', data => {
           $rootScope.$broadcast('new chat message', data);
         });
-        deleteChatMessageListener = SocketService.setListener('delete chat message', function (data) {
+        deleteChatMessageListener = SocketService.setListener('delete chat message', data => {
           $rootScope.$broadcast('delete chat message', data);
         });
-        readChatMessageListener = SocketService.setListener('read chat message', function (data) {
+        readChatMessageListener = SocketService.setListener('read chat message', data => {
           $rootScope.$broadcast('read chat message', data);
+        });
+        typingListener = SocketService.setListener('chat typing', data => {
+          $rootScope.$broadcast('chat typing', data);
         });
       }
 
@@ -41,6 +45,7 @@ angular.module('Qemy.controllers', [
           newChatMessageListener.removeListener();
           deleteChatMessageListener.removeListener();
           readChatMessageListener.removeListener();
+          typingListener.removeListener();
           console.log('Chat listeners have been removed.');
         } catch (err) {
           console.log(err);
