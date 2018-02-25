@@ -98,6 +98,26 @@ export function subscribeEvents(socket) {
     socket.leave( getConsoleLogsHashKey() );
     console.info(`[${socket.id}] stopped listening console logs.`);
   });
+
+  socket.on('chat.listen', data => {
+    const { userId } = data;
+    if (!userId) {
+      return;
+    }
+    let userHashKey = getUserHashKey([ 'global', userId ].join('_'));
+    socket.join(userHashKey);
+    console.info(`[${userId}:${socket.id}] started listening chat events.`);
+  });
+
+  socket.on('chat.stopListen', data => {
+    let { userId } = data;
+    if (!userId) {
+      return;
+    }
+    let userHashKey = getUserHashKey([ 'global', userId ].join('_'));
+    socket.leave(userHashKey);
+    console.info(`[${userId}:${socket.id}] stopped listening chat events.`);
+  });
   
   socket.on('disconnect', function (data) {
     console.log(`[${socket.id}] disconnected from the server.`, );
@@ -166,6 +186,26 @@ export function emitNewMessageEvent(params = {}, target = 'contest') {
     let { contestId, userId, message } = params;
     emitUserEvent(contestId, userId, eventName, message);
   }
+}
+
+export function emitNewChatMessageEvent(params = {}) {
+  const eventName = 'new chat message';
+  const { userId, message } = params;
+  emitUserEvent('global', userId, eventName, message);
+}
+
+export function emitDeleteChatMessageEvent(params = {}) {
+  const eventName = 'delete chat message';
+  const { userId, recipientUserId, message } = params;
+  emitUserEvent('global', userId, eventName, message);
+  emitUserEvent('global', recipientUserId, eventName, message);
+}
+
+export function emitReadChatMessageEvent(params = {}) {
+  const eventName = 'read chat message';
+  const { userId, recipientUserId, message } = params;
+  emitUserEvent('global', userId, eventName, message);
+  emitUserEvent('global', recipientUserId, eventName, message);
 }
 
 export function emitResetSolutionEvent(params = {}, target = 'contest') {
