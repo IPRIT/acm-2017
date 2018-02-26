@@ -19,8 +19,9 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     position: relative;
-    padding-bottom: 53px;
+    padding-bottom: 62px;
     background: url('/img/chat-bg.png') repeat-y;
     background-size: 150%;
   }

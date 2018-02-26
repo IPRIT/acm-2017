@@ -1,2 +1,6 @@
 div.dialog-messages
-  chat-dialog-messages-item(ng-repeat='dialogMessage in dialogMessages.messages')
+  chat-dialog-messages-item(ng-repeat='dialogMessage in dialogMessages.messages track by dialogMessage.message.id')
+
+  div.dialog-messages__typing(ng-if='typing')
+    md-icon(md-svg-icon="img/icons/ic_mode_edit_24px.svg")
+    span Набирает сообщение...

@@ -1,7 +1,7 @@
 @import "../helpers/all";
 
 .dialog-input {
-  padding: 8px;
+  padding: 8px 60px 8px 8px;
   box-sizing: border-box;
   background: white;
   position: relative;
@@ -24,11 +24,37 @@
   &__send {
     position: absolute;
     right: 4px;
-    top: 6px;
+    top: 11px;
 
     md-icon {
       position: relative;
-      left: 3px;
+      left: 2px;
     }
   }
+
+  md-input-container {
+    margin: 0;
+    margin-top: 12px;
+
+    .md-errors-spacer {
+      display: none;
+    }
+
+    textarea {
+      border: 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  }
+
+  md-input-container .md-placeholder,
+  md-input-container label:not(.md-no-float):not(.md-container-ignore) {
+    transform: translate3d(0,20px,0) scale(1) !important;
+  }
+
+  md-input-container.md-input-focused label:not(.md-no-float),
+  md-input-container.md-input-has-value label:not(.md-no-float) {
+    transform: translate3d(0,6px,0) scale(.75) !important;
+  }
+
 }

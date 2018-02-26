@@ -1,8 +1,72 @@
 @import "../helpers/all";
 
-@include bem(dialog-messages-item) {
-  @extend %ab-layer-block;
+.dialog-messages-item {
+  padding: 4px 12px;
+  position: relative;
+  cursor: pointer;
 
-  @include bem-element(header) {
+  &.unread,
+  &:hover {
+    background: transparentize(black, .95);
+  }
+
+  &:hover &__inner.peer &__message {
+    // transform: translateX(10px);
+  }
+
+  &:hover &__inner.my &__message {
+    // transform: translateX(-10px);
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: row;
+
+    &.peer {
+      justify-content: flex-start;
+    }
+
+    &.my {
+      justify-content: flex-end;
+    }
+  }
+
+  &__message {
+    background: #fff;
+    border-radius: 15px;
+    transition: all .1s ease-in-out;
+    max-width: 70%;
+    padding: 12px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+
+    &-text {
+      white-space: pre-line;
+      padding-right: 34px;
+      word-break: break-all;
+      word-break: break-word;
+    }
+
+    &-time {
+      float: right;
+      font-size: .7em;
+      line-height: .2;
+    }
+  }
+
+  &__inner.my &__message {
+    background: #EFFDDD;
+    border-top-right-radius: 5px;
+
+    &-time {
+      color: #83C27A;
+    }
+  }
+
+  &__inner.peer &__message {
+    border-top-left-radius: 5px;
+
+    &-time {
+      color: #777;
+    }
   }
 }

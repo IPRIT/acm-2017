@@ -58,12 +58,21 @@ angular.module('Qemy.controllers.chat', [])
         return startChatApp();
       }).catch(function (err) {
         console.log(err);
-        // $state.go('auth.form');
+        $state.go('auth.form');
       });
 
       $scope.dialogs = [];
       $scope.dialogMessages = [];
       $scope.dialogPeer = {};
+
+      $scope.scrollDown = () => {
+        $timeout(_ => {
+          let chatApp = document.querySelector('.chat-app');
+          let dialogMessagesContainer = chatApp.querySelector('.dialog-messages');
+          let $dialogMessagesContainer = angular.element(dialogMessagesContainer);
+          $dialogMessagesContainer.scrollTop(1e9)
+        }, 50);
+      };
 
       function loadDialogs() {
         return ChatManager.getDialogs();
@@ -77,22 +86,41 @@ angular.module('Qemy.controllers.chat', [])
         return ChatManager.resolvePeer({ peerUserId });
       }
 
-      function startChatApp(peerId = $state.params.peerId) {
+      function createIndex(dialogs) {
+        const dialogsIndex = SearchIndexManager.createIndex();
+        for (let i = 0; i < dialogs.length; ++i) {
+          SearchIndexManager.indexObject(dialogs[i].peer.id, dialogs[i].peer.fullName, dialogsIndex);
+        }
+        $scope.dialogsIndex = dialogsIndex;
+      }
+
+      async function startChatApp(peerId = $state.params.peerId) {
         $scope.peerId = peersMapping[peerId] || peerId;
         $scope.peerIdNumber = Number($scope.peerId);
 
         console.log(`Starting chat with peerId: ${$scope.peerId}`);
 
-        return loadDialogs().then(dialogs => {
+        let promises = [
+          loadPeer($scope.peerId),
+          loadDialogMessages($scope.peerId)
+        ];
+        if (!$scope.dialogs.length) {
+          promises.push(loadDialogs());
+        }
+
+        let results = await Promise.all(promises);
+
+        let [ peer, messages, dialogs ] = results;
+        $scope.dialogPeer = peer;
+        $scope.dialogMessages = messages;
+        $scope.dialogMessages.messages = $scope.dialogMessages.messages.sort((a, b) => a.message.id - b.message.id);
+        if (dialogs) {
           $scope.dialogs = dialogs;
-          return loadPeer($scope.peerId);
-        }).then(peer => {
-          $scope.dialogPeer = peer;
-          return loadDialogMessages(peer.id);
-        }).then(messages => {
-          $scope.dialogMessages = messages;
-          console.log('Chat initialized:', $scope.dialogs, $scope.dialogPeer, $scope.dialogMessages);
-        });
+          createIndex(dialogs);
+        }
+        safeApply($scope);
+        $scope.scrollDown();
+        console.log('Chat initialized:', $scope.dialogs, $scope.dialogPeer, $scope.dialogMessages);
       }
 
       $scope.$on('chat.update.peerId', (ev, peerId) => {
@@ -100,10 +128,61 @@ angular.module('Qemy.controllers.chat', [])
       });
     }
   ])
-  .controller('ChatAppController', ['$scope', '$rootScope', '$state', '_', '$timeout',
-    function ($scope, $rootScope, $state, _, $timeout) {
+  .controller('ChatAppController', ['$scope', '$rootScope', '$state', '_', '$timeout', 'ChatManager', 'SocketService',
+    function ($scope, $rootScope, $state, _, $timeout, ChatManager, SocketService) {
       $scope.$on('chat.update.me', (ev, user) => {
         $scope.user = user;
+      });
+
+      $scope.select = function (peerId) {
+        $scope.selectedPeerId = peerId;
+      };
+
+      $scope.onKeydown = (e) => {
+        if (e.keyCode == 13 && !e.shiftKey) {
+          $scope.sendMessage();
+          e.preventDefault();
+          e.stopPropagation();
+        } else {
+          SocketService.startTypingChat($scope.peerIdNumber);
+        }
+      };
+
+      $scope.form = {
+        messageText: ''
+      };
+
+      $scope.sendMessage = () => {
+        if (!$scope.form.messageText ||
+            !$scope.form.messageText.trim()) {
+          return;
+        }
+        let messageObject = {
+          message: $scope.form.messageText,
+          attachments: {},
+          recipientUserId: $scope.peerIdNumber
+        };
+        $scope.form = angular.copy({});
+        safeApply($scope);
+
+        ChatManager.sendMessage(messageObject).then(_ => {
+          $scope.dialogMessages.messages.push(_);
+          $scope.scrollDown();
+          $scope.messageText = '';
+          safeApply($scope);
+        });
+      };
+
+      $scope.$on('new chat message', (ev, data) => {
+        if (data.author.id === $scope.peerIdNumber && data.author.id !== $scope.user.id) {
+          $scope.dialogMessages.messages.push(data);
+          $scope.scrollDown();
+          safeApply($scope);
+        }
+      });
+
+      $scope.$on('read chat message', (ev, data) => {
+        console.log(data);
       });
 
       $scope.$on('$stateChangeStart', (evt, toState, toParams, fromState, fromParams) => {
@@ -125,14 +204,11 @@ angular.module('Qemy.controllers.chat', [])
   ])
   .controller('ChatDialogsController', ['$scope', '$rootScope', '$state', '_', '$timeout',
     function ($scope, $rootScope, $state, _, $timeout) {
+      $scope.dialogsSearch = '';
     }
   ])
   .controller('ChatDialogsItemController', ['$scope', '$rootScope', '$state', '_', '$timeout',
     function ($scope, $rootScope, $state, _, $timeout) {
-      $scope.select = function (peerId) {
-        console.log(peerId);
-        $scope.selectedPeerId = peerId;
-      }
     }
   ])
   .controller('ChatDialogInputController', ['$scope', '$rootScope', '$state', '_', '$timeout',
@@ -141,6 +217,26 @@ angular.module('Qemy.controllers.chat', [])
   ])
   .controller('ChatDialogMessagesController', ['$scope', '$rootScope', '$state', '_', '$timeout',
     function ($scope, $rootScope, $state, _, $timeout) {
+      $scope.typing = false;
+
+      let typingTimeout = null;
+
+      $scope.$on('chat typing', (ev, peer) => {
+        console.log('Chat typing:', peer);
+        $scope.typing = true;
+        $scope.scrollDown();
+        if (typingTimeout) {
+          clearTimeout(typingTimeout);
+          typingTimeout = null;
+        }
+        typingTimeout = setTimeout(() => {
+          clearTimeout(typingTimeout);
+          typingTimeout = null;
+          $scope.typing = false;
+          safeApply($scope);
+        }, 4000);
+        safeApply($scope);
+      });
     }
   ])
   .controller('ChatDialogMessagesItemController', ['$scope', '$rootScope', '$state', '_', '$timeout',

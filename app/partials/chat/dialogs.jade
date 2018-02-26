@@ -1,5 +1,5 @@
 div.dialogs
-  div.dialogs__search(ng-if='user.isAdmin')
+  div.dialogs__search
     input(name='search', autocomplete='off', ng-model='dialogsSearch', placeholder='Поиск по диалогам')
   div.dialogs__items
-    chat-dialogs-item(ng-repeat="dialogItem in dialogs")
+    chat-dialogs-item(ng-repeat="dialogItem in dialogs | dialogsSearchFilter:dialogsSearch:dialogsIndex:peerIdNumber")

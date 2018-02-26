@@ -1,4 +1,8 @@
 div.dialog-input
-  input.dialog-input__input(placeholder='Введите сообщение...')
-  md-button.md-primary.dialog-input__send(class="md-icon-button", aria-label="Send")
+  md-input-container
+    textarea.dialog-input__input.textarea.send-content__textarea-element(
+      rows='1', ng-model='form.messageText', placeholder='Введите сообщение...'
+      ng-keydown='onKeydown($event)'
+    )
+  md-button.md-primary.dialog-input__send(class="md-icon-button", aria-label="Send", ng-click='sendMessage()', ng-disabled='!form.messageText')
     md-icon(md-svg-icon="img/icons/ic_send_24px.svg")

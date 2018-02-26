@@ -10,6 +10,18 @@
 "use strict";
 
 angular.module('Qemy.filters.chat', [
-    'Qemy.i18n'
+  'Qemy.i18n'
 ])
+  .filter('dialogsSearchFilter', [() => {
+    return (dialogs, dialogsSearch, dialogsIndex, peerIdNumber) => {
+      if (!dialogsIndex || !dialogsSearch) {
+        return dialogs;
+      }
+      let filteredDialogs = SearchIndexManager.search(dialogsSearch, dialogsIndex);
+      return dialogs.filter(dialog => {
+        return dialog.peer && filteredDialogs[dialog.peer.id]
+          || peerIdNumber === dialog.peer.id;
+      });
+    };
+  }])
 ;

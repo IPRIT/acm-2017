@@ -1,2 +1,8 @@
-div
-  span {{ dialogMessage.message.message }}
+div.dialog-messages-item(ng-class="{'unread': !dialogMessage.message.isRead}")
+  div.dialog-messages-item__inner(ng-class="{'my': user.id === dialogMessage.author.id, 'peer': user.id === dialogMessage.recipient.id}")
+
+    div.dialog-messages-item__message
+      div.dialog-messages-item__message-text
+        span {{ dialogMessage.message.message }}
+      div.dialog-messages-item__message-time
+        span {{ dialogMessage.message.postAtMs | date:'HH:mm' }}

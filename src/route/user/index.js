@@ -7,6 +7,7 @@ const router = express.Router();
 router.use('/authenticate', user.authenticator);
 
 router.get('/me', [ userRetriever, rightsAllocator('user') ], user.me);
+router.get('/token', [ userRetriever, rightsAllocator('user') ], user.token);
 router.get('/rating', [ userRetriever, rightsAllocator('user') ], user.getRatingHistoryRequest);
 router.get('/rating/table', [ userRetriever, rightsAllocator('user') ], user.getRatingTableRequest);
 router.get('/solutions', [ userRetriever, rightsAllocator('user') ], user.getSolutionsRequest);

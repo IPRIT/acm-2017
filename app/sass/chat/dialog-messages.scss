@@ -5,4 +5,22 @@
   overflow-x: hidden;
   overflow-y: auto;
   box-sizing: border-box;
+  padding-bottom: 4px;
+
+  &__typing {
+    padding: 8px 12px 2px;
+    font-size: .8em;
+    color: rgba(125, 130, 132, 0.72);
+
+    md-icon {
+      position: relative;
+      top: 2px;
+      color: #999;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
 }

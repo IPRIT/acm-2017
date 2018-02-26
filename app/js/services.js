@@ -95,6 +95,21 @@ angular.module('Qemy.services', [
         });
       }
     }
+
+    let userTokenCache = null;
+
+    function getUserToken() {
+      if (userTokenCache) {
+        return $q.when(userTokenCache);
+      }
+      return $http({
+        method: 'get',
+        url: '/api/user/token'
+      }).then(function (data) {
+        userTokenCache = data.data;
+        return data.data;
+      });
+    }
     
     function logout() {
       return $http.post('/api/user/authenticate/logout').then(function (data) {
@@ -160,11 +175,12 @@ angular.module('Qemy.services', [
       getRatingHistory: getRatingHistory,
       getRatingTable: getRatingTable,
       getUserById: getUserById,
-      getSolutions: getSolutions
+      getSolutions: getSolutions,
+      getUserToken
     }
   }])
   
-  .service('SocketService', ['$rootScope', '$q', '$http', function ($rootScope, $q, $http) {
+  .service('SocketService', ['$rootScope', '$q', '$http', 'UserManager', function ($rootScope, $q, $http, UserManager) {
     var socket = io();
     var queue = [];
     var connectCallbacks = [];
@@ -257,6 +273,16 @@ angular.module('Qemy.services', [
       });
     }
 
+    function startTypingChat(peerUserId) {
+      return UserManager.getUserToken().then(data => {
+        let token = data.token;
+        emitEvent('chat.startTyping', {
+          peerUserId,
+          token
+        });
+      });
+    }
+
     function stopListenChat(userId) {
       emitEvent('chat.stopListen', {
         userId: userId
@@ -326,6 +352,7 @@ angular.module('Qemy.services', [
       listenConsole: listenConsole,
       stopListenConsole: stopListenConsole,
       listenChat: listenChat,
+      startTypingChat: startTypingChat,
       stopListenChat: stopListenChat,
       setListener: setListener,
       removeListener: removeListener,
