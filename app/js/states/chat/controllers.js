@@ -74,6 +74,60 @@ angular.module('Qemy.controllers.chat', [])
         }, 50);
       };
 
+      $scope.sortDialogs = () => {
+        $scope.dialogs = $scope.dialogs.sort((a, b) => {
+          return b.headMessage.id - a.headMessage.id;
+        });
+      };
+
+      $scope.deleteOldDialogMessages = (takeNumber = 30) => {
+        while ($scope.dialogMessages.messages.length > takeNumber) {
+          $scope.dialogMessages.messages.shift();
+        }
+      };
+
+      $scope.sortDialogMessages = () => {
+        $scope.dialogMessages.messages = $scope.dialogMessages.messages.sort((a, b) => {
+          return a.message.postAtMs - b.message.postAtMs;
+        });
+      };
+
+      $scope.updateDialog = (message, incoming = false) => {
+        const peerDialog = $scope.dialogs.find(dialog => {
+          return dialog.peer.id === (
+            incoming ? message.author.id : message.recipient.id
+          );
+        });
+        if (peerDialog) {
+          Object.assign(peerDialog.headMessage, message.message);
+        } else {
+          let dialog = {
+            author: message.recipient,
+            headMessage: message.message,
+            peer: message.author,
+          };
+          $scope.dialogs.unshift(dialog);
+        }
+
+        safeApply($scope);
+      };
+
+      $scope.markMessageAsRead = ({ id }) => {
+        const peerDialog = $scope.dialogs.find(dialog => {
+          return dialog.headMessage.id === id;
+        });
+        if (peerDialog) {
+          peerDialog.headMessage.isRead = true;
+        }
+        const message = $scope.dialogMessages.messages.find(message => {
+          return message.message.id === id;
+        });
+        if (message) {
+          message.message.isRead = true;
+        }
+        safeApply($scope);
+      };
+
       function loadDialogs() {
         return ChatManager.getDialogs();
       }
@@ -84,6 +138,10 @@ angular.module('Qemy.controllers.chat', [])
 
       function loadPeer(peerUserId) {
         return ChatManager.resolvePeer({ peerUserId });
+      }
+
+      function markAsRead(peerUserId) {
+        return ChatManager.markAsRead({ peerUserId });
       }
 
       function createIndex(dialogs) {
@@ -99,6 +157,9 @@ angular.module('Qemy.controllers.chat', [])
         $scope.peerIdNumber = Number($scope.peerId);
 
         console.log(`Starting chat with peerId: ${$scope.peerId}`);
+
+        await markAsRead($scope.peerId);
+        $rootScope.$broadcast('chat.update.unreadMessagesNumber');
 
         let promises = [
           loadPeer($scope.peerId),
@@ -168,21 +229,31 @@ angular.module('Qemy.controllers.chat', [])
         ChatManager.sendMessage(messageObject).then(_ => {
           $scope.dialogMessages.messages.push(_);
           $scope.scrollDown();
+          $scope.updateDialog(_, false);
+          $scope.sortDialogs();
+          $scope.sortDialogMessages();
+          $scope.deleteOldDialogMessages();
           $scope.messageText = '';
           safeApply($scope);
         });
       };
 
-      $scope.$on('new chat message', (ev, data) => {
+      $scope.$on('new chat message', async (ev, data) => {
         if (data.author.id === $scope.peerIdNumber && data.author.id !== $scope.user.id) {
+          await ChatManager.markAsRead({ peerUserId: $scope.peerIdNumber });
+          data.message.isRead = true;
           $scope.dialogMessages.messages.push(data);
           $scope.scrollDown();
-          safeApply($scope);
         }
+        $scope.updateDialog(data, true);
+        $scope.sortDialogs();
+        $scope.sortDialogMessages();
+        $scope.deleteOldDialogMessages();
+        safeApply($scope);
       });
 
       $scope.$on('read chat message', (ev, data) => {
-        console.log(data);
+        $scope.markMessageAsRead(data);
       });
 
       $scope.$on('$stateChangeStart', (evt, toState, toParams, fromState, fromParams) => {
@@ -202,9 +273,35 @@ angular.module('Qemy.controllers.chat', [])
     function ($scope, $rootScope, $state, _, $timeout) {
     }
   ])
-  .controller('ChatDialogsController', ['$scope', '$rootScope', '$state', '_', '$timeout',
-    function ($scope, $rootScope, $state, _, $timeout) {
+  .controller('ChatDialogsController', ['$scope', '$rootScope', '$state', '_', '$timeout', 'AdminManager',
+    function ($scope, $rootScope, $state, _, $timeout, AdminManager) {
       $scope.dialogsSearch = '';
+
+      $scope.$watch('dialogsSearch', async (val) => {
+        if (!val) {
+          return;
+        }
+        const searchResponse = await AdminManager.getUsers({
+          count: 100,
+          offset: 0,
+          q: val
+        });
+        $scope.searchDialogsNumber = searchResponse.usersNumber;
+
+        const dialogUsersIds = $scope.dialogs.map(dialog => {
+          return dialog.peer.id;
+        });
+        $scope.searchDialogs = searchResponse.users.filter(user => {
+          return !dialogUsersIds.includes(user.id);
+        }).map(user => {
+          return {
+            peer: user,
+            author: $scope.user,
+            headMessage: {}
+          }
+        });
+        safeApply($scope);
+      });
     }
   ])
   .controller('ChatDialogsItemController', ['$scope', '$rootScope', '$state', '_', '$timeout',
@@ -221,8 +318,11 @@ angular.module('Qemy.controllers.chat', [])
 
       let typingTimeout = null;
 
-      $scope.$on('chat typing', (ev, peer) => {
+      $scope.$on('chat typing', (ev, { peer }) => {
         console.log('Chat typing:', peer);
+        if ($scope.peerIdNumber !== peer.id) {
+          return;
+        }
         $scope.typing = true;
         $scope.scrollDown();
         if (typingTimeout) {

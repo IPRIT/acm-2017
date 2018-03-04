@@ -5,6 +5,10 @@ a.dialogs-item(ng-click='select(dialogItem.peer.id)', ui-sref='chat.peer({peerId
 
     div.dialogs-item__message
       div.dialogs-item__title {{ dialogItem.peer.fullName }}
-      div.dialogs-item__last-message {{ dialogItem.headMessage.message }}
+      div.dialogs-item__last-message(ng-if='dialogItem.headMessage && dialogItem.headMessage.id')
+        span {{ dialogItem.headMessage.message }}
+        div.dialogs-item__read-indicator(ng-if='!dialogItem.headMessage.isRead')
 
-    div.dialogs-item__time {{ dialogItem.headMessage.postAtMs | date:'dd.MM.yyyy в HH:mm' }}
+
+    div.dialogs-item__time(ng-if='dialogItem.headMessage && dialogItem.headMessage.id')
+      | {{ dialogItem.headMessage.postAtMs | date:'dd.MM.yyyy в HH:mm' }}

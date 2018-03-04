@@ -15,7 +15,7 @@ export async function getDialogMessages(params) {
   let {
     userId, user,
     peerUserId, peerUser,
-    limit = 100,
+    limit = 20,
     offset = 0
   } = params;
   

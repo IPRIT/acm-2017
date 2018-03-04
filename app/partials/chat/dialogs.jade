@@ -2,4 +2,8 @@ div.dialogs
   div.dialogs__search
     input(name='search', autocomplete='off', ng-model='dialogsSearch', placeholder='Поиск по диалогам')
   div.dialogs__items
-    chat-dialogs-item(ng-repeat="dialogItem in dialogs | dialogsSearchFilter:dialogsSearch:dialogsIndex:peerIdNumber")
+    chat-dialogs-item.dialogs__item(ng-repeat="dialogItem in dialogs | dialogsSearchFilter:dialogsSearch:dialogsIndex:peerIdNumber")
+
+    div.dialogs__search-container(ng-if='searchDialogs.length > 0 && dialogsSearch.length > 0')
+      div.dialogs__search-title Найдено: {{ searchDialogsNumber }}
+      chat-dialogs-item(ng-repeat="dialogItem in searchDialogs")

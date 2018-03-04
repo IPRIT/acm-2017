@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 130
+# 131
 
 CACHE:
 
@@ -66,6 +66,14 @@ CACHE:
 /partials/user/solutions/solutions.html
 /partials/user/solutions/solutions-content.html
 /partials/problems/item.html
+/partials/chat/base.html
+/partials/chat/chat.html
+/partials/chat/dialog-input.html
+/partials/chat/dialog-messages.html
+/partials/chat/dialog-messages-item.html
+/partials/chat/dialogs.html
+/partials/chat/dialogs-item.html
+/partials/chat/index.html
 /vendor/math-tex/dist/math-tex.html
 
 # js
@@ -102,13 +110,13 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
 /js/locales/ru-ru.json
-/prod/js/build.prod.min.js?1.0.2
+/prod/js/build.prod.min.js?1.0.5
 
 # CSS
 http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
-/prod/css/style.prod.css?1.0.2
+/prod/css/style.prod.css?1.0.5
 
 # Images
 /img/acm-logo.svg

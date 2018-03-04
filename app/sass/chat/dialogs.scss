@@ -1,7 +1,9 @@
 @import "../helpers/all";
 
 .dialogs {
-  @extend %ab-layer-block;
+  width: 100%;
+  height: 100%;
+  display: block;
 
   &__search {
     padding: 12px;
@@ -31,5 +33,11 @@
     height: 509px;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  &__search-title {
+    padding: 6px 12px;
+    background-color: #efefef;
+    color: #5d5d5d;
   }
 }

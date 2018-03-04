@@ -4,3 +4,4 @@ export * from './getDialogMessages';
 export * from './getDialogs';
 export * from './deleteDialogMessage';
 export * from './resolvePeer';
+export * from './getUnreadMessagesNumber';

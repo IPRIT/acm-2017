@@ -1,7 +1,8 @@
 @import "../helpers/all";
 
 .dialogs-item {
-  @extend %ab-layer-block;
+  width: 100%;
+  display: block;
   cursor: pointer;
   text-decoration: none;
   color: #333;
@@ -80,5 +81,24 @@
     width: 60px;
     font-size: .7em;
     text-align: right;
+  }
+
+  &__read-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #00acec;
+    box-shadow: 0 0 4px 0px #00acec;
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 2px;
+    position: relative;
+    top: -1px;
+  }
+
+  &_active &__read-indicator,
+  &:active &__read-indicator {
+    background-color: white;
+    box-shadow: 0 0 4px 0px white;
   }
 }

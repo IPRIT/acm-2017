@@ -75,13 +75,23 @@ angular.module('Qemy.services.chat', [
       });
     }
 
+    function getUnreadMessagesNumber() {
+      return $http({
+        method: 'get',
+        url: '/api/chat/unreadMessagesNumber'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
     return {
       getDialogs,
       getDialogMessages,
       resolvePeer,
       sendMessage,
       markAsRead,
-      deleteMessages
+      deleteMessages,
+      getUnreadMessagesNumber
     }
   }])
 ;

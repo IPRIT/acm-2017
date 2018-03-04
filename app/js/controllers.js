@@ -13,8 +13,8 @@ angular.module('Qemy.controllers', [
     $scope.isPageReady = true;
   }])
   
-  .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', 'SocketService', '$timeout', 'ErrorService',
-    async function($scope, $rootScope, UserManager, $state, SocketService, $timeout, ErrorService) {
+  .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', 'SocketService', '$timeout', 'ErrorService', 'ChatManager',
+    async function($scope, $rootScope, UserManager, $state, SocketService, $timeout, ErrorService, ChatManager) {
 
       let user = await asyncInit();
 
@@ -52,7 +52,17 @@ angular.module('Qemy.controllers', [
         }
       }
 
+      $scope.unreadChatMessagesNumber = 0;
+      async function updateUnreadMessages () {
+        let { messagesNumber } = await ChatManager.getUnreadMessagesNumber();
+        $scope.unreadChatMessagesNumber = messagesNumber;
+        $scope.$broadcast('chat.updated.unreadMessagesNumber', messagesNumber);
+        safeApply($scope);
+      }
+
       async function asyncInit() {
+        await updateUnreadMessages();
+
         return new Promise((resolve, reject) => {
           SocketService.onConnect(async () => {
             let user = await updateUserData();
@@ -100,6 +110,15 @@ angular.module('Qemy.controllers', [
           removeEvents();
         }
         user = await asyncInit();
+      });
+
+      $scope.$on('new chat message', _ => {
+        $rootScope.$broadcast('chat.update.unreadMessagesNumber');
+        ion.sound.play("pop_cork");
+      });
+
+      $scope.$on('chat.update.unreadMessagesNumber', async function (ev, args) {
+        await updateUnreadMessages();
       });
 
       $scope.$on('$destroy', function () {
@@ -153,6 +172,15 @@ angular.module('Qemy.controllers', [
         safeApply($scope);
       });
 
+      $scope.$on('chat.updated.unreadMessagesNumber', function (ev, value) {
+        $scope.unreadChatMessagesNumber = value;
+        const menuItem = $scope.menuList.find(item => item.id === 'chat.peer');
+        if (menuItem) {
+          menuItem.counter = value || 0;
+        }
+        safeApply($scope);
+      });
+
       $scope.$on('user reset', function (ev, args) {
         $scope.user = {};
         $scope.isAuth = false;
@@ -162,9 +190,15 @@ angular.module('Qemy.controllers', [
       $scope.menuList = [{
        type: 'item',
        id: 'profile',
-       name: 'Профиль',
+       name: 'Мои решения',
        iconSrc: '/img/icons/ic_person_48px.svg'
        }, {
+        type: 'item',
+        id: 'chat.peer',
+        name: 'Чат с администратором',
+        counter: $scope.unreadChatMessagesNumber,
+        iconSrc: '/img/icons/ic_chat_48px.svg'
+      }, {
         type: 'item',
         onlyFor: 4096,
         id: 'admin-panel',
@@ -183,6 +217,9 @@ angular.module('Qemy.controllers', [
         switch (item.id) {
           case 'profile':
             $state.go('user.solutions', { select: 'all' });
+            break;
+          case 'chat.peer':
+            $state.go('chat.peer', { peerId: 'admin' });
             break;
           case 'admin-panel':
             $state.go('admin.index');
@@ -206,6 +243,7 @@ angular.module('Qemy.controllers', [
           UserManager.logout().then(function (result) {
             $rootScope.$broadcast('user update needed');
             $rootScope.$broadcast('user reset');
+            $state.go('auth.form');
           });
         });
       }
@@ -233,7 +271,8 @@ angular.module('Qemy.controllers', [
       
       $scope.unreadMessagesNumber = 0;
       $scope.allMessagesNumber = 0;
-      
+      $scope.unreadChatMessagesNumber = 0;
+
       $scope.openInbox = function (ev) {
         $rootScope.$broadcast('toggleRightSidenav');
       };

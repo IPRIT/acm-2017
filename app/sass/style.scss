@@ -1,6 +1,6 @@
 @import "helpers/all";
-@import "table/table";
 @import "chat/index";
+@import "table/table";
 
 $media: screen;
 $laptop_min_width: 1024px;
@@ -126,6 +126,30 @@ html {
 .profile__name {
   font-size: 18px;
   font-weight: bold;
+  display: inline-block;
+
+  md-icon {
+    position: relative;
+    top: -1px;
+    margin-right: 6px;
+    color: #03acec;
+  }
+}
+.profile__unread-messages {
+  margin-left: 4px;
+  padding: 2px 5px 0;
+  top: -2px;
+  position: relative;
+  border-radius: 100px;
+  background-color: #ff231c;
+  font-weight: bold;
+  min-width: 10px;
+  height: 18px;
+  text-align: center;
+  color: white;
+  display: inline-block;
+  font-size: .75em;
+  line-height: 18px;
 }
 .page {
   padding-top: 90px;

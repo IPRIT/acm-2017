@@ -1,14 +1,17 @@
 @import "../helpers/all";
 
 @include bem(contest-table) {
-  @extend %ab-layer-block;
+  width: 100%;
+  height: 100%;
+  display: block;
   border-radius: 2px;
   background-color: white;
   min-width: 900px;
 
   @include bem-element(header) {
-    @extend %ab-layer-flex;
-    flex-direction: row;
+    width: 100%;
+    display: flex;
+    flex-direction: row !important;
     align-items: stretch;
     justify-content: flex-start;
     height: 64px;
@@ -25,7 +28,7 @@
   @include bem-element(title) {
     flex: 3;
     display: flex;
-    flex-direction: column;
+    flex-direction: column !important;
     align-items: flex-start;
     justify-content: center;
     padding: 0 0 0 24px;
@@ -37,7 +40,7 @@
   @include bem-element(actions) {
     flex: 1;
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: center;
     justify-content: flex-end;
   }
@@ -58,7 +61,7 @@
   @include bem-element(header-overlay) {
     @extend %ab-layer-absolute-fill;
     display: none;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: center;
     justify-content: flex-start;
     background-color: white;
@@ -91,7 +94,7 @@
   @include bem-element(header-timeline) {
     @extend %ab-layer-absolute-fill;
     display: none;
-    flex-direction: column;
+    flex-direction: column !important;
     align-items: stretch;
     background-color: white;
     border-bottom: 1px solid #e0e0e0;
@@ -109,7 +112,7 @@
 
   @include bem-element(timeline-row) {
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: center;
     height: 100%;
   }
@@ -123,7 +126,7 @@
 
   @include bem-element(timeline-labels) {
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
     justify-content: space-between;
     align-items: center;
     position: absolute;
@@ -144,7 +147,7 @@ table-row {
 }
 @include bem(table-row) {
   @extend %ab-layer-flex;
-  flex-direction: row;
+  flex-direction: row !important;
   justify-content: space-around;
   align-items: stretch;
   height: 48px;
@@ -171,7 +174,7 @@ table-row {
 
   @include bem-element(block) {
     @extend %ab-layer-flex;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: stretch;
     justify-content: space-around;
 
@@ -252,7 +255,7 @@ table-row {
     user-select: none;
     padding-left: 24px;
     align-items: center;
-    flex-direction: row;
+    flex-direction: row !important;
     justify-content: flex-start;
 
     #{get-bem-block-full(contest-table_state_select)} & {
@@ -267,7 +270,7 @@ table-row {
   @include bem-element(blocks) {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
   }
 
   @include bem-element(selection-space) {
@@ -307,7 +310,7 @@ table-cell {
 }
 @include bem(table-cell) {
   @extend %ab-layer-flex;
-  flex-direction: column;
+  flex-direction: column !important;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -352,7 +355,7 @@ table-footer {
 }
 @include bem(table-footer) {
   @extend %ab-layer-flex;
-  flex-direction: row;
+  flex-direction: row !important;
   align-items: stretch;
   justify-content: flex-end;
   height: 56px;
@@ -367,7 +370,7 @@ table-footer {
 
   @include bem-element(pagination-control) {
     @extend %ab-layer-flex;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: center;
     width: auto;
   }
