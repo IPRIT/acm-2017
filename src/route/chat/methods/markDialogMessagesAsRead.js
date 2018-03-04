@@ -28,6 +28,18 @@ export async function markChatMessagesAsRead(params) {
   if (!user || !peerUser) {
     throw new HttpError('User not found');
   }
+
+  const adminId = 2;
+  const admin = await models.User.findByPrimary(adminId);
+
+  if (user.isAdmin) {
+    user = admin;
+    userId = adminId;
+  }
+  if (peerUser.isAdmin) {
+    peerUser = admin;
+    peerUserId = adminId;
+  }
   
   let messages = await models.ChatMessage.findAll({
     include: [ models.User ],

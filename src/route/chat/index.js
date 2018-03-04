@@ -12,5 +12,6 @@ router.post('/chatMessages/read', [ userRetriever, rightsAllocator('user') ], ch
 
 router.get('/resolvePeer', [ userRetriever, rightsAllocator('user') ], chat.resolvePeerRequest);
 router.get('/unreadMessagesNumber', [ userRetriever, rightsAllocator('user') ], chat.getUnreadMessagesNumberRequest);
+router.get('/me', [ userRetriever, rightsAllocator('user') ], chat.getMeRequest);
 
 export default router;

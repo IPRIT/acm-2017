@@ -24,6 +24,12 @@ export async function getDialogs(params) {
     throw new HttpError('User not found');
   }
 
+  const adminId = 2;
+  if (user.isAdmin) {
+    user = await models.User.findByPrimary(adminId);
+    userId = adminId;
+  }
+
   let myDialogs = await models.ChatMessage.findAll({
     where: {
       userId: user.id

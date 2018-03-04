@@ -2,42 +2,32 @@ import * as models from "../../../models/index";
 import Promise from 'bluebird';
 import { extractAllParams } from "../../../utils/index";
 
-export function resolvePeerRequest(req, res, next) {
+export function getMeRequest(req, res, next) {
   let params = Object.assign(
     extractAllParams(req)
   );
   return Promise.resolve().then(() => {
-    return resolvePeer(params);
+    return getMe(params);
   }).then(result => res.json(result)).catch(next);
 }
 
-export async function resolvePeer(params) {
+export async function getMe(params) {
   let {
-    userId, user,
-    peerUserId, peerUser
+    userId, user
   } = params;
   
   if (!user) {
     user = await models.User.findByPrimary(userId);
   }
-  if (!peerUser) {
-    peerUser = await models.User.findByPrimary(peerUserId);
-  }
-  if (!user || !peerUser) {
+  if (!user) {
     throw new HttpError('User not found');
   }
 
   const adminId = 2;
-  const admin = await models.User.findByPrimary(adminId);
-
   if (user.isAdmin) {
-    user = admin;
+    user = await models.User.findByPrimary(adminId);;
     userId = adminId;
   }
-  if (peerUser.isAdmin) {
-    peerUser = admin;
-    peerUserId = adminId;
-  }
 
-  return peerUser.get({ plain: true });
+  return user.get({ plain: true });
 }

@@ -72,10 +72,10 @@ angular.module('Qemy.controllers', [
             socketId = SocketService.getSocket().id;
             console.log('Connected:', socketId);
 
-            SocketService.listenChat(user.id);
+            SocketService.listenChat(user.isAdmin ? 2 : user.id);
             SocketService.getSocket().on('reconnect', _ => {
               console.log('Reconnected:', SocketService.getSocket().id);
-              $timeout(() => SocketService.listenChat(user.id), 500);
+              $timeout(() => SocketService.listenChat(user.isAdmin ? 2 : user.id), 500);
             });
 
             attachEvents();
@@ -106,7 +106,7 @@ angular.module('Qemy.controllers', [
       $scope.$on('user update needed', async function (ev, args) {
         console.log('User data update needed.', user);
         if (user && user.id) {
-          SocketService.stopListenChat(user.id);
+          SocketService.stopListenChat(user.isAdmin ? 2 : user.id);
           removeEvents();
         }
         user = await asyncInit();
@@ -123,7 +123,7 @@ angular.module('Qemy.controllers', [
 
       $scope.$on('$destroy', function () {
         if (user && user.id) {
-          SocketService.stopListenChat(user.id);
+          SocketService.stopListenChat(user.isAdmin ? 2 : user.id);
           removeEvents();
         }
       });

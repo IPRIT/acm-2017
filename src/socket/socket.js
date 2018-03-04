@@ -100,26 +100,34 @@ export function subscribeEvents(socket) {
     console.info(`[${socket.id}] stopped listening console logs.`);
   });
 
-  socket.on('chat.listen', data => {
+  socket.on('chat.listen', async data => {
     const { userId } = data;
     if (!userId) {
       return;
     }
-    let userHashKey = getUserHashKey([ 'global', userId ].join('_'));
+    let user = await models.User.findByPrimary(userId);
+    if (user.isAdmin) {
+      user = await models.User.findByPrimary(2);
+    }
+    let userHashKey = getUserHashKey([ 'global', user.id ].join('_'));
     socket.join(userHashKey);
-    console.info(`[${userId}:${socket.id}] started listening chat events.`);
+    console.info(`[${user.id}:${socket.id}] started listening chat events.`);
   });
 
   socket.on('chat.startTyping', chatStartTypingEvent.bind(null, socket));
 
-  socket.on('chat.stopListen', data => {
-    let { userId } = data;
+  socket.on('chat.stopListen', async data => {
+    const { userId } = data;
     if (!userId) {
       return;
     }
-    let userHashKey = getUserHashKey([ 'global', userId ].join('_'));
+    let user = await models.User.findByPrimary(userId);
+    if (user.isAdmin) {
+      user = await models.User.findByPrimary(2);
+    }
+    let userHashKey = getUserHashKey([ 'global', user.id ].join('_'));
     socket.leave(userHashKey);
-    console.info(`[${userId}:${socket.id}] stopped listening chat events.`);
+    console.info(`[${user.id}:${socket.id}] stopped listening chat events.`);
   });
   
   socket.on('disconnect', function (data) {

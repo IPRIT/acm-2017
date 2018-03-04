@@ -25,6 +25,15 @@ angular.module('Qemy.services.chat', [
       });
     }
 
+    function getMe() {
+      return $http({
+        method: 'get',
+        url: '/api/chat/me'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
     function getDialogMessages(params) {
       return $http({
         method: 'get',
@@ -91,7 +100,8 @@ angular.module('Qemy.services.chat', [
       sendMessage,
       markAsRead,
       deleteMessages,
-      getUnreadMessagesNumber
+      getUnreadMessagesNumber,
+      getMe
     }
   }])
 ;

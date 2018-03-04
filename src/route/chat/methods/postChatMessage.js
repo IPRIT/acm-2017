@@ -16,7 +16,6 @@ export async function postChatMessage(params) {
   let {
     userId, user,
     recipientUserId, recipientUser,
-    asAdmin = false,
     attachments = {},
     message
   } = params;
@@ -31,8 +30,16 @@ export async function postChatMessage(params) {
     throw new HttpError('Sender or Peer not found');
   }
 
-  if (user.isAdmin && asAdmin) {
-    user = await models.User.findByPrimary(2);
+  const adminId = 2;
+  const admin = await models.User.findByPrimary(adminId);
+
+  if (user.isAdmin) {
+    user = admin;
+    userId = adminId;
+  }
+  if (recipientUser.isAdmin) {
+    recipientUser = admin;
+    recipientUserId = adminId;
   }
   
   let chatMessageInstance = await user.createChatMessage({

@@ -23,7 +23,6 @@ angular.module('Qemy.controllers.chat', [])
       $scope.user = {};
 
       const peersMapping = $scope.peersMapping = {
-        iprit: 1,
         admin: 2,
         me: null
       };
@@ -33,7 +32,7 @@ angular.module('Qemy.controllers.chat', [])
       $scope.peerIdNumber = Number($scope.peerId);
 
       $rootScope.$broadcast('data loading');
-      UserManager.getCurrentUser().then(function (user) {
+      ChatManager.getMe().then((user) => {
         $rootScope.$broadcast('data loaded');
         if (!user || !user.id) {
           return $state.go('auth.form');

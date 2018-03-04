@@ -24,6 +24,12 @@ export async function getUnreadMessagesNumber(params) {
   if (!user) {
     throw new HttpError('User not found');
   }
+
+  const adminId = 2;
+  if (user.isAdmin) {
+    user = await models.User.findByPrimary(adminId);
+    userId = adminId;
+  }
   
   let messagesNumber = await models.ChatMessage.count({
     where: {
