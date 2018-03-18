@@ -5,6 +5,51 @@ function dT () {
   return '[' + (((new Date()).getTime() - _logTimer) / 1000).toFixed(3) + ']';
 }
 
+function copyTextToClipboard (text, cb = () => {}) {
+  function copyToClipboardFF (text) {
+    window.prompt('Чтобы скопировать, нажмите: Ctrl+C, Enter', text);
+  }
+
+  (function copyToClipboard () {
+    let success = true;
+    let selection;
+    const range = document.createRange();
+
+    // For IE.
+    if (window.clipboardData) {
+      window.clipboardData.setData('Text', text);
+    } else {
+      // Create a temporary element off screen.
+      const tmpElem = document.createElement('div');
+      tmpElem.style.position = 'absolute';
+      tmpElem.style.left = '-1000px';
+      tmpElem.style.top = '-1000px';
+
+      // Add the input value to the temp element.
+      tmpElem.innerHTML = text;
+      document.body.appendChild(tmpElem);
+
+      // Select temp element.
+      range.selectNodeContents(tmpElem);
+      selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      // Lets copy.
+      try {
+        success = document.execCommand('copy', false, null);
+      } catch (e) {
+        copyToClipboardFF(text);
+      }
+      if (success) {
+        // remove temp element.
+        tmpElem.remove();
+        cb();
+      }
+    }
+  })();
+}
+
 function checkClick (e, noprevent) {
   if (e.which == 1 && (e.ctrlKey || e.metaKey) || e.which == 2) {
     return true;
@@ -15,6 +60,27 @@ function checkClick (e, noprevent) {
   }
 
   return false;
+}
+
+function extractQueryStringParams() {
+  let queryString = location.href.split('?')[1] || '';
+  if (!queryString) {
+    return [];
+  }
+  return queryString.split('&').map(function (pair) {
+    let values = pair.split('=');
+    return {
+      key: values[0],
+      value: values[1]
+    }
+  });
+}
+function extractQueryStringParam(name) {
+  let params = extractQueryStringParams();
+  let param = params.find(function (param) {
+    return param.key === name;
+  });
+  return param ? param.value : null;
 }
 
 function checkDragEvent(e) {

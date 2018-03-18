@@ -1,12 +1,13 @@
 CACHE MANIFEST
 
-# 132
+# 134
 
 CACHE:
 
 # Templates
 /partials/contests/index.html
 /partials/user/auth-form.html
+/partials/user/register-form.html
 /partials/contest-item/contest-info.html
 /partials/contest-item/contest-monitor.html
 /partials/contest-item/contest-table.html
@@ -110,13 +111,13 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
 /js/locales/ru-ru.json
-/prod/js/build.prod.min.js?1.0.5
+/prod/js/build.prod.min.js?1.0.6
 
 # CSS
 http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
-/prod/css/style.prod.css?1.0.5
+/prod/css/style.prod.css?1.0.6
 
 # Images
 /img/acm-logo.svg

@@ -14,9 +14,10 @@ angular.module('Qemy.controllers', [
   }])
   
   .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', 'SocketService', '$timeout', 'ErrorService', 'ChatManager',
-    async function($scope, $rootScope, UserManager, $state, SocketService, $timeout, ErrorService, ChatManager) {
+    function($scope, $rootScope, UserManager, $state, SocketService, $timeout, ErrorService, ChatManager) {
 
-      let user = await asyncInit();
+      let user = null;
+      asyncInit().then(_user => user = _user);
 
       // chat event listeners
       let socketId,
@@ -103,13 +104,15 @@ angular.module('Qemy.controllers', [
         }
       }
 
-      $scope.$on('user update needed', async function (ev, args) {
+      $scope.$on('user update needed', function (ev, args) {
         console.log('User data update needed.', user);
         if (user && user.id) {
           SocketService.stopListenChat(user.isAdmin ? 2 : user.id);
           removeEvents();
         }
-        user = await asyncInit();
+        asyncInit().then(_user => {
+          user = _user;
+        });
       });
 
       $scope.$on('new chat message', _ => {
@@ -130,13 +133,13 @@ angular.module('Qemy.controllers', [
     }
   ])
   
-  .controller('IndexCtrl', ['$scope', '_', '$state', '$rootScope', 'UserManager',
-    function($scope, _, $state, $rootScope, UserManager) {
+  .controller('IndexCtrl', ['$scope', '_', '$state', '$rootScope', 'UserManager', '$timeout',
+    function($scope, _, $state, $rootScope, UserManager, $timeout) {
       $scope.$emit('change_title', {
         title: _('app_name')
       });
-      
-      $scope.$emit('user update needed');
+
+      $rootScope.$broadcast('user update needed');
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
           return;

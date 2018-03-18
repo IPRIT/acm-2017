@@ -365,6 +365,15 @@ angular.module('Qemy.services.admin', [
         return data.data;
       });
     }
+
+    function createGroupRegisterLink(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/groups/' + params.groupId + '/link'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     function deleteGroup(params) {
       return $http({
@@ -485,7 +494,8 @@ angular.module('Qemy.services.admin', [
       getGroup: getGroup,
       createGroup: createGroup,
       updateGroup: updateGroup,
-      deleteGroup: deleteGroup,
+      deleteGroup,
+      createGroupRegisterLink,
       getCondition: getCondition,
       updateCondition: updateCondition,
       deleteProblem: deleteProblem,

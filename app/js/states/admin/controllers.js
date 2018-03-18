@@ -2308,8 +2308,8 @@ angular.module('Qemy.controllers.admin', [])
     }
   ])
 
-  .controller('AdminGroupsController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog',
-    function($scope, $rootScope, $state, AdminManager, _, $mdDialog) {
+  .controller('AdminGroupsController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog', 'ErrorService',
+    function($scope, $rootScope, $state, AdminManager, _, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Группы пользователей | ' + _('app_name')
       });
@@ -2399,6 +2399,17 @@ angular.module('Qemy.controllers.admin', [])
               }
               updateGroupsList();
             });
+        });
+      };
+
+      $scope.copyLink = group => {
+        $rootScope.$broadcast('data loading');
+        return AdminManager.createGroupRegisterLink({ groupId: group.id }).then(result => {
+          $rootScope.$broadcast('data loaded');
+          let link = `${location.protocol}//${location.host}/auth/register?groupKey=${result.registerKey}`;
+          prompt('Скопируйте ссылку на регистрацию в группу:', link);
+        }).catch(error => {
+          ErrorService.show(error);
         });
       };
     }
