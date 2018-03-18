@@ -97,14 +97,19 @@ angular.module('Qemy.controllers', [
           $rootScope.$broadcast('data loaded');
           if (!user || !user.id) {
             $rootScope.$broadcast('user updated', { user: null });
-            return $state.go('auth.form');
+            if ($state.current.name !== 'auth.register-form') {
+              $state.go('auth.form');
+            }
+            return;
           }
           $rootScope.$broadcast('user updated', { user });
           console.log('User data updated.');
           return user;
         } catch (err) {
           $rootScope.$broadcast('data loaded');
-          $state.go('auth.form');
+          if ($state.current.name !== 'auth.register-form') {
+            $state.go('auth.form');
+          }
         }
       }
 
