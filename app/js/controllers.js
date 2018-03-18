@@ -62,7 +62,11 @@ angular.module('Qemy.controllers', [
       }
 
       async function asyncInit() {
-        await updateUnreadMessages();
+        try {
+          await Promise.resolve(updateUnreadMessages());
+        } catch (e) {
+          console.log(e);
+        }
 
         return new Promise((resolve, reject) => {
           SocketService.onConnect(async () => {
