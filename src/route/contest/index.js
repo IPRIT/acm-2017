@@ -20,6 +20,7 @@ router.get('/:contestId/solutions/:solutionId/code', [ userRetriever, rightsAllo
 
 router.get('/:contestId/table', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getTableRequest);
 router.get('/:contestId/table2', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getTable2Request);
+router.get('/:contestId/table2/inspect', [ userRetriever, rightsAllocator() ], contest.getTable2InspectRequest);
 router.get('/:contestId/table/solutions/user/:contestantId/problem/:problemSymbol', [ userRetriever, rightsAllocator('user'), canJoinContest('can', 'joined') ], contest.getSolutionsForCellRequest);
 
 router.post('/:contestId/messages', [ userRetriever, rightsAllocator() ], contest.postMessageRequest);

@@ -174,7 +174,19 @@ export class ContestTable extends AbstractTable {
    * @param {boolean} isInitAction
    */
   setProblems(problems, isInitAction = false) {
-    this._problems = problems;
+    this._problems = problems.map(problem => {
+      problem.htmlStatement = null;
+      problem.textStatement = null;
+      problem.attachments = null;
+      problem.ProblemToContests = null;
+      problem.ProblemToContest = null;
+      delete problem.htmlStatement;
+      delete problem.textStatement;
+      delete problem.attachments;
+      delete problem.ProblemToContests;
+      delete problem.ProblemToContest;
+      return problem;
+    });
     for (let row of this._rows) {
       row.resetProblems(problems);
     }
