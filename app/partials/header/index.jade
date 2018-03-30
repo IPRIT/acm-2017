@@ -3,7 +3,7 @@ div.header__wrapper
     a.link.logo(ui-sref='contests.list', ng-click='logoClick($event)')
       div.logo__content
         div.logo__image-wrapper
-          img.img.logo__img(src='/img/acm-logo-2.svg')
+          img.img.logo__img(src='{{ !isSchoolLogo ? "/img/acm-logo-2.svg" : "/img/school-misis.png" }}')
         //span.logo__text MISIS Acm
     include ./profile
     include ./chat
