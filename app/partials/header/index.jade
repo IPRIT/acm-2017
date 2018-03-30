@@ -1,6 +1,6 @@
 div.header__wrapper
   div.header__inner
-    a.link.logo(ui-sref='contests.list', ng-click='logoClick($event)')
+    a.link.logo(ui-sref='contests.list', ng-click='logoClick($event)', style='{{ isSchoolLogo ? "top: 9px;" : "" }}')
       div.logo__content
         div.logo__image-wrapper
           img.img.logo__img(src='{{ !isSchoolLogo ? "/img/acm-logo-2.svg" : "/img/school-misis.png" }}')
