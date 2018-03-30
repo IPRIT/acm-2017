@@ -11,7 +11,6 @@ angular.module('Qemy.controllers', [
       $scope.title = args.title !== undefined && args.title.length ? args.title : defaultTitle;
     });
     $scope.isPageReady = true;
-    $scope.isSchoolLogo = location.host.indexOf('contest.misis.ru') === -1;
   }])
   
   .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', 'SocketService', '$timeout', 'ErrorService', 'ChatManager',
@@ -174,6 +173,7 @@ angular.module('Qemy.controllers', [
           action: 'admin.edit-contest({contestId: headerMenu.contest.id})'
         }]
       };
+      $scope.isSchoolLogo = location.host.indexOf('contest.misis.ru') === -1;
       
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
