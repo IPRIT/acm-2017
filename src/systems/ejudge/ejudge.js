@@ -10,7 +10,7 @@ const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 10 * 1000;
 const serviceUnavailableVerdictId = 13;
 const verdictCheckTimeoutMs = 100;
-const maxAccountWaitingMs = 60 * 1000;
+const maxAccountWaitingMs = 5 * 60 * 1000;
 
 export async function handle(solution) {
   let systemAccount = await accountsPool.getFreeAccount();
