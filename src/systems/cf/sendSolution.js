@@ -5,6 +5,7 @@ import * as accountsMethods from './account';
 import Promise from 'bluebird';
 import * as api from './api';
 import { parseProblemIdentifier } from "../../utils/utils";
+import { $getPage } from "./cf";
 
 const ACM_PROTOCOL = 'http';
 const ACM_HOST = 'codeforces.com';
@@ -89,7 +90,8 @@ function buildSolutionForm(solution, systemAccount) {
     action: 'submitSolutionFormSubmitted',
     programTypeId: solution.Language.foreignLanguageId,
     source: solution.sourceCode,
-    sourceFile: ''
+    sourceFile: '',
+    tabSize: 4
   };
   let { type, contestNumber, symbolIndex } = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
   if (type === 'gym') {
@@ -165,4 +167,15 @@ async function getContextRow(solution, systemAccount) {
     }
   }
   return null;
+}
+
+const fs = require('fs');
+const path = require('path');
+
+export async function debugPage (page, account) {
+  const $page = await $getPage(page, account);
+  const pathTo = path.join(__dirname, "/test.html");
+  fs.writeFileSync(pathTo, $page.html());
+
+  console.log('PAGE SAVED', page);
 }

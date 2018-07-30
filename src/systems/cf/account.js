@@ -86,7 +86,7 @@ function buildAuthForm(csrfToken, systemAccount) {
   return {
     csrf_token: csrfToken,
     action: 'enter',
-    handle: systemLogin,
+    handleOrEmail: systemLogin,
     password: systemPassword
   };
 }
