@@ -11,7 +11,9 @@ router.get('/groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.
 router.post('/groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.createGroupRequest);
 router.get('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getGroupRequest);
 router.post('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateGroupRequest);
-router.post('/groups/:groupId/link', [ userRetriever, rightsAllocator('admin') ], adminMethods.createGroupRegisterLinkRequest);
+router.post('/groups/:groupId/links', [ userRetriever, rightsAllocator('admin') ], adminMethods.createGroupRegisterLinkRequest);
+router.get('/groups/:groupId/links', [ userRetriever, rightsAllocator('admin') ], adminMethods.getGroupRegisterLinksRequest);
+router.delete('/groups/:groupId/links/:linkUuid', [ userRetriever, rightsAllocator('admin') ], adminMethods.revokeGroupRegisterLinkRequest);
 router.delete('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteGroupRequest);
 
 router.get('/verdicts', [ userRetriever, rightsAllocator('user') ], adminMethods.getVerdictsRequest);

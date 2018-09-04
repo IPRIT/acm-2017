@@ -63,6 +63,26 @@ angular.module('Qemy.controllers.chat', [])
       $scope.dialogs = [];
       $scope.dialogMessages = [];
       $scope.dialogPeer = {};
+      $scope.messagesOffset = 0;
+      $scope.messagesLimit = 20;
+      $scope.isLoadingNext = false;
+
+      $scope.$on('chat.loadNext', loadNextMessages);
+
+      function loadNextMessages (ev, element) {
+        if ($scope.isLoadingNext) {
+          return;
+        }
+        $scope.isLoadingNext = true;
+        $scope.messagesOffset += $scope.messagesLimit;
+        loadDialogMessages($scope.peerId, { offset: $scope.messagesOffset }).then(messages => {
+          $scope.dialogMessages.messages.unshift(
+            ...messages.messages.sort((a, b) => a.message.id - b.message.id)
+          );
+        }).finally(_ => {
+          $scope.isLoadingNext = false;
+        });
+      }
 
       $scope.scrollDown = () => {
         $timeout(_ => {
@@ -131,8 +151,8 @@ angular.module('Qemy.controllers.chat', [])
         return ChatManager.getDialogs();
       }
 
-      function loadDialogMessages(peerUserId) {
-        return ChatManager.getDialogMessages({ peerUserId })
+      function loadDialogMessages(peerUserId, { limit = 20, offset = 0 } = {}) {
+        return ChatManager.getDialogMessages({ peerUserId, limit, offset })
       }
 
       function loadPeer(peerUserId) {
@@ -174,6 +194,7 @@ angular.module('Qemy.controllers.chat', [])
         $scope.dialogPeer = peer;
         $scope.dialogMessages = messages;
         $scope.dialogMessages.messages = $scope.dialogMessages.messages.sort((a, b) => a.message.id - b.message.id);
+        $scope.messagesOffset = 0;
         if (dialogs) {
           $scope.dialogs = dialogs;
           createIndex(dialogs);
@@ -316,6 +337,10 @@ angular.module('Qemy.controllers.chat', [])
       $scope.typing = false;
 
       let typingTimeout = null;
+
+      $scope.loadNext = (element) => {
+        $rootScope.$broadcast( 'chat.loadNext', element );
+      };
 
       $scope.$on('chat typing', (ev, { peer }) => {
         console.log('Chat typing:', peer);

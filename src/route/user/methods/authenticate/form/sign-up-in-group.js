@@ -32,7 +32,9 @@ async function signUpInGroup(params) {
   });
 
   if (!registerLink || !registerLink.groupId) {
-    throw new HttpError('Ссылка недействительная');
+    throw new HttpError( 'Ссылка недействительная' );
+  } else if (!registerLink.isActive) {
+    throw new HttpError( 'Регистрация по этой ссылке больше невозможна' );
   }
 
   groupIds.push(registerLink.groupId);

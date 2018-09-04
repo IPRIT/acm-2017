@@ -2589,23 +2589,50 @@ angular.module('Qemy.controllers.admin', [])
         users: []
       };
 
+      $scope.links = [];
+
+      $scope.createLink = _ => {
+        return AdminManager.createGroupRegisterLink({ groupId: groupId }).then(link => {
+          $scope.copyLink( link );
+          return AdminManager.getGroupRegisterLinks({ groupId });
+        }).then(links => {
+          $scope.links = links;
+        });
+      };
+
+      $scope.copyLink = link => {
+        const text = `${location.protocol}//${location.host}/auth/register?groupKey=${link && link.registerKey}`;
+        prompt('Скопируйте ссылку на регистрацию в группу:', text);
+      };
+
+      $scope.revokeLink = link => {
+        return AdminManager.deleteGroupRegisterLink({ groupId: groupId, linkUuid: link.uuid }).then(_ => {
+          return AdminManager.getGroupRegisterLinks({ groupId });
+        }).then(links => {
+          $scope.links = links;
+        });
+      };
+
       function fetchGroupData() {
         $rootScope.$broadcast('data loading');
-        AdminManager.getGroup({ groupId: groupId })
-          .then(function (result) {
-            $rootScope.$broadcast('data loaded');
-            if (result.error) {
-              return alert('Произошла ошибка: ' + result.error);
-            }
-            $scope.group = result.group;
-            $scope.group.users = result.users;
-            if (result.users.length) {
-              $scope.selectedIndex = 1;
-            }
-            $scope.$broadcast('users sync', {
-              users: $scope.group.users
-            });
+        AdminManager.getGroup({ groupId: groupId }).then(function (result) {
+          $rootScope.$broadcast('data loaded');
+          if (result.error) {
+            return alert('Произошла ошибка: ' + result.error);
+          }
+          $scope.group = result.group;
+          $scope.group.users = result.users;
+          if (result.users.length) {
+            $scope.selectedIndex = 1;
+          }
+          $scope.$broadcast('users sync', {
+            users: $scope.group.users
           });
+
+          return AdminManager.getGroupRegisterLinks({ groupId });
+        }).then(links => {
+          $scope.links = links;
+        });
       }
 
       fetchGroupData(); // initialize

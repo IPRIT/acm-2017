@@ -1,6 +1,7 @@
 import * as models from "../../../models/index";
 import Promise from 'bluebird';
 import { extractAllParams } from "../../../utils/index";
+import { ensureNumber } from "../../../utils";
 
 export function getDialogMessagesRequest(req, res, next) {
   let params = Object.assign(
@@ -18,7 +19,10 @@ export async function getDialogMessages(params) {
     limit = 20,
     offset = 0
   } = params;
-  
+
+  limit = ensureNumber( limit ) || 10;
+  offset = ensureNumber( offset ) || 0;
+
   if (!user) {
     user = await models.User.findByPrimary(userId);
   }
@@ -49,12 +53,13 @@ export async function getDialogMessages(params) {
         userId: peerUser.id, // peer
         recipientUserId: user.id // me
       }]
-    }
+    },
+    limit, offset
   };
+
   let messages = await models.ChatMessage.findAll(Object.assign({}, options, {
     include: [ models.User ],
-    order: 'postAtMs DESC',
-    limit, offset
+    order: 'postAtMs DESC'
   }));
 
   let messagesNumber = await models.ChatMessage.count(options);

@@ -26,6 +26,11 @@ div.admin-content-layer
               md-color-picker(name='color', ng-model='group.color')
 
           div.contest-creation__row
+            div.contest-creation__row-title Ссылки на регистрацию
+            div(layout)
+              include group-links
+
+          div.contest-creation__row
             div.contest-creation__row-title Пользователи
             div(layout)
               include users/users-control

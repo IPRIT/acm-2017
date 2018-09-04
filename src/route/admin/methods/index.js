@@ -41,3 +41,5 @@ export * from './yandexImportById';
 export * from './yandexOfficialImportById';
 export * from './getSystemStatus';
 export * from './createGroupRegisterLink';
+export * from './getGroupRegisterLinks';
+export * from './revokeGroupRegisterLink';

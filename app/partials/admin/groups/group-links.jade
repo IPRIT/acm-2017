@@ -1,0 +1,28 @@
+div.group-links(style="width: 100%;")
+   md-content(ng-if="links.length")
+      md-list-item.md-2-line(ng-repeat="link in links")
+         div.md-list-item-text(layout="column")
+            p {{ link.registerKey.slice(0, 40) }}...
+            p(style="color: #777; font-weight: normal;") Зарегистрированных: {{ link.linkActivatedTimes }}
+         md-icon.md-secondary(
+            ng-click="copyLink(link)",
+            aria-label="Copy link",
+            md-svg-src="/img/icons/ic_content_copy_48px.svg")
+            md-tooltip Скопировать ссылку
+         md-icon.md-secondary.md-accent(
+            ng-click="revokeLink(link)",
+            aria-label="Revoke link",
+            md-svg-src="/img/icons/ic_block_48px.svg")
+            md-tooltip Деактивировать ссылку
+
+      div(style='padding: 4px; text-align: center;')
+         md-button.md-primary(ng-click="createLink()")
+            md-icon(md-svg-src="/img/icons/ic_add_48px.svg", aria-label="Add a link", style="position: relative; top: -1px;")
+            span(style='margin-left: 4px;') Создать ссылку
+
+   md-content(ng-if="!links.length", style="background: #f8f8f8")
+      div(style='padding: 24px 0 12px; text-align: center;') Активных ссылок на регистрацию нет
+         div
+            md-button.md-primary(ng-click="createLink()")
+               md-icon(md-svg-src="/img/icons/ic_add_48px.svg", aria-label="Add a link", style="position: relative; top: -1px;")
+               span(style='margin-left: 4px;') Создать ссылку

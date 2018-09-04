@@ -53,7 +53,14 @@ angular.module('Qemy.directives.chat', [])
       replace: true,
       scope: true,
       templateUrl: templateUrl('chat', 'dialog-messages'),
-      controller: 'ChatDialogMessagesController'
+      controller: 'ChatDialogMessagesController',
+      link: function (scope, element, attrs) {
+        element.off('scroll').on('scroll', ev => {
+          if (element.scrollTop() < 200) {
+            scope.loadNext( element );
+          }
+        });
+      }
     }
   }])
   .directive('chatDialogMessagesItem', [function () {

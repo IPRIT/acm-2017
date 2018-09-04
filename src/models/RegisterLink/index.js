@@ -15,6 +15,10 @@ let RegisterLink = sequelize.define('RegisterLink', {
     type: Sequelize.INTEGER,
     defaultValue: 0
   },
+  isActive: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: true
+  },
   createdAtMs: {
     type: Sequelize.BIGINT(15).UNSIGNED,
     defaultValue: () => Date.now()

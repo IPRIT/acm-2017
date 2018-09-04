@@ -369,7 +369,25 @@ angular.module('Qemy.services.admin', [
     function createGroupRegisterLink(params) {
       return $http({
         method: 'post',
-        url: '/api/admin/groups/' + params.groupId + '/link'
+        url: '/api/admin/groups/' + params.groupId + '/links'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function getGroupRegisterLinks(params) {
+      return $http({
+        method: 'get',
+        url: '/api/admin/groups/' + params.groupId + '/links'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function deleteGroupRegisterLink(params) {
+      return $http({
+        method: 'delete',
+        url: '/api/admin/groups/' + params.groupId + '/links/' + params.linkUuid
       }).then(function (data) {
         return data.data;
       });
@@ -496,6 +514,8 @@ angular.module('Qemy.services.admin', [
       updateGroup: updateGroup,
       deleteGroup,
       createGroupRegisterLink,
+      getGroupRegisterLinks,
+      deleteGroupRegisterLink,
       getCondition: getCondition,
       updateCondition: updateCondition,
       deleteProblem: deleteProblem,
