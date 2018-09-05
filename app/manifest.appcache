@@ -111,12 +111,12 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
 /js/locales/ru-ru.json
-/prod/js/build.prod.min.js?1.1.0
+/prod/js/build.prod.min.js?1.1.1
 
 # CSS
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
-/prod/css/style.prod.css?1.1.0
+/prod/css/style.prod.css?1.1.1
 
 # Images
 /img/acm-logo.svg

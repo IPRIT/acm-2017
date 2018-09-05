@@ -2,23 +2,30 @@ div
   div.standart-layer
     div.standart-layer__content
       div.contests-sort
-        div.contests-sort__item
-          md-input-container(ng-show='curSortItem || curCategory')
-            label Порядок
-            md-select(ng-model="curSortOrder", aria-label='Sort orders')
-              md-option(ng-repeat='sort_order in sortOrders', value='{{sort_order.order}}') {{sort_order.name}}
 
-        div.contests-sort__item
+        div(style='flex: 1; margin-right: 20px;')
           md-input-container
-            label Сортировать по
-            md-select(ng-model="curSortItem", aria-label='Sorts')
-              md-option(ng-repeat='sort in sortCategories', value='{{sort.sort}}') {{sort.name}}
+            label Поиск по контестам
+            input(name='searchQuery', ng-model='curSearchQuery')
 
-        div.contests-sort__item
-          md-input-container
-            label Показать
-            md-select(ng-model="curCategory", aria-label='Categories')
-              md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
+        div
+          div.contests-sort__item
+            md-input-container(ng-show='curSortItem || curCategory')
+              label Порядок
+              md-select(ng-model="curSortOrder", aria-label='Sort orders')
+                md-option(ng-repeat='sort_order in sortOrders', value='{{sort_order.order}}') {{sort_order.name}}
+
+          div.contests-sort__item
+            md-input-container
+              label Сортировать по
+              md-select(ng-model="curSortItem", aria-label='Sorts')
+                md-option(ng-repeat='sort in sortCategories', value='{{sort.sort}}') {{sort.name}}
+
+          div.contests-sort__item
+            md-input-container
+              label Показать
+              md-select(ng-model="curCategory", aria-label='Categories')
+                md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
 
       div.contests-list
         div.contests-list__title Контесты

@@ -478,7 +478,10 @@ html {
   min-width: 100px;
 }
 .contests-sort {
-  text-align: right;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 .standart-layer {
   background-color: #fff;

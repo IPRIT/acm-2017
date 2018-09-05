@@ -1558,6 +1558,9 @@ angular.module('Qemy.controllers.admin', [])
       }, {
         systemType: 'cf',
         name: 'Codeforces'
+      }, {
+        systemType: 'acmp',
+        name: 'ACMP.ru'
       }];
       $scope.selectedSystemType = 'timus';
 

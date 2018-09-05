@@ -17,16 +17,20 @@ const DEFAULT_CONTESTS_OFFSET = 0;
 const DEFAULT_CONTESTS_CATEGORY = 'all';
 const DEFAULT_CONTESTS_SORT = 'byStart';
 const DEFAULT_CONTESTS_SORT_ORDER = 'desc';
+const DEFAULT_CONTESTS_QUERY = '';
 
 export async function getContests(params) {
   let {
     count = DEFAULT_CONTESTS_COUNT, offset = DEFAULT_CONTESTS_OFFSET,
-    category = DEFAULT_CONTESTS_CATEGORY, sort = DEFAULT_CONTESTS_SORT, sort_order = DEFAULT_CONTESTS_SORT_ORDER,
+    category = DEFAULT_CONTESTS_CATEGORY,
+    sort = DEFAULT_CONTESTS_SORT,
+    sort_order = DEFAULT_CONTESTS_SORT_ORDER,
+    query = DEFAULT_CONTESTS_QUERY,
     userId, user
   } = params;
   
   if (!user) {
-    user = await models.User.findByPrimary(userId);
+    user = await models.User.findByPrimary( userId );
   }
   
   count = Math.max(Math.min(count, 200), 0);
@@ -75,6 +79,12 @@ export async function getContests(params) {
     return contest.Groups.some(group => {
       return user.isAdmin || !userGroupIds.length || userGroupIds.includes( group.id );
     }) || !contest.Groups.length;
+  }).filter(contest => {
+    return !query
+      || contest.name.toLowerCase().includes( query.toLowerCase() )
+      || contest.Groups.some(group => {
+        return group.name.toLowerCase().includes( query.toLowerCase() );
+      });
   });
   let contestsNumber = contests.length;
   contests = contests.slice(offset, offset + count).map(contest => {

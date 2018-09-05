@@ -26,7 +26,8 @@ angular.module('Qemy.controllers.contests', [])
         offset: ($scope.pageNumber - 1) * defaultCount,
         category: 'all',
         sort: 'byStart',
-        sort_order: 'desc'
+        sort_order: 'desc',
+        query: ''
       };
 
       $scope.all_items_count = 0;
@@ -78,6 +79,8 @@ angular.module('Qemy.controllers.contests', [])
         name: 'Только удалённые',
         category: 'showOnlyRemoved'
       }];
+
+      $scope.curSearchQuery = '';
 
       function generatePaginationArray(offsetCount) {
         var pages = [],
@@ -158,6 +161,23 @@ angular.module('Qemy.controllers.contests', [])
         updateContestsList();
         console.log('updating contests list...');
       });
+
+      const debounce = (cb, delay = 200) => {
+        let timeout = null;
+        return function(data) {
+          if (timeout) {
+            clearTimeout(timeout);
+          }
+          timeout = setTimeout(_ => cb( data ), delay);
+        };
+      };
+
+      $scope.$watch('curSearchQuery', debounce((newVal, oldVal) => {
+        $scope.params.query = newVal;
+        $scope.params.offset = 0;
+        updateContestsList();
+        console.log('updating contests list...');
+      }));
 
       $scope.$on('contests list update needed', function() {
         $scope.pageNumber = 1;

@@ -15,7 +15,8 @@ export function scanRequest(req, res, next) {
 
 const availableMethods = {
   timus: scanMethods.scanTimus,
-  cf: scanMethods.scanCf
+  cf: scanMethods.scanCf,
+  acmp: scanMethods.scanAcmp,
 };
 
 export async function scan(params) {
