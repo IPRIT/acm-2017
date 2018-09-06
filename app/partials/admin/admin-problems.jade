@@ -14,6 +14,10 @@ div.admin-content-layer(style='padding: 0')
         md-content.md-padding
           include ./problems/create
 
+      md-tab(label='ACMP Импорт')
+        md-content.md-padding
+          include ./problems/acmp-create
+
       md-tab(label='Яндекс.Контест импорт по ссылке')
         md-content.md-padding(ng-controller='AdminYandexContestImportByLinkController')
           include ./problems/yandex/import-by-link

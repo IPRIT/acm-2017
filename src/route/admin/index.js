@@ -26,6 +26,7 @@ router.post('/problems/:problemId/rescan', [ userRetriever, rightsAllocator('adm
 router.post('/problems/:problemId/rollback/:versionNumber', [ userRetriever, rightsAllocator('admin') ], adminMethods.rollbackProblemRequest);
 router.delete('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteProblemRequest);
 router.post('/problems/new/ejudge', [ userRetriever, rightsAllocator('admin') ], adminMethods.createEjudgeProblemRequest);
+router.post('/problems/new/acmp', [ userRetriever, rightsAllocator('admin') ], adminMethods.importAcmpProblemRequest);
 
 router.post('/solutions/:solutionId/verdict', [ userRetriever, rightsAllocator('admin') ], adminMethods.setVerdictRequest);
 router.post('/solutions/:solutionId/refresh', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionRequest);

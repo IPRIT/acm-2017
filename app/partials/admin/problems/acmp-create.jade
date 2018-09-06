@@ -1,0 +1,16 @@
+div.admin-content-layer
+  div.admin-content-layer__inner
+
+    div
+      form.contest-creation__form(name='problemForm')
+
+        div.contest-creation__row
+          div.contest-creation__row-title ID задачи (число)
+          md-input-container
+            label ID задачи на ACMP.ru
+            input(required, name='id', type='number', ng-model='acmpProblem.id')
+            div(ng-messages='problemForm.id.$error')
+              div(ng-message='required') Поле не может быть пустым.
+
+        div.contest-creation__row
+          md-button.md-primary(ng-click='importAcmpProblem(acmpProblem.id)', ng-disabled='!problemForm.$valid') Импортировать задачу

@@ -1720,6 +1720,22 @@ angular.module('Qemy.controllers.admin', [])
             });
         }
       };
+
+      $scope.importAcmpProblem = function (problemId) {
+          if (!problemId) {
+             return;
+          }
+          return AdminManager.importAcmpProblem({ problemId }).then(function (response) {
+              if (response.error) {
+                  return alert('Error: ' + response.error);
+              }
+              var newId = response.id;
+              if (!newId) {
+                  return;
+              }
+              $state.go('problems.item', { problemId: newId });
+          });
+      };
     }
   ])
 

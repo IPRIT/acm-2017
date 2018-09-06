@@ -43,3 +43,4 @@ export * from './getSystemStatus';
 export * from './createGroupRegisterLink';
 export * from './getGroupRegisterLinks';
 export * from './revokeGroupRegisterLink';
+export * from './importAcmpProblem';

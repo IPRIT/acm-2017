@@ -430,6 +430,16 @@ angular.module('Qemy.services.admin', [
         return data.data;
       });
     }
+
+    function importAcmpProblem(params) {
+      return $http({
+        method: 'post',
+        url: '/api/admin/problems/new/acmp',
+        data: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     function computeRatings(params) {
       return $http({
@@ -520,6 +530,7 @@ angular.module('Qemy.services.admin', [
       updateCondition: updateCondition,
       deleteProblem: deleteProblem,
       createEjudgeProblem: createEjudgeProblem,
+      importAcmpProblem,
       getVerdicts: getVerdicts,
       setProblemsForContest: setProblemsForContest,
       deleteUserFromContest: deleteUserFromContest,
