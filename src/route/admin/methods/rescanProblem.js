@@ -1,5 +1,4 @@
 import Promise from 'bluebird';
-import * as socket from '../../../socket';
 import * as models from '../../../models';
 import { extractAllParams } from "../../../utils/utils";
 import * as scanMethods from "./scanMethods";
@@ -14,7 +13,8 @@ const availableMethods = {
   timus: scanMethods.rescanTimusProblem,
   cf: scanMethods.rescanCfProblem,
   yandex: scanMethods.rescanYandexProblem,
-  yandexOfficial: scanMethods.rescanYandexOfficialProblem
+  yandexOfficial: scanMethods.rescanYandexOfficialProblem,
+  acmp: scanMethods.rescanAcmpProblem
 };
 
 export async function rescanProblem(params) {

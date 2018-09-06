@@ -17,7 +17,7 @@ export async function rescanAcmpProblem(params) {
       throw HttpError('Problem not found');
     }
   }
-  let taskMeta = await getTaskMeta({ problemId: problem.id });
+  let taskMeta = await getAcmpTaskMeta({ problemId: problem.foreignProblemIdentifier });
   let { htmlStatement, textStatement } = await retrieveAcmpProblem(taskMeta);
 
   let versionNumber = await models.ProblemVersionControl.getCurrentVersion(problem.id);
@@ -40,7 +40,7 @@ export async function rescanAcmpProblem(params) {
  * @param {number} problemId
  * @return {Promise<{name: string, internalSystemId: number}>}
  */
-export async function getTaskMeta({ problemId }) {
+export async function getAcmpTaskMeta({ problemId }) {
   let endpoint = getEndpoint(ACM_HOST, ACM_PROBLEM_PATH, {}, {
     main: 'task',
     id_task: problemId

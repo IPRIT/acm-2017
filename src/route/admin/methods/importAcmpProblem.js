@@ -1,7 +1,6 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
-import { getTaskMeta } from "./scanMethods/acmp/rescanProblem";
+import { getAcmpTaskMeta } from "./scanMethods/acmp/rescanProblem";
 import { ensureNumber } from "../../../utils";
 import { HttpError } from "../../../utils/http-error";
 import { retrieveAcmpProblem } from "./scanMethods/acmp/acmp";
@@ -25,7 +24,7 @@ export async function importAcmpProblem(params) {
 
   problemId = ensureNumber( problemId );
 
-  const problemMeta = await getTaskMeta({ problemId });
+  const problemMeta = await getAcmpTaskMeta({ problemId });
   const {
     htmlStatement,
     textStatement
