@@ -6,11 +6,11 @@ import request from 'request-promise';
 import cheerio from 'cheerio';
 import fetch from 'fetch';
 
-const SYSTEM_TYPE = 'acmp';
-const ACM_PROTOCOL = 'http';
-const ACM_HOST = 'acmp.ru';
-const ACM_PROBLEMSET_PATH = '/index.asp'; // ?main=tasks&page=0
-const ACM_PROBLEM_PATH = '/index.asp'; // ?main=task&id_task=1
+export const SYSTEM_TYPE = 'acmp';
+export const ACM_PROTOCOL = 'http';
+export const ACM_HOST = 'acmp.ru';
+export const ACM_PROBLEMSET_PATH = '/index.asp'; // ?main=tasks&page=0
+export const ACM_PROBLEM_PATH = '/index.asp'; // ?main=task&id_task=1
 
 const consoleMessagePattern = '[{systemType}] {message}';
 
@@ -78,7 +78,7 @@ async function getAllTasksMeta() {
  * @param {string} endpoint
  * @return {Promise<string>}
  */
-async function fetchPage (endpoint) {
+export async function fetchPage (endpoint) {
   return new Promise((resolve, reject) => {
     fetch.fetchUrl(endpoint, (error, meta, body) => {
       if (error) {
