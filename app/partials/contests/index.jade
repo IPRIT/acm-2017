@@ -1,6 +1,11 @@
 div
+  include ../news/index
+
   div.standart-layer
     div.standart-layer__content
+
+      div.contests-title Контесты
+
       div.contests-sort
 
         div(style='flex: 1; margin-right: 20px;')
@@ -28,7 +33,6 @@ div
                 md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
 
       div.contests-list
-        div.contests-list__title Контесты
         div.contests-list__pagination(ng-if='pageNumber !== 1')
           include ./pagination
         div.contests-list__items

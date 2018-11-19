@@ -87,7 +87,8 @@ module.exports = function(grunt) {
           'app/prod/css/style.css': [
             'app/sass/style.scss',
             'app/sass/chat/_index.scss',
-            'app/sass/table/_index.scss'
+            'app/sass/table/_index.scss',
+            'app/sass/news/news.scss'
           ]
         }
       }

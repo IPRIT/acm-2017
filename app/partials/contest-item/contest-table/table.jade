@@ -39,7 +39,7 @@ div.acm-contest-table(
           md-option(value='{{ $index }}', ng-repeat='interval in timelineIntervals') {{ interval.name }}
 
     div.acm-contest-table__title
-      span(qemy-i18n='contest-table-title')
+      h2(qemy-i18n='contest-table-title')
     div.acm-contest-table__actions(ng-show='!isSelectionState && !isRewindingState')
       div
         md-button.md-icon-button(ng-click='toggleRewindingLine()', aria-label='Rewind')
