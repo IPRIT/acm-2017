@@ -1,7 +1,6 @@
 CACHE MANIFEST
 
 # 150
-# 149
 
 CACHE:
 
@@ -112,12 +111,12 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
 /js/locales/ru-ru.json
-/prod/js/build.prod.min.js?1.1.1
+/prod/js/build.prod.min.js?1.2.0
 
 # CSS
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
-/prod/css/style.prod.css?1.1.1
+/prod/css/style.prod.css?1.2.0
 
 # Images
 /img/acm-logo.svg
@@ -159,6 +158,12 @@ http://fonts.gstatic.com/s/roboto/v16/RxZJdnzeo3R5zSexge8UUVtXRa8TVwTICgirnJhmVJ
 http://fonts.gstatic.com/s/roboto/v16/isZ-wbCXNKAbnjo6_TwHThJtnKITppOI_IvcXXDNrsc.woff2
 /vendor/katex/fonts/KaTeX_Math-Italic.woff2
 /vendor/katex/fonts/KaTeX_Main-Regular.woff2
+/fonts/GoogleSans-Bold.ttf
+/fonts/GoogleSans-BoldItalic.ttf
+/fonts/GoogleSans-Italic.ttf
+/fonts/GoogleSans-Medium.ttf
+/fonts/GoogleSans-MediumItalic.ttf
+/fonts/GoogleSans-Regular.ttf
 
 
 # Resources that require the user to be online.
