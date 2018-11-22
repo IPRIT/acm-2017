@@ -57,7 +57,7 @@ module.exports = function(grunt) {
           sourceMap: true,
           sourceMapName: 'app/prod/js/build.prod.min.js.map',
           compress: {
-            drop_console: true
+            // drop_console: true
           }
         },
         files: {
@@ -88,7 +88,7 @@ module.exports = function(grunt) {
             'app/sass/style.scss',
             'app/sass/chat/_index.scss',
             'app/sass/table/_index.scss',
-            'app/sass/news/news.scss'
+            'app/sass/news/_index.scss'
           ]
         }
       }

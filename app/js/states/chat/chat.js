@@ -2,7 +2,7 @@
  * Acm system
  * https://github.com/IPRIT
  *
- * Copyright (c) 2018 "IPRIT" Alex Belov, contributors
+ * Copyright (c) 2018 "IPRIT" Alex Belov
  * Licensed under the BSD license.
  * Created on 18.02.2018
  */

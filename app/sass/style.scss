@@ -1,7 +1,7 @@
 @import "helpers/all";
 @import "chat/index";
+@import "news/index";
 @import "table/table";
-@import "news/news";
 
 $media: screen;
 $laptop_min_width: 1024px;
@@ -63,7 +63,9 @@ html {
     }
   }
 }
-md-select-menu {
+md-select-menu,
+md-menu-content,
+.md-open-menu-container {
   border-radius: 8px;
 }
 md-dialog {
@@ -598,8 +600,9 @@ my-timer-element {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255,255,255,0.6);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  border-radius: 16px;
 }
 .contests-list__no-items {
   padding: 17px 0;
@@ -664,10 +667,7 @@ my-timer-element {
   -ms-transition: all .1s ease-out;
   -o-transition: all .1s ease-out;
   transition: all .1s ease-out;
-}
-.contest-menu__item_state_active {
   position: relative;
-  // box-shadow: inset 0 -3px 0 $primary-color-theme;
 
   &:after {
     position: absolute;
@@ -680,6 +680,18 @@ my-timer-element {
     border-top-right-radius: 4px;
     background-color: $primary-color-theme;
     margin: 0 30%;
+    transition: .2s ease-in-out;
+    transform: scale(.3) translateY(4px);
+    opacity: 0;
+    transform-origin: bottom center;
+  }
+}
+.contest-menu__item_state_active {
+  // box-shadow: inset 0 -3px 0 $primary-color-theme;
+
+  &:after {
+    transform: scale(1) translateY(0px);
+    opacity: 1;
   }
 }
 .contest-menu__item:active {

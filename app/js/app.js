@@ -22,7 +22,8 @@ angular.module('Qemy', [
   'Qemy.ui.auth',
   'Qemy.ui.contest-item',
   'Qemy.ui.admin',
-  'Qemy.ui.chat'
+  'Qemy.ui.chat',
+  'Qemy.ui.news',
 ])
   .config(['$sceProvider', '$locationProvider', 'StorageProvider', '$stateProvider', '$urlRouterProvider', '$mdThemingProvider', 'markedProvider', '$mdIconProvider', 'lkGoogleSettingsProvider',
     function($sceProvider, $locationProvider, StorageProvider, $stateProvider, $urlRouterProvider, $mdThemingProvider, markedProvider, $mdIconProvider, lkGoogleSettingsProvider) {

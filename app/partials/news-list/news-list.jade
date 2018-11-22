@@ -1,0 +1,4 @@
+div.news-list(style="margin-bottom: 24px;", ng-controller='NewsListController')
+  div.news-list__title Новости
+  div.news-list__content
+    news-list-item(ng-repeat='item in items', track-by='id', item='item')
