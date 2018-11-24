@@ -130,7 +130,7 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/froala-editor/js/plugins/word_paste.min.js
 /vendor/froala-editor/js/languages/ru.js
 /js/locales/ru-ru.json
-/prod/js/build.prod.min.js?1.2.0
+/prod/js/build.prod.min.js?1.3.0
 
 # CSS
 /bower_components/angular-material/angular-material.min.css
@@ -143,7 +143,7 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/froala-editor/css/plugins/image_manager.min.css
 /vendor/froala-editor/css/plugins/quick_insert.min.css
 /vendor/froala-editor/css/froala_style.min.css
-/prod/css/style.prod.css?1.2.0
+/prod/css/style.prod.css?1.3.0
 
 # Images
 /img/acm-logo.svg
