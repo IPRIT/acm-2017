@@ -14,6 +14,7 @@ import test from './test';
 import user from './user';
 import contest from './contest';
 import chat from './chat';
+import news from './news';
 import problems from './problems';
 import admin from './admin';
 
@@ -34,6 +35,7 @@ router.use('/test', test);
 router.use('/user', user);
 router.use('/contest', contest);
 router.use('/chat', chat);
+router.use('/news', news);
 router.use('/problems', problems);
 router.use('/admin', admin);
 //router.post('/repair', repairDb);

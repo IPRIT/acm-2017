@@ -1,1 +1,13 @@
-div Create
+div
+  div.news-form
+    header
+      div.news-form__title
+        textarea.news-form__title-input(rows='1', ng-model='title', placeholder='Введите заголовок')
+
+    section.news-form__content
+      div.news-form__form
+        textarea(froala="froalaOptions", ng-model="body")
+      div.news-form__submit
+        md-button.md-primary.md-raised(ng-click='submit($event)', ng-disabled='!(body.length && title.length)') Создать
+
+page-footer

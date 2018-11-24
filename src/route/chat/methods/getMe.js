@@ -25,7 +25,7 @@ export async function getMe(params) {
 
   const adminId = 2;
   if (user.isAdmin) {
-    user = await models.User.findByPrimary(adminId);;
+    user = await models.User.findByPrimary(adminId);
     userId = adminId;
   }
 

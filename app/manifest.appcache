@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 154
+# 155
 
 CACHE:
 
@@ -75,6 +75,11 @@ CACHE:
 /partials/chat/dialogs.html
 /partials/chat/dialogs-item.html
 /partials/chat/index.html
+/partials/news-item/news-create.html
+/partials/news-item/news-edit.html
+/partials/news-item/news-item.html
+/partials/news-list/news-list.html
+/partials/news-list/news-list-item.html
 /vendor/math-tex/dist/math-tex.html
 
 # js
@@ -110,12 +115,34 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/ion.sound/ion.sound.js
 /vendor/math-tex/dist/katex.min.js
 /vendor/math-tex/dist/math-tex.min.js
+/vendor/froala-angular/angular-froala.js
+/vendor/froala-angular/froala-sanitize.js
+/vendor/froala-editor/js/froala_editor.min.js
+/vendor/froala-editor/js/plugins/colors.min.js
+/vendor/froala-editor/js/plugins/emoticons.min.js
+/vendor/froala-editor/js/plugins/font_size.min.js
+/vendor/froala-editor/js/plugins/link.min.js
+/vendor/froala-editor/js/plugins/lists.min.js
+/vendor/froala-editor/js/plugins/paragraph_format.min.js
+/vendor/froala-editor/js/plugins/paragraph_style.min.js
+/vendor/froala-editor/js/plugins/quote.min.js
+/vendor/froala-editor/js/plugins/url.min.js
+/vendor/froala-editor/js/plugins/word_paste.min.js
+/vendor/froala-editor/js/languages/ru.js
 /js/locales/ru-ru.json
 /prod/js/build.prod.min.js?1.2.0
 
 # CSS
 /bower_components/angular-material/angular-material.min.css
 /vendor/katex/katex.min.css
+/vendor/froala-editor/css/froala_editor.min.css
+/vendor/froala-editor/css/plugins/code_view.min.css
+/vendor/froala-editor/css/plugins/emoticons.css
+/vendor/froala-editor/css/plugins/colors.min.css
+/vendor/froala-editor/css/plugins/image.min.css
+/vendor/froala-editor/css/plugins/image_manager.min.css
+/vendor/froala-editor/css/plugins/quick_insert.min.css
+/vendor/froala-editor/css/froala_style.min.css
 /prod/css/style.prod.css?1.2.0
 
 # Images

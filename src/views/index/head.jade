@@ -1,14 +1,23 @@
 meta(content-type='text/html', charset='utf-8')
 meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
 meta(name="fragment", content="!")
-link(rel='shortcut icon', type='image/png', href='/img/favicon.png?1')
+link(rel='shortcut icon', type='image/png', href='/img/favicon.png?2')
 link(rel="import", href="vendor/math-tex/dist/math-tex.html")
 title(ng-bind='title')
 
 +css_list([
-  // '//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin',
+  '//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=cyrillic,cyrillic-ext,latin',
+  '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
   'bower_components/angular-material/angular-material.min.css',
   'vendor/katex/katex.min.css',
+  'vendor/froala-editor/css/froala_editor.min.css',
+  'vendor/froala-editor/css/plugins/code_view.min.css',
+  'vendor/froala-editor/css/plugins/emoticons.css',
+  'vendor/froala-editor/css/plugins/colors.min.css',
+  'vendor/froala-editor/css/plugins/image.min.css',
+  'vendor/froala-editor/css/plugins/image_manager.min.css',
+  'vendor/froala-editor/css/plugins/quick_insert.min.css',
+  'vendor/froala-editor/css/froala_style.min.css',
   'prod/css/style.prod.css?1.2.0'
 ])
 +js_list([

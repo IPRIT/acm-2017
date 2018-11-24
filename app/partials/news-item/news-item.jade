@@ -1,1 +1,16 @@
-div Item
+div
+  div.news-item
+    header
+      div.news-item__title {{ item.title }}
+      div.news-item__subheader
+        span.news-item__subheader-text {{ item.createdAtText }}
+        span.news-item__point-divider
+        span.news-item__subheader-text {{ item.User.fullName }}
+        span(ng-if='user.isAdmin')
+          span.news-item__point-divider
+          a.news-item__subheader-text(ui-sref='news.edit({ newsId: item.id })') Редактировать
+
+    article.news-item__content
+      div(ng-bind-html='item.body')
+
+page-footer

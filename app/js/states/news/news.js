@@ -33,7 +33,7 @@ angular.module('Qemy.ui.news', [
               templateUrl: templateUrl('news-item', 'news-create'),
               controller: 'NewsCreateItemController'
             })
-            .state('news.item.edit', {
+            .state('news.edit', {
               url: '/edit',
               templateUrl: templateUrl('news-item', 'news-edit'),
               controller: 'NewsEditItemController'

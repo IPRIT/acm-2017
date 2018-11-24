@@ -12,22 +12,57 @@ angular.module('Qemy.services.news', [
 ])
   .service('NewsManager', ['$rootScope', 'Storage', '$http', '$timeout', ($rootScope, Storage, $http, $timeout) => {
 
-    function dataEncode(data) {
-      var paramPairs = [];
-      for (var el in data) {
-        if (!data.hasOwnProperty(el)) continue;
-        paramPairs.push(el + '=' + data[el]);
-      }
-      return paramPairs.join('&');
-    }
-
     function getNews (params) {
-      /*return $http({ method: 'get', url: '/api/contest/all?' + dataEncode(params) })
-          .then(function (data) {
-              return data.data;
-          });*/
+      return $http({
+        method: 'get',
+        url: '/api/news',
+        params
+      }).then(function (data) {
+        return data.data;
+      });
     }
 
-    return { getNews };
+    function getNewsById (params = {}) {
+      const { id } = params;
+      delete params.id;
+
+      return $http({
+        method: 'get',
+        url: '/api/news/' + id,
+        params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function createNews (data = {}) {
+      return $http({
+        method: 'post',
+        url: '/api/news',
+        data
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function updateNews (data = {}) {
+      const { id } = data;
+      delete data.id;
+
+      return $http({
+        method: 'post',
+        url: '/api/news/' + id,
+        data
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    return {
+      getNews,
+      getNewsById,
+      createNews,
+      updateNews,
+    };
   }])
 ;

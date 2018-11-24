@@ -68,6 +68,13 @@ md-menu-content,
 .md-open-menu-container {
   border-radius: 8px;
 }
+md-select-menu,
+.md-open-menu-container {
+  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 36px -11px rgba(0,0,0,0.31);
+}
+.fr-toolbar {
+  border-top: 1px solid #ccc;
+}
 md-dialog {
   border-radius: 16px;
 }
@@ -647,10 +654,10 @@ my-timer-element {
 }
 .contest-item__groups-for, .contests-list__groups-item {
   display: inline-block;
-  margin: 3px 10px 9px 0;
+  margin: 4px 7px 9px 0;
 }
 .contests-list__groups-item {
-  border-radius: 3px;
+  border-radius: 20px;
   background-color: rgba(77, 170, 102, 0.75);
   color: #fff;
   padding: 7px 10px;

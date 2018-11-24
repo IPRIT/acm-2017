@@ -1,16 +1,16 @@
-div.news-list-item
+div.news-list-item(ng-class="{'mock': isMock}")
   a.news-list-item__inner(ui-sref='news.item({newsId: item.id})')
     div.news-list-item__date
       div.news-list-item__date-circle
-        div.news-list-item__date-day {{ day }}
-        div.news-list-item__date-month {{ month }}
+        div.news-list-item__date-day {{ item.dateCircle.day }}
+        div.news-list-item__date-month {{ item.dateCircle.monthRu }}
         md-tooltip(md-direction="bottom") {{ item.createdAt | date:'dd.MM.yyyy в HH:mm' }}
 
     div.news-list-item__content
       div(style='position: relative')
         div.news-list-item__visited-wrapper
           div.news-list-item__visited
-        div.news-list-item__title {{ item.name }}
+        div.news-list-item__title {{ item.title }}
       div.news-list-item__author
-        | Автор:&nbsp;
-        span {{ item.author.fullName }}
+        span.news-list-item__author-label Автор:&nbsp;
+        span.news-list-item__author-text {{ item.User.fullName }}

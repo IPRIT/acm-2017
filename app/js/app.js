@@ -10,7 +10,8 @@ angular.module('Qemy', [
   'hc.marked',
   'ngFileUpload',
   'lk-google-picker',
-  
+  'froala',
+
   'Qemy.directives',
   'Qemy.controllers',
   'Qemy.services',

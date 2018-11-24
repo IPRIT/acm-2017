@@ -1,0 +1,85 @@
+{
+  "_from": "froala-editor",
+  "_id": "froala-editor@2.9.1",
+  "_inBundle": false,
+  "_integrity": "sha512-ZEyBnZ/J5w87pjh6F8pNdI0owJ8w3fvwqfOnfcVqHblBQ2A1yjeOfOEIsCUM3QbFscHqY2ChArRCfpDpGxy/Vw==",
+  "_location": "/froala-editor",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "froala-editor",
+    "name": "froala-editor",
+    "escapedName": "froala-editor",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/",
+    "/angular-froala"
+  ],
+  "_resolved": "https://registry.npmjs.org/froala-editor/-/froala-editor-2.9.1.tgz",
+  "_shasum": "6487b55ad1db9ef0379bfeaa58b35534b28ad589",
+  "_spec": "froala-editor",
+  "_where": "C:\\Users\\Александр\\WebstormProjects\\acm-2017-new",
+  "bugs": {
+    "url": "https://github.com/froala/wysiwyg-editor/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "font-awesome": ">=4.4.0",
+    "jquery": ">=1.11.0"
+  },
+  "deprecated": false,
+  "description": "A beautiful Javascript WYSIWYG HTML rich text editor made by devs for devs. High performance and modern design make it easy to use for developers and loved by users.",
+  "filename": "js/froala_editor.min.js",
+  "homepage": "https://www.froala.com/wysiwyg-editor",
+  "keywords": [
+    "froala",
+    "froala-editor",
+    "froala-wysiwyg",
+    "html",
+    "text",
+    "editor",
+    "wysiwyg",
+    "jquery-plugin",
+    "rich editor",
+    "rich text editor",
+    "rte",
+    "javascript",
+    "jquery"
+  ],
+  "license": "https://www.froala.com/wysiwyg-editor/pricing",
+  "main": "js/froala_editor.min.js",
+  "maintainers": [
+    {
+      "name": "Froala Labs"
+    }
+  ],
+  "name": "froala-editor",
+  "npmFileMap": [
+    {
+      "basePath": "/",
+      "files": [
+        "js/plugins/*.min.js",
+        "js/third_party/*.min.js",
+        "js/froala_editor.min.js",
+        "js/froala_editor.pkgd.min.js",
+        "css/froala_editor.min.css",
+        "css/froala_editor.pkgd.min.css",
+        "css/froala_style.min.css",
+        "css/plugins/*.min.css",
+        "css/third_party/*.min.css",
+        "css/themes/*.min.css"
+      ]
+    }
+  ],
+  "npmName": "froala-editor",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/froala/wysiwyg-editor.git"
+  },
+  "version": "2.9.1"
+}

@@ -1,4 +1,14 @@
-div.news-list(style="margin-bottom: 24px;", ng-controller='NewsListController')
-  div.news-list__title Новости
-  div.news-list__content
-    news-list-item(ng-repeat='item in items', track-by='id', item='item')
+div(ng-controller='NewsListController')
+  div.news-list(style="margin-bottom: 24px;")
+    div.news-list__title-wrapper
+      div.news-list__title Новости
+      div.news-list__add(ng-if='user && user.isAdmin')
+        md-button.md-primary.md-icon-button.news-list__add-button(ui-sref='news-create')
+          md-icon(md-svg-icon="img/icons/ic_add_24px.svg")
+    div.news-list__content(ng-if='isLoaded')
+      news-list-item(ng-repeat='item in items', track-by='id', item='item')
+    div.news-list__content(ng-if='!isLoaded')
+      news-list-item(ng-repeat='item in mockItems', track-by='$index', is-mock='true')
+    div.news-list__content(ng-if='isLoaded && !items.length')
+      p(style='text-align: center; color: rgba(0,0,0,0.38);') Новости отсутствуют
+

@@ -11,14 +11,15 @@
 
 angular.module('Qemy.directives.news', [])
 
-    .directive('newsListItem', function() {
-        return {
-            restrict: 'E',
-            templateUrl: templateUrl('news-list', 'news-list-item'),
-            controller: 'NewsListItemController',
-            scope: {
-                item: '='
-            }
-        }
-    })
+  .directive('newsListItem', function() {
+    return {
+      restrict: 'E',
+      templateUrl: templateUrl('news-list', 'news-list-item'),
+      controller: 'NewsListItemController',
+      scope: {
+        item: '=',
+        isMock: '='
+      }
+    }
+  })
 ;
