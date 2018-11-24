@@ -39,4 +39,8 @@
       margin: 0;
     }
   }
+
+  .fr-box .fr-wrapper div:not(.fr-element) a {
+    display: none !important;
+  }
 }
