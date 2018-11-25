@@ -125,7 +125,7 @@ module.exports = function(grunt) {
     'autoprefixer'
   ]);
   grunt.registerTask('default', [
-    'concat', 'babel', 'browserify', 'uglify', 'sass', 'autoprefixer', 'watch'
+    'concat', 'babel', 'browserify', 'uglify', 'sass', 'autoprefixer',
   ]);
   grunt.registerTask('dev', [
     'concat', 'babel', 'browserify', 'uglify', 'sass', 'watch'

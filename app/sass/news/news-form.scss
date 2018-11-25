@@ -41,6 +41,8 @@
   }
 
   .fr-box .fr-wrapper div:not(.fr-element) a {
-    display: none !important;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
   }
 }
