@@ -28,11 +28,11 @@ export async function createNews(params) {
     throw new HttpError('User not found');
   }
 
-  const adminId = 2;
+  /*const adminId = 2;
   if (user.isAdmin) {
     user = await models.User.findByPrimary(adminId);
     userId = adminId;
-  }
+  }*/
 
   if (!title) {
     title = defaultTitle;
