@@ -58,9 +58,23 @@ angular.module('Qemy.services.news', [
       });
     }
 
+    function deleteNewsById (data = {}) {
+      const { id } = data;
+      delete data.id;
+
+      return $http({
+        method: 'delete',
+        url: '/api/news/' + id,
+        data
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
     return {
       getNews,
       getNewsById,
+      deleteNewsById,
       createNews,
       updateNews,
     };

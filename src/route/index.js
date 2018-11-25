@@ -7,6 +7,7 @@ import { HttpError } from '../utils/http-error';
 import indexRouter from './index/index';
 import cdnRouter from './cdn';
 import filesRouter from './files';
+import uploadRouter from './upload';
 import { repairDb } from '../utils';
 
 import cors from './cors';
@@ -50,5 +51,6 @@ export {
   apiRouter,
   indexRouter,
   filesRouter,
-  cdnRouter
+  cdnRouter,
+  uploadRouter
 };

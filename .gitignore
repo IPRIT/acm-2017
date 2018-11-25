@@ -7,3 +7,4 @@ tmp
 .idea
 config.development.json
 /cdn
+/uploads/*

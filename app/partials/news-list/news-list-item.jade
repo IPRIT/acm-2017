@@ -14,3 +14,7 @@ div.news-list-item(ng-class="{'mock': isMock}")
       div.news-list-item__author
         span.news-list-item__author-label Автор:&nbsp;
         span.news-list-item__author-text {{ item.User.fullName }}
+
+  div.news-list-item__remove(ng-if='user && user.isAdmin')
+    md-button.md-accent.md-icon-button.news-list-item__remove-button(ng-click='deleteNewsById($event, item)')
+      md-icon(md-svg-icon="img/icons/ic_delete_24px.svg")

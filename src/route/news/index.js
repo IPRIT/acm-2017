@@ -8,5 +8,6 @@ router.get('/', [ userRetriever, rightsAllocator('user') ], news.getNewsRequest)
 router.post('/', [ userRetriever, rightsAllocator('admin') ], news.createNewsRequest);
 router.get('/:newsId', [ userRetriever, rightsAllocator('user') ], news.getNewsByIdRequest);
 router.post('/:newsId', [ userRetriever, rightsAllocator('admin') ], news.updateNewsRequest);
+router.delete('/:newsId', [ userRetriever, rightsAllocator('admin') ], news.deleteNewsByIdRequest);
 
 export default router;

@@ -9,6 +9,13 @@
 
 /* Controllers */
 
+const froalaOptions = {
+  language: 'ru',
+  linkAlwaysBlank: true,
+  imageUploadURL: '/upload/image',
+  placeholder: "Текст новости..."
+};
+
 angular.module('Qemy.controllers.news', [])
 
   // List
@@ -38,15 +45,24 @@ angular.module('Qemy.controllers.news', [])
         });
       };
 
-      $scope.getNews().then(items => {
-        return $timeout(_ => {
-          return items;
-        }, 500);
-      }).then(items => {
-        $scope.items = wrapItems( items );
-        $scope.isLoaded = true;
-      }).catch(error => {
-        ErrorService.show( error );
+      function updateList () {
+        return $scope.getNews().then(items => {
+          return $timeout(_ => {
+            return items;
+          }, 500);
+        }).then(items => {
+          $scope.items = wrapItems( items );
+          $scope.isLoaded = true;
+          safeApply( $scope );
+        }).catch(error => {
+          ErrorService.show( error );
+        });
+      }
+
+      updateList();
+
+      $scope.$on('news.update', _ => {
+        updateList();
       });
 
       function wrapItems (items) {
@@ -82,8 +98,27 @@ angular.module('Qemy.controllers.news', [])
   ])
 
   // List Item
-  .controller('NewsListItemController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', 'ErrorService',
-    function ($scope, $rootScope, $state, AdminManager, _, ErrorService) {
+  .controller('NewsListItemController', ['$scope', '$rootScope', '$state', '$mdDialog', 'NewsManager', '_', 'ErrorService',
+    function ($scope, $rootScope, $state, $mdDialog, NewsManager, _, ErrorService) {
+
+      function confirmation (ev, item) {
+        const confirm = $mdDialog.confirm()
+          .title('Подтверждение')
+          .content(`Вы действительно хотите удалить новость «${item.title}»?`)
+          .ariaLabel('Подтверждение')
+          .ok('Да')
+          .cancel('Отмена')
+          .targetEvent(ev);
+        return $mdDialog.show(confirm);
+      }
+
+      $scope.deleteNewsById = (ev, item) => {
+        return confirmation( ev, item ).then(_ => {
+          return NewsManager.deleteNewsById({ id: item.id });
+        }).then(_ => {
+          $scope.$emit('news.update');
+        });
+      };
     }
   ])
 
@@ -149,11 +184,7 @@ angular.module('Qemy.controllers.news', [])
   // Create Item
   .controller('NewsCreateItemController', ['$scope', '$rootScope', '$state', 'NewsManager', '_', 'ErrorService',
     function ($scope, $rootScope, $state, NewsManager, _, ErrorService) {
-      $scope.froalaOptions = {
-        language: 'ru',
-        linkAlwaysBlank: true,
-        placeholder: "Текст новости..."
-      };
+      $scope.froalaOptions = froalaOptions;
 
       $scope.title = '';
       $scope.body = '';
@@ -176,11 +207,7 @@ angular.module('Qemy.controllers.news', [])
   // Edit Item
   .controller('NewsEditItemController', ['$scope', '$rootScope', '$state', 'NewsManager', '_', 'ErrorService',
     function ($scope, $rootScope, $state, NewsManager, _, ErrorService) {
-      $scope.froalaOptions = {
-        language: 'ru',
-        linkAlwaysBlank: true,
-        placeholder: "Текст новости..."
-      };
+      $scope.froalaOptions = froalaOptions;
 
       $scope.title = '';
       $scope.body = '';

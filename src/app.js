@@ -12,7 +12,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import { apiRouter, indexRouter, cdnRouter, filesRouter } from './route';
+import { apiRouter, indexRouter, cdnRouter, filesRouter, uploadRouter } from './route';
 import { config } from './utils';
 import path from 'path';
 import { ClientError, ServerError } from './route/error/http-error';
@@ -52,6 +52,7 @@ app.use('/', indexRouter);
 app.use('/cdn', cdnRouter);
 app.use('/api', apiRouter);
 app.use('/files', filesRouter);
+app.use('/upload', uploadRouter);
 app.use('/polygon', polygonRouter);
 
 app.all('/*', function(req, res, next) {

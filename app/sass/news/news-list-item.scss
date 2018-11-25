@@ -1,4 +1,6 @@
 .news-list-item {
+  position: relative;
+
   &__inner {
     .news-list-item:not(.mock) & {
       padding: 24px;
@@ -10,6 +12,7 @@
       flex-direction: row;
       text-transform: none;
       text-decoration: none;
+      position: relative;
 
       &:hover {
         background-color: #f7fcff;
@@ -103,6 +106,24 @@
       span {
         font-weight: bold;
       }
+    }
+  }
+
+  &__remove {
+    .news-list-item:not(.mock) & {
+      position: absolute;
+      right: 16px;
+      top: calc(50% - 21px);
+    }
+  }
+
+  &__remove-button {
+    border: 1px solid #eee;
+
+    md-icon {
+      position: relative;
+      top: -1px;
+      left: -1px;
     }
   }
 }
@@ -220,6 +241,12 @@
       width: 120px;
       background-color: $mock-color;
       border-radius: 2px;
+    }
+  }
+
+  &__remove {
+    .mock & {
+      display: none;
     }
   }
 }

@@ -18,7 +18,8 @@ angular.module('Qemy.directives.news', [])
       controller: 'NewsListItemController',
       scope: {
         item: '=',
-        isMock: '='
+        isMock: '=',
+        user: '='
       }
     }
   })

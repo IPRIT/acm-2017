@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# 157
+# 158
 
 CACHE:
 
@@ -128,9 +128,24 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/froala-editor/js/plugins/quote.min.js
 /vendor/froala-editor/js/plugins/url.min.js
 /vendor/froala-editor/js/plugins/word_paste.min.js
+/vendor/froala-editor/js/plugins/image.min.js
+/vendor/froala-editor/js/plugins/image_manager.min.js
+/vendor/froala-editor/js/plugins/video.min.js
+/vendor/froala-editor/js/plugins/table.min.js
+/vendor/froala-editor/js/plugins/quick_insert.min.js
+/vendor/froala-editor/js/plugins/special_characters.min.js
+/vendor/froala-editor/js/third_party/font_awesome.min.js
+/vendor/froala-editor/js/plugins/help.min.js
+/vendor/froala-editor/js/plugins/draggable.min.js
+/vendor/froala-editor/js/plugins/code_view.min.js
+/vendor/froala-editor/js/plugins/code_beautifier.min.js
+/vendor/froala-editor/js/plugins/align.min.js
+/vendor/froala-editor/js/plugins/print.min.js
+/vendor/froala-editor/js/plugins/inline_class.min.js
+/vendor/froala-editor/js/plugins/inline_style.min.js
 /vendor/froala-editor/js/languages/ru.js
 /js/locales/ru-ru.json
-/prod/js/build.prod.min.js?1.3.0
+/prod/js/build.prod.min.js?1.3.1
 
 # CSS
 /bower_components/angular-material/angular-material.min.css
@@ -142,8 +157,14 @@ http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 /vendor/froala-editor/css/plugins/image.min.css
 /vendor/froala-editor/css/plugins/image_manager.min.css
 /vendor/froala-editor/css/plugins/quick_insert.min.css
+/vendor/froala-editor/css/plugins/video.min.css
+/vendor/froala-editor/css/plugins/table.min.css
+/vendor/froala-editor/css/plugins/special_characters.min.css
+/vendor/froala-editor/css/third_party/font_awesome.min.css
+/vendor/froala-editor/css/plugins/help.min.css
+/vendor/froala-editor/css/plugins/draggable.min.css
 /vendor/froala-editor/css/froala_style.min.css
-/prod/css/style.prod.css?1.3.0
+/prod/css/style.prod.css?1.3.1
 
 # Images
 /img/acm-logo.svg

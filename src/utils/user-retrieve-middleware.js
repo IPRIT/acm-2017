@@ -18,7 +18,7 @@ async function retrieveUser(req, res, next) {
   
   let session = req.session || {};
   let cookies = req.cookies;
-  let { token = req.query.token || req.body.token } = req.params;
+  let { token = req.query && req.query.token || req.body && req.body.token } = req.params;
   token = req.header('X-Token') || token || cookies[ AUTH_COOKIE_NAME ];
   req.token = token;
   let user;
