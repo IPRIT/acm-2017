@@ -53,7 +53,7 @@ export async function send(solution) {
  * @private
  */
 function _updateContestTable(solution, verdict) {
-  if (verdict.id !== 1 && !verdict.scored) {
+  if (!verdict || verdict.id !== 1 && !verdict.scored) {
     return;
   }
   console.log('Updating contest table...');
