@@ -23,7 +23,7 @@ export async function sendSolution(solution, systemAccount) {
     
     let { csrfToken, jar } = systemAccount;
     let { type, contestNumber } = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
-  
+
     let endpoint = getContestEndpoint(type, { contestNumber, pathTo: ACM_SOLUTIONS_POST_ENDPOINT });
     let solutionForm = buildSolutionForm(solution, systemAccount);
     
@@ -100,7 +100,9 @@ function buildSolutionForm(solution, systemAccount) {
     });
   } else if (type === 'problemset') {
     Object.assign(baseFormData, {
-      submittedProblemCode: contestNumber + symbolIndex
+      submittedProblemIndex: symbolIndex,
+      contestId: contestNumber
+      // submittedProblemCode: contestNumber + symbolIndex
     });
   }
   return baseFormData;

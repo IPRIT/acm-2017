@@ -425,8 +425,8 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
   
-  .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService', '$sce',
-    function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService, $sce) {
+  .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService', '$sce', '$timeout',
+    function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService, $sce, $timeout) {
       $scope.$emit('change_title', {
         title: 'Условие | ' + _('app_name')
       });
@@ -465,10 +465,13 @@ angular.module('Qemy.controllers.contest-item', [
         result.htmlStatement = (result.htmlStatement || '')
           .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
         $scope.condition = result;
-        console.log(result);
         $scope.$emit('change_title', {
           title: problemId + '. ' + result.title + ' | ' + _('app_name')
         });
+
+        $timeout(_ => {
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathJax"]);
+        }, 100);
       }).catch(function (result) {
         $rootScope.$broadcast('data loaded');
         ErrorService.show(result);

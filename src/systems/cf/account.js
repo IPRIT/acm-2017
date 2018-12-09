@@ -3,6 +3,7 @@ import request from 'request-promise';
 import Promise from 'bluebird';
 import util from 'util';
 import { Error as ErrorReporter } from '../../models';
+import { debugPage } from "./sendSolution";
 
 const ACM_PROTOCOL = 'http';
 const ACM_HOST = 'codeforces.com';
@@ -107,6 +108,12 @@ export function isAuth(systemAccount) {
     }
     let $ = cheerio.load(response.body);
     let accountLink = $(`#header a[href="/profile/${systemAccount.instance.systemLogin}"]`);
+    /*
+    var path = require( 'path' );
+    var fs = require( 'fs' );
+    const pathTo = path.join(__dirname, "/test.html");
+    fs.writeFileSync(pathTo, $.html());*/
+
     return accountLink.length > 0;
   });
 }

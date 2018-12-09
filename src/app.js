@@ -43,10 +43,14 @@ systems.worker.run();
  * Connecting routers
  */
 app.get('/partials\/*:filename', function compileStaticTemplate(req, res) {
-  var filename = req.params[0];
-  if (!filename) return;
+  let filename = req.params[0];
+  if (!filename) {
+    return;
+  }
   filename = filename.replace(/(\.htm|\.html)$/i, '');
-  res.render(`${path.join(__dirname, '../app')}/partials/${filename}`);
+  res.render(
+    path.join(__dirname, `../app/partials/${filename}`)
+  );
 });
 app.use('/', indexRouter);
 app.use('/cdn', cdnRouter);
