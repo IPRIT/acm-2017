@@ -108,7 +108,7 @@ function buildSolutionForm(solution, systemAccount) {
   return baseFormData;
 }
 
-async function authVerify(systemAccount) {
+export async function authVerify(systemAccount) {
   let isAuth = await accountsMethods.isAuth( systemAccount );
   if (!isAuth) {
     throw new Error('Account is not logged in');

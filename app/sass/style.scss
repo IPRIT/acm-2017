@@ -1498,12 +1498,6 @@ md-toolbar.md-theme-light {
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    &_type_language {
-      font-size: .8em;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-    }
     .sent-list__cell-loading {
       white-space: nowrap;
     }
@@ -1520,6 +1514,15 @@ md-toolbar.md-theme-light {
   .sent-list__bold {
     font-weight: bold;
   }
+}
+.sent-list__language {
+  font-size: .8em;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+.sent-list__language_nonactive {
+  color: red;
 }
 .sent-list__header {
   background-color: #f0f0f0;

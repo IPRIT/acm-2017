@@ -20,6 +20,10 @@ let Language = sequelize.define('Language', {
   },
   foreignLanguageId: {
     type: Sequelize.STRING
+  },
+  nonactive: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 }, {
   timestamps: false,

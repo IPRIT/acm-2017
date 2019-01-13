@@ -3,60 +3,63 @@ ng-class='{"sent-list__success": solution.verdictId === 1, \
    "sent-list__failed": [2, 4, 5, 6, 7, 8, 9, 12].indexOf(solution.verdictId) !== -1, \
    "sent-list__failed_type_highlighted": solution.verdictId === 12, \
    "sent-list__unknown": [3, 10, 11, 13, 14, 15, 16, 17, 18, 19].indexOf(solution.verdictId) !== -1}')
-    div.sent-list__indicator(ng-if='solution.duplicatedFromId')
-        md-tooltip Переотправленное решение №{{solution.duplicatedFromId}}
-        span
-            md-icon(md-svg-src="/img/icons/ic_repeat_48px.svg", aria-label="Repeat Icon")
-            span.indicator__solution-number(ng-switch='solution.userId === user.id || user.isAdmin')
-                span(ng-switch-when='true')
-                    a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: solution.duplicatedFromId, contestId: solution.contestId})') {{solution.duplicatedFromId}}
-                span(ng-switch-default) {{solution.duplicatedFromId}}
-    div.sent-list__cell(style='max-width: 90px;', ng-switch='solution.userId === user.id || user.isAdmin')
+  div.sent-list__indicator(ng-if='solution.duplicatedFromId')
+    md-tooltip Переотправленное решение №{{solution.duplicatedFromId}}
+    span
+      md-icon(md-svg-src="/img/icons/ic_repeat_48px.svg", aria-label="Repeat Icon")
+      span.indicator__solution-number(ng-switch='solution.userId === user.id || user.isAdmin')
         span(ng-switch-when='true')
-            a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: solution.id, contestId: solution.contestId})') {{solution.id}}
-        span(ng-switch-default) {{solution.id}}
-    div.sent-list__cell.sent-list__cell-task(style='font-size: .8em')
-        a.link.sent-list__link(ui-sref='contest.item({contestId: solution.contestId})', ng-click='joinContest($event, solution.contest)') {{solution.contest.name}}
-    div.sent-list__cell(style='max-width: 120px;')
-        span(style='font-size: .8em') {{solution.sentAtMs | date:'medium'}}
-            md-tooltip Время в контесте: {{(solution.sentAtMs - solution.contest.startTimeMs) | formatStartTime}}
-    div.sent-list__cell
-        rated-user-with-dialog(user='::solution.author')
-    div.sent-list__cell.sent-list__cell-task
-        a.link.sent-list__link(ui-sref='contest.problems-item({problemIndex: solution.internalSymbolIndex, contestId: solution.contestId})', title='{{solution.internalSymbolIndex + ". " + solution.problem.title}}') {{solution.internalSymbolIndex + '. ' + solution.problem.title}}
-    div.sent-list__cell.sent-list__cell_type_language
-        span {{::solution.language.name}}
-    div.sent-list__cell.sent-list__verdict(style='min-width: 126px;', ng-switch='!solution.verdictId || solution.verdictId === -1')
-        span.sent-list__cell-loading(ng-switch-when='true')
-            div.sent-list__loading(style='display: inline-block;')
-                div.content-spin__layer
-                    div.search-spin-layer_
-                        div.search-spin(ng-class='{"waiting": solution.verdictId === -1}')
-            span(ng-if='solution.verdictId === -1', style='display: inline-block;') {{solution.verdict.name}}
-            span(ng-if='solution.verdictId === null', style='display: inline-block;')
-                span(style='text-transform: none') В очереди...
-                span(style='text-transform: none', ng-if='solution._currentAttempt > 0') (попытка {{solution._currentAttempt + 1}})
-        span(ng-switch-default)
-            span(ng-switch='solution.verdictId === 3 && solution.compilationError.length > 0 && (user.id === solution.userId || user.isAdmin)')
-                span(ng-switch-when='true')
-                    a.link.sent-list__compilation-error(role='button', ng-click='showCompilationErrorDialog($event, solution)') {{solution.verdict.name}}
-                span(ng-switch-default, ng-class='{"verdict-small": solution.verdict.name.length > 21 && solution.verdict.name.split(" ").length > 2}') {{solution.verdict.name}}
-    div.sent-list__cell(style='max-width: 80px;', ng-switch='solution.testNumber === 0')
-        span(ng-switch-when='true') -
-        span(ng-switch-default) {{solution.testNumber}}
-    div.sent-list__cell(style='max-width: 95px;')
-        span {{(solution.executionTime + ' с')}}
-    div.sent-list__cell(style='max-width: 95px;')
-        span {{solution.memory + ' КБ'}}
-    div.sent-list__cell(ng-if='user.isAdmin', style='max-width: 60px;')
-        div.sent-list__actions-menu
-            md-menu(md-offset="-200 0")
-                md-button(aria-label="Select action", class="md-icon-button", ng-click="$mdOpenMenu($event)")
-                    md-icon(md-menu-origin, md-svg-src="/img/icons/ic_more_vert_48px.svg")
-                md-menu-content(width="4")
-                    md-menu-item(ng-repeat="action in actionsMenuItems", ng-class='{"menu-divider": action.type === "divider"}')
-                        md-button(class='{{action.themeClass}}', ng-if='action.type !== "divider"', ng-click="selectAction($event, action, solution)", aria-label='Menu item', ng-disabled='!solution.verdictId || solution.verdictId < 0')
-                            div(layout="row")
-                                md-icon(md-menu-align-target, md-svg-src="{{::action.svgIcon}}")
-                                p(flex, ng-bind='::action.name')
-                        md-divider(ng-if='action.type === "divider"')
+          a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: solution.duplicatedFromId, contestId: solution.contestId})') {{solution.duplicatedFromId}}
+        span(ng-switch-default) {{solution.duplicatedFromId}}
+  div.sent-list__cell(style='max-width: 90px;', ng-switch='solution.userId === user.id || user.isAdmin')
+    span(ng-switch-when='true')
+      a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: solution.id, contestId: solution.contestId})') {{solution.id}}
+    span(ng-switch-default) {{solution.id}}
+  div.sent-list__cell.sent-list__cell-task(style='font-size: .8em')
+    a.link.sent-list__link(ui-sref='contest.item({contestId: solution.contestId})', ng-click='joinContest($event, solution.contest)') {{solution.contest.name}}
+  div.sent-list__cell(style='max-width: 120px;')
+    span(style='font-size: .8em') {{solution.sentAtMs | date:'medium'}}
+      md-tooltip Время в контесте: {{(solution.sentAtMs - solution.contest.startTimeMs) | formatStartTime}}
+  div.sent-list__cell
+    rated-user-with-dialog(user='::solution.author')
+  div.sent-list__cell.sent-list__cell-task
+    a.link.sent-list__link(ui-sref='contest.problems-item({problemIndex: solution.internalSymbolIndex, contestId: solution.contestId})', title='{{solution.internalSymbolIndex + ". " + solution.problem.title}}') {{solution.internalSymbolIndex + '. ' + solution.problem.title}}
+  div.sent-list__cell.sent-list__language(ng-class='{"sent-list__language_nonactive": solution.language.nonactive}')
+    div
+      md-tooltip(ng-if="solution.language.nonactive" md-direction="bottom")
+        span Язык больше не поддерживается проверяющей системой
+      span {{::solution.language.name}}
+  div.sent-list__cell.sent-list__verdict(style='min-width: 126px;', ng-switch='!solution.verdictId || solution.verdictId === -1')
+    span.sent-list__cell-loading(ng-switch-when='true')
+      div.sent-list__loading(style='display: inline-block;')
+        div.content-spin__layer
+          div.search-spin-layer_
+            div.search-spin(ng-class='{"waiting": solution.verdictId === -1}')
+      span(ng-if='solution.verdictId === -1', style='display: inline-block;') {{solution.verdict.name}}
+      span(ng-if='solution.verdictId === null', style='display: inline-block;')
+        span(style='text-transform: none') В очереди...
+        span(style='text-transform: none', ng-if='solution._currentAttempt > 0') (попытка {{solution._currentAttempt + 1}})
+    span(ng-switch-default)
+      span(ng-switch='solution.verdictId === 3 && solution.compilationError.length > 0 && (user.id === solution.userId || user.isAdmin)')
+        span(ng-switch-when='true')
+          a.link.sent-list__compilation-error(role='button', ng-click='showCompilationErrorDialog($event, solution)') {{solution.verdict.name}}
+        span(ng-switch-default, ng-class='{"verdict-small": solution.verdict.name.length > 21 && solution.verdict.name.split(" ").length > 2}') {{solution.verdict.name}}
+  div.sent-list__cell(style='max-width: 80px;', ng-switch='solution.testNumber === 0')
+    span(ng-switch-when='true') -
+    span(ng-switch-default) {{solution.testNumber}}
+  div.sent-list__cell(style='max-width: 95px;')
+    span {{(solution.executionTime + ' с')}}
+  div.sent-list__cell(style='max-width: 95px;')
+    span {{solution.memory + ' КБ'}}
+  div.sent-list__cell(ng-if='user.isAdmin', style='max-width: 60px;')
+    div.sent-list__actions-menu
+      md-menu(md-offset="-200 0")
+        md-button(aria-label="Select action", class="md-icon-button", ng-click="$mdOpenMenu($event)")
+          md-icon(md-menu-origin, md-svg-src="/img/icons/ic_more_vert_48px.svg")
+        md-menu-content(width="4")
+          md-menu-item(ng-repeat="action in actionsMenuItems", ng-class='{"menu-divider": action.type === "divider"}')
+            md-button(class='{{action.themeClass}}', ng-if='action.type !== "divider"', ng-click="selectAction($event, action, solution)", aria-label='Menu item', ng-disabled='!solution.verdictId || solution.verdictId < 0')
+              div(layout="row")
+                md-icon(md-menu-align-target, md-svg-src="{{::action.svgIcon}}")
+                p(flex, ng-bind='::action.name')
+            md-divider(ng-if='action.type === "divider"')

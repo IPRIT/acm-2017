@@ -1,10 +1,14 @@
-import * as socket from '../../../../../socket';
-import * as models from '../../../../../models';
-import { extractParam, ensureNumber, passwordHash } from "../../../../../utils";
 import Promise from 'bluebird';
 import request from 'request-promise';
 import cheerio from 'cheerio';
+import * as socket from '../../../../../socket';
+import * as models from '../../../../../models';
+import * as accountsPool from "../../../../../systems/cf/accountsPool";
+import { extractParam, ensureNumber, passwordHash } from "../../../../../utils";
 import { parseIdentifier, parseProblemIdentifier } from "../../../../../utils/utils";
+import * as accountsMethods from "../../../../../systems/cf/account";
+import { authVerify } from "../../../../../systems/cf";
+import { cache as languagesCache } from "../../../../contest/methods";
 
 const SYSTEM_TYPE = 'cf';
 const ACM_PROTOCOL = 'http';
@@ -14,6 +18,7 @@ const ACM_PROBLEMSET_PATH = '/problemset/page/:pageNumber';
 const ACM_GYMS_PATH = '/gyms/page/:pageNumber';
 
 const ACM_PROBLEMSET_PROBLEM_PATH = '/problemset/problem/:contestNumber/:symbolIndex';
+const ACM_PROBLEMSET_SUBMIT_PATH = '/problemset/submit/:contestNumber/:symbolIndex';
 const ACM_GYM_PROBLEMS_PATH = '/gym/:contestNumber';
 const ACM_GYM_PROBLEM_PATH = '/gym/:contestNumber/problem/:symbolIndex';
 
@@ -31,7 +36,9 @@ export async function scanCf(params) {
   socket.emitScannerConsoleLog(buildMessage(`Ссылки на задачи из архива получены.`));
   socket.emitScannerConsoleLog(buildMessage('Получение полных условий для задач из архива...'));
   try {
-    await retrieveProblemset(problemsetMeta, params);
+    if (insert || update) {
+      await retrieveProblemset(problemsetMeta, params);
+    }
   } catch (err) {
     socket.emitScannerConsoleLog(buildMessage(`Error: ${err.message}`));
   }
@@ -40,11 +47,25 @@ export async function scanCf(params) {
   socket.emitScannerConsoleLog(`-----`);
   socket.emitScannerConsoleLog(buildMessage(`Сканирование тренировок...`));
 
-  let gymsMeta = await getAllGymsMeta();
+  let gymsMeta = [];
+  if (insert || update) {
+    gymsMeta = await getAllGymsMeta();
+  }
   socket.emitScannerConsoleLog(buildMessage(`Ссылки на задачи из тренировок получены.`));
   socket.emitScannerConsoleLog(buildMessage('Получение полных условий для задач из тренировок...'));
   try {
-    await retrieveGyms(gymsMeta, params);
+    if (insert || update) {
+      await retrieveGyms(gymsMeta, params);
+    }
+  } catch (err) {
+    socket.emitScannerConsoleLog(buildMessage(`Error: ${err.message}`));
+  }
+
+  // languages scanning
+  socket.emitScannerConsoleLog(`-----`);
+  socket.emitScannerConsoleLog(buildMessage(`Сканирование актуальных языков...`));
+  try {
+    await retrieveLanguages( problemsetMeta[0] );
   } catch (err) {
     socket.emitScannerConsoleLog(buildMessage(`Error: ${err.message}`));
   }
@@ -312,6 +333,136 @@ async function retrieveGyms(tasksMeta, params) {
     printResults(inserted, changed);
     socket.emitScannerConsoleLog(`finished`);
   });
+}
+
+async function retrieveLanguages (problemMeta) {
+  const {
+    contestNumber,
+    symbolIndex
+  } = problemMeta;
+
+  const submitUrl = getEndpoint(ACM_PROBLEMSET_SUBMIT_PATH, {
+    contestNumber,
+    symbolIndex
+  });
+
+  let systemAccount = await accountsPool.getFreeAccount();
+  systemAccount.busy();
+
+  try {
+    await authVerify( systemAccount );
+  } catch (err) {
+    await accountsMethods.login( systemAccount );
+  }
+
+  let { jar } = systemAccount;
+
+  let body = await request({
+    method: 'GET',
+    uri: submitUrl,
+    qs: {
+      locale: 'ru'
+    },
+    jar,
+    simple: false,
+    followAllRedirects: true,
+    headers: {
+      'Accept-Language': 'ru,en;q=0.8'
+    }
+  });
+
+  const $ = cheerio.load( body );
+  let languages = [];
+  $('[name="programTypeId"]').find('option').each(function () {
+    const el = $(this);
+    languages.push([ el.attr('value'), el.text() ]);
+  });
+
+  languages.sort((a, b) => a[0] - b[0]);
+  languages = languages.map(language => {
+    return {
+      foreignLanguageId: parseInt( language[ 0 ] ),
+      name: language[ 1 ]
+    };
+  });
+
+  socket.emitScannerConsoleLog(
+    languages.reduce((a, v) => {
+      return a + `| ${v.foreignLanguageId} | ${v.name} |
+      `;
+    }, `
+      | Внешний ID языка | Имя языка |
+      | ------------- | :------------- |
+      `)
+  );
+
+  const savedLanguages = await models.Language.findAll({
+    where: {
+      systemType: 'cf'
+    }
+  });
+
+  // create map of saved languages by foreignLanguageId
+  const savedLanguagesMap = new Map();
+  for (const savedLanguage of savedLanguages) {
+    savedLanguagesMap.set( parseInt( savedLanguage.foreignLanguageId ), savedLanguage );
+  }
+
+  // mark all cf's languages as nonactive
+  await models.Language.update({
+    nonactive: true
+  }, {
+    where: { systemType: 'cf' }
+  });
+
+  const oldLangs = [];
+  const newLangs = [];
+
+  for (let i = 0; i < languages.length; ++i) {
+    const language = languages[ i ];
+    if (savedLanguagesMap.has( language.foreignLanguageId )) {
+      const savedLanguage = savedLanguagesMap.get( language.foreignLanguageId );
+      oldLangs.push( savedLanguage.id );
+    } else {
+      newLangs.push({
+        name: language.name,
+        systemType: 'cf',
+        languageFamily: 'c_cpp',
+        foreignLanguageId: language.foreignLanguageId,
+        nonactive: false
+      });
+    }
+  }
+
+  // make selected languages active
+  await models.Language.update({
+    nonactive: false
+  }, {
+    where: {
+      systemType: 'cf',
+      id: {
+        $in: oldLangs
+      }
+    }
+  });
+
+  // create new languages
+  await models.Language.bulkCreate( newLangs );
+
+  // clear languages cache
+  languagesCache.delete( 'cf' );
+
+  let message = `Программные языки обновлены. Всего активных языков: {0}. Добавлено новых: {1}. Оставлено старых: {2}. В архиве: {3}.`;
+  socket.emitScannerConsoleLog(
+    buildMessage(
+      message.replace('{0}', languages.length)
+        .replace('{1}', newLangs.length)
+        .replace('{2}', oldLangs.length)
+        .replace('{3}', savedLanguages.length - oldLangs.length)
+    )
+  );
+
+  systemAccount.free();
 }
 
 export async function retrieveCfProblem(taskMeta, deepLevel = 0) {
