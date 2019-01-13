@@ -8,3 +8,4 @@ tmp
 config.development.json
 /cdn
 /uploads/*
+app/uploads/*

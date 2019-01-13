@@ -108,11 +108,6 @@ export function isAuth(systemAccount) {
     }
     let $ = cheerio.load(response.body);
     let accountLink = $(`#header a[href="/profile/${systemAccount.instance.systemLogin}"]`);
-    /*
-    var path = require( 'path' );
-    var fs = require( 'fs' );
-    const pathTo = path.join(__dirname, "/test.html");
-    fs.writeFileSync(pathTo, $.html());*/
 
     return accountLink.length > 0;
   });
