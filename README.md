@@ -1,6 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/IPRIT/misis-acm-server.png?label=ready&title=Ready)](https://waffle.io/IPRIT/misis-acm-server)
 # MISIS ACM Server
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![NPM](https://img.shields.io/badge/npm-2.9.0-green.svg)](http://npmjs.com)
 
 ----------
 
