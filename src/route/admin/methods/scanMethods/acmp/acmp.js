@@ -7,7 +7,7 @@ import cheerio from 'cheerio';
 import fetch from 'fetch';
 
 export const SYSTEM_TYPE = 'acmp';
-export const ACM_PROTOCOL = 'http';
+export const ACM_PROTOCOL = 'https';
 export const ACM_HOST = 'acmp.ru';
 export const ACM_PROBLEMSET_PATH = '/index.asp'; // ?main=tasks&page=0
 export const ACM_PROBLEM_PATH = '/index.asp'; // ?main=task&id_task=1

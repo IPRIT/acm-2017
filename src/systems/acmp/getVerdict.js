@@ -3,7 +3,7 @@ import request from 'request-promise';
 import { extractParam, ensureNumber } from "../../utils/utils";
 import Promise from 'bluebird';
 
-const ACM_PROTOCOL = 'http';
+const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acmp.ru';
 
 

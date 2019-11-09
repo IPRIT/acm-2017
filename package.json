@@ -34,7 +34,8 @@
     "grunt-newer": "^1.1.0",
     "grunt-sass": "^2.0.0",
     "morgan": "^1.7.0",
-    "node-sass": "^4.7.2"
+    "node-sass": "^4.7.2",
+    "pm2": "^4.1.2"
   },
   "dependencies": {
     "@reactivex/rxjs": "^5.4.2",
@@ -69,12 +70,11 @@
     "mysql": "^2.11.1",
     "node.extend": "1.1.5",
     "orm": "2.1.30",
-    "pm2": "1.0.0",
     "promise": "7.0.4",
     "pug": "^2.0.0-beta6",
     "querystring": "0.2.0",
     "request": "^2.74.0",
-    "request-promise": "^4.1.1",
+    "request-promise": "4.1.1",
     "require-json5": "^1.0.2",
     "restler": "3.4.0",
     "rxjs": "^5.4.2",

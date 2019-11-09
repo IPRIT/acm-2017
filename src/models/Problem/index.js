@@ -72,7 +72,7 @@ let Problem = sequelize.define('Problem', {
         return getEndpoint(ACMP_HOST, ACMP_PROBLEM_PATH, {}, {
           main: 'task',
           id_task: problemIdentifier
-        });
+        }, 'https');
       }
     }
   }

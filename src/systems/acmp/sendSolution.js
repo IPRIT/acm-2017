@@ -7,7 +7,7 @@ import * as accountsMethods from './account';
 import Promise from 'bluebird';
 import { ensureNumber } from "../../utils/utils";
 
-const ACM_PROTOCOL = 'http';
+const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acmp.ru';
 const ACM_SOLUTIONS_POST_ENDPOINT = '/';
 

@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import request from 'request-promise';
 import Promise from 'bluebird';
 
-const ACM_PROTOCOL = 'http';
+const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acmp.ru';
 
 export async function getCompilationError(systemAccount, receivedRow) {

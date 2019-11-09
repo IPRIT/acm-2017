@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import request from 'request-promise';
 import Promise from 'bluebird';
 
-const ACM_PROTOCOL = 'http';
+const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acmp.ru';
 const ACM_AUTH_ENDPOINT = '/index.asp';
 
