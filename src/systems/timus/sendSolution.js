@@ -4,7 +4,7 @@ import { extractParam } from "../../utils/utils";
 import * as models from '../../models';
 import Promise from 'bluebird';
 
-const ACM_PROTOCOL = 'http';
+const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acm.timus.ru';
 const ACM_SOLUTIONS_POST_ENDPOINT = '/submit.aspx?space=1';
 
