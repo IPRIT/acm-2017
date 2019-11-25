@@ -1,7 +1,7 @@
 import request from 'request-promise';
 import Promise from 'bluebird';
 
-const ACM_PROTOCOL = 'http';
+const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acm.timus.ru';
 const ACM_ENDPOINT = '/auth.aspx';
 
