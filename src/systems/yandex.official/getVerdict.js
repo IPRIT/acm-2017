@@ -16,6 +16,7 @@ const terminalStatesMapping = {
   'TL': 6,
   'ML': 7,
   'IL': 8,
+  'Crash': 19,
   [testingFailedVerdictName]: 19
 };
 
