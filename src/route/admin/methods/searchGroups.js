@@ -31,7 +31,12 @@ export async function searchGroups(params) {
     : user.countGroups.bind(user);
 
   return findFn({
-    where, limit, offset
+    where, limit, offset,
+    include: [{
+      model: models.User,
+      association: models.Group.associations.Author
+    }],
+    order: [['id', 'DESC']]
   }).map(async group => {
     return Object.assign(group.get({ plain: true }), { population: await group.countUsers() });
   }).then(async groups => {

@@ -1,5 +1,5 @@
 import * as models from "../models";
-import * as userMethods from '../../src/route/user/methods';
+import * as userMethods from '../route/user/methods';
 
 export class RatingsStore {
 

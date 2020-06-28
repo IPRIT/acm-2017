@@ -214,9 +214,7 @@ angular.module('Qemy.controllers.contest-item', [
       
       $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
         var body = $("html, body");
-        body.stop().animate({ scrollTop: 0 }, '200', 'swing', function() {
-          console.log("Finished animating");
-        });
+        body.stop().animate({ scrollTop: 0 }, '200', 'swing');
       })
     }
   ])

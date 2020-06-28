@@ -1,4 +1,5 @@
-md-card.groups__item(flex-gt-lg='30', flex='45', ng-repeat='group in groups')
+md-card.groups__item(flex-gt-lg='30', flex='45', ng-repeat='group in groups', style='position: relative;')
+   a(style='position: absolute; z-index: 1; top: 0; bottom: 0; left: 0; right: 0;', ui-sref='^.edit({groupId: group.id})')
    md-card-title
       md-card-title-text
          span.md-headline(ng-bind='group.name')
@@ -7,11 +8,7 @@ md-card.groups__item(flex-gt-lg='30', flex='45', ng-repeat='group in groups')
       md-card-title-media
          div.md-media-sm.card-media(ng-attr-style='background-color: {{group.color}}')
 
-   md-card-actions(layout="row", layout-align='end center')
-      // md-button.md-icon-button(ng-click="copyLink(group)")
-         md-icon(md-svg-icon="img/icons/ic_link_24px.svg")
-      md-button.md-icon-button.md-primary(ui-sref='^.edit({groupId: group.id})')
-         md-icon(md-svg-icon="img/icons/ic_remove_red_eye_24px.svg")
-      md-button.md-icon-button.md-accent(ng-click='deleteGroup($event, group)')
-         md-icon(md-svg-icon="img/icons/ic_delete_24px.svg")
-
+   md-card-actions(layout="row", layout-align='end center', style='position: relative; z-index: 2')
+      md-button.md-accent(ng-click='deleteGroup($event, group)', ng-if='user.isAdmin || user.id === group.authorId', style='margin: 0')
+         md-icon(md-svg-icon="img/icons/ic_delete_24px.svg", style='margin-right: 8px; position: relative; top: -1px;')
+         | Удалить

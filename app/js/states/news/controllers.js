@@ -56,6 +56,7 @@ angular.module('Qemy.controllers.news', [])
           safeApply( $scope );
         }).catch(error => {
           ErrorService.show( error );
+          console.log(error);
         });
       }
 
@@ -67,6 +68,7 @@ angular.module('Qemy.controllers.news', [])
 
       function wrapItems (items) {
         return items.map(item => {
+          console.log();
           const createdAt = new Date( item.createdAt );
           const monthIndex = createdAt.getMonth();
           const day = zeroPad( createdAt.getDate() );
@@ -92,7 +94,7 @@ angular.module('Qemy.controllers.news', [])
       }
 
       function zeroPad (value) {
-        return value.toString().padLeft( 2, '0' )
+        return value.toString().padStart( 2, '0' )
       }
     }
   ])
@@ -176,7 +178,7 @@ angular.module('Qemy.controllers.news', [])
       }
 
       function zeroPad (value) {
-        return value.toString().padLeft( 2, '0' )
+        return value.toString().padStart( 2, '0' )
       }
     }
   ])

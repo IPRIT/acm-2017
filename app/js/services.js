@@ -167,6 +167,15 @@ angular.module('Qemy.services', [
         return data.data;
       });
     }
+
+    function getRegisterGroupInfo(params) {
+      return $http({
+        method: 'get',
+        url: '/api/admin/groups/links/' + params.groupKey
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       getCurrentUser: getCurrentUser,
@@ -176,7 +185,8 @@ angular.module('Qemy.services', [
       getRatingTable: getRatingTable,
       getUserById: getUserById,
       getSolutions: getSolutions,
-      getUserToken
+      getUserToken,
+      getRegisterGroupInfo,
     }
   }])
   

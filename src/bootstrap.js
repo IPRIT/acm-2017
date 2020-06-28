@@ -1,9 +1,8 @@
-/**
- * Module dependencies.
- */
+import '@babel/polyfill';
+
+import http from 'http';
 
 import app from './app';
-import http from 'http';
 import * as sockets from './socket';
 import { config } from './utils';
 

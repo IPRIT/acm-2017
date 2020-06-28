@@ -41,14 +41,29 @@ angular.module('Qemy.controllers.auth', [
       });
     }
   ])
-  .controller('AuthRegisterFormController', ['$scope', '_', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
-    function($scope, _, $rootScope, $http, $state, $mdDialog, ErrorService) {
+  .controller('AuthRegisterFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
+    function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Регистрация | ' + _('app_name')
       });
 
+      const groupKey = extractQueryStringParam('groupKey');
+
+      $scope.user = {};
+      $scope.isLoading = true;
+      UserManager.getRegisterGroupInfo({ groupKey }).then(group => {
+        $scope.group = group;
+        return UserManager.getCurrentUser();
+      }).then(user => {
+        $scope.user = user;
+
+        console.log($scope.group, $scope.user);
+      }).catch(err => {}).finally(() => {
+        $scope.isLoading = false;
+      });
+
       $scope.form = {
-        groupKey: extractQueryStringParam('groupKey')
+        groupKey
       };
       $scope.registered = false;
 

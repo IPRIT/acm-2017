@@ -1,4 +1,3 @@
-import cheerio from 'cheerio';
 import request from 'request-promise';
 import Promise from 'bluebird';
 import { config, extractParam } from '../../utils';

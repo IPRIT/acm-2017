@@ -6,7 +6,7 @@
 import { HttpError } from './utils/http-error';
 global.HttpError = HttpError;
 
-let favicon = require('serve-favicon');
+const favicon = require('serve-favicon');
 
 import express from 'express';
 import morgan from 'morgan';
@@ -22,7 +22,7 @@ import polygonRouter from './systems/polygon';
 let app = express();
 
 // view engine setup
-app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public

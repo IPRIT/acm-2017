@@ -1,16 +1,16 @@
+import Promise from 'bluebird';
 import cheerio from 'cheerio';
 import request from 'request-promise';
-import * as models from '../../models';
-import * as accountsMethods from './account';
-import Promise from 'bluebird';
 import stringToStream from 'string-to-stream';
-import { ensureNumber, config, getSymbolIndex } from "../../utils";
+import * as models from '../../models';
+import { login, parseProblemIdentifier } from "./account";
+import { getSymbolIndex } from "../../utils";
 
 const ACM_SOLUTIONS_ENDPOINT = '/cgi-bin/new-judge';
 
 export async function sendSolution(solution, systemAccount) {
   return Promise.resolve().then(async () => {
-    await accountsMethods.login(solution, systemAccount).delay(1000);
+    await login(solution, systemAccount).delay(1000);
     
     let endpoint = getEndpoint(ACM_SOLUTIONS_ENDPOINT);
     let { sid, jar } = systemAccount;
@@ -48,7 +48,7 @@ export async function sendSolution(solution, systemAccount) {
     }
     
     let $ = cheerio.load(response.body);
-    let [ contestId, problemNumber ] = accountsMethods.parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
+    let [ contestId, problemNumber ] = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
     let rows = [];
     $('table.b1').find('tr').slice(1).each((index, row) => {
       let $row = $(row);
@@ -101,7 +101,7 @@ function getEndpoint(pathTo = '') {
 
 function buildPostForm(solution, systemAccount) {
   let { sid } = systemAccount;
-  let [ contestId, problemNumber ] = accountsMethods.parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
+  let [ contestId, problemNumber ] = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
   return {
     'SID': sid,
     'problem': problemNumber,

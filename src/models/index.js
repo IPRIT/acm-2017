@@ -145,7 +145,7 @@ Solution.belongsTo(Language, { foreignKey: 'languageId', targetKey: 'id' });
 
 Solution.hasOne(Solution, { foreignKey: 'duplicatedFromId', targetKey: 'id', as: 'DuplicatedSolution' });
 
-User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
+User.hasMany(Contest, { foreignKey: 'authorId', targetKey: 'id' });
 Contest.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'Author' });
 
 Contest.hasMany(RatingChange, { foreignKey: 'contestId', targetKey: 'id' });
@@ -159,6 +159,9 @@ RatingChange.belongsTo(Group, { foreignKey: 'groupId', targetKey: 'id' });
 
 Group.hasMany(RegisterLink, { foreignKey: 'groupId', targetKey: 'id' });
 RegisterLink.belongsTo(Group, { foreignKey: 'groupId', targetKey: 'id' });
+
+User.hasMany(Group, { foreignKey: 'authorId', targetKey: 'id', as: 'AuthoredGroup' });
+Group.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'GroupCreator' });
 
 export {
   User, AuthToken, Group, Verdict,

@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
 import * as models from '../../models';
-import * as accountsMethods from './account';
 
 export const systemType = 'ejudge';
 export let systemAccounts = [];
@@ -12,14 +11,16 @@ const accountTimeoutMs = 10 * 1000;
 function _initialize() {
   isInitializing = true;
   return Promise.resolve().then(async () => {
-    systemAccounts = await models.SystemAccount.findAll({
-      where: {
-        systemType,
-        isEnabled: true
-      }
-    }).map(account => {
-      return _wrapAccount(account);
-    });
+    systemAccounts.push(
+      ...await models.SystemAccount.findAll({
+        where: {
+          systemType,
+          isEnabled: true
+        }
+      }).map(account => {
+        return _wrapAccount(account);
+      })
+    );
     isInitialized = true;
     isInitializing = false;
     console.log('[System report] Ejudge accounts have been initialized');

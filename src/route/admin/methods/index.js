@@ -42,5 +42,6 @@ export * from './yandexOfficialImportById';
 export * from './getSystemStatus';
 export * from './createGroupRegisterLink';
 export * from './getGroupRegisterLinks';
+export * from './getGroupByRegisterKey';
 export * from './revokeGroupRegisterLink';
 export * from './importAcmpProblem';

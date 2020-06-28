@@ -6,7 +6,7 @@ div.contest.contest-messages
 
       div
         form
-          div(ng-if="user.isSupervisor")
+          div(ng-if="user.isAdmin")
             md-checkbox.md-primary.md-align-top-left(ng-model='form.asAdmin', aria-label='Practice checkbox') Отправить от имени администратора
               br
               span(ng-switch='form.asAdmin')
@@ -21,7 +21,7 @@ div.contest.contest-messages
               textarea.textarea.send-message__textarea-element(ng-model='form.message')
 
           div(style='padding: 4px; margin-top: -30px;').
-            Воспользуйтесь <a href="https://stackedit.io/editor">онлайн Markdown-редактором</a> для оформления сообщения<br><br>
+            Воспользуйтесь <a target="_blank" href="https://stackedit.io/editor">онлайн Markdown-редактором</a> для оформления сообщения<br><br>
 
 
           div

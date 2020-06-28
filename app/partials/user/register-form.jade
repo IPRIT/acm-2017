@@ -5,13 +5,17 @@ div
       div.register-form__success-overlay(ng-if='registered')
         div.register-form__success-icon
           md-icon(md-svg-icon="img/icons/ic_done_24px.svg")
-        div.register-form__success-text Вы успешно зарегистрировались
+        div.register-form__success-text(layout='column', layout-align='center center')
+          span Вы успешно зарегистрировались
+          div(style='margin-top: 12px;')
+            md-button.md-primary.md-raised(ui-sref='contests.list') Продолжить
+
 
       div.contest-creation
-        div.contests-title(style='padding: 16px 0px 20px;') Регистрация
+        div.contests-title(style='padding: 16px 0px 20px;') Регистрация в группу «{{group.name}}»
 
         div.contest-creation__inner
-          form.contest-creation__form(name='registerForm')
+          form.contest-creation__form(name='registerForm', ng-if='!isLoading && (!user || !user.id)')
 
             div.contest-creation__row
               div.contest-creation__row-title Фио пользователя
@@ -47,3 +51,8 @@ div
 
             div.contest-creation__row.contest-creation__row_type_create
               md-button.md-primary.md-raised(ng-disabled='!registerForm.$valid', aria-label='Send', ng-click='submitForm()') Зарегистрироваться
+
+          form.contest-creation__form(name='registerForm', ng-if='!isLoading && user && user.id')
+            div(style='padding: 24px; border: 1px solid rgba(0,0,0,.1); border-radius: 4px;', layout='column', layout-align='center center')
+              div(style='margin-bottom: 12px; text-align: center;') Вступить в группу как <br><b>{{user.fullName}}</b>
+              md-button.md-primary.md-raised(aria-label='Send', ng-click='submitForm()') Вступить

@@ -11,12 +11,14 @@ const accountTimeoutMs = 15 * 1000;
 function _initialize() {
   isInitializing = true;
   return Promise.resolve().then(async () => {
-    systemAccounts = await models.SystemAccount.findAll({
-      where: {
-        systemType,
-        isEnabled: true
-      }
-    }).map(account => _wrapAccount(account));
+    systemAccounts.push(
+      ...await models.SystemAccount.findAll({
+        where: {
+          systemType,
+          isEnabled: true
+        }
+      }).map(account => _wrapAccount(account))
+    );
     isInitialized = true;
     isInitializing = false;
     console.log('[System report] Timus accounts have been initialized');

@@ -1,10 +1,10 @@
+import Promise from 'bluebird';
 import cheerio from 'cheerio';
 import request from 'request-promise';
 import * as models from '../../models';
-import * as accountsMethods from './account';
-import Promise from 'bluebird';
-import * as api from './api';
 import { parseProblemIdentifier } from "../../utils/utils";
+import { isAuth, login } from "./account";
+import { getUserStatus } from "./api";
 import { $getPage } from "./cf";
 
 const ACM_PROTOCOL = 'http';
@@ -18,7 +18,7 @@ export async function sendSolution(solution, systemAccount) {
       console.log(`[System report] Codeforces account [${systemAccount.instance.systemLogin}] verified.`);
     } catch (err) {
       console.log(`[System report] Refreshing Codeforces account [${systemAccount.instance.systemLogin}]...`);
-      await accountsMethods.login( systemAccount );
+      await login( systemAccount );
     }
     
     let { csrfToken, jar } = systemAccount;
@@ -109,7 +109,7 @@ function buildSolutionForm(solution, systemAccount) {
 }
 
 export async function authVerify(systemAccount) {
-  let isAuth = await accountsMethods.isAuth( systemAccount );
+  let isAuth = await isAuth( systemAccount );
   if (!isAuth) {
     throw new Error('Account is not logged in');
   }
@@ -134,7 +134,7 @@ async function getContextRow(solution, systemAccount) {
     await Promise.delay(1000 + attemptsNumber * 500);
     attemptsNumber++;
     console.log(`Attempt number: ${attemptsNumber}`);
-    userStatus = await api.getUserStatus({
+    userStatus = await getUserStatus({
       handle: systemAccount.instance.systemLogin,
       count: 1,
       from: 1

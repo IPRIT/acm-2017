@@ -1,7 +1,7 @@
-import * as models from '../../../../../models';
-import Log from 'log4js';
-import { extractAllParams } from '../../../../../utils';
 import Promise from 'bluebird';
+import Log from 'log4js';
+import * as models from '../../../../../models';
+import { extractAllParams } from '../../../../../utils';
 
 const log = Log.getLogger('Form Register in Group');
 
@@ -20,7 +20,8 @@ async function signUpInGroup(params) {
     firstName,
     lastName,
     password,
-    groupKey
+    groupKey,
+    user
   } = params;
 
   let groupIds = [];
@@ -39,23 +40,37 @@ async function signUpInGroup(params) {
 
   groupIds.push(registerLink.groupId);
 
-  let user = await models.User.findOne({
-    where: {
-      username
-    }
-  });
+  let registeredUser = user;
 
-  if (user) {
-    throw new HttpError('Пользователь с таким логином уже существует')
+  if (!registeredUser) {
+    registeredUser = await models.User.findOne({
+      where: {
+        username
+      }
+    });
+
+    if (user) {
+      throw new HttpError('Пользователь с таким логином уже существует')
+    }
+
+    registeredUser = await models.User.create({
+      username,
+      firstName,
+      lastName,
+      password
+    });
   }
 
-  user = await models.User.create({
-    username,
-    firstName,
-    lastName,
-    password
-  });
-  await user.setGroups(groupIds);
+  let groups = [];
+  if (user) {
+    groups = await user.getGroups();
+
+    groupIds.push(
+      ...groups.map(group => group.id)
+    );
+  }
+
+  await registeredUser.setGroups(groupIds);
   await registerLink.increment('linkActivatedTimes');
 
   return user;

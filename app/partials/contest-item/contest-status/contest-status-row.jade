@@ -27,7 +27,7 @@ div.sent-list__item.animation(ng-repeat='sent in solutions track by sent.id',
       md-tooltip(ng-if="sent.language.nonactive" md-direction="bottom")
         span Язык больше не поддерживается проверяющей системой
       span {{::sent.language.name}}
-  div.sent-list__cell.sent-list__verdict(style='min-width: 126px;', ng-switch='!sent.verdictId || sent.verdictId === -1')
+  div.sent-list__cell.sent-list__verdict(style='min-width: 129px;', ng-switch='!sent.verdictId || sent.verdictId === -1')
     span.sent-list__cell-loading(ng-switch-when='true')
       div.sent-list__loading(style='display: inline-block;')
         div.content-spin__layer

@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import request from 'request-promise';
-import { extractParam, ensureNumber } from "../../utils/utils";
 import Promise from 'bluebird';
+import { ensureNumber, extractParam } from "../../utils";
 
 const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acmp.ru';

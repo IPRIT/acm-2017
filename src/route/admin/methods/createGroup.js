@@ -1,26 +1,25 @@
-import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
-import * as contests from '../../contest/methods';
+import { extractAllParams } from "../../../utils";
 
 export function createGroupRequest(req, res, next) {
-  let params = Object.assign(
-    Object.assign(req.params, req.body), {
-      user: req.user,
-    }
-  );
   return Promise.resolve().then(() => {
-    return createGroup(params);
+    return createGroup(extractAllParams(req));
   }).then(result => res.json(result)).catch(next);
 }
 
 export async function createGroup(params) {
-  let {
-    name, color,
-    userIds
+  const {
+    name,
+    color,
+    userIds,
+    user
   } = params;
+
+  if (user.isModerator) {
+    userIds.push(user.id);
+  }
   
-  return models.Group.create({
-    name, color
-  }).then(group => group.setUsers(userIds).then(() => group));
+  return user.createAuthoredGroup({ name, color }).then(group => {
+    return group.setUsers(userIds).then(() => group);
+  });
 }

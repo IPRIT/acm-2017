@@ -43,31 +43,30 @@ angular.module('Qemy.controllers.admin', [])
       $scope.menu = [{
         uiSref: 'admin.index',
         name: 'Контесты',
-        group: 'contest'
+        group: 'admin.index',
       }, {
         uiSref: 'admin.users-list',
         name: 'Пользователи',
         group: 'admin.users-list'
       }, {
+        uiSref: 'admin.groups.index',
+        name: 'Группы пользователей',
+        group: 'admin.groups'
+      }, {
         uiSref: 'admin.problems',
         name: 'Задачи',
-        group: 'admin.problems'
+        group: 'admin.problems',
+        onlyFor: 4096
       }, {
         uiSref: 'admin.server',
         name: 'Сервер',
-        group: 'admin.server'
+        group: 'admin.server',
+        onlyFor: 4096
       }, {
         uiSref: 'admin.contests-rating.create.index',
         name: 'Рейтинги',
         group: 'admin.contests-rating'
-      }, {
-        uiSref: 'admin.groups.index',
-        name: 'Группы пользователей',
-        group: 'admin.groups'
-      }/*, {
-       uiSref: 'admin.index',
-       name: 'Аккаунты в тестирующих системах'
-       }*/];
+      }];
 
       $rootScope.$state = $state;
     }
@@ -2428,7 +2427,7 @@ angular.module('Qemy.controllers.admin', [])
         return AdminManager.createGroupRegisterLink({ groupId: group.id }).then(result => {
           $rootScope.$broadcast('data loaded');
           let link = `${location.protocol}//${location.host}/auth/register?groupKey=${result.registerKey}`;
-          prompt('Скопируйте ссылку на регистрацию в группу:', link);
+          copyTextToClipboard(link, () => alert('Ссылка скопирована!'));
         }).catch(error => {
           ErrorService.show(error);
         });
@@ -2623,7 +2622,7 @@ angular.module('Qemy.controllers.admin', [])
 
       $scope.copyLink = link => {
         const text = `${location.protocol}//${location.host}/auth/register?groupKey=${link && link.registerKey}`;
-        prompt('Скопируйте ссылку на регистрацию в группу:', text);
+        copyTextToClipboard(text, () => alert('Ссылка скопирована!'))
       };
 
       $scope.revokeLink = link => {

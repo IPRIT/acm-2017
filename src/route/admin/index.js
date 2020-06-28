@@ -13,6 +13,7 @@ router.get('/groups/:groupId', [ userRetriever, rightsAllocator('moderator') ], 
 router.post('/groups/:groupId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.updateGroupRequest);
 router.post('/groups/:groupId/links', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createGroupRegisterLinkRequest);
 router.get('/groups/:groupId/links', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getGroupRegisterLinksRequest);
+router.get('/groups/links/:registerKey', [ userRetriever ], adminMethods.getGroupByRegisterKeyRequest);
 router.delete('/groups/:groupId/links/:linkUuid', [ userRetriever, rightsAllocator('moderator') ], adminMethods.revokeGroupRegisterLinkRequest);
 router.delete('/groups/:groupId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.deleteGroupRequest);
 

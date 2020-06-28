@@ -3,7 +3,7 @@ div.group-links(style="width: 100%;")
       md-list-item.md-2-line(ng-repeat="link in links")
          div.md-list-item-text(layout="column")
             p {{ link.registerKey.slice(0, 40) }}...
-            p(style="color: #777; font-weight: normal;") Зарегистрированных: {{ link.linkActivatedTimes }}
+            p(style="color: #777; font-weight: normal;") Количество активаций: {{ link.linkActivatedTimes }}
          md-icon.md-secondary(
             ng-click="copyLink(link)",
             aria-label="Copy link",

@@ -1,10 +1,11 @@
-import * as accountsPool from './accountsPool';
-import { sendSolution, getVerdict, getCompilationError  } from './index';
-import * as models from '../../models';
 import Promise from 'bluebird';
+import * as models from '../../models';
 import * as sockets from '../../socket';
-import filter from "../../utils/filter";
-import { ensureNumber } from "../../utils/utils";
+import { getFreeAccount } from "./accountsPool";
+import { sendSolution } from "./sendSolution";
+import { getVerdict } from "./getVerdict";
+import { getCompilationError } from "./getCompilationError";
+import { ensureNumber } from "../../utils";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 10 * 1000;
@@ -13,7 +14,7 @@ const verdictCheckTimeoutMs = 100;
 const maxAccountWaitingMs = 5 * 60 * 1000;
 
 export async function handle(solution) {
-  let systemAccount = await accountsPool.getFreeAccount();
+  let systemAccount = await getFreeAccount();
   systemAccount.busy();
   
   try {

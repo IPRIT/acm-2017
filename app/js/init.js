@@ -1,4 +1,4 @@
-import "babel-polyfill";
+import "@babel/polyfill";
 
 let httpsInterval = setInterval(() => {
   if (!location.href.includes('https')

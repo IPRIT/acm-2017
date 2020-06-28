@@ -1,11 +1,10 @@
-import { ensureNumber } from "../../utils/utils";
-import * as models from '../../models';
 import Promise from 'bluebird';
-import * as accountsMethods from './account';
 import request from 'request-promise';
 import cheerio from 'cheerio';
+import * as models from '../../models';
 import { getEjudgeSolutionId } from "./sendSolution";
-import { config } from "../../utils";
+import { parseProblemIdentifier } from "./account";
+import { ensureNumber } from "../../utils";
 
 const terminalStatesMapping = {
   'OK': 1,
@@ -69,7 +68,7 @@ function getVerdictId(verdictName) {
 }
 
 async function getContextRow(solution, systemAccount, receivedRow) {
-  let [ contestId, problemNumber ] = accountsMethods.parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
+  let [ contestId, problemNumber ] = parseProblemIdentifier(solution.Problem.foreignProblemIdentifier);
   let { jar, sid } = systemAccount;
   let attemptsNumber = 0, maxAttemptsNumber = 3;
   

@@ -12,16 +12,18 @@ const accountTimeoutMs = 10 * 1000;
 function _initialize() {
   isInitializing = true;
   return Promise.resolve().then(async () => {
-    systemAccounts = await models.SystemAccount.findAll({
-      where: {
-        systemType,
-        isEnabled: true
-      }
-    }).map(account => {
-      return _wrapAccount(account);
-    }).map(account => {
-      return accountsMethods.login(account);
-    });
+    systemAccounts.push(
+      ...await models.SystemAccount.findAll({
+        where: {
+          systemType,
+          isEnabled: true
+        }
+      }).map(account => {
+        return _wrapAccount(account);
+      }).map(account => {
+        return accountsMethods.login(account);
+      })
+    );
     isInitialized = true;
     isInitializing = false;
     console.log('[System report] Yandex accounts have been initialized');

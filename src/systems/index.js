@@ -1,9 +1,19 @@
-export * as timus from './timus';
-export * as acmp from './acmp';
-export * as cf from './cf';
-export * as ejudge from './ejudge';
-export * as yandex from './yandex';
-export * as yandexOfficial from './yandex.official';
-export * as manager from './manager';
-export * as worker from './worker';
-export * from './polygon';
+import * as timus from './timus';
+import * as acmp from './acmp';
+import * as cf from './cf';
+import * as ejudge from './ejudge';
+import * as yandex from './yandex';
+import * as yandexOfficial from './yandex.official';
+import * as manager from './manager';
+import * as worker from './worker';
+
+export {
+  timus,
+  acmp,
+  cf,
+  ejudge,
+  yandex,
+  yandexOfficial,
+  manager,
+  worker
+};

@@ -1,3 +1,9 @@
+const sass = require('node-sass');
+
+const isProduction = process.env.NODE_ENV !== 'development';
+
+console.log('Grunt config:', process.env.NODE_ENV || 'production');
+
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -33,19 +39,21 @@ module.exports = function(grunt) {
     babel: {
       options: {
         sourceMap: true,
-        presets: [ 'env', 'es2015', 'stage-0' ],
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              "useBuiltIns": false,
+            }
+          ]
+        ],
         plugins: [
-          [ "transform-runtime", {
-            "polyfill": true,
-            "regenerator": true
-          }]
+          "@babel/plugin-transform-runtime"
         ]
       },
       dist: {
         files: {
-          'app/prod/js/build.js': [
-            'app/prod/js/build.js'
-          ]
+          'app/prod/js/build.js': 'app/prod/js/build.js'
         }
       }
     },
@@ -54,14 +62,14 @@ module.exports = function(grunt) {
         options: {
           banner: '/*!\n * <%= pkg.name %> \n * v<%= pkg.version %> - ' +
           '<%= grunt.template.today("dd.mm.yyyy") %> \n * Copyright (c) <%= pkg.author %>\n**/',
-          sourceMap: true,
-          sourceMapName: 'app/prod/js/build.prod.min.js.map',
+          sourceMap: !isProduction,
+          sourceMapName: 'app/prod/js/build.js.map',
           compress: {
-            // drop_console: process.env.NODE_ENV !== 'development'
+            drop_console: isProduction
           }
         },
         files: {
-          'app/prod/js/build.prod.min.js': [
+          'app/prod/js/build.js': [
             'app/prod/js/build.js'
           ]
         }
@@ -78,9 +86,10 @@ module.exports = function(grunt) {
     },
     sass: {
       options: {
-        sourcemap: 'auto',
+        implementation: sass,
+        sourcemap: isProduction ? 'inline' : 'auto',
         noCache: true,
-        outputStyle: 'compressed'
+        style: isProduction ? 'compressed' : 'nested'
       },
       dist: {
         files: {
@@ -101,7 +110,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'app/prod/css/style.prod.css': [
+          'app/prod/css/style.css': [
             'app/prod/css/style.css'
           ]
         }
@@ -128,7 +137,7 @@ module.exports = function(grunt) {
     'concat', 'babel', 'browserify', 'uglify', 'sass', 'autoprefixer',
   ]);
   grunt.registerTask('dev', [
-    'concat', 'babel', 'browserify', 'uglify', 'sass', 'watch'
+    'concat', 'babel', 'browserify', 'sass', 'watch'
   ]);
 
   grunt.event.on('watch', function(action, filepath, target) {

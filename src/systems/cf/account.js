@@ -1,9 +1,7 @@
 import cheerio from 'cheerio';
 import request from 'request-promise';
 import Promise from 'bluebird';
-import util from 'util';
 import { Error as ErrorReporter } from '../../models';
-import { debugPage } from "./sendSolution";
 
 const ACM_PROTOCOL = 'http';
 const ACM_HOST = 'codeforces.com';

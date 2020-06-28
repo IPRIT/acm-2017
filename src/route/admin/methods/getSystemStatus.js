@@ -1,12 +1,9 @@
 import { extractAllParams } from '../../../utils';
-import * as models from "../../../models";
 import Promise from 'bluebird';
-import * as timus from '../../../systems/timus';
-import * as cf from '../../../systems/cf';
-import * as acmp from '../../../systems/acmp';
-import * as ejudge from '../../../systems/ejudge';
-import * as yandex from '../../../systems/yandex';
-import * as yandexOfficial from '../../../systems/yandex.official';
+import {
+  timus, cf, acmp,
+  ejudge, yandex, yandexOfficial
+} from '../../../systems';
 
 const systems = {
   timus, cf, acmp,
@@ -25,10 +22,13 @@ export async function getSystemStatus(params) {
   let {
   } = params;
 
-  return Promise.resolve(Object.keys(systems)).map(async type => {
+  return Promise.resolve(Object.keys(systems)).map(async systemType => {
+    if (!systemType) {
+      return {};
+    }
     return {
-      type,
-      status: await fetchSystemStatus(type)
+      type: systemType,
+      status: await fetchSystemStatus(systemType)
     }
   });
 }
@@ -36,16 +36,18 @@ export async function getSystemStatus(params) {
 async function fetchSystemStatus( systemType ) {
   let system = systems[ systemType ];
   let freeAccounts = await system.getFreeAccounts();
+  const systemAccounts = system.systemAccounts;
+
   return {
-    allAccounts: system.systemAccounts,
-    allAccountsNumber: system.systemAccounts.length,
+    allAccounts: systemAccounts,
+    allAccountsNumber: systemAccounts.length,
     freeAccounts,
     freeAccountsNumber: freeAccounts.length,
-    busyAccounts: system.systemAccounts.filter(account => {
+    busyAccounts: systemAccounts.filter(account => {
       return !freeAccounts.some(freeAccount => {
         return freeAccount.instance.id === account.instance.id;
       })
     }),
-    busyAccountsNumber: system.systemAccounts.length - freeAccounts.length
+    busyAccountsNumber: systemAccounts.length - freeAccounts.length
   }
 }

@@ -249,8 +249,7 @@ export class Row extends AbstractRow {
    * @return {boolean}
    */
   canView(user) {
-    return (!this.isAdminRow || user.isSupervisor)
-      && (this.user.id !== 1 || user.id === 1);
+    return !this.isAdminRow || user.isSupervisor;
   }
 
   /**

@@ -29,7 +29,7 @@ ng-class='{"sent-list__success": solution.verdictId === 1, \
       md-tooltip(ng-if="solution.language.nonactive" md-direction="bottom")
         span Язык больше не поддерживается проверяющей системой
       span {{::solution.language.name}}
-  div.sent-list__cell.sent-list__verdict(style='min-width: 126px;', ng-switch='!solution.verdictId || solution.verdictId === -1')
+  div.sent-list__cell.sent-list__verdict(style='min-width: 129px;', ng-switch='!solution.verdictId || solution.verdictId === -1')
     span.sent-list__cell-loading(ng-switch-when='true')
       div.sent-list__loading(style='display: inline-block;')
         div.content-spin__layer

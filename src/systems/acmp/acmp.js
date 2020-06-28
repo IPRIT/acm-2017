@@ -1,10 +1,12 @@
-import * as accountsPool from './accountsPool';
-import { sendSolution, getVerdict, getCompilationError  } from './index';
-import * as accountMethods from './account';
 import Promise from 'bluebird';
 import * as sockets from '../../socket';
 import filter from "../../utils/filter";
 import * as models from '../../models';
+import { getFreeAccount } from "./accountsPool";
+import { sendSolution } from "./sendSolution";
+import { getVerdict } from "./getVerdict";
+import { getCompilationError } from "./getCompilationError";
+import { login } from "./account";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 15 * 1000;
@@ -14,7 +16,7 @@ const verdictCheckTimeoutMs = 100;
 const maxAccountWaitingMs = 60 * 1000;
 
 export async function handle(solution) {
-  let systemAccount = await accountsPool.getFreeAccount();
+  let systemAccount = await getFreeAccount();
   systemAccount.busy();
   
   try {
@@ -50,7 +52,7 @@ export async function handle(solution) {
 
 async function handleError(error, solution, systemAccount) {
   console.log(`[System report] Refreshing ACMP account [${systemAccount.instance.systemLogin}]...`);
-  await accountMethods.login(systemAccount);
+  await login(systemAccount);
   await Promise.resolve().delay(30 * 1000);
   
   systemAccount.free();

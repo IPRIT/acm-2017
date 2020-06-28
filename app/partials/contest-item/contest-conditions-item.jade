@@ -8,7 +8,7 @@ div.contest
             md-icon(md-svg-src='/img/icons/ic_chevron_right_48px.svg')
           div.task__title-index
             span(ng-bind='condition.internalSymbolIndex + ". " + condition.title + ""')
-            md-button.md-icon-button(style='margin-left: 5px; top: -2px; position: relative;', ui-sref='problems.item({problemId: condition.id})')
+            md-button.md-icon-button(ng-if='user.isSupervisor', style='margin-left: 5px; top: -2px; position: relative;', ui-sref='problems.item({problemId: condition.id})')
               md-icon(md-svg-src='/img/icons/ic_history_48px.svg')
               md-tooltip Версии условия
 

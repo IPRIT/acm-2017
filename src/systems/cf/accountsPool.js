@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import * as models from '../../models';
-import * as accountsMethods from './account';
+import { login } from "./account";
 
 export const systemType = 'cf';
 export let systemAccounts = [];
@@ -12,14 +12,16 @@ const accountTimeoutMs = 10 * 1000;
 function _initialize() {
   isInitializing = true;
   return Promise.resolve().then(async () => {
-    systemAccounts = await models.SystemAccount.findAll({
-      where: {
-        systemType,
-        isEnabled: true
-      }
-    }).map(account => {
-      return _wrapAccount(account);
-    });
+    systemAccounts.push(
+      ...await models.SystemAccount.findAll({
+        where: {
+          systemType,
+          isEnabled: true
+        }
+      }).map(account => {
+        return _wrapAccount(account);
+      })
+    );
     let { failed, success } = await tryLogin(systemAccounts);
     if (success.length > 0) {
       isInitialized = true;
@@ -89,7 +91,7 @@ export async function tryLogin( accounts ) {
   };
   let promises = [];
   for (let account of accounts) {
-    let loginPromise = accountsMethods.login(account).then(account => {
+    let loginPromise = login(account).then(account => {
       result.success.push( account );
     }).catch(() => {
       result.failed.push( account );

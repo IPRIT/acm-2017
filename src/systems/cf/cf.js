@@ -1,12 +1,14 @@
 import Promise from 'bluebird';
-import * as accountsPool from './accountsPool';
 import * as models from '../../models';
 import * as sockets from '../../socket';
-import * as accountMethods from './account';
 import request from 'request-promise';
 import cheerio from 'cheerio';
-import { sendSolution, getVerdict, getCompilationError  } from './index';
 import { appendWatermark, filterEntity as filter } from "../../utils";
+import { sendSolution } from "./sendSolution";
+import { getVerdict } from "./getVerdict";
+import { getCompilationError } from "./getCompilationError";
+import { getFreeAccount } from "./accountsPool";
+import { isAuth, login } from "./account";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 10 * 1000;
@@ -18,7 +20,7 @@ const verdictCheckTimeoutMs = 100;
 const maxAccountWaitingMs = 3 * 60 * 1000;
 
 export async function handle(solution) {
-  let systemAccount = await accountsPool.getFreeAccount();
+  let systemAccount = await getFreeAccount();
   systemAccount.busy();
   
   try {
@@ -53,10 +55,10 @@ export async function handle(solution) {
 }
 
 async function handleError(error, solution, systemAccount) {
-  let isAuth = await accountMethods.isAuth(systemAccount);
+  let isAuth = await isAuth(systemAccount);
   if (!isAuth) {
     console.log(`[System report] Refreshing Codeforces account [${systemAccount.instance.systemLogin}]...`);
-    await accountMethods.login(systemAccount);
+    await login(systemAccount);
   }
   Promise.delay(10 * 1000).then(_ => systemAccount.free());
   

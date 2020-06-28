@@ -1,10 +1,8 @@
-import { ensureNumber } from "../../utils/utils";
-import * as models from '../../models';
 import Promise from 'bluebird';
-import { parseProblemIdentifier } from "../../utils/utils";
-import * as api from './api';
-import * as cf from "./cf";
-import { capitalize } from "../../utils/utils";
+import { ensureNumber, capitalize, parseProblemIdentifier } from "../../utils/utils";
+import * as models from '../../models';
+import { getUserStatus } from "./api";
+import { $getPage } from "./cf";
 
 const terminalStatesMapping = {
   'OK': 1,
@@ -61,7 +59,7 @@ async function getContextRow(solution, systemAccount, receivedRow) {
   while ((!userStatus || !found) && attemptsNumber < maxAttemptsNumber) {
     await Promise.delay(1000 + attemptsNumber * 500);
     attemptsNumber++;
-    userStatus = await api.getUserStatus({
+    userStatus = await getUserStatus({
       handle: systemAccount.instance.systemLogin,
       count: 1,
       from: 1
@@ -96,7 +94,7 @@ async function getContextRow(solution, systemAccount, receivedRow) {
 
 export async function getTestNumber(systemAccount, receivedRow) {
   let endpoint = `http://codeforces.com/submissions/${systemAccount.instance.systemLogin}`;
-  let $ = await cf.$getPage(endpoint, systemAccount);
+  let $ = await $getPage(endpoint, systemAccount);
   let $row = $(`[data-submission-id="${receivedRow.solutionId}"]`);
   if (!$row.length) {
     return 0;

@@ -40,7 +40,7 @@ div
               div.problem-info__row
                 div.problem-info__cell Обновлена
                 div.problem-info__cell {{ condition.updatedAt | date:'medium' }}
-              div.problem-info__row
+              div.problem-info__row(ng-if='user.isAdmin')
                 div.problem-info__cell Связанные контесты
                 div.problem-info__cell
                   span(ng-if='condition.connectedContests.length === 0') —
@@ -48,12 +48,12 @@ div
                     md-button.md-primary(ng-repeat='contest in condition.connectedContests', ui-sref='contest.item({contestId: contest.id})', join-contest, contest='contest')
                       | \#{{ contest.id }}
                       md-tooltip {{ contest.name }}
-              div.problem-info__row
+              div.problem-info__row(ng-if='user.isAdmin')
                 div.problem-info__cell Версия
                 div.problem-info__cell
                   span {{ condition.versionNumber }}
 
-          div(ng-if='condition.versions.length')
+          div(ng-if='condition.versions.length && user.isAdmin')
             div.problem-info__title(style='margin-top: 20px;') Версии
             div.problem-info__versions
               a.problem-info__version(ng-repeat='version in condition.versions', ui-sref='problems.item-version({problemId: condition.id, versionNumber: version.versionNumber})', ng-class='{"problem-info__version_selected": version.versionNumber == versionNumber || (!versionNumber && condition.versionNumber === version.versionNumber), "problem-info__version_current": version.versionNumber === condition.latestVersionNumber}')

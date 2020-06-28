@@ -15,7 +15,7 @@ div.admin-content-layer
 
           div.contest-creation__row
             div.contest-creation__row-title В какой группе будут состоять?
-            span.sublabel Выберите группу для пользователей или оставьте поле пустым, чтобы пользователи видели все контесты.
+            span.sublabel Выберите группу для пользователей
             md-input-container.groups(md-no-float)
               md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
                 md-autocomplete(
@@ -32,6 +32,6 @@ div.admin-content-layer
                     span {{$chip.name}}
 
           div.contest-creation__row
-            md-button.md-raised.md-primary(ngf-select="upload($file)", name="file", ngf-max-size="20MB")
+            md-button.md-raised.md-primary(ngf-select="upload($file)", ng-disabled='!form.groups.length' name="file", ngf-max-size="20MB")
               md-icon(md-svg-src='/img/icons/ic_file_upload_48px.svg')
               | Выбрать файл и отправить

@@ -1,11 +1,10 @@
+import Promise from 'bluebird';
 import cheerio from 'cheerio';
 import querystring from 'querystring';
 import request from 'request-promise';
-import { extractParam } from "../../utils/utils";
 import * as models from '../../models';
-import * as accountsMethods from './account';
-import Promise from 'bluebird';
-import { ensureNumber } from "../../utils/utils";
+import { getForeignAccountId, login } from "./account";
+import { ensureNumber, extractParam } from "../../utils";
 
 const ACM_PROTOCOL = 'https';
 const ACM_HOST = 'acmp.ru';
@@ -18,7 +17,7 @@ export async function sendSolution(solution, systemAccount) {
       console.log(`[System report] ACMP account [${systemAccount.instance.systemLogin}] verified.`);
     } catch (err) {
       console.log(`[System report] Refreshing ACMP account [${systemAccount.instance.systemLogin}]...`);
-      await accountsMethods.login(systemAccount);
+      await login(systemAccount);
     }
   
     let endpoint = getEndpoint(ACM_SOLUTIONS_POST_ENDPOINT, {
@@ -63,7 +62,7 @@ function buildBody(solution, systemAccount) {
 
 async function authVerify(systemAccount) {
   let { jar } = systemAccount;
-  let foreignAccountId = await accountsMethods.getForeignAccountId( jar );
+  let foreignAccountId = await getForeignAccountId( jar );
   if (!foreignAccountId) {
     throw new Error('Account is not logged in');
   }

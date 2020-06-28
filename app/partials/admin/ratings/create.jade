@@ -19,7 +19,7 @@ div.admin-content-layer
           md-select(ng-model="curCategory", aria-label='Categories')
             md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
 
-      div.contests-sort__item
+      div.contests-sort__item(ng-if='user.isAdmin')
         md-input-container
           md-button.md-raised.md-primary(ng-click='computeRatings()', ng-disabled='isComputing') Пересчитать рейтинги для всех групп
 
