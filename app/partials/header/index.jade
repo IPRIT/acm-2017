@@ -1,23 +1,23 @@
 div.header__wrapper
   div.header__inner
-    a.link.logo(ui-sref='contests.list', ng-click='logoClick($event)', style='{{ isSchoolLogo ? "top: 9px;" : "" }}')
+    a.link.logo(ui-sref='contests.list', ng-click='logoClick($event)', style='{{ isMainLogo ? "top: 9px;" : "" }}')
       div.logo__content
         div.logo__image-wrapper
-          img.img.logo__img(src='{{ !isSchoolLogo ? "/img/acm-logo-2.svg" : "/img/school-misis.png" }}')
-        // span.logo__text MISIS Acm
+          img.img.logo__img(src='{{ isMainLogo ? "/img/school-misis.png" : "/img/acm-logo-2.svg" }}')
     include ./profile
     include ./chat
 div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
   div.contest-menu__layer
     div.contest-menu__items
       a.contest-menu__item(ui-sref='^.item', ui-sref-active='contest-menu__item_state_active') Информация
-      a.contest-menu__item(ui-sref='^.table', ui-sref-active='contest-menu__item_state_active', ng-class='{"contest-menu__item_state_active": $state.includes("contest.table")}') Таблица результатов
+      a.contest-menu__item(ui-sref='^.table', ui-sref-active='contest-menu__item_state_active', ng-class='{"contest-menu__item_state_active": $state.includes("contest.table")}', qemy-i18n='contest-table-title')
       a.contest-menu__item(ui-sref='^.problems', ui-sref-active='contest-menu__item_state_active') Условия задач
-      a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isAdmin') Отправить
+      a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isSupervisor') Отправить
       a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}') Решения
-      a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isAdmin') Массовое оповещение
-      //a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active', ng-if='user.isAdmin') Таблица (устарев.)
-      a.contest-menu__item(ng-if='user.isAdmin')
+      a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isSupervisor') Оповестить
+      a.contest-menu__item(ui-sref='admin.edit-contest({contestId: headerMenu.contest.id})', ng-if='user.isSupervisor') Редактировать
+      //a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active', ng-if='user.isSupervisor') Таблица (устарев.)
+      //a.contest-menu__item(ng-if='user.isSupervisor')
         .contest-fab-menu(layout='row', layout-align='center center')
           md-fab-speed-dial.md-scale.md-fab-top-right(md-direction='down', md-open='contestMenu.opened', ng-mouseenter='contestMenu.opened = true', ng-mouseleave='contestMenu.opened = false')
             md-fab-trigger

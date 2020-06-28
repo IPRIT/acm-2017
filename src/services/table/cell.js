@@ -149,7 +149,7 @@ export class Cell extends AbstractCell {
    * @return {boolean}
    */
   canViewFully(viewAs) {
-    return viewAs.id === this.userId || viewAs.isAdmin;
+    return viewAs.id === this.userId || viewAs.isSupervisor;
   }
 
   /**

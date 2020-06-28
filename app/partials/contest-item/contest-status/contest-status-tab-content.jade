@@ -51,7 +51,7 @@ div.sent-list
       span Время исполнения
     div.sent-list__cell(style='max-width: 95px;')
       span Память
-    div.sent-list__cell(ng-if='currentUser.isAdmin', style='max-width: 60px;')
+    div.sent-list__cell(ng-if='currentUser.isSupervisor', style='max-width: 60px;')
       span &nbsp;
 
   include contest-status-row

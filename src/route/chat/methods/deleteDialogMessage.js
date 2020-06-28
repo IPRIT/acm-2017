@@ -36,7 +36,7 @@ export async function deleteDialogMessage(params) {
       }
     }
   });
-  let operatePermission = user.isAdmin || chatMessages.every(message => {
+  let operatePermission = user.isSupervisor || chatMessages.every(message => {
     return message.userId === user.id; // me
   });
   if (!operatePermission) {

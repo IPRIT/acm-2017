@@ -39,5 +39,8 @@
     padding: 6px 12px;
     background-color: #efefef;
     color: #5d5d5d;
+    position: sticky;
+    top: 0;
+    z-index: 2;
   }
 }

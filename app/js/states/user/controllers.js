@@ -38,7 +38,7 @@ angular.module('Qemy.controllers.user', [])
         title: 'Решения | ' + _('app_name')
       });
 
-      var defaultCount = 25;
+      var defaultCount = 50;
 
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {
@@ -181,7 +181,7 @@ angular.module('Qemy.controllers.user', [])
       $scope.$on('new solution', function (ev, data) {
         //console.log(data);
         var userId = data.userId,
-          canSee = !data.author.isAdmin || $scope.user.isAdmin || userId === $scope.user.id;
+          canSee = !data.author.isSupervisor || $scope.user.isSupervisor || userId === $scope.user.id;
         if ($scope.pageNumber !== 1
           || !canSee
           || ($scope.filterParticipants.length && $scope.filterParticipants.indexOf(userId) === -1)) {

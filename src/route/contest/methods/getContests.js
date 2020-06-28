@@ -77,7 +77,7 @@ export async function getContests(params) {
     where: categoryPredicate[ category ]
   }).filter(contest => {
     return contest.Groups.some(group => {
-      return user.isAdmin || !userGroupIds.length || userGroupIds.includes( group.id );
+      return user.isAdmin || userGroupIds.includes( group.id );
     }) || !contest.Groups.length;
   }).filter(contest => {
     return !query

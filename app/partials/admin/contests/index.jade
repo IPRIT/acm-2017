@@ -19,7 +19,7 @@ div.admin-content-layer
           md-select(ng-model="curCategory", aria-label='Categories')
             md-option(ng-repeat='category in contestCategories', value='{{category.category}}') {{category.name}}
 
-      div.contests-sort__item.admin-content__add-contest
+      div
         md-input-container
           md-button.md-raised.md-primary(ui-sref='admin.create-contest') + Создать контест
 

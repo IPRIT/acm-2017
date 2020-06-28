@@ -270,7 +270,7 @@ angular.module('Qemy.controllers.contest-item', [
       
       $scope.openStatusDialog = function (ev, cell, user) {
         if (!cell || !cell.task || cell.result === '—'
-          || !user || !user.id || (user.id !== $scope.user.id && !$scope.user.isAdmin)) {
+          || !user || !user.id || (user.id !== $scope.user.id && !$scope.user.isSupervisor)) {
           return;
         }
         var userId = user.id,
@@ -300,14 +300,15 @@ angular.module('Qemy.controllers.contest-item', [
         });
       };
       
-      $scope.showRatingHistory = function (ev, user) {
+      $scope.showRatingHistory = function (ev, user, contestId) {
         $mdDialog.show({
           controller: 'RatingHistoryDialogController',
           templateUrl: templateUrl('contest-item/rating', 'dialog'),
           parent: angular.element(document.body),
           targetEvent: ev,
           locals: {
-            user: user
+            user: user,
+            contestId
           }
         });
       };
@@ -989,7 +990,7 @@ angular.module('Qemy.controllers.contest-item', [
         //console.log(data);
         var userId = data.userId,
           select = $scope.params.select,
-          canSee = !data.author.isAdmin || $scope.currentUser.isAdmin;
+          canSee = !data.author.isSupervisor || $scope.currentUser.isSupervisor;
         if (select === 'my'
           && userId !== $scope.currentUser.id
           || $scope.pageNumber !== 1
@@ -2129,7 +2130,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemMessagesController', ['$scope', '$state', '$rootScope', '$timeout', 'UserManager', 'ErrorService', '$mdDialog', 'ContestItemManager',
     function ($scope, $state, $rootScope, $timeout, UserManager, ErrorService, $mdDialog, ContestItemManager) {
       var defaultForm = {
-        message: 'Воспользуйтесь [онлайн Markdown-редактором](https://stackedit.io/editor#) для оформления сообщения \n<code is="math-tex"> n, 1 \\leq  n \\leq  10^{18}</code>\n',
+        message: ' ',
         attachments: {},
         asAdmin: false,
         contestId: $state.params.contestId
@@ -2258,7 +2259,7 @@ angular.module('Qemy.controllers.contest-item', [
           });
         }
   
-        function showRatingHistory(user) {
+        function showRatingHistory(user, contestId) {
           mdPanelRef.close();
           $mdDialog.show({
             controller: 'RatingHistoryDialogController',
@@ -2266,7 +2267,8 @@ angular.module('Qemy.controllers.contest-item', [
             parent: angular.element(document.body),
             targetEvent: ev,
             locals: {
-              user: user
+              user: user,
+              contestId
             }
           });
         }
@@ -2285,9 +2287,9 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
 
-  .controller('RatingHistoryDialogController', ['$scope', '$state', 'user', '$mdDialog', 'ErrorService', 'UserManager', '$timeout', '$q', 'ContestsManager',
-    function ($scope, $state, user, $mdDialog, ErrorService, UserManager, $timeout, $q, ContestsManager) {
-      var contestId = $state.params.contestId;
+  .controller('RatingHistoryDialogController', ['$scope', '$state', 'user', 'contestId', '$mdDialog', 'ErrorService', 'UserManager', '$timeout', '$q', 'ContestsManager',
+    function ($scope, $state, user, contestId, $mdDialog, ErrorService, UserManager, $timeout, $q, ContestsManager) {
+      contestId = $state.params.contestId || contestId;
 
       $scope.userGroups = [];
       $scope.contest = {};

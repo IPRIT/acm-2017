@@ -43,7 +43,7 @@ div.admin-content-layer
             div.contest-creation__row-title Уровень доступа
             div(layout)
               md-radio-group(ng-model='user.accessGroupMask')
-                md-radio-button(ng-repeat='accessGroup in accessGroups', value='{{accessGroup.mask}}', ng-class='{"md-accent": accessGroup.mask === 4096, "md-primary": accessGroup.mask === 256}') {{accessGroup.name}}
+                md-radio-button(ng-repeat='accessGroup in accessGroups', value='{{accessGroup.mask}}', ng-class='{"md-accent": accessGroup.mask === 4096, "md-warn": accessGroup.mask === 1024, "md-primary": accessGroup.mask === 256}') {{accessGroup.name}}
 
           div.contest-creation__row
             div.contest-creation__row-title В какой группе состоит?

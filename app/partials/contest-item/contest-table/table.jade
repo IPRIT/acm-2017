@@ -46,7 +46,7 @@ div.acm-contest-table(
           md-icon(md-svg-src='/img/icons/ic_straighten_48px.svg')
           md-tooltip
             | Показать линию времени
-      div(ng-if='user.isAdmin')
+      div(ng-if='user.isSupervisor')
         md-menu(md-position-mode="target-right target")
           md-button.md-icon-button(aria-label='Open table menu', ng-click='$mdMenu.open($event)')
             md-icon(md-menu-origin, md-svg-src='/img/icons/ic_more_vert_48px.svg')

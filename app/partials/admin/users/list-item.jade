@@ -1,8 +1,12 @@
 div.contests-list__item-layer.admin-contests__contest-item
   div.contests-list__item.contest-item
     div.contest-item__title {{user.fullName}}
-    span {{"Логин: " + user.username}}
-    //div Количество вердиктов «Accepted»: {{user.rate}}
+    div.contests-list__groups-item(ng-class="{'md-user': true, 'md-admin': user.isAdmin, 'md-moderator': user.isModerator}")
+      span(ng-switch='user.accessGroup.name')
+        span(ng-switch-when='User') Пользователь
+        span(ng-switch-when='Admin') Администратор
+        span(ng-switch-when='Moderator') Модератор
+    span {{user.username}}
     div.admin-contests__buttons
       div.admin-contests__button-wrap
         md-button.admin-contests__button(ui-sref='admin.edit-user({userId: user.id})') Редактировать

@@ -24,18 +24,14 @@ div.admin-content-layer
               div.contest-creation__second-field-inline(style='width: 110px;')
                 md-input-container
                   Label Час
-                  md-select(ng-model='form.contestStartTime', name='contestStartTime', required)
+                  md-select(ng-model='form.contestStartTime', name='contestStartTime')
                     md-option(ng-repeat='time in startTimes', value='{{time.time}}', ng-bind='time.name')
-                  div(ng-messages="contestForm.contestStartTime.$error")
-                    div(ng-message="required") Поле не может быть пустым.
 
               div.contest-creation__second-field-inline(style='width: 110px;')
                 md-input-container
                   Label Минута
-                  md-select(ng-model='form.contestStartTimeMinutes', name='contestStartTimeMinutes', required)
+                  md-select(ng-model='form.contestStartTimeMinutes', name='contestStartTimeMinutes')
                     md-option(ng-repeat='time in startTimesMinutes', value='{{time.time}}', ng-bind='time.name')
-                  div(ng-messages="contestForm.contestStartTimeMinutes.$error")
-                    div(ng-message="required") Поле не может быть пустым.
 
           div.contest-creation__row
             div.contest-creation__row-title Длительность контеста (часов)
@@ -52,13 +48,11 @@ div.admin-content-layer
             div.contest-creation__second-field-inline(style='width: 180px;')
               md-input-container
                 Label Минут
-                md-select(ng-model='form.contestRelativeFinishTimeMinutes', name='contestRelativeFinishTimeMinutes', required)
+                md-select(ng-model='form.contestRelativeFinishTimeMinutes', name='contestRelativeFinishTimeMinutes')
                   md-option(ng-repeat='time in durationMinutes', value='{{time.time}}', ng-bind='time.name')
-                div(ng-messages="contestForm.contestRelativeFinishTimeMinutes.$error")
-                  div(ng-message="required") Поле не может быть пустым.
 
           div.contest-creation__row
-            div.contest-creation__row-title Заморозка наступает, когда остается, например, 1 час до конца контеста.
+            div.contest-creation__row-title Заморозка наступает, когда остается N часов до конца контеста
             md-input-container
               label Количество часов до конца контеста
               input(required, type="number", name="contestFreezeTime", min="0", max="50000", ng-model='form.contestFreezeTime')
@@ -84,7 +78,7 @@ div.admin-content-layer
                 div(ng-message='max') Количество часов должно быть не больше 50000.
 
           div.contest-creation__row
-            div.contest-creation__row-title [Бета] Учитывать результаты контеста при пересчете рейтинга?
+            div.contest-creation__row-title Учитывать результаты контеста при пересчете рейтинга?
             div
               md-checkbox.md-warn.md-align-top-left(ng-model='form.isRated', aria-label='Practice checkbox') Рейтинговый контест
                 br
@@ -94,12 +88,15 @@ div.admin-content-layer
             div.contest-creation__row-title Кому доступен контест?
             span.sublabel Выберите группы пользователей или оставьте поле пустым, если хотите сделать контест доступным для всех.
             md-input-container.groups(md-no-float)
-              md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
+              md-chips.custom-chips(ng-model="form.groups", ng-required, md-autocomplete-snap, md-require-match)
                 md-autocomplete(
                   md-selected-item="chips.selectedItem",
                   md-search-text="chips.searchText",
                   md-items="item in groupSearch(chips.searchText)",
+                  md-min-length="0"
                   md-item-text="item.name",
+                  md-select-on-match,
+                  md-no-cache,
                   placeholder='Введите название...'
                 )
                   span(md-highlight-text="searchText") {{item.name}}
@@ -173,4 +170,4 @@ div.admin-content-layer
                   md-svg-src="/img/icons/ic_visibility_48px.svg")
 
           div.contest-creation__row.contest-creation__row_type_create
-            md-button.md-primary.md-raised(ng-disabled='!contestForm.$valid', aria-label='Send', ng-click='submitForm()') Создать контест
+            md-button.md-primary.md-raised(ng-disabled='!contestForm.$valid || !form.groups.length', aria-label='Send', ng-click='submitForm()') Создать контест

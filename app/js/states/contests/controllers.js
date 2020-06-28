@@ -13,8 +13,8 @@
 
 angular.module('Qemy.controllers.contests', [])
 
-  .controller('ContestsListCtrl', ['$scope', '$rootScope', '$state', 'ContestsManager', '_', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestsManager, _, ErrorService) {
+  .controller('ContestsListCtrl', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'ErrorService',
+    function ($scope, $rootScope, $state, ContestsManager, UserManager, _, ErrorService) {
       $scope.$emit('change_title', {
         title: 'Контесты | ' + _('app_name')
       });
@@ -197,8 +197,15 @@ angular.module('Qemy.controllers.contests', [])
   ])
 
   .controller('ContestListItem', [
-    '$scope', 'ContestsManager', '$mdDialog', '$state', 'ErrorService',
-    function ($scope, ContestsManager, $mdDialog, $state, ErrorService) {
+    '$scope', 'ContestsManager', 'UserManager', '$mdDialog', '$state', 'ErrorService',
+    function ($scope, ContestsManager, UserManager, $mdDialog, $state, ErrorService) {
+      $scope.user = {};
+      UserManager.getCurrentUser().then(function (user) {
+        $scope.user = user;
+        safeApply($scope);
+      }).catch(function (result) {
+        ErrorService.show(result);
+      });
 
       $scope.loadingData = false;
       $scope.updateContest = function () {

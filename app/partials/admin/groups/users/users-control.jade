@@ -27,7 +27,10 @@ md-content(layout='column', layout-fill, ng-controller='AdminGroupsUserControlCo
                   div.md-list-item-text(layout='column')
                     h3 {{item.fullName}}
                     h4 {{item.username}}
-                    p {{item.accessGroup.name}}
+                    p(ng-switch='item.accessGroup.name')
+                      span(ng-switch-when='Moderator') Модератор
+                      span(ng-switch-when='Admin') Администратор
+                      span(ng-switch-default) Обычный пользователь
 
               include pagination
 
@@ -47,5 +50,8 @@ md-content(layout='column', layout-fill, ng-controller='AdminGroupsUserControlCo
                   div.md-list-item-text(layout='column')
                     h3 {{item.fullName}}
                     h4 {{item.username}}
-                    p {{item.accessGroup.name}}
+                    p(ng-switch='item.accessGroup.name')
+                      span(ng-switch-when='Moderator') Модератор
+                      span(ng-switch-when='Admin') Администратор
+                      span(ng-switch-default) Обычный пользователь
 

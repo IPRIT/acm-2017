@@ -6,11 +6,11 @@ div.header__profile.profile(ng-if='isAuth')
         span {{ user.firstName + " " + user.lastName }}
       div.profile__unread-messages(ng-if='unreadChatMessagesNumber > 0') {{ unreadChatMessagesNumber }}
     md-menu-content(width="4")
-      div(ng-repeat="item in menuList", ng-switch='item.type', ng-if='!item.onlyFor || item.onlyFor === user.accessGroup.mask')
+      div(ng-repeat="item in menuList", ng-switch='item.type', ng-if='!item.onlyFor || item.onlyFor === user.accessGroup.mask || [].concat(item.onlyFor).includes(user.accessGroup.mask)')
         div(style='height: 6px;', ng-switch-default)
           md-menu-divider(style='display: block;')
         md-menu-item(ng-switch-when='item')
-          md-button(ng-click="profileItemClick($event, item, $index)", aria-label='Menu item')
-            md-icon(md-svg-src="{{item.iconSrc}}")
+          md-button(ng-click="profileItemClick($event, item, $index)", aria-label='Menu item', ng-class="item.className")
+            md-icon(md-svg-src="{{item.iconSrc}}", ng-style="{top: '-1px', position: 'relative'}")
             span(ng-bind='item.name')
             div.profile__unread-messages(ng-if='item.counter') {{ unreadChatMessagesNumber }}

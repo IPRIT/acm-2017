@@ -78,6 +78,21 @@ let User = sequelize.define('User', {
         this.accessGroup,
         userGroups.groups.admin.mask
       );
+    },
+    isModerator() {
+      if (!this.accessGroup) {
+        return false;
+      }
+      return userGroups.utils.hasRight(
+        this.accessGroup,
+        userGroups.groups.moderator.mask
+      );
+    },
+    isSupervisor() {
+      if (!this.accessGroup) {
+        return false;
+      }
+      return this.isAdmin || this.isModerator;
     }
   },
   setterMethods: {

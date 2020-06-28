@@ -19,7 +19,7 @@ angular.module('Qemy.controllers.contest-item.table', [])
 
       $scope.params = {
         contestId: contestId,
-        count: 5,
+        count: 50,
         offset: 0,
         showInTimeMs: Infinity
       };
@@ -278,7 +278,7 @@ angular.module('Qemy.controllers.contest-item.table', [])
 
       $scope.openStatusDialog = function (ev, cell, user) {
         if (!cell || !cell.problemSymbol || cell.result === '—'
-          || !user || !user.id || (user.id !== $scope.viewAs.id && !$scope.viewAs.isAdmin)) {
+          || !user || !user.id || (user.id !== $scope.viewAs.id && !$scope.viewAs.isSupervisor)) {
           return;
         }
         var userId = user.id,

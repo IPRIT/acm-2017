@@ -1,7 +1,5 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
-import * as contests from '../../contest/methods';
 
 export function createUserRequest(req, res, next) {
   return Promise.resolve().then(() => {

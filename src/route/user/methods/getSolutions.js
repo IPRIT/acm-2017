@@ -1,6 +1,7 @@
 import { filterEntity as filter } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
+import Sequelize from 'sequelize';
 import deap from "deap";
 import userGroups from './../../../models/User/userGroups';
 import { RatingsStore } from "../../../utils/ratings-store";
@@ -28,7 +29,7 @@ export async function getSolutions(params) {
   } = params;
 
   offset = Number(offset) || 0;
-  count = Number(count) || 50;
+  count = Number(count) || 10;
   withRatings = Number(withRatings);
   filterUserIds = filterUserIds ?
     filterUserIds.split(',').map(Number) : [];
@@ -72,40 +73,62 @@ export async function getSolutions(params) {
     attributes: { exclude: [ 'password' ] }
   };
 
-  if (!user.isAdmin) {
+  if (!user.isSupervisor) {
     deap.extend(where, { userId: user.id });
   }
 
-  let ratingsStore = RatingsStore.getInstance();
+  const groupsWhere = {};
 
-  return models.Solution.findAll({
+  if (user.isModerator) {
+    const groups = await user.getGroups();
+    const groupsIds = groups.map(group => group.id);
+    deap.extend(groupsWhere, {
+      id: {
+        $in: groupsIds
+      }
+    });
+  }
+
+  const ratingsStore = RatingsStore.getInstance();
+
+  const promises = [models.Solution.findAll({
     include: [ includeUsers, {
       model: models.Verdict
     }, {
       model: models.Language
     }, {
-      model: models.Contest
+      model: models.Contest,
+      include: [{
+        model: models.Group,
+        required: true,
+        where: groupsWhere,
+        attributes: ['id']
+      }, {
+        model: models.Problem,
+        required: true,
+        attributes: ['id']
+      }]
     }, {
       model: models.Problem,
       required: true,
-      attributes: {
-        exclude: [ 'htmlStatement', 'textStatement', 'attachments' ]
-      }
+      attributes: ['id', 'title']
     }],
-    attributes: { exclude: [ 'sourceCode', 'ip' ] },
+    attributes: {
+      exclude: [ 'sourceCode', 'ip' ]
+    },
     order: [ [ 'id', sort ] ],
     limit: count,
     offset,
     where
   }).then(async solutions => {
     if (withRatings) {
-      if (!ratingsStore.isReady) {
+      if (ratingsStore && !ratingsStore.isReady) {
         await ratingsStore.retrieve();
       }
     }
     return solutions;
   }).map(async solution => {
-    let problems = await contests.getProblems({ user, contest: solution.Contest });
+    let problems = solution.Contest.Problems;
     let problemsMapping = new Map();
     problems.forEach((problem, index) => {
       problemsMapping.set(
@@ -115,9 +138,10 @@ export async function getSolutions(params) {
     });
 
     let rating = 0;
-    if (withRatings) {
+    if (withRatings && ratingsStore) {
       try {
-        let contestsGroups = await solution.Contest.getGroups();
+        const contestsGroups = solution.Contest.Groups;
+
         let userId = solution.User.id;
         for (let contestGroup of contestsGroups) {
           let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, userId);
@@ -147,27 +171,42 @@ export async function getSolutions(params) {
     return deap.extend(solution, {
       internalSymbolIndex: symbolIndex.toUpperCase()
     });
-  }).then(async solutions => {
+  }).then(solutions => {
+    return solutions.sort((a, b) => b.id - a.id);
+  }), models.Solution.findAll({
+    include: [{
+      model: models.User,
+      required: true,
+      attributes: ['id', 'accessGroup']
+    }, {
+      model: models.Contest,
+      include: [{
+        model: models.Group,
+        required: true,
+        where: groupsWhere,
+        attributes: ['id']
+      }, {
+        model: models.Problem,
+        required: true,
+        attributes: ['id']
+      }]
+    }, {
+      model: models.Problem,
+      required: true,
+      attributes: ['id', 'title']
+    }],
+    attributes: {
+      include: [[Sequelize.fn("COUNT", Sequelize.col("Solution.id")), "solutionsNumber"]],
+      exclude: [ 'sourceCode', 'ip' ],
+    },
+    limit: 1,
+    where,
+  })];
+
+  return Promise.all(promises).then(([solutions, [ count ]]) => {
     return {
-      solutions: solutions.sort((a, b) => b.id - a.id),
-      solutionsNumber: await models.Solution.count({
-        include: [ includeUsers, {
-          model: models.Verdict
-        }, {
-          model: models.Language
-        }, {
-          model: models.Contest
-        }, {
-          model: models.Problem,
-          required: true,
-          attributes: {
-            exclude: [ 'htmlStatement', 'textStatement', 'attachments' ]
-          }
-        }],
-        where: deap.extend(where, {
-          deletedAt: null
-        })
-      })
+      solutions,
+      solutionsNumber: count.get({ plain: true }).solutionsNumber
     }
   });
 }

@@ -42,7 +42,7 @@ export async function sendSolution(params) {
   
   let canSend = (
     ![ 'NOT_ENABLED', 'REMOVED', 'FINISHED', 'WAITING' ].includes(contest.status)
-    || user.isAdmin
+    || user.isSupervisor
   );
   
   if (!canSend) {
@@ -113,7 +113,7 @@ export async function sendSolution(params) {
   } else {
     sockets.emitNewSolutionEvent(socketData);
   }
-  if (!user.isAdmin) {
+  if (!user.isSupervisor) {
     sockets.emitUserSolutionsEvent(user.id, 'new solution', socketData.solution);
   }
   sockets.emitAdminSolutionsEvent('new solution', socketData.solution);

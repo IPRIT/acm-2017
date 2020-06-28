@@ -242,11 +242,12 @@ angular.module('Qemy.directives', [])
     return {
       restrict: 'E',
       scope: {
-        user: '='
+        user: '=',
+        contestId: '=',
       },
       templateUrl: templateUrl('contest-item/contest-monitor', 'rated-user-with-dialog'),
       controller: ['$scope', '$mdDialog', function ($scope, $mdDialog) {
-        $scope.showRatingHistory = function (ev, user) {
+        $scope.showRatingHistory = function (ev, user, contestId) {
           $mdDialog.show({
             controller: 'RatingHistoryDialogController',
             templateUrl: templateUrl('contest-item/rating', 'dialog'),
@@ -254,7 +255,8 @@ angular.module('Qemy.directives', [])
             targetEvent: ev,
             clickOutsideToClose: true,
             locals: {
-              user: user
+              user: user,
+              contestId
             }
           });
         };

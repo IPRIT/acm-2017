@@ -1,13 +1,11 @@
 div.admin-content-layer(style='background-color: #ECECEC;')
   div.admin-content-layer__inner
 
-    div.contests-sort
-      div.contests-sort__item.admin-content__add-contest
-        md-input-container
-          md-button.md-raised.md-primary(ui-sref='admin.groups.create') + Создать группу
-
     div.contests-list
-      div.contests-title Группы
+      div(layout='row', layout-align="space-between center")
+        div(flex).contests-title Группы
+        md-button(flex="nogrow").md-raised.md-primary(ui-sref='admin.groups.create') + Создать группу
+
       div.contests-list__pagination(ng-if='pageNumber !== 1')
         include ./pagination
       div.groups

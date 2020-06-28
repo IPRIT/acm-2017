@@ -32,14 +32,7 @@ function initApplication () {
   }
   $(document.body).addClass(classes.join(' '));
 
-  const origConsoleLog = console && console.log || (() => {});
-  console && (console.log = (...args) => {
-    let curDate = new Date(),
-      zF = (num, length = 2) => `${'0'.repeat(length - num.toString().length)}${num}`,
-      timeArray = [ curDate.getHours(), curDate.getMinutes(), curDate.getSeconds() ],
-      logTime = `[${timeArray.map(num => zF(num)).join(':')}.${zF(curDate.getMilliseconds(), 3)}]`;
-    origConsoleLog.call(null, logTime, ...args);
-  });
+  Config.I18n.locale = Config.I18n.aliases[navigator.language || navigator.languages[0]];
 
   ConfigStorage.get('i18n_locale', function (params) {
     let locale = params,

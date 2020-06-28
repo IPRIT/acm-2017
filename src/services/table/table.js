@@ -483,7 +483,7 @@ export class ContestTable extends AbstractTable {
    * @private
    */
   _getTableHash(viewAs) {
-    return viewAs.isAdmin
+    return viewAs.isSupervisor
       ? this.adminUsersHash : this.regularUsersHash;
   }
 
@@ -503,25 +503,25 @@ export class ContestTable extends AbstractTable {
 
   /**
    * mock admin user just for table rendering when init
-   * @return {{id: number, isAdmin: boolean}}
+   * @return {{id: number, isSupervisor: boolean}}
    * @private
    */
   get _mockAdminUser() {
     return {
       id: 1,
-      isAdmin: true
+      isSupervisor: true
     };
   }
 
   /**
    * mock regular user
-   * @return {{id: number, isAdmin: boolean}}
+   * @return {{id: number, isSupervisor: boolean}}
    * @private
    */
   get _mockRegularUser() {
     return {
       id: 1e9,
-      isAdmin: false
+      isSupervisor: false
     };
   }
 

@@ -34,7 +34,10 @@ export async function getRatingTable(params) {
       attributes: { exclude: [ 'password' ] },
       where: {
         accessGroup:  {
-          $ne: userGroups.groups.admin.mask
+          $notIn: [
+            userGroups.groups.admin.mask,
+            userGroups.groups.moderator.mask,
+          ]
         }
       }
     }, models.Contest]

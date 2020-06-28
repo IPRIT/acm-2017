@@ -75,7 +75,7 @@ export async function getTable(params) {
   
   for (let contestant of contestants) {
     if (!Array.isArray(table.users[ contestant.id ])
-      && (!contestant.isAdmin || user.isAdmin)
+      && (!contestant.isSupervisor || user.isSupervisor)
       && (contestant.id !== 1 || user.id === 1)) {
       table.users[ contestant.id ] = {
         info: contestant,
@@ -113,7 +113,7 @@ export async function getTable(params) {
     let currentUserObject = table.users[ currentUserIndex ],
       currentUserId = currentUserObject.info.id;
     
-    if (currentUserId === user.id || !wasSentInFreezeTime(currentTimeMs) || user.isAdmin) {
+    if (currentUserId === user.id || !wasSentInFreezeTime(currentTimeMs) || user.isSupervisor) {
       for (let problemSymbolIndex in currentUserObject.problems) {
         let currentSolutions = currentUserObject.problems[ problemSymbolIndex ];
         let wrongsNumber = 0, solutionAccepted = false;

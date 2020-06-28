@@ -29,7 +29,7 @@ export async function duplicateSolution(params) {
   let { Problem, Contest, Language, User } = solution;
   
   let newSolution = await Contest.createSolution({
-    userId: asAdmin ? 2 : solution.userId,
+    userId: asAdmin ? (initiatorUser.isAdmin ? 2 : initiatorUser.id) : solution.userId,
     problemId: Problem.id,
     languageId: Language.id,
     sourceCode: solution.sourceCode,
@@ -82,7 +82,7 @@ export async function duplicateSolution(params) {
   } else {
     sockets.emitNewSolutionEvent(socketData);
   }
-  if (!User.isAdmin) {
+  if (!User.isSupervisor) {
     sockets.emitUserSolutionsEvent(newSolution.userId, 'new solution', socketData.solution);
   }
   sockets.emitAdminSolutionsEvent('new solution', socketData.solution);

@@ -28,7 +28,7 @@ angular.module('Qemy.controllers.admin', [])
         $rootScope.$broadcast('data loaded');
         if (!user || !user.id) {
           return $state.go('auth.form');
-        } else if (user.accessGroup.mask !== 4096) {
+        } else if (!user.isSupervisor) {
           return $state.go('contests.list');
         }
         $scope.user = user;
@@ -830,32 +830,31 @@ angular.module('Qemy.controllers.admin', [])
       var zF = function (num) { return num < 10 ? '0' + num : num };
       var currentDate = new Date();
 
+      function getMonthName(num) {
+        num = num || 0;
+        if (num < 0 || num > 12) {
+          num = 0;
+        }
+        var month = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
+          'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+        return month[num];
+      }
+
       $scope.form = {
         contestRelativeFinishTimeHours: 5,
-        //contestRelativeFinishTimeMinutes: 0,
+        contestRelativeFinishTimeMinutes: 0,
         contestFreezeTime: 1,
         contestPracticeTime: 0,
         contestStartDate: currentDate,
-        contestName: zF(currentDate.getDate()) + '.' + zF(currentDate.getMonth() + 1) + '.' + zF(currentDate.getFullYear()) + '. Название контеста.',
+        contestStartTime: 0,
+        contestStartTimeMinutes: 0,
+        contestName: zF(currentDate.getDate()) + ' ' + getMonthName(currentDate.getMonth()) + ' ' + zF(currentDate.getFullYear()) + ' • Название контеста',
         groups: [],
         isRated: true
       };
       $scope.startTimes = [];
       $scope.startTimesMinutes = [];
       $scope.durationMinutes = [];
-
-      $scope.$watch('form.contestStartTime', function (newVal) {
-        if (newVal > 1 && newVal < 6) {
-          var confirm = $mdDialog.confirm()
-            .title('Начало контеста будет ночью')
-            .content('Серьезно?')
-            .ariaLabel('Lucky day')
-            .ok('Да')
-            .cancel('Нет');
-
-          $mdDialog.show(confirm);
-        }
-      });
 
       for (var i = 0; i < 24; ++i) {
         $scope.startTimes.push({
@@ -1367,6 +1366,9 @@ angular.module('Qemy.controllers.admin', [])
       $scope.accessGroups = [{
         mask: 256,
         name: 'Обычный пользователь'
+      }, {
+        mask: 1024,
+        name: 'Модератор'
       }, {
         mask: 4096,
         name: 'Администратор'

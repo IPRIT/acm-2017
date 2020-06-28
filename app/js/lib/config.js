@@ -1,16 +1,16 @@
 var Config = window.Config = window.Config || {};
 
 Config.App = {
-    id: 216,
+    id: 300,
     hash: '8da85b0d5bfe62527e5b244a309159c3',
-    version: '1.3.2',
+    version: '2.0.0',
     domains: [
-        'localhost:3000',
+        'localhost:3002',
         'acm.alexbelov.xyz',
         'pat1.misis.ru:5048',
         'contest.misis.ru',
+        'school.misis.ru',
     ],
-    current_domain: 2
 };
 
 Config.serverTimeOffset = 3;
@@ -20,7 +20,7 @@ Config.Modes = {
     debug: location.search.indexOf('debug=1') > 0,
     http: location.search.indexOf('http=1') > 0,
     ssl: location.search.indexOf('ssl=1') > 0 || location.protocol == 'https:' && location.search.indexOf('ssl=0') == -1,
-    nacl: location.search.indexOf('nacl=0')== -1,
+    nacl: location.search.indexOf('nacl=0') == -1,
     ios_standalone: window.navigator.standalone && navigator.userAgent.match(/iOS|iPhone|iPad/)
 };
 

@@ -6,7 +6,7 @@ div
         span.news-item__subheader-text {{ item.createdAtText }}
         span.news-item__point-divider
         span.news-item__subheader-text {{ item.User.fullName }}
-        span(ng-if='user.isAdmin')
+        span(ng-if='user.isSupervisor')
           span.news-item__point-divider
           a.news-item__subheader-text(ui-sref='news.edit({ newsId: item.id })') Редактировать
 

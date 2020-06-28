@@ -39,7 +39,7 @@ angular.module('Qemy.controllers.chat', [])
         }
         $scope.user = user;
         peersMapping.me = user.id;
-        if (!user.isAdmin) {
+        if (!user.isSupervisor) {
           if ($state.params.peerId !== 'admin') {
             $state.go('chat.peer', { peerId: 'admin' });
           }

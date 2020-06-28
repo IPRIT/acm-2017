@@ -64,7 +64,7 @@ export function subscribeEvents(socket) {
     let user = await models.User.findByPrimary(userId);
 
     let solutionsHashKey;
-    if (user.isAdmin) {
+    if (user.isSupervisor) {
       solutionsHashKey = getAdminSolutionsHashKey();
     } else {
       solutionsHashKey = getUserSolutionsHashKey( userId );
@@ -81,7 +81,7 @@ export function subscribeEvents(socket) {
     let user = await models.User.findByPrimary(userId);
 
     let solutionsHashKey;
-    if (user.isAdmin) {
+    if (user.isSupervisor) {
       solutionsHashKey = getAdminSolutionsHashKey();
     } else {
       solutionsHashKey = getUserSolutionsHashKey( userId );
@@ -106,7 +106,7 @@ export function subscribeEvents(socket) {
       return;
     }
     let user = await models.User.findByPrimary(userId);
-    if (user.isAdmin) {
+    if (user.isSupervisor) {
       user = await models.User.findByPrimary(2);
     }
     let userHashKey = getUserHashKey([ 'global', user.id ].join('_'));
@@ -122,7 +122,7 @@ export function subscribeEvents(socket) {
       return;
     }
     let user = await models.User.findByPrimary(userId);
-    if (user.isAdmin) {
+    if (user.isSupervisor) {
       user = await models.User.findByPrimary(2);
     }
     let userHashKey = getUserHashKey([ 'global', user.id ].join('_'));

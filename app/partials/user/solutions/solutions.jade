@@ -6,13 +6,14 @@ div.contest(style='margin-top: 0')
     div.contest__content(style='max-width: 100%')
         div.contest__inner
             div.contest__title-section
-                h2(ng-bind='user.fullName') Профиль
+                h2(ng-bind='user.fullName', ng-if="!user.isSupervisor")
+                h2(ng-if="user.isSupervisor") Все решения пользователей
 
             div.status-content
                 md-content
                     md-nav-bar.md-primary(md-selected-nav-item="selectedTabIndex", nav-bar-aria-label="Solutions")
-                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='user.isAdmin') Все решения пользователей
-                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='!user.isAdmin') Все решения
+                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='user.isSupervisor') Все решения пользователей
+                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='!user.isSupervisor') Все решения
                         socket-status.contest__socket-status
                     include ./solutions-content
                     include ./pagination

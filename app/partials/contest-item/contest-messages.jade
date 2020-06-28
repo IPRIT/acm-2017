@@ -1,12 +1,12 @@
 div.contest.contest-messages
   div.contest__content.contest__min-width
     div.contest__inner
-      div.contest__title-section
+      div.contest__title-section(style='padding:0;')
         h2 Отправить сообщение в контест
 
       div
         form
-          div
+          div(ng-if="user.isSupervisor")
             md-checkbox.md-primary.md-align-top-left(ng-model='form.asAdmin', aria-label='Practice checkbox') Отправить от имени администратора
               br
               span(ng-switch='form.asAdmin')
@@ -19,6 +19,10 @@ div.contest.contest-messages
             md-input-container(flex, style='width: 100%;')
               label Текст или Markdown
               textarea.textarea.send-message__textarea-element(ng-model='form.message')
+
+          div(style='padding: 4px; margin-top: -30px;').
+            Воспользуйтесь <a href="https://stackedit.io/editor">онлайн Markdown-редактором</a> для оформления сообщения<br><br>
+
 
           div
             md-content.md-padding
@@ -41,7 +45,7 @@ div.contest.contest-messages
                   h4 Файлы: {{settings.files.length}}
                 include ./contest-messages/files
 
-          div.send-content__submit
+          div.send-content__submit(style='padding: 21px 0; margin-left: -8px;')
             md-button.md-raised.md-primary(ng-disabled='form.message.length === 0 || sent', ng-click='sendMessage()') Отправить всем
 
   page-footer

@@ -2,7 +2,7 @@ div(ng-controller='NewsListController')
   div.news-list(style="margin-bottom: 24px;")
     div.news-list__title-wrapper
       div.news-list__title Новости
-      div.news-list__add(ng-if='user && user.isAdmin')
+      div.news-list__add(ng-if='user && user.isSupervisor')
         md-button.md-primary.md-icon-button.news-list__add-button(ui-sref='news-create')
           md-icon(md-svg-icon="img/icons/ic_add_24px.svg")
     div.news-list__content(ng-if='isLoaded')

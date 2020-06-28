@@ -68,14 +68,14 @@ div.contest
               ng-class='{"monitor-content__row-my": user.id === row.user.id, "monitor-content__row_group_even": row.group % 2 === 0 && row.solutions !== 0, "monitor-content__no-solutions": row.solutions === 0}')
               div.monitor-content__cell
                 span(ng-bind='row.rank')
-              div.monitor-content__cell.monitor-content__cell-participant(ng-if='user.isAdmin')
+              div.monitor-content__cell.monitor-content__cell-participant(ng-if='user.isSupervisor')
                 md-button(ng-click='showMonitorRowMenu($event, row.user)', aria-label='User name')
                   rated-user(user='row.user')
-              div.monitor-content__cell.monitor-content__cell-participant(ng-if='!user.isAdmin')
+              div.monitor-content__cell.monitor-content__cell-participant(ng-if='!user.isSupervisor')
                 md-button(ng-click='showRatingHistory($event, row.user)', aria-label='User name')
                   rated-user(user='row.user')
               div.monitor-content__cell.monitor-content__cell-result(ng-repeat='cell in row.row',
-              ng-class='{"monitor-content__cell_type_clickable": cell.result !== "—" && (row.user.id === user.id || user.isAdmin), "monitor-content__cell_type_accepted": cell.result.indexOf("+") !== -1, "monitor-content__cell_type_frozen": cell.frozen, "monitor-content__cell_type_in-practice": cell.inPractice}',
+              ng-class='{"monitor-content__cell_type_clickable": cell.result !== "—" && (row.user.id === user.id || user.isSupervisor), "monitor-content__cell_type_accepted": cell.result.indexOf("+") !== -1, "monitor-content__cell_type_frozen": cell.frozen, "monitor-content__cell_type_in-practice": cell.inPractice}',
               title='{{cell.frozen ? "Отправлено после заморозки" : (cell.inPractice ? "Дорешено" : "")}}',
               ng-click='openStatusDialog($event, cell, row.user)')
                 span(ng-bind='cell.result')

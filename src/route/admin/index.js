@@ -5,21 +5,21 @@ import * as adminMethods from './methods';
 const router = express.Router();
 
 
-router.post('/ratingTable', [ userRetriever, rightsAllocator('admin') ], adminMethods.getRatingTableRequest);
+router.post('/ratingTable', [ userRetriever, rightsAllocator('moderator', 'user') ], adminMethods.getRatingTableRequest);
 
-router.get('/groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.searchGroupsRequest);
-router.post('/groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.createGroupRequest);
-router.get('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getGroupRequest);
-router.post('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateGroupRequest);
-router.post('/groups/:groupId/links', [ userRetriever, rightsAllocator('admin') ], adminMethods.createGroupRegisterLinkRequest);
-router.get('/groups/:groupId/links', [ userRetriever, rightsAllocator('admin') ], adminMethods.getGroupRegisterLinksRequest);
-router.delete('/groups/:groupId/links/:linkUuid', [ userRetriever, rightsAllocator('admin') ], adminMethods.revokeGroupRegisterLinkRequest);
-router.delete('/groups/:groupId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteGroupRequest);
+router.get('/groups', [ userRetriever, rightsAllocator('moderator') ], adminMethods.searchGroupsRequest);
+router.post('/groups', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createGroupRequest);
+router.get('/groups/:groupId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getGroupRequest);
+router.post('/groups/:groupId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.updateGroupRequest);
+router.post('/groups/:groupId/links', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createGroupRegisterLinkRequest);
+router.get('/groups/:groupId/links', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getGroupRegisterLinksRequest);
+router.delete('/groups/:groupId/links/:linkUuid', [ userRetriever, rightsAllocator('moderator') ], adminMethods.revokeGroupRegisterLinkRequest);
+router.delete('/groups/:groupId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.deleteGroupRequest);
 
-router.get('/verdicts', [ userRetriever, rightsAllocator('user') ], adminMethods.getVerdictsRequest);
+router.get('/verdicts', [ userRetriever, rightsAllocator('moderator', 'user') ], adminMethods.getVerdictsRequest);
 
-router.get('/problems', [ userRetriever, rightsAllocator('admin') ], adminMethods.searchProblemsRequest);
-router.get('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getProblemRequest);
+router.get('/problems', [ userRetriever, rightsAllocator('moderator') ], adminMethods.searchProblemsRequest);
+router.get('/problems/:problemId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getProblemRequest);
 router.post('/problems/scan', [ userRetriever, rightsAllocator('admin') ], adminMethods.scanRequest);
 router.post('/problems/:problemId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateProblemRequest);
 router.post('/problems/:problemId/rescan', [ userRetriever, rightsAllocator('admin') ], adminMethods.rescanProblemRequest);
@@ -28,28 +28,28 @@ router.delete('/problems/:problemId', [ userRetriever, rightsAllocator('admin') 
 router.post('/problems/new/ejudge', [ userRetriever, rightsAllocator('admin') ], adminMethods.createEjudgeProblemRequest);
 router.post('/problems/new/acmp', [ userRetriever, rightsAllocator('admin') ], adminMethods.importAcmpProblemRequest);
 
-router.post('/solutions/:solutionId/verdict', [ userRetriever, rightsAllocator('admin') ], adminMethods.setVerdictRequest);
-router.post('/solutions/:solutionId/refresh', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionRequest);
-router.post('/solutions/:solutionId/duplicate', [ userRetriever, rightsAllocator('admin') ], adminMethods.duplicateSolutionRequest);
-router.delete('/solutions/:solutionId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteSolutionRequest);
+router.post('/solutions/:solutionId/verdict', [ userRetriever, rightsAllocator('moderator') ], adminMethods.setVerdictRequest);
+router.post('/solutions/:solutionId/refresh', [ userRetriever, rightsAllocator('moderator') ], adminMethods.refreshSolutionRequest);
+router.post('/solutions/:solutionId/duplicate', [ userRetriever, rightsAllocator('moderator') ], adminMethods.duplicateSolutionRequest);
+router.delete('/solutions/:solutionId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.deleteSolutionRequest);
 
-router.get('/users', [ userRetriever, rightsAllocator('user') ], adminMethods.searchUsersRequest);
-router.post('/users', [ userRetriever, rightsAllocator('admin') ], adminMethods.createUserRequest);
-router.post('/users-groups', [ userRetriever, rightsAllocator('admin') ], adminMethods.createUsersIntoGroupsRequest);
-router.get('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getUserRequest);
+router.get('/users', [ userRetriever, rightsAllocator('moderator', 'user') ], adminMethods.searchUsersRequest);
+router.post('/users', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createUserRequest);
+router.post('/users-groups', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createUsersIntoGroupsRequest);
+router.get('/users/:userId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getUserRequest);
 router.post('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateUserRequest);
 router.delete('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteUserRequest);
 
-router.post('/contests', [ userRetriever, rightsAllocator('admin') ], adminMethods.createContestRequest);
-router.post('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateContestRequest);
-router.post('/contests/:contestId/problems', [ userRetriever, rightsAllocator('admin') ], adminMethods.setProblemsForContestRequest);
-router.get('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.getContestRequest);
-router.delete('/contests/:contestId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteContestRequest);
+router.post('/contests', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createContestRequest);
+router.post('/contests/:contestId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.updateContestRequest);
+router.post('/contests/:contestId/problems', [ userRetriever, rightsAllocator('moderator') ], adminMethods.setProblemsForContestRequest);
+router.get('/contests/:contestId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getContestRequest);
+router.delete('/contests/:contestId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.deleteContestRequest);
 router.post('/contests/:contestId/repair', [ userRetriever, rightsAllocator('admin') ], adminMethods.repairContestRequest);
-router.delete('/contests/:contestId/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteUserFromContestRequest);
-router.post('/contests/:contestId/solutions/refresh', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsRequest);
-router.post('/contests/:contestId/solutions/refresh/:symbolIndex', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsForProblemRequest);
-router.post('/contests/:contestId/solutions/refresh/:symbolIndex/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.refreshSolutionsForProblemAndUserRequest);
+router.delete('/contests/:contestId/users/:userId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.deleteUserFromContestRequest);
+router.post('/contests/:contestId/solutions/refresh', [ userRetriever, rightsAllocator('moderator') ], adminMethods.refreshSolutionsRequest);
+router.post('/contests/:contestId/solutions/refresh/:symbolIndex', [ userRetriever, rightsAllocator('moderator') ], adminMethods.refreshSolutionsForProblemRequest);
+router.post('/contests/:contestId/solutions/refresh/:symbolIndex/:userId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.refreshSolutionsForProblemAndUserRequest);
 
 router.post('/computeRatings', [ userRetriever, rightsAllocator('admin') ], adminMethods.computeRatingsRequest);
 

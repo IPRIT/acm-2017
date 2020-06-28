@@ -29,8 +29,6 @@ export async function canJoin(params) {
   let contestGroups = await contest.getGroups();
   let userGroups = await user.getGroups();
   
-  const isAdmin = accessGroups.utils.hasRight(user.accessGroup, accessGroups.groups.admin.mask);
-  
   let joined = await contest.hasContestant(user);
   let can = (
       (
@@ -43,9 +41,9 @@ export async function canJoin(params) {
         ![ 'WAITING', 'FINISHED' ].includes(contest.status)
         || joined
       )
-    ) || isAdmin;
+    ) || user.isSupervisor;
   let confirm = !(
-    joined || isAdmin
+    joined || user.isSupervisor
   );
   let result = { can, joined, confirm };
   

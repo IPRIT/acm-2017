@@ -1,6 +1,6 @@
 div.acm-table-cell(
   ng-class='{\
-    "acm-table-cell__type_clickable": cell.result !== "—" && (row.user.id === viewAs.id || viewAs.isAdmin), \
+    "acm-table-cell__type_clickable": cell.result !== "—" && (row.user.id === viewAs.id || viewAs.isSupervisor), \
     "acm-table-cell__type_practice": cell.inPractice, \
     "acm-table-cell__type_frozen": cell.cellFrozen \
   }',

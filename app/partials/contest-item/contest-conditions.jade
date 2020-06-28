@@ -15,7 +15,7 @@ div.contest
               span.contest__condition-index {{condition.internalSymbolIndex}}.
               span=' '
               span.contest__condition-name {{condition.title}}
-            div.contest__sytem(ng-if='user.isAdmin')
+            div.contest__sytem(ng-if='user.isSupervisor')
               span.contest__system-type(ng-switch='condition.systemType')
                 span(ng-switch-when='timus') Timus
                 span(ng-switch-when='cf') Codeforces
@@ -41,7 +41,7 @@ div.contest
                 md-tooltip(md-direction="left") Задача не решена
                 span {{condition.verdictStatus.wrongsNumber}}
 
-        div.contest__conditions_add(ng-if='user.isAdmin')
+        div.contest__conditions_add(ng-if='user.isSupervisor')
           md-button(md-no-ink, ng-click='addNewProblemDialog($event)')
             md-icon(md-svg-src='/img/icons/ic_add_48px.svg')
             span(style='margin-left: 10px;') Добавить задачу

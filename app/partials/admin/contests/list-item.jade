@@ -9,9 +9,7 @@ div.contests-list__item-layer.admin-contests__contest-item
       span.contest-item__rated-label(ng-if='contest.isRated') Рейтинговый
       span {{contest.name}}
     div.contest-item__groups
-      div.contest-item__groups-for Кто видит:
-      div.contests-list__groups-item(ng-if='!contest.allowedGroups.length', style='background-color: #9E9E9E;')
-        span Все
+      div.contest-item__groups-for {{contest.allowedGroups.length > 1 ? 'Группы:' : 'Группа:'}}
       div.contests-list__groups-item(ng-repeat='group in contest.allowedGroups', style='background-color: {{group.color || "#ccc"}}')
         span {{group.name}}
     div.contest-item__info

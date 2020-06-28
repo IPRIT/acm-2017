@@ -1,4 +1,5 @@
 {
   "test": "i18n is working",
-  "app_name": "MISIS Acm Server"
+  "app_name": "MISIS Acm Server",
+  "contest-table-title": "Results"
 }

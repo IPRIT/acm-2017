@@ -7,7 +7,7 @@ div.sent-list(style='font-size: .9em;')
         div.sent-list__cell(style='max-width: 120px;')
             span Время
         div.sent-list__cell.sent-list__filter-participant
-            div(layout='row', ng-show='user.isAdmin')
+            div(layout='row', ng-show='user.isSupervisor')
                 md-input-container.md-no-float(md-no-float)
                     label Участник
                     md-select(ng-model='filterParticipants', md-on-close='clearSearchTerm()',
@@ -18,7 +18,7 @@ div.sent-list(style='font-size: .9em;')
                         md-optgroup(label='participants')
                             md-option(ng-value='participant.id', ng-repeat='participant in participants |\
               filter:searchTerm') {{participant.fullName}}
-            span(ng-show='!user.isAdmin') Участник
+            span(ng-show='!user.isSupervisor') Участник
         div.sent-list__cell.sent-list__cell-task
             span Задача
         div.sent-list__cell
@@ -41,7 +41,7 @@ div.sent-list(style='font-size: .9em;')
             span Время исполнения
         div.sent-list__cell(style='max-width: 95px;')
             span Память
-        div.sent-list__cell(ng-if='user.isAdmin', style='max-width: 60px;')
+        div.sent-list__cell(ng-if='user.isSupervisor', style='max-width: 60px;')
             span &nbsp;
 
     include ./solution-item

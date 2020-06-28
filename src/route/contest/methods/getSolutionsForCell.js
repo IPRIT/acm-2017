@@ -68,7 +68,7 @@ export async function getSolutionsForCell(params) {
     attributes: { exclude: [ 'password' ] }
   };
   
-  if (!user.isAdmin) {
+  if (!user.isSupervisor) {
     deap.extend(includeUsers, {
       where: {
         accessGroup:  {

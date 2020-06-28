@@ -3,6 +3,10 @@ const groups = {
     mask: 0x1000,
     name: 'Admin'
   },
+  moderator: {
+    mask: 0x400,
+    name: 'Moderator'
+  },
   user: {
     mask: 0x100,
     name: 'User'
@@ -12,7 +16,7 @@ const groups = {
     name: 'Locked'  
   },
   all: {
-    mask: 0x1000 | 0x100 | 0x10,
+    mask: 0x1000 | 0x400 | 0x100 | 0x10,
     name: 'All'
   }
 };

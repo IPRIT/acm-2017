@@ -1,6 +1,6 @@
 div.chat-app
   div.chat-app__inner
-    div.chat-app__dialogs(ng-if='user.isAdmin')
+    div.chat-app__dialogs(ng-if='user.isSupervisor')
       chat-dialogs
 
     div.chat-app__messages.ui-view

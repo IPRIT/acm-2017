@@ -54,7 +54,7 @@ export async function getSolution(params) {
   let foundProblemIndex = problems.findIndex(problem => problem.id === solution.problemId);
   let symbolIndex = getSymbolIndex(foundProblemIndex).toUpperCase();
   
-  let canSee = solution.userId === user.id || user.isAdmin;
+  let canSee = solution.userId === user.id || user.isSupervisor;
   if (!canSee) {
     throw new HttpError('You have no permissions', 403);
   } else if (raw) {

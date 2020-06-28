@@ -77,10 +77,10 @@ angular.module('Qemy.controllers', [
             socketId = SocketService.getSocket().id;
             console.log('Connected:', socketId);
 
-            SocketService.listenChat(user.isAdmin ? 2 : user.id);
+            SocketService.listenChat(user.isSupervisor ? 2 : user.id);
             SocketService.getSocket().on('reconnect', _ => {
               console.log('Reconnected:', SocketService.getSocket().id);
-              $timeout(() => SocketService.listenChat(user.isAdmin ? 2 : user.id), 500);
+              $timeout(() => SocketService.listenChat(user.isSupervisor ? 2 : user.id), 500);
             });
 
             attachEvents();
@@ -116,7 +116,7 @@ angular.module('Qemy.controllers', [
       $scope.$on('user update needed', function (ev, args) {
         console.log('User data update needed.', user);
         if (user && user.id) {
-          SocketService.stopListenChat(user.isAdmin ? 2 : user.id);
+          SocketService.stopListenChat(user.isSupervisor ? 2 : user.id);
           removeEvents();
         }
         asyncInit().then(_user => {
@@ -135,7 +135,7 @@ angular.module('Qemy.controllers', [
 
       $scope.$on('$destroy', function () {
         if (user && user.id) {
-          SocketService.stopListenChat(user.isAdmin ? 2 : user.id);
+          SocketService.stopListenChat(user.isSupervisor ? 2 : user.id);
           removeEvents();
         }
       });
@@ -173,7 +173,7 @@ angular.module('Qemy.controllers', [
           action: 'admin.edit-contest({contestId: headerMenu.contest.id})'
         }]
       };
-      $scope.isSchoolLogo = location.host.indexOf('contest.misis.ru') === -1;
+      $scope.isMainLogo = location.host.indexOf('contest.misis.ru') !== -1;
       
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
@@ -201,16 +201,31 @@ angular.module('Qemy.controllers', [
       });
 
       $scope.menuList = [{
-       type: 'item',
-       id: 'profile',
-       name: 'Мои решения',
-       iconSrc: '/img/icons/ic_person_48px.svg'
-       }, {
+        type: 'item',
+        id: 'profile',
+        onlyFor: 256,
+        name: 'Мои решения',
+        iconSrc: '/img/icons/ic_rule_24px.svg'
+      }, {
+        type: 'item',
+        id: 'profile',
+        onlyFor: [1024, 4096],
+        name: 'Решения пользователей',
+        iconSrc: '/img/icons/ic_rule_24px.svg'
+      }, {
         type: 'item',
         id: 'chat.peer',
-        name: 'Чат с администратором',
+        onlyFor: [256],
+        name: 'Написать администратору',
         counter: $scope.unreadChatMessagesNumber,
-        iconSrc: '/img/icons/ic_chat_48px.svg'
+        iconSrc: '/img/icons/ic_attach_email_24px.svg'
+      }, {
+        type: 'item',
+        id: 'chat.peer',
+        onlyFor: [1024, 4096],
+        name: 'Сообщения пользователей',
+        counter: $scope.unreadChatMessagesNumber,
+        iconSrc: '/img/icons/ic_attach_email_24px.svg'
       }, {
         type: 'item',
         onlyFor: 4096,
@@ -218,11 +233,18 @@ angular.module('Qemy.controllers', [
         name: 'Панель администратора',
         iconSrc: '/img/icons/ic_security_48px.svg'
       }, {
+        type: 'item',
+        onlyFor: 1024,
+        id: 'admin-panel',
+        name: 'Панель модератора',
+        iconSrc: '/img/icons/ic_security_48px.svg'
+      }, {
         type: 'divider'
       }, {
         type: 'item',
         id: 'exit-app',
         name: 'Выход',
+        className: 'md-accent',
         iconSrc: '/img/icons/ic_exit_to_app_48px.svg'
       }];
       

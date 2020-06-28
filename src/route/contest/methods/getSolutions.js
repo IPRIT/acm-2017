@@ -95,14 +95,14 @@ export async function getSolutions(params) {
 
   // ensure that user will get
   // only own solutions
-  if (!forTable && !user.isAdmin) {
+  if (!forTable && !user.isSupervisor) {
     solutionsType = 'my';
   }
 
   if (solutionsType === 'my') {
     deap.extend(where, { userId: user.id });
   }
-  if (!user.isAdmin) {
+  if (!user.isSupervisor) {
     deap.extend(includeUsers, {
       where: {
         accessGroup:  {

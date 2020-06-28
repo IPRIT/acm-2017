@@ -27,7 +27,6 @@ angular.module('Qemy.controllers.auth', [
         $rootScope.$broadcast('data loading');
         var authProcess = $http.post('/api/user/authenticate/sign-in', $scope.form);
         authProcess.then(function (data) {
-          console.log(data);
           $rootScope.$broadcast('data loaded');
           $state.go('index');
         }).catch(function (result) {
@@ -58,7 +57,6 @@ angular.module('Qemy.controllers.auth', [
         $rootScope.$broadcast('data loading');
         const authProcess = $http.post('/api/user/authenticate/sign-up-in-group', $scope.form);
         authProcess.then(data => {
-          console.log(data);
           $rootScope.$broadcast('data loaded');
           $scope.registered = true;
         }).catch(function (result) {

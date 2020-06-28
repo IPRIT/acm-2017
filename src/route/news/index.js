@@ -4,9 +4,9 @@ import * as news from './methods';
 
 const router = express.Router();
 
-router.get('/', [ userRetriever, rightsAllocator('user') ], news.getNewsRequest);
+router.get('/', [ userRetriever, rightsAllocator('user', 'moderator') ], news.getNewsRequest);
 router.post('/', [ userRetriever, rightsAllocator('admin') ], news.createNewsRequest);
-router.get('/:newsId', [ userRetriever, rightsAllocator('user') ], news.getNewsByIdRequest);
+router.get('/:newsId', [ userRetriever, rightsAllocator('user', 'moderator') ], news.getNewsByIdRequest);
 router.post('/:newsId', [ userRetriever, rightsAllocator('admin') ], news.updateNewsRequest);
 router.delete('/:newsId', [ userRetriever, rightsAllocator('admin') ], news.deleteNewsByIdRequest);
 

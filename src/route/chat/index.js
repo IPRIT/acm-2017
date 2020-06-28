@@ -4,14 +4,14 @@ import * as chat from './methods';
 
 const router = express.Router();
 
-router.post('/chatMessages', [ userRetriever, rightsAllocator('user') ], chat.postChatMessageRequest);
-router.delete('/chatMessages', [ userRetriever, rightsAllocator('user') ], chat.deleteDialogMessageRequest);
-router.get('/chatMessages', [ userRetriever, rightsAllocator('user') ], chat.getDialogMessagesRequest);
-router.get('/chatDialogs', [ userRetriever, rightsAllocator('user') ], chat.getDialogsRequest);
-router.post('/chatMessages/read', [ userRetriever, rightsAllocator('user') ], chat.markChatMessagesAsReadRequest);
+router.post('/chatMessages', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.postChatMessageRequest);
+router.delete('/chatMessages', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.deleteDialogMessageRequest);
+router.get('/chatMessages', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.getDialogMessagesRequest);
+router.get('/chatDialogs', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.getDialogsRequest);
+router.post('/chatMessages/read', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.markChatMessagesAsReadRequest);
 
-router.get('/resolvePeer', [ userRetriever, rightsAllocator('user') ], chat.resolvePeerRequest);
-router.get('/unreadMessagesNumber', [ userRetriever, rightsAllocator('user') ], chat.getUnreadMessagesNumberRequest);
-router.get('/me', [ userRetriever, rightsAllocator('user') ], chat.getMeRequest);
+router.get('/resolvePeer', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.resolvePeerRequest);
+router.get('/unreadMessagesNumber', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.getUnreadMessagesNumberRequest);
+router.get('/me', [ userRetriever, rightsAllocator('moderator', 'user') ], chat.getMeRequest);
 
 export default router;

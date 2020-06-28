@@ -1,7 +1,7 @@
 a.dialogs-item(ng-click='select(dialogItem.peer.id)', ui-sref='chat.peer({peerId: dialogItem.peer.id})', ng-class='{"dialogs-item_active": peerId == dialogItem.peer.id || selectedPeerId == dialogItem.peer.id}')
   div.dialogs-item__inner
     div.dialogs-item__avatar
-      div.md-avatar.group-users__user-photo(ng-class='{"group-users__user-photo_type_admin": dialogItem.peer.isAdmin}')
+      div.md-avatar.group-users__user-photo(ng-class='{"group-users__user-photo_type_admin": dialogItem.peer.isSupervisor}')
 
     div.dialogs-item__message
       div.dialogs-item__title {{ dialogItem.peer.fullName }}
