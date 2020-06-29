@@ -10,18 +10,26 @@ div.admin-content-layer
           div.contest-creation__row
             div.contest-creation__row-title Фио пользователя
             div(layout)
-                md-input-container(flex)
-                  label Имя
-                  input(md-maxlength='200', required, name='firstName', ng-model='form.firstName')
-                  div(ng-messages='userForm.firstName.$error')
-                    div(ng-message='required') Поле не может быть пустым.
-                    div(ng-message='md-maxlength') Введите не больше 200 символов
-                md-input-container(flex)
-                  label Фамилия
-                  input(md-maxlength='200', required, name='lastName', ng-model='form.lastName')
-                  div(ng-messages='userForm.lastName.$error')
-                    div(ng-message='required') Поле не может быть пустым.
-                    div(ng-message='md-maxlength') Введите не больше 200 символов
+              md-input-container(flex)
+                label Имя
+                input(md-maxlength='200', required, name='firstName', ng-model='form.firstName')
+                div(ng-messages='userForm.firstName.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 200 символов
+              md-input-container(flex)
+                label Фамилия
+                input(md-maxlength='200', required, name='lastName', ng-model='form.lastName')
+                div(ng-messages='userForm.lastName.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 200 символов
+
+            div(layout)
+              md-input-container(flex)
+                label E-mail
+                input(md-maxlength='200', required, name='email', type='email', ng-model='form.email')
+                div(ng-messages='userForm.email.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 200 символов
 
           div.contest-creation__row
             div.contest-creation__row-title Данные пользователя для входа
@@ -41,7 +49,7 @@ div.admin-content-layer
 
           div.contest-creation__row
             div.contest-creation__row-title В какой группе состоит?
-            span.sublabel Выберите группу для пользователя или оставьте поле пустым, чтобы пользователь видел все контесты.
+            span.sublabel Выберите группу для пользователя
             md-input-container.groups(md-no-float)
               md-chips.custom-chips(ng-model="form.groups", md-autocomplete-snap, md-require-match)
                 md-autocomplete(

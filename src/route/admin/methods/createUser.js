@@ -16,6 +16,7 @@ export async function createUser(params) {
     username,
     firstName,
     lastName,
+    email,
     password,
     groupIds = []
   } = params;
@@ -24,6 +25,7 @@ export async function createUser(params) {
     username,
     firstName,
     lastName,
+    email,
     password
   });
   await user.setGroups(groupIds);

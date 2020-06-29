@@ -8,18 +8,26 @@ div.admin-content-layer
         form.contest-creation__form(name='userForm')
 
           div.contest-creation__row
-            div.contest-creation__row-title Фио пользователя
+            div.contest-creation__row-title Личные данные
             div(layout)
               md-input-container(flex)
                 label Имя
-                input(md-maxlength='200', required, name='firstName', ng-model='user.firstName')
+                input(md-maxlength='200', required, name='firstName', ng-model='currentUser.firstName')
                 div(ng-messages='userForm.firstName.$error')
                   div(ng-message='required') Поле не может быть пустым.
                   div(ng-message='md-maxlength') Введите не больше 200 символов
               md-input-container(flex)
                 label Фамилия
-                input(md-maxlength='200', required, name='lastName', ng-model='user.lastName')
+                input(md-maxlength='200', required, name='lastName', ng-model='currentUser.lastName')
                 div(ng-messages='userForm.lastName.$error')
+                  div(ng-message='required') Поле не может быть пустым.
+                  div(ng-message='md-maxlength') Введите не больше 200 символов
+
+            div(layout)
+              md-input-container(flex)
+                label E-mail
+                input(md-maxlength='200', required, name='email', type='email', ng-model='currentUser.email')
+                div(ng-messages='userForm.email.$error')
                   div(ng-message='required') Поле не может быть пустым.
                   div(ng-message='md-maxlength') Введите не больше 200 символов
 
@@ -29,27 +37,27 @@ div.admin-content-layer
             div(layout)
               md-input-container(flex)
                 label Логин
-                input(md-maxlength='200', required, name='username', ng-model='user.username')
+                input(md-maxlength='200', required, name='username', ng-model='currentUser.username')
                 div(ng-messages='userForm.username.$error')
                   div(ng-message='required') Поле не может быть пустым.
                   div(ng-message='md-maxlength') Введите не больше 200 символов
-              md-input-container(flex)
+              md-input-container(flex, ng-if='user.isAdmin || user.id === currentUser.id')
                 label Пароль
-                input(md-maxlength='200', name='password', ng-model='user.password')
+                input(md-maxlength='200', name='password', ng-model='currentUser.password')
                 div(ng-messages='userForm.password.$error')
                   div(ng-message='md-maxlength') Введите не больше 200 символов
 
           div.contest-creation__row
             div.contest-creation__row-title Уровень доступа
             div(layout)
-              md-radio-group(ng-model='user.accessGroupMask')
-                md-radio-button(ng-repeat='accessGroup in accessGroups', value='{{accessGroup.mask}}', ng-class='{"md-accent": accessGroup.mask === 4096, "md-warn": accessGroup.mask === 1024, "md-primary": accessGroup.mask === 256}') {{accessGroup.name}}
+              md-radio-group(ng-model='currentUser.accessGroupMask')
+                md-radio-button(ng-repeat='accessGroup in accessGroups', ng-if='accessGroup.mask !== 4096 || user.isAdmin', value='{{accessGroup.mask}}', ng-class='{"md-accent": accessGroup.mask === 4096, "md-warn": accessGroup.mask === 1024, "md-primary": accessGroup.mask === 256}') {{accessGroup.name}}
 
           div.contest-creation__row
             div.contest-creation__row-title В какой группе состоит?
-            span.sublabel Выберите группу для пользователя или оставьте поле пустым, чтобы пользователь входил в любые контесты.
+            span.sublabel Выберите группу для пользователя
             md-input-container.groups(md-no-float)
-              md-chips.custom-chips(ng-model="user.groups", md-autocomplete-snap, md-require-match)
+              md-chips.custom-chips(ng-model="currentUser.groups", md-autocomplete-snap, md-require-match)
                 md-autocomplete(
                 md-selected-item="chips.selectedItem",
                 md-search-text="chips.searchText",

@@ -3,7 +3,28 @@ md-content(layout='column', layout-fill, ng-controller='AdminGroupsUserControlCo
     div.group-users__inner(layout='column')
 
       md-tabs.md-primary(md-dynamic-height, md-border-bottom, md-selected="selectedIndex", md-autoselect)
-        md-tab(label='Поиск')
+        md-tab(label='Выбранные пользователи ({{selectedUsers.length}})')
+          md-content.md-padding(md-swipe-right='onSwipeRight()')
+            div.group-users__items
+
+              md-list
+                md-subheader.md-no-sticky
+                  span(ng-if='selectedUsers.length')
+                    span {{selectedUsers.length + " item"}}
+                      span(ng-if='selectedUsers.length > 1') s
+                  span(ng-if='!selectedUsers.length') Нет выбранных пользователей
+                md-list-item.md-3-line(ng-repeat="item in selectedUsers")
+                  md-checkbox(ng-checked="existsUser(item, selectedUsers)", ng-click="toggleUser(item, selectedUsers)")
+                  div.md-avatar.group-users__user-photo(ng-class='{"group-users__user-photo_type_admin": item.isAdmin}')
+                  div.md-list-item-text(layout='column')
+                    h3 {{item.fullName}}
+                    h4 {{item.username}}
+                    p(ng-switch='item.accessGroup.name')
+                      span(ng-switch-when='Moderator') Модератор
+                      span(ng-switch-when='Admin') Администратор
+                      span(ng-switch-default) Обычный пользователь
+
+        md-tab(label='Добавить пользователей')
           md-content.md-padding(md-swipe-left='onSwipeLeft()')
             div.group-users__search(ng-if='searchUserText || !params.offset || pageNumber === 1')
               div(layout)
@@ -33,25 +54,3 @@ md-content(layout='column', layout-fill, ng-controller='AdminGroupsUserControlCo
                       span(ng-switch-default) Обычный пользователь
 
               include pagination
-
-        md-tab(label='Выбранные пользователи ({{selectedUsers.length}})')
-          md-content.md-padding(md-swipe-right='onSwipeRight()')
-            div.group-users__items
-
-              md-list
-                md-subheader.md-no-sticky
-                  span(ng-if='selectedUsers.length')
-                    span {{selectedUsers.length + " item"}}
-                      span(ng-if='selectedUsers.length > 1') s
-                  span(ng-if='!selectedUsers.length') Нет выбранных пользователей
-                md-list-item.md-3-line(ng-repeat="item in selectedUsers")
-                  md-checkbox(ng-checked="existsUser(item, selectedUsers)", ng-click="toggleUser(item, selectedUsers)")
-                  div.md-avatar.group-users__user-photo(ng-class='{"group-users__user-photo_type_admin": item.isAdmin}')
-                  div.md-list-item-text(layout='column')
-                    h3 {{item.fullName}}
-                    h4 {{item.username}}
-                    p(ng-switch='item.accessGroup.name')
-                      span(ng-switch-when='Moderator') Модератор
-                      span(ng-switch-when='Admin') Администратор
-                      span(ng-switch-default) Обычный пользователь
-

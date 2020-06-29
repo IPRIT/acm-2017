@@ -18,7 +18,7 @@ div
           form.contest-creation__form(name='registerForm', ng-if='!isLoading && (!user || !user.id)')
 
             div.contest-creation__row
-              div.contest-creation__row-title Фио пользователя
+              div.contest-creation__row-title Личная информация
               div(layout)
                 md-input-container(flex)
                   label Имя
@@ -30,6 +30,13 @@ div
                   label Фамилия
                   input(md-maxlength='200', required, name='lastName', ng-model='form.lastName')
                   div(ng-messages='registerForm.lastName.$error')
+                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='md-maxlength') Введите не больше 200 символов
+              div(layout)
+                md-input-container(flex)
+                  label E-mail
+                  input(md-maxlength='200', required, name='email', type='email', ng-model='form.email')
+                  div(ng-messages='registerForm.email.$error')
                     div(ng-message='required') Поле не может быть пустым.
                     div(ng-message='md-maxlength') Введите не больше 200 символов
 

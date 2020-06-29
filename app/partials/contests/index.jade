@@ -6,7 +6,7 @@ div
 
       div.contests-title Контесты
 
-      div.contests-sort
+      div.contests-sort(ng-if='all_items_count >= 5')
 
         div(style='flex: 1; margin-right: 20px;')
           md-input-container
@@ -39,7 +39,7 @@ div
           div.contests-list__item-layer.animation(ng-repeat='contest in contestsList')
             contest-list-item(contest='contest')
           div(ng-if='contestsList.length === 0')
-            div.contests-list__no-items Список контестов пуст
+            div.contests-list__no-items Список контестов пока пуст
 
 
       include ./pagination

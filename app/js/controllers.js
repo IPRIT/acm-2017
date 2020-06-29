@@ -236,7 +236,7 @@ angular.module('Qemy.controllers', [
         type: 'item',
         onlyFor: 1024,
         id: 'admin-panel',
-        name: 'Панель модератора',
+        name: 'Панель управления',
         iconSrc: '/img/icons/ic_security_48px.svg'
       }, {
         type: 'divider'

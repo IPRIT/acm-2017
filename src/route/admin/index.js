@@ -38,7 +38,7 @@ router.get('/users', [ userRetriever, rightsAllocator('moderator', 'user') ], ad
 router.post('/users', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createUserRequest);
 router.post('/users-groups', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createUsersIntoGroupsRequest);
 router.get('/users/:userId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.getUserRequest);
-router.post('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.updateUserRequest);
+router.post('/users/:userId', [ userRetriever, rightsAllocator('moderator') ], adminMethods.updateUserRequest);
 router.delete('/users/:userId', [ userRetriever, rightsAllocator('admin') ], adminMethods.deleteUserRequest);
 
 router.post('/contests', [ userRetriever, rightsAllocator('moderator') ], adminMethods.createContestRequest);

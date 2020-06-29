@@ -1,7 +1,5 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
-import * as contests from '../../contest/methods';
 
 export function updateUserRequest(req, res, next) {
   let params = Object.assign(
@@ -20,13 +18,15 @@ export async function updateUser(params) {
     username,
     firstName,
     lastName,
+    email,
     password,
     groupIds = [],
-    accessGroup
+    accessGroup,
+    user: initiatorUser
   } = params;
   
   let userIdsBlacklist = [ 1 ];
-  if (userIdsBlacklist.includes(Number(userId))) {
+  if (userIdsBlacklist.includes(Number(userId)) && initiatorUser.id !== userId) {
     throw new HttpError('You have no permissions', 403);
   }
   
@@ -36,6 +36,7 @@ export async function updateUser(params) {
     username,
     firstName,
     lastName,
+    email,
     accessGroup
   };
   if (password) {

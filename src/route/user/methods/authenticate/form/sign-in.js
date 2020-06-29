@@ -18,7 +18,10 @@ async function signIn(req, res) {
   
   let user = await User.findOne({
     where: {
-      username: login,
+      $or: {
+        username: login,
+        email: login,
+      },
       password: passwordHash(password)
     }
   });

@@ -18,7 +18,7 @@ angular.module('Qemy.controllers.contests', [])
       $scope.$emit('change_title', {
         title: 'Контесты | ' + _('app_name')
       });
-      var defaultCount = 10;
+      var defaultCount = 20;
 
       $scope.pageNumber = parseInt($state.params.pageNumber || 1);
       $scope.params = {

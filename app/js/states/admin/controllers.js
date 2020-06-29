@@ -1234,6 +1234,7 @@ angular.module('Qemy.controllers.admin', [])
           password: form.password,
           firstName: form.firstName,
           lastName: form.lastName,
+          email: form.email,
           groupIds: form.groups
         };
         AdminManager.createUser(data)
@@ -1343,18 +1344,18 @@ angular.module('Qemy.controllers.admin', [])
         title: 'Редактирование пользователя | ' + _('app_name')
       });
 
-      $scope.user = {
+      $scope.currentUser = {
         groups: []
       };
       var userId = $state.params.userId;
 
       AdminManager.getUser({ userId: userId })
-        .then(function (user) {
-          user.password = '';
-          user.accessGroupMask = user.accessGroup.mask;
-          $scope.user = user;
-          $scope.$watch('user.firstName', fioChanged);
-          $scope.$watch('user.lastName', fioChanged);
+        .then(function (currentUser) {
+          currentUser.password = '';
+          currentUser.accessGroupMask = currentUser.accessGroup.mask;
+          $scope.currentUser = currentUser;
+          $scope.$watch('currentUser.firstName', fioChanged);
+          $scope.$watch('currentUser.lastName', fioChanged);
         });
 
       $scope.chips = {
@@ -1381,7 +1382,7 @@ angular.module('Qemy.controllers.admin', [])
 
       $scope.submitForm = function () {
         $rootScope.$broadcast('data loading');
-        var form = angular.copy($scope.user);
+        var form = angular.copy($scope.currentUser);
         form.groups = (form.groups || []).map(function (group) {
           return group.id;
         });
@@ -1390,6 +1391,7 @@ angular.module('Qemy.controllers.admin', [])
         var data = {
           username: form.username,
           password: form.password,
+          email: form.email,
           firstName: form.firstName,
           lastName: form.lastName,
           groupIds: form.groups,
@@ -1411,12 +1413,12 @@ angular.module('Qemy.controllers.admin', [])
         if (fioChangesNumber++ < 2) {
           return;
         }
-        var firstName = $scope.user.firstName || '',
-          lastName = $scope.user.lastName || '',
+        var firstName = $scope.currentUser.firstName || '',
+          lastName = $scope.currentUser.lastName || '',
           username;
         if (!firstName && !lastName) {
-          $scope.user.username = '';
-          $scope.user.password = '';
+          $scope.currentUser.username = '';
+          $scope.currentUser.password = '';
           return;
         } else if (!firstName) {
           username = $filter('latinize')(lastName);
@@ -1425,7 +1427,7 @@ angular.module('Qemy.controllers.admin', [])
         } else {
           username = $filter('latinize')(firstName[0]) + '.' + $filter('latinize')(lastName);
         }
-        $scope.user.username = username;
+        $scope.currentUser.username = username;
       };
     }
   ])

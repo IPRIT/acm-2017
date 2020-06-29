@@ -24,6 +24,12 @@ let User = sequelize.define('User', {
       return '(hidden)';
     }
   },
+  email: {
+    type: Sequelize.STRING,
+    validate: {
+      isEmail: true,
+    }
+  },
   firstName: {
     type: Sequelize.STRING
   },

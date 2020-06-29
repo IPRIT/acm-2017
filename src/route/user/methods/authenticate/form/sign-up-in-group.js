@@ -19,6 +19,7 @@ async function signUpInGroup(params) {
     username,
     firstName,
     lastName,
+    email,
     password,
     groupKey,
     user
@@ -45,19 +46,23 @@ async function signUpInGroup(params) {
   if (!registeredUser) {
     registeredUser = await models.User.findOne({
       where: {
-        username
+        $or: {
+          username,
+          email
+        }
       }
     });
 
-    if (user) {
-      throw new HttpError('Пользователь с таким логином уже существует')
+    if (registeredUser) {
+      throw new HttpError('Пользователь с таким email или логином уже существует')
     }
 
     registeredUser = await models.User.create({
       username,
       firstName,
       lastName,
-      password
+      password,
+      email
     });
   }
 
@@ -73,5 +78,5 @@ async function signUpInGroup(params) {
   await registeredUser.setGroups(groupIds);
   await registerLink.increment('linkActivatedTimes');
 
-  return user;
+  return registeredUser;
 }
