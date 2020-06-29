@@ -1,21 +1,18 @@
-import * as models from "../../../models/index";
 import Promise from 'bluebird';
-import { extractAllParams } from "../../../utils/index";
-import { ensureNumber, valueBetween } from "../../../utils";
+import * as models from "../../../models/index";
+import { extractAllParams } from "../../../utils";
 
 export function getNewsByIdRequest(req, res, next) {
-  let params = Object.assign(
-    extractAllParams(req)
-  );
   return Promise.resolve().then(() => {
-    return getNewsById( params );
+    return getNewsById( extractAllParams(req) );
   }).then(result => res.json(result)).catch(next);
 }
 
 export async function getNewsById(params) {
   let {
-    userId, user,
-    newsId
+    userId,
+    newsId,
+    user
   } = params;
   
   if (!user) {
@@ -25,10 +22,34 @@ export async function getNewsById(params) {
     throw new HttpError('User not found');
   }
 
-  return models.News.findByPrimary(newsId, {
+  const news = await models.News.findByPrimary(newsId);
+
+  if (!news) {
+    throw new HttpError('News not found');
+  }
+
+  const allowed = user.isAdmin;
+
+  const groupsWhere = {};
+
+  if (!allowed) {
+    const userGroups = await user.getGroups();
+
+    Object.assign(groupsWhere, {
+      id: {
+        $in: userGroups.map(group => group.id)
+      }
+    })
+  }
+
+  return models.News.findByPrimary(news.id, {
     include: [{
       model: models.User,
       required: true
+    }, {
+      model: models.Group,
+      required: !allowed,
+      where: groupsWhere
     }]
   });
 }

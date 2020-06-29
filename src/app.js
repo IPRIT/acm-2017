@@ -19,6 +19,8 @@ import { ClientError, ServerError } from './route/error/http-error';
 import * as systems from './systems';
 import polygonRouter from './systems/polygon';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 let app = express();
 
 // view engine setup
@@ -61,7 +63,9 @@ app.use('/polygon', polygonRouter);
 
 app.all('/*', function(req, res, next) {
   // Just send the index.jade for other files to support html5 mode in angular routing
-  res.render('index/index');
+  res.render('index/index', {
+    manifest: isProduction ? '/manifest.appcache' : '',
+  });
 });
 
 app.use(ClientError);

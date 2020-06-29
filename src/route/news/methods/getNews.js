@@ -17,8 +17,9 @@ export async function getNews(params) {
   const defaultOffset = 0;
 
   let {
-    userId, user,
-    limit = defaultLimit, offset = defaultOffset
+    userId,
+    limit = defaultLimit, offset = defaultOffset,
+    user
   } = params;
   
   if (!user) {
@@ -31,12 +32,30 @@ export async function getNews(params) {
   limit = valueBetween( ensureNumber( limit ), 0, 100 );
   offset = valueBetween( ensureNumber( offset ), 0, Infinity );
 
+  const groupsWhere = {};
+
+  if (!user.isAdmin) {
+    const userGroups = await user.getGroups();
+
+    Object.assign(groupsWhere, {
+      $or: {
+        id: {
+          $in: userGroups.map(group => group.id)
+        }
+      }
+    })
+  }
+
   return models.News.findAll({
     limit,
     offset,
     include: [{
       model: models.User,
       required: true
+    }, {
+      model: models.Group,
+      required: !user.isAdmin,
+      where: groupsWhere
     }],
     order: 'id DESC'
   });

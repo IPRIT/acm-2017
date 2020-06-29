@@ -45,7 +45,8 @@ export async function searchUsers(params) {
   return models.User.findAll({
     where,
     offset,
-    limit
+    limit,
+    order: [['accessGroup', 'DESC']]
   }).then(async users => {
     return {
       users,

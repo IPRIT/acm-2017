@@ -18,7 +18,8 @@ export async function createNews(params) {
   let {
     userId, user,
     title = defaultTitle,
-    body = defaultBody
+    body = defaultBody,
+    groupsIds = []
   } = params;
   
   if (!user) {
@@ -28,21 +29,35 @@ export async function createNews(params) {
     throw new HttpError('User not found');
   }
 
-  /*const adminId = 2;
-  if (user.isAdmin) {
-    user = await models.User.findByPrimary(adminId);
-    userId = adminId;
-  }*/
-
   if (!title) {
     title = defaultTitle;
   }
   if (!body) {
     body = defaultBody;
   }
+  if (!groupsIds) {
+    groupsIds = [];
+  }
+  groupsIds = [].concat(groupsIds).map(Number);
 
-  return user.createNews({
+  if (user.isAdmin && groupsIds.length === 0) {
+    const allGroups = await models.Group.findAll({
+      order: 'id DESC'
+    });
+
+    groupsIds.push(
+      ...allGroups.map(group => group.id)
+    );
+  }
+
+  const news = await user.createNews({
     title,
     body
   });
+
+  if (groupsIds.length) {
+    await news.setGroups(groupsIds);
+  }
+
+  return news;
 }

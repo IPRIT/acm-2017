@@ -5,7 +5,6 @@ app/prod
 tmp
 .DS_Store
 .idea
-config.development.json
 /cdn
 /uploads/*
 app/uploads/*

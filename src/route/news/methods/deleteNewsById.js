@@ -26,8 +26,18 @@ export async function deleteNewsById(params) {
   }
 
   const item = await models.News.findByPrimary( newsId );
+  const [newsGroups, userGroups] = await Promise.all([
+    item.getGroups(), user.getGroups()
+  ]);
+  const canDelete = user.isAdmin || newsGroups.some(newsGroup => {
+    return userGroups.some(userGroup => {
+      return newsGroup.id === userGroup.id;
+    });
+  });
 
-  if (item) {
-    return item.destroy();
+  if (!canDelete) {
+    throw new HttpError('Cannot delele news');
   }
+
+  return item && item.destroy();
 }

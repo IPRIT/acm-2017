@@ -127,7 +127,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('process', [
-    'newer:concat', 'babel', 'browserify', 'uglify'
+    'newer:concat', 'babel', 'browserify'
   ]);
   grunt.registerTask('sass-compile', [
     'sass',

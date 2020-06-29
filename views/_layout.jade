@@ -1,11 +1,11 @@
 include mixins/mixins
   
 doctype html
-html(ng-controller='PageCtrl', x-manifest='/manifest.appcache')
+html(ng-controller='PageCtrl', manifest='#{manifest}')
   head
     base(href='/')
     include index/head
-    //include metrics/yandex
+    // include metrics/yandex
   body(ng-controller='AppCtrl', insert-chat-sidenav)
     block content
 

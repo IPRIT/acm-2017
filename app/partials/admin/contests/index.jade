@@ -3,6 +3,11 @@ div.admin-content-layer
     div.contests-list
       div.contests-title Контесты
       div(layout='row', layout-align='end center')
+
+        md-input-container(style='position: relative; top: 10px;')
+          label Поиск по контестам
+          input(name='searchQuery', ng-model='curSearchQuery')
+
         div.contests-sort__item
           md-input-container(ng-show='curSortItem || curCategory')
             label Порядок

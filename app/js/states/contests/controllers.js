@@ -30,6 +30,7 @@ angular.module('Qemy.controllers.contests', [])
         query: ''
       };
 
+      $scope.isLoading = true;
       $scope.all_items_count = 0;
       $scope.pagination = [];
       $scope.contestsList = [];
@@ -116,6 +117,8 @@ angular.module('Qemy.controllers.contests', [])
       });
 
       function updateContestsList() {
+        $scope.isLoading = true;
+
         $rootScope.$broadcast('data loading');
         return ContestsManager.getContests($scope.params).then(function (result) {
           $rootScope.$broadcast('data loaded');
@@ -129,10 +132,12 @@ angular.module('Qemy.controllers.contests', [])
           $rootScope.$broadcast('data loaded');
           $state.go('auth.form');
           ErrorService.show(result);
+        }).finally(() => {
+          $scope.isLoading = false;
         });
       }
 
-      updateContestsList();
+      // updateContestsList();
 
       $scope.$watch('curCategory', function (newVal, oldVal) {
         if (!newVal) {

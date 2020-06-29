@@ -7,7 +7,23 @@ div
     section.news-form__content
       div.news-form__form
         textarea(froala="froalaOptions", ng-model="body")
+      div.contest-creation__row
+        span.sublabel Какие группы увидят новость
+        md-input-container.groups(md-no-float)
+          md-chips.custom-chips(ng-model="groups", md-autocomplete-snap, md-require-match)
+            md-autocomplete(
+              md-selected-item="chips.selectedItem",
+              md-search-text="chips.searchText",
+              md-items="item in groupSearch(chips.searchText)",
+              md-item-text="item.name",
+              placeholder='Введите название...'
+            )
+              span(md-highlight-text="searchText") {{item.name}}
+            md-chip-template
+              div
+                span.chip-circle(style='background-color: {{$chip.color}};')
+                span {{$chip.name}}
       div.news-form__submit
-        md-button.md-primary.md-raised(ng-click='submit($event)', ng-disabled='!(body.length && title.length)') Сохранить изменения
+        md-button.md-primary.md-raised(ng-click='submit($event)', ng-disabled='!(body.length && title.length && (groups.length > 0 || user.isAdmin))') Сохранить изменения
 
 page-footer

@@ -85,7 +85,18 @@ angular.module('Qemy.controllers.admin', [])
         offset: ($scope.pageNumber - 1) * defaultCount,
         category: 'all',
         sort: 'byId',
-        sort_order: 'desc'
+        sort_order: 'desc',
+        query: ''
+      };
+
+      const debounce = (cb, delay = 200) => {
+        let timeout = null;
+        return function(data) {
+          if (timeout) {
+            clearTimeout(timeout);
+          }
+          timeout = setTimeout(_ => cb( data ), delay);
+        };
       };
 
       $scope.all_items_count = 0;
@@ -171,11 +182,11 @@ angular.module('Qemy.controllers.admin', [])
         updateContestsList();
       });
 
-      function updateContestsList() {
-        $rootScope.$broadcast('data loading');
+      function updateContestsList(loading = true) {
+        loading && $rootScope.$broadcast('data loading');
         var contestsPromise = ContestsManager.getContests($scope.params);
         contestsPromise.then(function (result) {
-          $rootScope.$broadcast('data loaded');
+          loading && $rootScope.$broadcast('data loaded');
           if (!result || !result.hasOwnProperty('contestsNumber')) {
             return;
           }
@@ -216,6 +227,14 @@ angular.module('Qemy.controllers.admin', [])
         updateContestsList();
         console.log('updating contests list...');
       });
+
+      $scope.curSearchQuery = '';
+
+      $scope.$watch('curSearchQuery', debounce((newVal, oldVal) => {
+        $scope.params.query = newVal;
+        $scope.params.offset = 0;
+        updateContestsList(false);
+      }));
 
       $scope.$on('admin update contest list', function () {
         updateContestsList();

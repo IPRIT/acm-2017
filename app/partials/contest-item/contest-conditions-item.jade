@@ -45,7 +45,7 @@ div.contest
             include ./contest-condition-item/files
 
 
-        div.task__send-layer
+        div.task__send-layer(ng-if='contest.status !== "FINISHED" || user.isSupervisor')
           div.task__send
             md-button.md-primary(ui-sref='^.send-item({problemIndex: condition.internalSymbolIndex})') Отправить решение
 

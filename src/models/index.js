@@ -116,6 +116,17 @@ Contest.belongsToMany(Problem, {
   timestamps: false
 });
 
+News.belongsToMany(Group, {
+  through: 'NewsToGroups',
+  timestamps: false,
+  foreignKey: 'newsId'
+});
+Group.belongsToMany(News, {
+  through: 'NewsToGroups',
+  timestamps: false,
+  foreignKey: 'groupId'
+});
+
 Problem.hasMany(ProblemToContest, { foreignKey: 'problemId', targetKey: 'id' });
 ProblemToContest.belongsTo(Problem, { foreignKey: 'problemId', targetKey: 'id' });
 

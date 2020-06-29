@@ -6,7 +6,7 @@ div
 
       div.contests-title Контесты
 
-      div.contests-sort(ng-if='all_items_count >= 5')
+      div.contests-sort(ng-show='all_items_count >= 5')
 
         div(style='flex: 1; margin-right: 20px;')
           md-input-container
@@ -36,10 +36,10 @@ div
         div.contests-list__pagination(ng-if='pageNumber !== 1')
           include ./pagination
         div.contests-list__items
-          div.contests-list__item-layer.animation(ng-repeat='contest in contestsList')
+          div.contests-list__item-layer(ng-repeat='contest in contestsList')
             contest-list-item(contest='contest')
-          div(ng-if='contestsList.length === 0')
-            div.contests-list__no-items Список контестов пока пуст
+          div(ng-if='contestsList.length === 0 && !isLoading')
+            div.contests-list__no-items У вас пока нет активных контестов
 
 
       include ./pagination

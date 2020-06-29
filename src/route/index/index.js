@@ -3,10 +3,14 @@
 import express from 'express';
 import { isJsonRequest } from './../../utils';
 
-let router = express.Router();
+const isProduction = process.env.NODE_ENV === 'production';
+
+const router = express.Router();
 
 router.get('/', [ isJsonRequest(false) ], function(req, res) {
-  res.render('index/index');
+  res.render('index/index', {
+    manifest: isProduction ? '/manifest.appcache' : '',
+  });
 });
 
 export default router;

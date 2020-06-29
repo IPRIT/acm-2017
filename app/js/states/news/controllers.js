@@ -31,12 +31,12 @@ angular.module('Qemy.controllers.news', [])
         safeApply($scope);
       });
 
-      $scope.isLoaded = false;
-
-      $scope.limit = 3;
+      $scope.limit = 5;
       $scope.offset = 0;
 
-      $scope.mockItems = Array( $scope.limit ).fill(0).map((v, i) => i);
+      $scope.showMore = true;
+      $scope.isFirstLoaded = false;
+      $scope.isMoreLoading = false;
 
       $scope.getNews = () => {
         return NewsManager.getNews({
@@ -46,19 +46,43 @@ angular.module('Qemy.controllers.news', [])
       };
 
       function updateList () {
+        $scope.offset = 0;
+        $scope.isFirstLoaded = false;
+        $scope.showMore = true;
+
         return $scope.getNews().then(items => {
-          return $timeout(_ => {
-            return items;
-          }, 500);
+          return items;
         }).then(items => {
           $scope.items = wrapItems( items );
-          $scope.isLoaded = true;
+          $scope.showMore = items.length >= $scope.limit;
+          $scope.offset += items.length;
           safeApply( $scope );
         }).catch(error => {
           ErrorService.show( error );
-          console.log(error);
+        }).finally(() => {
+          $scope.isFirstLoaded = true;
         });
       }
+
+      function loadMore () {
+        $scope.isMoreLoading = true;
+        return $scope.getNews().then(items => {
+          return items;
+        }).then(items => {
+          $scope.items.push(
+            ...wrapItems( items )
+          );
+          $scope.showMore = items.length >= $scope.limit;
+          $scope.offset += items.length;
+          safeApply( $scope );
+        }).catch(error => {
+          ErrorService.show( error );
+        }).finally(() => {
+          $scope.isMoreLoading = false;
+        });
+      }
+
+      $scope.loadMore = loadMore;
 
       updateList();
 
@@ -184,17 +208,39 @@ angular.module('Qemy.controllers.news', [])
   ])
 
   // Create Item
-  .controller('NewsCreateItemController', ['$scope', '$rootScope', '$state', 'NewsManager', '_', 'ErrorService',
-    function ($scope, $rootScope, $state, NewsManager, _, ErrorService) {
+  .controller('NewsCreateItemController', ['$scope', '$rootScope', '$state', 'NewsManager', 'UserManager', 'AdminManager', '_', 'ErrorService',
+    function ($scope, $rootScope, $state, NewsManager, UserManager, AdminManager, _, ErrorService) {
       $scope.froalaOptions = froalaOptions;
+
+      $scope.getMe = () => {
+        return UserManager.getCurrentUser();
+      };
+
+      $scope.getMe().then(user => {
+        $scope.user = user;
+        safeApply($scope);
+      });
 
       $scope.title = '';
       $scope.body = '';
+      $scope.groups = [];
+
+      $scope.chips = {
+        selectedItem: '',
+        searchText: ''
+      };
+
+      $scope.groupSearch = function (query) {
+        return AdminManager.searchGroups({ q: query }).then(data => {
+          return data.groups;
+        });
+      };
 
       $scope.submit = _ => {
         const data = {
           title: $scope.title,
-          body: $scope.body
+          body: $scope.body,
+          groupsIds: $scope.groups.map(group => group.id)
         };
 
         return NewsManager.createNews( data ).then(item => {
@@ -207,12 +253,33 @@ angular.module('Qemy.controllers.news', [])
   ])
 
   // Edit Item
-  .controller('NewsEditItemController', ['$scope', '$rootScope', '$state', 'NewsManager', '_', 'ErrorService',
-    function ($scope, $rootScope, $state, NewsManager, _, ErrorService) {
+  .controller('NewsEditItemController', ['$scope', '$rootScope', '$state', 'NewsManager', 'UserManager', 'AdminManager', '_', 'ErrorService',
+    function ($scope, $rootScope, $state, NewsManager, UserManager, AdminManager, _, ErrorService) {
       $scope.froalaOptions = froalaOptions;
+
+      $scope.getMe = () => {
+        return UserManager.getCurrentUser();
+      };
+
+      $scope.getMe().then(user => {
+        $scope.user = user;
+        safeApply($scope);
+      });
 
       $scope.title = '';
       $scope.body = '';
+      $scope.groups = [];
+
+      $scope.chips = {
+        selectedItem: '',
+        searchText: ''
+      };
+
+      $scope.groupSearch = function (query) {
+        return AdminManager.searchGroups({ q: query }).then(data => {
+          return data.groups;
+        });
+      };
 
       $scope.newsId = $state.params.newsId;
 
@@ -224,6 +291,7 @@ angular.module('Qemy.controllers.news', [])
         $scope.item = item;
         $scope.title = item.title;
         $scope.body = item.body;
+        $scope.groups = item.Groups;
 
         safeApply( $scope );
       }).catch(error => {
@@ -234,7 +302,8 @@ angular.module('Qemy.controllers.news', [])
         const data = {
           id: $scope.newsId,
           title: $scope.title,
-          body: $scope.body
+          body: $scope.body,
+          groupsIds: $scope.groups.map(group => group.id)
         };
 
         return NewsManager.updateNews( data ).then(_ => {

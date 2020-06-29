@@ -7,10 +7,11 @@
     "client:dev": "cross-env NODE_ENV=development grunt dev",
     "client:prod": "cross-env NODE_ENV=production grunt",
     "server:dev": "cross-env NODE_ENV=development nodemon server.js",
-    "server:build": "cross-env NODE_ENV=development babel src -d dist",
-    "server:start": "cross-env NODE_ENV=development node ./dist/bootstrap.js",
+    "server:build": "cross-env NODE_ENV=production babel src -d dist",
+    "server:start": "cross-env NODE_ENV=production node ./dist/bootstrap.js",
     "server:prod": "run-s server:build server:start",
-    "dev": "run-p client:dev server:dev",
+    "open": "open-cli http://localhost:3002 -- chrome",
+    "dev": "run-p client:dev server:dev open",
     "prod": "run-p client:prod server:prod"
   },
   "keywords": [

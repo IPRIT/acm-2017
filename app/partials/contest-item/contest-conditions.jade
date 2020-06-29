@@ -25,7 +25,7 @@ div.contest
                 span(ng-switch-when='yandex') Яндекс.Контест
                 span(ng-switch-when='yandexOfficial') Яндекс.Контест (Official)
           div.contest__condition-send-button-wrap(layout, layout-align='center center')
-            md-button.md-icon-button.md-primary(aria-label='Eat cake', ui-sref='contest.send-item({problemIndex: condition.internalSymbolIndex})')
+            md-button.md-icon-button.md-primary(aria-label='Отправить решение', ng-if='contest.status !== "FINISHED" || user.isSupervisor', ui-sref='contest.send-item({problemIndex: condition.internalSymbolIndex})')
               md-tooltip(md-direction="left") Отправить решение
               md-icon(md-svg-src='/img/icons/ic_send_48px.svg')
           div.contest__condition-view-button-wrap(layout, layout-align='center center')
