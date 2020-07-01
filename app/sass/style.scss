@@ -2,6 +2,7 @@
 @import "chat/index";
 @import "news/index";
 @import "table/table";
+@import "profile/profile";
 
 $media: screen;
 $laptop_min_width: 1024px;
@@ -49,7 +50,7 @@ html {
   display: block;
   height: 90px;
   background-color: #fff;
-  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 29px -11px rgba(0,0,0,0.31);;
+  box-shadow: $block-shadow;
   position: fixed;
   top: 0;
   width: 100%;
@@ -59,7 +60,7 @@ html {
   &_collapsed {
     .contest-menu {
       border-bottom: none;
-      box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 29px -11px rgba(0,0,0,0.31);;
+      box-shadow: $block-shadow;
     }
   }
 }
@@ -70,7 +71,7 @@ md-menu-content,
 }
 md-select-menu,
 .md-open-menu-container {
-  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 36px -11px rgba(0,0,0,0.31);
+  box-shadow: $block-shadow;
 }
 .fr-toolbar {
   border-top: 1px solid #ccc;
@@ -152,10 +153,12 @@ h1, h2, h3 {
   border: 1px solid transparent;
 }
 .profile__panel:hover {
-  border: 1px solid #eaeaea;
+  box-shadow: 0 0px 18px -11px;
 }
 .profile__panel:active {
   background-color: rgba(3, 169, 244, 0.03);
+  box-shadow: none;
+  transform: scale(0.95);
 }
 .profile__name {
   font-size: 16px;
@@ -261,7 +264,7 @@ h1, h2, h3 {
   margin: 20px auto;
   background: #fff;
   padding: 56px 24px 24px;
-  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 36px -11px rgba(0,0,0,0.31);
+  box-shadow: $block-shadow;
   border-radius: 16px;
   position: relative;
 
@@ -478,11 +481,11 @@ h1, h2, h3 {
   &__progress {
     position: fixed;
     z-index: 100000000;
-    top: 0;
+    top: 90px;
     left: 0;
     height: 2px;
-    background: #77b6ff;
-    box-shadow: 0 0 10px rgba(119,182,255,0.7);
+    background: #00acec;
+    box-shadow: 0 0 10px rgba(#00acec,0.7);
     -webkit-transition: width 4s ease;
     transition: width 4s ease;
     will-change: width;
@@ -541,7 +544,7 @@ h1, h2, h3 {
   box-sizing: border-box;
   height: 100%;
   position: relative;
-  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 36px -11px rgba(0, 0, 0, 0.31);
+  box-shadow: $block-shadow;
   transition: box-shadow 0.2s ease;
 }
 .contests-title {
@@ -711,10 +714,12 @@ my-timer-element {
 }
 .contest-menu__item:active {
   background-color: rgba(0, 0, 0, 0.05);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 .contest-menu {
   background-color: white;
-  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 29px -11px rgba(0,0,0,0.31);
+  box-shadow: $block-shadow;
 }
 .contest-menu__layer {
   width: 75%;
@@ -737,7 +742,7 @@ my-timer-element {
   width: 100%;
   height: 100%;
   position: relative;
-  box-shadow: 0px 0px 2px 0px rgba(25,146,198,0.05), 0px 2px 36px -11px rgba(0, 0, 0, 0.31);
+  box-shadow: $block-shadow;
   transition: box-shadow 0.2s ease;
 }
 .contest__min-width {

@@ -1,8 +1,8 @@
-div.header__profile.profile(ng-if='isAuth')
+div.header__profile(ng-if='isAuth')
   md-menu(md-offset="-50 79")
     div.profile__panel(ng-click="$mdOpenMenu($event)")
       div.profile__name
-        md-icon(md-svg-src="/img/icons/ic_account_circle_48px.svg")
+        md-icon(md-svg-src="/img/icons/ic_face_24px.svg")
         span {{ user.firstName + " " + user.lastName }}
       div.profile__unread-messages(ng-if='unreadChatMessagesNumber > 0') {{ unreadChatMessagesNumber }}
     md-menu-content(width="4")
@@ -16,7 +16,7 @@ div.header__profile.profile(ng-if='isAuth')
             div.profile__unread-messages(ng-if='item.counter') {{ unreadChatMessagesNumber }}
 
 
-div.header__profile.profile(ng-if='!isAuth')
+div.header__profile(ng-if='!isAuth')
   a.profile__panel(ui-sref='auth.form')
     div.profile__name
       md-icon(md-svg-src="/img/icons/ic_login_24px.svg")

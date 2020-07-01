@@ -8,10 +8,10 @@ div
         form.form(ng-submit='submitForm()', name='authForm')
 
           div.auth-form__row
-            md-input-container
+            md-input-container(style='margin-bottom: 0')
               label(qemy-i18n='auth-login')
               input(required, name="username", ng-model="form.login")
-              div(ng-messages="authForm.login.$error")
+              div(ng-messages="authForm.username.$error")
                 div(ng-message="required", qemy-i18n='required')
 
           div.auth-form__row

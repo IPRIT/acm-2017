@@ -1,6 +1,7 @@
 @import "variables";
 @import "functions";
 @import "classes";
+@import '../../../node_modules/sass-bem-utils/dist/sass-bem-utils';
 
 @mixin bem-block($block, $at-root: true) {
   $scope: unwrap-scope(&);

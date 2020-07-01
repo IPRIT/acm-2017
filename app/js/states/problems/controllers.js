@@ -32,7 +32,7 @@ angular.module('Qemy.controllers.problems', [])
     function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ProblemsManager, SocketService, $mdToast, $sce) {
 
       $scope.$emit('change_title', {
-        title: 'Условие | ' + _('app_name')
+        title: 'Условие • ' + _('app_name')
       });
 
       var problemId = $state.params.problemId;
@@ -72,7 +72,7 @@ angular.module('Qemy.controllers.problems', [])
             .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
           $scope.condition = result;
           $scope.$emit('change_title', {
-            title: 'Версия #' + result.versionNumber + ' [' + result.systemType.toUpperCase() + '] ' + result.title + ' | ' + _('app_name')
+            title: 'Версия #' + result.versionNumber + ' [' + result.systemType.toUpperCase() + '] ' + result.title + ' • ' + _('app_name')
           });
         }).catch(function (result) {
           ErrorService.show(result);

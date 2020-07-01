@@ -16,7 +16,7 @@ angular.module('Qemy.controllers.contests', [])
   .controller('ContestsListCtrl', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'ErrorService',
     function ($scope, $rootScope, $state, ContestsManager, UserManager, _, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Контесты | ' + _('app_name')
+        title: 'Контесты • ' + _('app_name')
       });
       var defaultCount = 20;
 

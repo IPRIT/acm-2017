@@ -2,7 +2,9 @@ div.contest
   div.contest__content.contest__min-width
     div.contest__inner
       div.contest__title-section(style='text-align: center;')
-        h2 Решение #
+        h2
+          span(qemy-i18n='contest-solution-item')
+          span &nbsp;#
           span(ng-bind='source.id')
 
       div.contest__source-row.sent-list

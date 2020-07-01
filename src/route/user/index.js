@@ -14,6 +14,9 @@ router.get('/solutions', [ userRetriever, rightsAllocator('user', 'moderator') ]
 router.post('/password/reset', user.forgetPasswordRequest);
 router.post('/password/change', user.changePasswordRequest);
 router.post('/email', [ userRetriever, rightsAllocator('user', 'moderator') ], user.linkEmailRequest);
+router.get('/telegram', [ userRetriever, rightsAllocator('user', 'moderator') ], user.linkTelegramRequest);
+router.get('/telegram-account', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getTelegramRequest);
+router.get('/telegram-disconnect', [ userRetriever, rightsAllocator('user', 'moderator') ], user.disconnectTelegramRequest);
 
 router.get('/:userId', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getUserByIdRequest);
 router.get('/:userId/groups', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getUserGroupsRequest);

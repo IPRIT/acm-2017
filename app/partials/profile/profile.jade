@@ -1,0 +1,31 @@
+div.profile
+  h1.news-list__title {{user.fullName}}
+
+  div.profile__row
+    div.profile__label
+      span(qemy-i18n='profile-email')
+    div.profile__value
+      div.profile__email(ng-if='user.email')
+        span {{user.email}}
+        div
+          md-button.md-primary.md-raised(aria-label='Change email', ui-sref='auth.link-email')
+            md-icon(md-svg-src="/img/icons/ic_edit_24px.svg", aria-label="Link")
+            span(qemy-i18n='profile-change-email')
+      md-button.md-primary.md-raised(ng-if='!user.email', aria-label='Link email', ui-sref='auth.link-email')
+        md-icon(md-svg-src="/img/icons/ic_insert_link_24px.svg", aria-label="Link")
+        span(qemy-i18n='profile-link-email')
+
+  div.profile__row
+    div.profile__label
+      span(qemy-i18n='profile-telegram')
+    div.profile__value
+      div.profile__email(ng-if='telegram && telegram.telegramId')
+        md-button.md-primary(ng-if='telegram.username', href='https://t.me/{{telegram.username}}', target='_blank') @{{telegram.username}}
+        span(ng-if='!telegram.username') ID: {{telegram.telegramId}}
+        div
+          md-button.md-primary.md-raised(aria-label='Disconnect', target='_blank', href='/api/user/telegram-disconnect')
+            md-icon(md-svg-src="/img/icons/ic_link_off_24px.svg", aria-label="Link")
+            span(qemy-i18n='profile-telegram-disconnect')
+      md-button.md-primary.md-raised(ng-if='!telegram || !telegram.telegramId', aria-label='Link telegram', target='_blank', href='/api/user/telegram')
+        md-icon(md-svg-src="/img/icons/ic_insert_link_24px.svg", aria-label="Link")
+        span(qemy-i18n='profile-telegram-link')

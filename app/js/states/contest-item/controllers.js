@@ -18,7 +18,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemBaseController', ['$scope', '$rootScope', '$state', 'ContestsManager', 'UserManager', '_', 'SocketService', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService',
     function ($scope, $rootScope, $state, ContestsManager, UserManager, _, SocketService, $mdToast, $mdSidenav, $log, $timeout, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Контест | ' + _('app_name')
+        title: 'Контест • ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       $scope.contest = {};
@@ -225,7 +225,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_',
     function ($scope, $rootScope, $state, ContestItemManager, _) {
       $scope.$emit('change_title', {
-        title: 'Информация о контесте | ' + _('app_name')
+        title: 'Информация о контесте • ' + _('app_name')
       });
       console.log('Основной контроллер для контеста. Информация.');
     }
@@ -234,7 +234,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemMonitorController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService', '$mdPanel',
     function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService, $mdPanel) {
       $scope.$emit('change_title', {
-        title: 'Таблица результатов | ' + _('app_name')
+        title: 'Таблица результатов • ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       $scope.contestTable = {};
@@ -364,7 +364,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemTableController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService', '$mdPanel',
     function ($scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService, $mdPanel) {
       $scope.$emit('change_title', {
-        title: 'Таблица результатов | ' + _('app_name')
+        title: 'Таблица результатов • ' + _('app_name')
       });
     }
   ])
@@ -372,7 +372,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemConditionsController', ['AdminManager', '$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'UserManager', '$mdDialog', 'ErrorService',
     function (AdminManager, $scope, $rootScope, $state, ContestItemManager, _, UserManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Условия | ' + _('app_name')
+        title: 'Условия • ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       $scope.conditions = {};
@@ -430,7 +430,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService', '$sce', '$timeout',
     function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService, $sce, $timeout) {
       $scope.$emit('change_title', {
-        title: 'Условие | ' + _('app_name')
+        title: 'Условие • ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       var problemId = $state.params.problemIndex;
@@ -468,7 +468,7 @@ angular.module('Qemy.controllers.contest-item', [
           .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
         $scope.condition = result;
         $scope.$emit('change_title', {
-          title: problemId + '. ' + result.title + ' | ' + _('app_name')
+          title: problemId + '. ' + result.title + ' • ' + _('app_name')
         });
 
         $timeout(_ => {
@@ -504,7 +504,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemSendController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', 'Storage', 'Upload', 'ErrorService',
     function ($scope, $rootScope, $state, ContestItemManager, _, Storage, Upload, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Отправить решение | ' + _('app_name')
+        title: 'Отправить решение • ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       $scope.conditions = [];
@@ -756,7 +756,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemStatusController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$timeout', '$interval', 'UserManager', '$mdDialog', '$mdBottomSheet', 'AdminManager', 'ErrorService', '$element',
     function ($scope, $rootScope, $state, ContestItemManager, _, $timeout, $interval, UserManager, $mdDialog, $mdBottomSheet, AdminManager, ErrorService, $element) {
       $scope.$emit('change_title', {
-        title: 'Мои посылки | ' + _('app_name')
+        title: 'Мои посылки • ' + _('app_name')
       });
       var contestId = $state.params.contestId;
       var select = $state.params.select;
@@ -905,7 +905,7 @@ angular.module('Qemy.controllers.contest-item', [
         switch (current) {
           case 0: {
             $scope.$emit('change_title', {
-              title: 'Мои посылки | ' + _('app_name')
+              title: 'Мои посылки • ' + _('app_name')
             });
             if ($scope.pageNumber === 1) {
               $state.transitionTo(
@@ -924,7 +924,7 @@ angular.module('Qemy.controllers.contest-item', [
           }
           case 1: {
             $scope.$emit('change_title', {
-              title: 'Все посылки | ' + _('app_name')
+              title: 'Все посылки • ' + _('app_name')
             });
             if ($scope.pageNumber === 1) {
               $state.transitionTo(
@@ -1618,7 +1618,7 @@ angular.module('Qemy.controllers.contest-item', [
   .controller('ContestItemSourceController', ['$scope', '$rootScope', '$state', '$mdDialog', '$mdBottomSheet', 'ContestItemManager', 'UserManager', 'AdminManager', '_', '$timeout', 'ErrorService',
     function ($scope, $rootScope, $state, $mdDialog, $mdBottomSheet, ContestItemManager, UserManager, AdminManager, _, $timeout, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Исходный код | ' + _('app_name')
+        title: 'Исходный код • ' + _('app_name')
       });
       
       var contestId = $state.params.contestId;

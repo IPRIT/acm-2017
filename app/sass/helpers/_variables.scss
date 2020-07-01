@@ -1,5 +1,18 @@
 @import "colors";
 
+
+/**
+ * Bem Constructor settings override
+ */
+$bem-use-namespaces: false;   // Defaults to true
+$bem-element-separator: '__'; // Defaults to '__'
+$bem-modifier-separator: '_'; // Defaults to '--'
+$bem-block-namespaces: (
+  'utility': 'u',
+  'object': 'o',
+  'component': 'js',
+);
+
 /* Prefixes */
 $bem-block-prefix:    acm- !default;
 $bem-element-prefix:  __   !default; // --
@@ -58,4 +71,5 @@ $fonts-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Can
 $fonts-stack-text: Georgia, Cambria, "Times New Roman", Times, serif;
 
 /* Common */
-$page-background-color: #fbfbfb;
+$page-background-color: #f1f1f1;
+$block-shadow: 0px 0px 2px 0px rgba(25, 146, 198, 0.05), 0px 2px 7px -4px rgba(0, 0, 0, 0.31);

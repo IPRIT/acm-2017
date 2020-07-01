@@ -19,7 +19,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminBaseController', ['$scope', '$rootScope', '$state', '_', 'UserManager',
     function ($scope, $rootScope, $state, _, UserManager) {
       $scope.$emit('change_title', {
-        title: 'Панель администратора | ' + _('app_name')
+        title: 'Панель администратора • ' + _('app_name')
       });
       $scope.user = {};
 
@@ -75,7 +75,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminIndexController', ['$scope', '$rootScope', '$state', '_', 'ContestsManager', 'AdminManager', '$mdDialog',
     function ($scope, $rootScope, $state, _, ContestsManager, AdminManager, $mdDialog) {
       $scope.$emit('change_title', {
-        title: 'Управление контестами | ' + _('app_name')
+        title: 'Управление контестами • ' + _('app_name')
       });
       var defaultCount = 10;
 
@@ -245,7 +245,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminEditContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Редактирование контеста | ' + _('app_name')
+        title: 'Редактирование контеста • ' + _('app_name')
       });
 
       var contestId = $state.params.contestId;
@@ -544,7 +544,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminCopyContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Создание контеста | ' + _('app_name')
+        title: 'Создание контеста • ' + _('app_name')
       });
 
       var contestId = $state.params.contestId;
@@ -842,7 +842,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminCreateContestController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Создание контеста | ' + _('app_name')
+        title: 'Создание контеста • ' + _('app_name')
       });
 
       var zF = function (num) { return num < 10 ? '0' + num : num };
@@ -1145,7 +1145,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminUsersListController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', 'ErrorService',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Список пользователей | ' + _('app_name')
+        title: 'Список пользователей • ' + _('app_name')
       });
 
       var defaultCount = 10;
@@ -1227,7 +1227,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminCreateUserController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter) {
       $scope.$emit('change_title', {
-        title: 'Создание пользователя | ' + _('app_name')
+        title: 'Создание пользователя • ' + _('app_name')
       });
 
       $scope.form = {
@@ -1296,7 +1296,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminCreateUsersIntoGroupController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter', 'Upload', 'ErrorService', '$mdToast',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter, Upload, ErrorService, $mdToast) {
       $scope.$emit('change_title', {
-        title: 'Регистрация пользователей в группу | ' + _('app_name')
+        title: 'Регистрация пользователей в группу • ' + _('app_name')
       });
 
       $scope.form = {
@@ -1363,7 +1363,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminEditUserController', ['$scope', '$rootScope', '$state', '_', 'AdminManager', '$mdDialog', '$filter', '$timeout',
     function ($scope, $rootScope, $state, _, AdminManager, $mdDialog, $filter, $timeout) {
       $scope.$emit('change_title', {
-        title: 'Редактирование пользователя | ' + _('app_name')
+        title: 'Редактирование пользователя • ' + _('app_name')
       });
 
       $scope.currentUser = {
@@ -1767,7 +1767,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminProblemsItemEditController', ['$scope', '$rootScope', '_', '$mdDialog', '$state', 'AdminManager', 'ContestItemManager', '$sce',
     function($scope, $rootScope, _, $mdDialog, $state, AdminManager, ContestItemManager, $sce) {
       $scope.$emit('change_title', {
-        title: 'Редактирование задачи | ' + _('app_name')
+        title: 'Редактирование задачи • ' + _('app_name')
       });
 
       $scope.confirmExit = false;
@@ -2095,7 +2095,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminRatingCreateBaseController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', 'ErrorService', '$mdToast',
     function($scope, $rootScope, $state, AdminManager, _, ErrorService, $mdToast) {
       $scope.$emit('change_title', {
-        title: 'Создание рейтинга | ' + _('app_name')
+        title: 'Создание рейтинга • ' + _('app_name')
       });
 
       $scope.isComputing = false;
@@ -2305,7 +2305,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminRatingTableController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
-        title: 'Рейтинг | ' + _('app_name')
+        title: 'Рейтинг • ' + _('app_name')
       });
 
       var contestIds = ( $state.params.contests || '' ).split( ',' ) || [ ];
@@ -2347,7 +2347,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminGroupsBaseController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
-        title: 'Группы пользователей | ' + _('app_name')
+        title: 'Группы пользователей • ' + _('app_name')
       });
     }
   ])
@@ -2355,7 +2355,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminGroupsController', ['$scope', '$rootScope', '$state', 'AdminManager', '_', '$mdDialog', 'ErrorService',
     function($scope, $rootScope, $state, AdminManager, _, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Группы пользователей | ' + _('app_name')
+        title: 'Группы пользователей • ' + _('app_name')
       });
 
       var defaultCount = 10;
@@ -2462,7 +2462,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminGroupsCreateController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
-        title: 'Создания группы | ' + _('app_name')
+        title: 'Создания группы • ' + _('app_name')
       });
 
       $scope.group = {
@@ -2624,7 +2624,7 @@ angular.module('Qemy.controllers.admin', [])
   .controller('AdminGroupsEditController', ['$scope', '$rootScope', '$state', 'AdminManager', '_',
     function($scope, $rootScope, $state, AdminManager, _) {
       $scope.$emit('change_title', {
-        title: 'Редактирование группы | ' + _('app_name')
+        title: 'Редактирование группы • ' + _('app_name')
       });
 
       var groupId = $state.params.groupId;

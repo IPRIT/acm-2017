@@ -9,3 +9,6 @@ export * from './getSolutions';
 export * from './forgetPassword';
 export * from './changePassword';
 export * from './linkEmail';
+export * from './linkTelegram';
+export * from './getTelegram';
+export * from './disconnectTelegram';

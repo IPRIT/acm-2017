@@ -1,0 +1,40 @@
+@import "../helpers/all";
+
+@include block('profile', 'component') {
+  h1 {
+    padding-left: 0;
+  }
+
+  @include element('row') {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 600px;
+    border-top: 1px solid #ececec;
+  }
+
+  @include element('label') {
+    width: 200px;
+  }
+
+  @include element('value') {
+    md-icon {
+      margin-right: 8px;
+    }
+
+    .md-button {
+      margin-left: 0;
+    }
+  }
+
+  @include element('email') {
+    display: flex;
+    align-items: center;
+
+    > span {
+      color: rgba(0,0,0,.5);
+      margin-right: 16px;
+    }
+  }
+}

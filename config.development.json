@@ -37,5 +37,8 @@
   "email": {
     "login": "ipritoflex",
     "auth": "gpqrnqkwdoysuwlh"
+  },
+  "telegram": {
+    "token": "114633843:AAGoYwTlXq1Aph9EJnNHu94o3hzbOaCBrVs"
   }
 }

@@ -18,6 +18,7 @@ import path from 'path';
 import { ClientError, ServerError } from './route/error/http-error';
 import * as systems from './systems';
 import polygonRouter from './systems/polygon';
+import { bot } from "./services/telegram";
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -40,6 +41,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, '../app')));
 
 systems.worker.run();
+bot.startPolling(2, 30);
 
 /*
  * Connecting routers

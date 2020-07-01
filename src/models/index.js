@@ -19,6 +19,7 @@ import ProblemVersionControl from './ProblemVersionControl';
 import RegisterLink from './RegisterLink';
 import News from './News';
 import ResetPasswordLink from './ResetPasswordLink';
+import { Telegram } from './Telegram';
 import Error from './Error';
 
 /*
@@ -178,11 +179,14 @@ RegisterLink.belongsTo(Group, { foreignKey: 'groupId', targetKey: 'id' });
 User.hasMany(Group, { foreignKey: 'authorId', targetKey: 'id', as: 'AuthoredGroup' });
 Group.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'GroupCreator' });
 
+User.hasOne(Telegram, { foreignKey: 'userId', targetKey: 'id' });
+Telegram.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
 export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
   ChatMessage, Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
-  ProblemVersionControl, Error, RegisterLink, News, ResetPasswordLink
+  ProblemVersionControl, Error, RegisterLink, News, ResetPasswordLink, Telegram
 
   /*OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,

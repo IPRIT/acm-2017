@@ -173,16 +173,6 @@ angular.module('Qemy.controllers', [
       $scope.$state = $state;
       $scope.user = {};
       $scope.isAuth = false;
-      $scope.contestMenu = {
-        opened: false,
-        hover: false,
-        items: [{
-          name: 'Редактировать контест',
-          direction: 'left',
-          icon: '/img/icons/ic_settings_48px.svg',
-          action: 'admin.edit-contest({contestId: headerMenu.contest.id})'
-        }]
-      };
       $scope.isMainLogo = location.host.indexOf('contest.misis.ru') !== -1;
       
       $scope.$on('user updated', function (ev, args) {
@@ -213,12 +203,17 @@ angular.module('Qemy.controllers', [
       $scope.menuList = [{
         type: 'item',
         id: 'profile',
+        name: _('menu-profile'), // 'Профиль',
+        iconSrc: '/img/icons/ic_face_24px.svg'
+      }, {
+        type: 'item',
+        id: 'solutions',
         onlyFor: 256,
         name: _('menu-my-solutions'), // 'Мои решения',
         iconSrc: '/img/icons/ic_rule_24px.svg'
       }, {
         type: 'item',
-        id: 'profile',
+        id: 'solutions',
         onlyFor: [1024, 4096],
         name: _('menu-user-solutions'), // 'Решения пользователей',
         iconSrc: '/img/icons/ic_rule_24px.svg'
@@ -261,6 +256,9 @@ angular.module('Qemy.controllers', [
       $scope.profileItemClick = function (event, item, index) {
         switch (item.id) {
           case 'profile':
+            $state.go('profile');
+            break;
+          case 'solutions':
             $state.go('user.solutions', { select: 'all' });
             break;
           case 'auth.link-email':
@@ -351,7 +349,7 @@ angular.module('Qemy.controllers', [
         $scope.menuList.unshift({
           type: 'item',
           id: 'auth.link-email',
-          name: 'Привязать E-mail',
+          name: _('auth-link-email-title'), // 'Привязать E-mail',
           iconSrc: '/img/icons/ic_alternate_email_24px.svg'
         });
 

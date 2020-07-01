@@ -207,6 +207,15 @@ angular.module('Qemy.services', [
       });
     }
 
+    function getTelegramAccount() {
+      return $http({
+        method: 'get',
+        url: '/api/user/telegram-account'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
     return {
       getCurrentUser: getCurrentUser,
       logout: logout,
@@ -220,6 +229,7 @@ angular.module('Qemy.services', [
       forgetPassword,
       changePassword,
       linkEmail,
+      getTelegramAccount,
     }
   }])
   

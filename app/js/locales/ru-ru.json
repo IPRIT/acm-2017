@@ -1,6 +1,6 @@
 {
   "test": "i18n работает",
-  "app_name": "MISIS Acm",
+  "app_name": "Платформа MISIS Acm",
 
   "close": "Закрыть",
 
@@ -62,6 +62,7 @@
   "contest-solutions-all": "Все решения",
   "contest-solutions-users-all": "Все решения пользователей",
 
+  "contest-solution-item": "Решение",
   "contest-solution-item-contest-title": "Контест",
   "contest-solution-item-time-title": "Время",
   "contest-solution-item-member-title": "Участник",
@@ -103,6 +104,7 @@
   "contests-item-groups": "Группы:",
   "contests-item-group": "Группа:",
 
+  "menu-profile": "Профиль",
   "menu-my-solutions": "Мои решения",
   "menu-user-solutions": "Решения пользователей",
   "menu-admin-chat": "Написать администратору",
@@ -157,5 +159,23 @@
 
   "chat-admin-title": "Чат с пользователями",
   "chat-user-title": "Чат с администратором",
-  "chat-input-placeholder": "Введите сообщение..."
+  "chat-input-placeholder": "Введите сообщение...",
+
+  "profile": "Профиль",
+  "profile-email": "Привязанный E-mail",
+  "profile-link-email": "Привязать",
+  "profile-change-email": "Сменить E-mail",
+  "profile-telegram": "Привязанный Telegram",
+  "profile-telegram-link": "Привязать Telegram",
+  "profile-telegram-disconnect": "Отвязать",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": ""
 }

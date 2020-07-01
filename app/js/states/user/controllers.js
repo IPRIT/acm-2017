@@ -16,7 +16,7 @@ angular.module('Qemy.controllers.user', [])
   .controller('UserBaseController', ['$scope', '$rootScope', '$state', '_', 'SocketService', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService', 'UserManager',
     function ($scope, $rootScope, $state, _, SocketService, $mdToast, $mdSidenav, $log, $timeout, ErrorService, UserManager) {
       $scope.$emit('change_title', {
-        title: 'Профиль | ' + _('app_name')
+        title: 'Профиль • ' + _('app_name')
       });
 
       $scope.user = {};
@@ -35,7 +35,7 @@ angular.module('Qemy.controllers.user', [])
   .controller('UserSolutionsController', ['$scope', '$rootScope', '$state', '_', '$element', 'UserManager', 'AdminManager', 'ErrorService', '$mdDialog', '$timeout', 'ContestsManager', 'SocketService',
     function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ContestsManager, SocketService) {
       $scope.$emit('change_title', {
-        title: 'Решения | ' + _('app_name')
+        title: 'Решения • ' + _('app_name')
       });
 
       var defaultCount = 50;

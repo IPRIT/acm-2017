@@ -19,6 +19,7 @@ angular.module('Qemy', [
 
   'Qemy.ui.contests',
   'Qemy.ui.user',
+  'Qemy.ui.profile',
   'Qemy.ui.problems',
   'Qemy.ui.auth',
   'Qemy.ui.contest-item',
