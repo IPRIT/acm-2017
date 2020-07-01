@@ -1,6 +1,6 @@
 {
   "test": "i18n is working",
-  "app_name": "MISIS Acm Server",
+  "app_name": "MISIS Acm",
 
   "close": "Close",
 
@@ -60,7 +60,9 @@
   "contest-connection-off": "Connection lost. Waiting...",
   "contest-solutions-my": "My solutions",
   "contest-solutions-all": "All solutions",
+  "contest-solutions-users-all": "All solutions",
 
+  "contest-solution-item-contest-title": "Contest",
   "contest-solution-item-time-title": "Time",
   "contest-solution-item-member-title": "Name",
   "contest-solution-item-problem-title": "Problem",
@@ -74,5 +76,86 @@
   "contest-solutions-cell-title": "Solutions",
 
   "news-title": "News",
-  "news-empty": "There's no news yet"
+  "news-empty": "There's no news yet",
+
+  "news-item-author": "Author:",
+
+  "index-title": "Contests",
+  "index-search": "Search",
+  "index-sort-order": "Order",
+  "index-sort-type": "Sort",
+  "index-filter": "Filter",
+  "index-empty": "No contests found",
+  "index-sort-date": "By date",
+  "index-sort-start": "By start time",
+  "index-order-desc": "Descending",
+  "index-order-asc": "Ascending",
+  "index-filter-all": "All",
+  "index-filter-active": "Active",
+  "index-filter-freeze": "Frozen",
+  "index-filter-finished": "Finished",
+  "index-filter-practice": "Practice",
+  "index-filter-available": "Only available",
+  "index-filter-not-available": "Only not available",
+  "index-filter-removed": "Archived",
+
+  "contests-item-rated": "Rated",
+  "contests-item-groups": "Groups:",
+  "contests-item-group": "Group:",
+
+  "menu-my-solutions": "My solutions",
+  "menu-user-solutions": "All solutions",
+  "menu-admin-chat": "Chat with admin",
+  "menu-user-messages": "Chat with users",
+  "menu-admin-panel": "Admin panel",
+  "menu-control-panel": "Control panel",
+  "menu-logout": "Log Out",
+  "menu-login": "Sign In",
+
+  "auth-login": "Username or E-mail",
+  "auth-password": "Password",
+  "auth-forget-password": "Forgot the password",
+  "auth-sign-in": "Sign In",
+
+  "auth-forget-success": "Check your mailbox for link",
+  "auth-forget-title": "Password reset",
+
+  "auth-link-email-success": "E-mail has been linked to your account",
+  "auth-link-email-continue": "Continue",
+  "auth-link-email-title": "Link your E-mail",
+  "auth-link-email-label": "E-mail",
+  "auth-link-email-link": "Link",
+
+  "auth-register-success": "You have successfully registered",
+  "auth-register-continue": "Continue",
+  "auth-register-title": "Register in group",
+  "auth-register-personal-data": "Personal data",
+  "auth-register-name": "Name",
+  "auth-register-second-name": "Second name",
+  "auth-register-email": "E-mail",
+  "auth-register-login-data": "Login info",
+  "auth-register-login": "Login",
+  "auth-register-password": "Password",
+  "auth-register-action": "Sign Up",
+  "auth-register-join-as": "Join as",
+  "auth-register-join": "Join",
+
+  "auth-reset-success": "Your password was successfully changed",
+  "auth-reset-continue": "Sign In",
+  "auth-reset-title": "Change your password",
+  "auth-reset-password": "Password",
+  "auth-reset-password-confirm": "Password confirmation",
+  "auth-reset-action": "Change",
+
+  "solution-item-resend-title": "Re-sent solution №",
+  "solution-item-time-in-contest": "Time in the contest:",
+  "solution-item-language-not-available": "The language is no longer supported by the validating system",
+  "solution-item-in-queue": "Queue...",
+
+  "required": "Required field",
+  "send": "Submit",
+
+  "chat-admin-title": "Chat with users",
+  "chat-user-title": "Chat with admin",
+  "chat-input-placeholder": "Type a message..."
 }

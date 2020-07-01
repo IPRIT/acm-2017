@@ -229,6 +229,8 @@ angular.module('Qemy.controllers.chat', [])
         }
       };
 
+      $scope.i18nPlaceholder = _('chat-input-placeholder');
+
       $scope.form = {
         messageText: ''
       };

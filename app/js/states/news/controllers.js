@@ -9,6 +9,27 @@
 
 /* Controllers */
 
+const shortMonthsRu = [
+  'янв', 'фев', 'мар', 'апр',
+  'май', 'июн', 'июл', 'авг',
+  'сен', 'окт', 'ноя', 'дек',
+];
+const shortMonthsEn = [
+  'jan', 'feb', 'mar', 'apr',
+  'may', 'jun', 'jul', 'aug',
+  'sep', 'oct', 'nov', 'dec',
+];
+const monthsRu = [
+  'января', 'февраля', 'марта', 'апреля',
+  'мая', 'июня', 'июля', 'августа',
+  'сентября', 'октября', 'ноября', 'декабря',
+];
+const monthsEn = [
+  'january', 'february', 'march', 'april',
+  'may', 'june', 'july', 'august', 'september',
+  'october', 'november', 'december'
+];
+
 const froalaOptions = {
   language: 'ru',
   linkAlwaysBlank: true,
@@ -114,11 +135,7 @@ angular.module('Qemy.controllers.news', [])
       }
 
       function resolveMonthRu (monthIndex) {
-        return [
-          'янв', 'фев', 'мар', 'апр',
-          'май', 'июн', 'июл', 'авг',
-          'сен', 'окт', 'ноя', 'дек',
-        ][ monthIndex ];
+        return (Config.I18n.locale === 'en-us' ? shortMonthsEn : shortMonthsRu)[ monthIndex ];
       }
 
       function zeroPad (value) {
@@ -187,7 +204,8 @@ angular.module('Qemy.controllers.news', [])
         const day = zeroPad( createdAt.getDate() );
         const monthRu = resolveMonthRu( monthIndex );
 
-        const createdAtText = `${day} ${monthRu} ${createdAt.getFullYear()} в ${zeroPad( createdAt.getHours() )}:${zeroPad( createdAt.getMinutes() )}`;
+        const at = Config.I18n.locale === 'en-us' ? 'at' : 'в';
+        const createdAtText = `${day} ${monthRu} ${createdAt.getFullYear()} ${at} ${zeroPad( createdAt.getHours() )}:${zeroPad( createdAt.getMinutes() )}`;
 
         const customProps = {
           createdAtText,
@@ -198,11 +216,7 @@ angular.module('Qemy.controllers.news', [])
       }
 
       function resolveMonthRu (monthIndex) {
-        return [
-          'января', 'февраля', 'марта', 'апреля',
-          'мая', 'июня', 'июля', 'августа',
-          'сентября', 'октября', 'ноября', 'декабря',
-        ][ monthIndex ];
+        return (Config.I18n.locale === 'en-us' ? monthsEn : monthsRu)[ monthIndex ];
       }
 
       function zeroPad (value) {

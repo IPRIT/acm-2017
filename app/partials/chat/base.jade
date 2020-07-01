@@ -1,7 +1,7 @@
 div
   div.standart-layer(style='border-bottom-left-radius: 0; border-bottom-right-radius: 0;')
-    h2(style='margin: 0', ng-if='user.isAdmin') Чат с пользователями
-    h2(style='margin: 0', ng-if='!user.isSupervisor') Чат с администратором
+    h2(style='margin: 0', ng-if='user.isAdmin', qemy-i18n='chat-admin-title')
+    h2(style='margin: 0', ng-if='!user.isSupervisor', qemy-i18n='chat-user-title')
 
   div.standart-layer(style='padding: 0; border-top-left-radius: 0; border-top-right-radius: 0; overflow: hidden;')
     div.standart-layer__content(style='overflow: hidden;')

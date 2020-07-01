@@ -168,8 +168,8 @@ angular.module('Qemy.controllers', [
     }
   ])
   
-  .controller('HeaderCtrl', ['$scope', '$rootScope', '$state', 'UserManager', '$mdDialog', '$interval',
-    function ($scope, $rootScope, $state, UserManager, $mdDialog, $interval) {
+  .controller('HeaderCtrl', ['$scope', '_', '$rootScope', '$state', 'UserManager', '$mdDialog', '$interval',
+    function ($scope, _, $rootScope, $state, UserManager, $mdDialog, $interval) {
       $scope.$state = $state;
       $scope.user = {};
       $scope.isAuth = false;
@@ -214,46 +214,46 @@ angular.module('Qemy.controllers', [
         type: 'item',
         id: 'profile',
         onlyFor: 256,
-        name: 'Мои решения',
+        name: _('menu-my-solutions'), // 'Мои решения',
         iconSrc: '/img/icons/ic_rule_24px.svg'
       }, {
         type: 'item',
         id: 'profile',
         onlyFor: [1024, 4096],
-        name: 'Решения пользователей',
+        name: _('menu-user-solutions'), // 'Решения пользователей',
         iconSrc: '/img/icons/ic_rule_24px.svg'
       }, {
         type: 'item',
         id: 'chat.peer',
         onlyFor: [256],
-        name: 'Написать администратору',
+        name: _('menu-admin-chat'), // 'Написать администратору',
         counter: $scope.unreadChatMessagesNumber,
         iconSrc: '/img/icons/ic_attach_email_24px.svg'
       }, {
         type: 'item',
         id: 'chat.peer',
         onlyFor: [1024, 4096],
-        name: 'Сообщения пользователей',
+        name: _('menu-user-messages'), // 'Сообщения пользователей',
         counter: $scope.unreadChatMessagesNumber,
         iconSrc: '/img/icons/ic_attach_email_24px.svg'
       }, {
         type: 'item',
         onlyFor: 4096,
         id: 'admin-panel',
-        name: 'Панель администратора',
+        name: _('menu-admin-panel'), // 'Панель администратора',
         iconSrc: '/img/icons/ic_security_48px.svg'
       }, {
         type: 'item',
         onlyFor: 1024,
         id: 'admin-panel',
-        name: 'Панель управления',
+        name: _('menu-control-panel'), // 'Панель управления',
         iconSrc: '/img/icons/ic_security_48px.svg'
       }, {
         type: 'divider'
       }, {
         type: 'item',
         id: 'exit-app',
-        name: 'Выход',
+        name: _('menu-logout'), // 'Выход',
         className: 'md-accent',
         iconSrc: '/img/icons/ic_exit_to_app_48px.svg'
       }];

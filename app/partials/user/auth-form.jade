@@ -9,21 +9,21 @@ div
 
           div.auth-form__row
             md-input-container
-              label Логин или E-mail
+              label(qemy-i18n='auth-login')
               input(required, name="username", ng-model="form.login")
               div(ng-messages="authForm.login.$error")
-                div(ng-message="required") Обязательное поле
+                div(ng-message="required", qemy-i18n='required')
 
           div.auth-form__row
             md-input-container
-              label Пароль
+              label(qemy-i18n='auth-password')
               input(required, type='password', name="password", ng-model="form.password")
               div(ng-messages="authForm.password.$error")
-                div(ng-message="required") Обязательное поле
+                div(ng-message="required", qemy-i18n='required')
 
 
           div.auth-form__row(layout='row', layout-align='space-between center', style='text-align: right;')
-            md-button(ui-sref='auth.forget-password-form') Забыл пароль
-            md-button.md-primary(type='submit', ng-disabled='form.login.length === 0 || form.password.length === 0') Войти
+            md-button(ui-sref='auth.forget-password-form', qemy-i18n='auth-forget-password')
+            md-button.md-primary(type='submit', ng-disabled='form.login.length === 0 || form.password.length === 0', qemy-i18n='auth-sign-in')
 
   page-footer

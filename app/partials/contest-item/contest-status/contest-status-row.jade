@@ -4,16 +4,19 @@ div.sent-list__item.animation(ng-repeat='sent in solutions track by sent.id',
    "sent-list__failed_type_highlighted": sent.verdictId === 12, \
    "sent-list__unknown": [3, 10, 11, 13, 14, 15, 16, 17, 18, 19].indexOf(sent.verdictId) !== -1}')
   div.sent-list__indicator(ng-if='sent.duplicatedFromId')
-    md-tooltip Переотправленное решение №{{sent.duplicatedFromId}}
+    md-tooltip
+      span
+        span(qemy-i18n='solution-item-resend-title')
+        span {{sent.duplicatedFromId}}
     span
       md-icon(md-svg-src="/img/icons/ic_repeat_48px.svg", aria-label="Repeat Icon")
       span.indicator__solution-number(ng-switch='sent.userId === currentUser.id || currentUser.isSupervisor')
         span(ng-switch-when='true')
-          a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: sent.duplicatedFromId})') {{sent.duplicatedFromId}}
+          a.link.sent-list__source-link.sent-list__bold(ui-sref='contest.source-code({sourceId: sent.duplicatedFromId})') {{sent.duplicatedFromId}}
         span(ng-switch-default) {{sent.duplicatedFromId}}
   div.sent-list__cell(style='max-width: 90px;', ng-switch='sent.userId === currentUser.id || currentUser.isSupervisor')
     span(ng-switch-when='true')
-      a.link.sent-list__source-link.sent-list__bold(title='Посмотреть решение', ui-sref='contest.source-code({sourceId: sent.id})') {{sent.id}}
+      a.link.sent-list__source-link.sent-list__bold(ui-sref='contest.source-code({sourceId: sent.id})') {{sent.id}}
     span(ng-switch-default) {{sent.id}}
   div.sent-list__cell(style='max-width: 120px;')
     span {{(sent.sentAtMs - sent.contest.startTimeMs) | formatStartTime}}
@@ -25,9 +28,9 @@ div.sent-list__item.animation(ng-repeat='sent in solutions track by sent.id',
   div.sent-list__cell.sent-list__language(ng-class='{"sent-list__language_nonactive": sent.language.nonactive}')
     div
       md-tooltip(ng-if="sent.language.nonactive" md-direction="bottom")
-        span Язык больше не поддерживается проверяющей системой
+        span(qemy-i18n='solution-item-language-not-available')
       span {{::sent.language.name}}
-  div.sent-list__cell.sent-list__verdict(style='min-width: 129px;', ng-switch='!sent.verdictId || sent.verdictId === -1')
+  div.sent-list__cell.sent-list__verdict(style='min-width: 135px;', ng-switch='!sent.verdictId || sent.verdictId === -1')
     span.sent-list__cell-loading(ng-switch-when='true')
       div.sent-list__loading(style='display: inline-block;')
         div.content-spin__layer
@@ -35,8 +38,8 @@ div.sent-list__item.animation(ng-repeat='sent in solutions track by sent.id',
             div.search-spin(ng-class='{"waiting": sent.verdictId === -1}')
       span(ng-if='sent.verdictId === -1', style='display: inline-block;') {{sent.verdict.name}}
       span(ng-if='sent.verdictId === null', style='display: inline-block;')
-        span(style='text-transform: none') В очереди...
-        span(style='text-transform: none', ng-if='sent._currentAttempt > 0') (попытка {{sent._currentAttempt + 1}})
+        span(style='text-transform: none', qemy-i18n='solution-item-in-queue')
+        span(style='text-transform: none', ng-if='sent._currentAttempt > 0') ({{sent._currentAttempt + 1}})
     span(ng-switch-default)
       span(ng-switch='sent.verdictId === 3 && sent.compilationError.length > 0 && (currentUser.id === sent.userId || currentUser.isSupervisor)')
         span(ng-switch-when='true')
@@ -46,9 +49,9 @@ div.sent-list__item.animation(ng-repeat='sent in solutions track by sent.id',
     span(ng-switch-when='true') -
     span(ng-switch-default) {{sent.testNumber}}
   div.sent-list__cell(style='max-width: 95px;')
-    span {{(sent.executionTime + ' с')}}
+    span {{(sent.executionTime + ' s')}}
   div.sent-list__cell(style='max-width: 95px;')
-    span {{sent.memory + ' КБ'}}
+    span {{sent.memory + ' KB'}}
   div.sent-list__cell(ng-if='currentUser.isSupervisor', style='max-width: 60px;')
     div.sent-list__actions-menu
       md-menu(md-offset="-200 0")

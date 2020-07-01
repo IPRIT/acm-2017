@@ -12,7 +12,8 @@ div.news-list-item(ng-class="{'mock': isMock}")
           div.news-list-item__visited
         div.news-list-item__title {{ item.title }}
       div.news-list-item__author
-        span.news-list-item__author-label(style='font-weight: 400;') Автор:&nbsp;
+        span.news-list-item__author-label(style='font-weight: 400;', qemy-i18n='news-item-author')
+        span &nbsp;
         span.news-list-item__author-text(style='font-weight: 500; color: rgba(0,0,0,0.8);') {{ item.User.fullName }}
       div.contest-item__groups(ng-if="user.isSupervisor", style='margin: 4px 0 0 -1px;')
         div.contests-list__groups-item(ng-repeat='group in item.collapsedGroups', style='margin-bottom: 0; background-color: {{group.color || "#ccc"}}')

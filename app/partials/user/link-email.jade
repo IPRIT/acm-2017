@@ -6,23 +6,23 @@ div
         div.register-form__success-icon
           md-icon(md-svg-icon="img/icons/ic_done_24px.svg")
         div.register-form__success-text(layout='column', layout-align='center center')
-          span(style='text-align: center') Почта успешно привязана
+          span(style='text-align: center', qemy-i18n='auth-link-email-success')
           div(style='margin-top: 12px;')
-            md-button.md-primary.md-raised(ui-sref='contests.list') Продолжить
+            md-button.md-primary.md-raised(ui-sref='contests.list', qemy-i18n='auth-link-email-continue')
 
 
       div.contest-creation
-        div.contests-title(style='padding: 16px 0px 20px;') Привяжите свой E-mail
+        div.contests-title(style='padding: 16px 0px 20px;', qemy-i18n='auth-link-email-title')
 
         div.contest-creation__inner
           form.contest-creation__form(ng-submit='submitForm()', name='linkEmail')
 
             div.auth-form__row
               md-input-container(flex)
-                label E-mail
+                label(qemy-i18n='auth-link-email-label')
                 input(required, name='email', type='email', ng-model='form.email')
                 div(ng-messages='linkEmail.email.$error')
-                  div(ng-message='required') Поле не может быть пустым
+                  div(ng-message='required', qemy-i18n='required')
 
             div.auth-form__row(style='text-align: right;')
-              md-button.md-primary(type='submit', ng-disabled='!linkEmail.$valid') Привязать
+              md-button.md-primary(type='submit', ng-disabled='!linkEmail.$valid', qemy-i18n='auth-link-email-link')

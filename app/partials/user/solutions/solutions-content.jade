@@ -3,51 +3,51 @@ div.sent-list(style='font-size: .9em;')
         div.sent-list__cell(style='max-width: 90px;')
             span ID
         div.sent-list__cell.sent-list__cell-task
-            span Контест
+            span(qemy-i18n='contest-solution-item-contest-title')
         div.sent-list__cell(style='max-width: 120px;')
-            span Время
+            span(qemy-i18n='contest-solution-item-time-title')
         div.sent-list__cell.sent-list__filter-participant
             div(layout='row', ng-show='user.isSupervisor')
                 md-input-container.md-no-float(md-no-float)
-                    label Участник
+                    label(qemy-i18n='contest-solution-item-member-title')
                     md-select(ng-model='filterParticipants', md-on-close='clearSearchTerm()',
                     md-on-open="loadParticipants()"
                     data-md-container-class="filter-header", multiple)
                         md-select-header.select-header
-                            input.header-searchbox.md-text(ng-model='searchTerm', type='search', placeholder='Поиск по участникам...')
+                            input.header-searchbox.md-text(ng-model='searchTerm', type='search', placeholder='Search...')
                         md-optgroup(label='participants')
                             md-option(ng-value='participant.id', ng-repeat='participant in participants |\
               filter:searchTerm') {{participant.fullName}}
-            span(ng-show='!user.isSupervisor') Участник
+            span(ng-show='!user.isSupervisor', qemy-i18n='contest-solution-item-member-title')
         div.sent-list__cell.sent-list__cell-task
-            span Задача
+            span(qemy-i18n='contest-solution-item-problem-title')
         div.sent-list__cell
-            span Язык
-        div.sent-list__cell.sent-list__filter-verdict(style='min-width: 129px;')
+            span(qemy-i18n='contest-solution-item-language-title')
+        div.sent-list__cell.sent-list__filter-verdict(style='min-width: 135px;')
             div(layout='row')
                 md-input-container.md-no-float(md-no-float)
-                    label Вердикт
+                    label(qemy-i18n='contest-solution-item-verdict-title')
                     md-select(ng-model='filterVerdicts', md-on-close='clearSearchTerm()',
                     md-on-open="loadVerdicts()"
                     data-md-container-class="filter-header", multiple)
                         md-select-header.select-header
-                            input.header-searchbox.md-text(ng-model='searchTerm', type='search', placeholder='Поиск по вердиктам...')
+                            input.header-searchbox.md-text(ng-model='searchTerm', type='search', placeholder='Search...')
                         md-optgroup(label='verdicts')
                             md-option(ng-value='verdict.id', ng-repeat='verdict in verdicts |\
                           filter:searchTerm') {{verdict.name}}
         div.sent-list__cell(style='max-width: 80px;')
-            span Номер теста
+            span(qemy-i18n='contest-solution-item-test-title')
         div.sent-list__cell(style='max-width: 95px;')
-            span Время исполнения
+            span(qemy-i18n='contest-solution-item-run-time-title')
         div.sent-list__cell(style='max-width: 95px;')
-            span Память
+            span(qemy-i18n='contest-solution-item-memory-title')
         div.sent-list__cell(ng-if='user.isSupervisor', style='max-width: 60px;')
             span &nbsp;
 
     include ./solution-item
 
     div.no-sents(ng-if='solutions.length === 0 && !loadingData')
-        span(ng-if='all_items_count === 0') Решения отсутствуют
+        span(ng-if='all_items_count === 0', qemy-i18n='contest-solutions-empty') Решения отсутствуют
         div(ng-if='all_items_count > 0', style='display: inline-block;')
             div.content-spin__layer
                 div.search-spin-layer_

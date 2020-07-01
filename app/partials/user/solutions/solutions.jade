@@ -7,13 +7,15 @@ div.contest(style='margin-top: 0')
         div.contest__inner
             div.contest__title-section
                 h2(ng-bind='user.fullName', ng-if="!user.isSupervisor")
-                h2(ng-if="user.isSupervisor") Все решения пользователей
+                h2(ng-if="user.isSupervisor", qemy-i18n='contest-solutions-users-all')
 
             div.status-content
                 md-content
                     md-nav-bar.md-primary(md-selected-nav-item="selectedTabIndex", nav-bar-aria-label="Solutions")
-                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='user.isSupervisor') Все решения пользователей
-                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='!user.isSupervisor') Все решения
+                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='user.isSupervisor')
+                            span(qemy-i18n='contest-solutions-users-all')
+                        md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="0", ng-if='!user.isSupervisor')
+                            span(qemy-i18n='contest-solutions-all')
                         socket-status.contest__socket-status
                     include ./solutions-content
                     include ./pagination

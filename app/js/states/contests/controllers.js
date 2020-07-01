@@ -38,46 +38,46 @@ angular.module('Qemy.controllers.contests', [])
 
       $scope.curSortItem = null;
       $scope.sortCategories = [{
-        name: 'По дате создания',
+        name: _('index-sort-date'), // 'По дате создания',
         sort: 'byId'
       }, {
-        name: 'По времени начала',
+        name: _('index-sort-start'), // 'По времени начала',
         sort: 'byStart'
       }];
 
       $scope.curSortOrder = null;
       $scope.sortOrders = [{
-        name: 'По убыванию',
+        name: _('index-order-desc'), // 'По убыванию',
         order: 'desc'
       }, {
-        name: 'По возрастанию',
+        name: _('index-order-asc'), // 'По возрастанию',
         order: 'asc'
       }];
 
       $scope.curCategory = null;
       $scope.contestCategories = [{
-        name: 'Все',
+        name: _('index-filter-all'), // 'Все',
         category: 'all'
       }, {
-        name: 'Только активные',
+        name: _('index-filter-active'), // 'Только активные',
         category: 'showOnlyStarted'
       }, {
-        name: 'Только активные с заморозкой',
+        name: _('index-filter-freeze'), // 'Только активные с заморозкой',
         category: 'showOnlyFrozen'
       }, {
-        name: 'Только завершенные',
+        name: _('index-filter-finished'), // 'Только завершенные',
         category: 'showOnlyFinished'
       }, {
-        name: 'Только дорешивание',
+        name: _('index-filter-practice'), // 'Только дорешивание',
         category: 'showOnlyPractice'
       }, {
-        name: 'Только доступные',
+        name: _('index-filter-available'), // 'Только доступные',
         category: 'showOnlyEnabled'
       }, {
-        name: 'Только недоступные',
+        name: _('index-filter-not-available'), // 'Только недоступные',
         category: 'showOnlyDisabled'
       }, {
-        name: 'Только удалённые',
+        name: _('index-filter-removed'), // 'Только удалённые',
         category: 'showOnlyRemoved'
       }];
 

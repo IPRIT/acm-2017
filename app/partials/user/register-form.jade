@@ -6,60 +6,63 @@ div
         div.register-form__success-icon
           md-icon(md-svg-icon="img/icons/ic_done_24px.svg")
         div.register-form__success-text(layout='column', layout-align='center center')
-          span Вы успешно зарегистрировались
+          span(qemy-i18n='auth-register-success')
           div(style='margin-top: 12px;')
-            md-button.md-primary.md-raised(ui-sref='contests.list') Продолжить
-
+            md-button.md-primary.md-raised(ui-sref='contests.list', qemy-i18n='auth-register-continue')
 
       div.contest-creation
-        div.contests-title(style='padding: 16px 0px 20px;') Регистрация в группу «{{group.name}}»
+        div.contests-title(style='padding: 16px 0px 20px;')
+          span(qemy-i18n='auth-register-title')
+          span «{{group.name}}»
 
         div.contest-creation__inner
           form.contest-creation__form(name='registerForm', ng-if='!isLoading && (!user || !user.id)')
 
             div.contest-creation__row
-              div.contest-creation__row-title Личная информация
+              div.contest-creation__row-title(qemy-i18n='auth-register-personal-data')
               div(layout)
                 md-input-container(flex)
-                  label Имя
+                  label(qemy-i18n='auth-register-name')
                   input(md-maxlength='200', required, name='firstName', ng-model='form.firstName')
                   div(ng-messages='registerForm.firstName.$error')
-                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='required', qemy-i18n='required')
                     div(ng-message='md-maxlength') Введите не больше 200 символов
                 md-input-container(flex)
-                  label Фамилия
+                  label(qemy-i18n='auth-register-second-name')
                   input(md-maxlength='200', required, name='lastName', ng-model='form.lastName')
                   div(ng-messages='registerForm.lastName.$error')
-                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='required', qemy-i18n='required')
                     div(ng-message='md-maxlength') Введите не больше 200 символов
               div(layout)
                 md-input-container(flex)
-                  label E-mail
+                  label(qemy-i18n='auth-register-email')
                   input(md-maxlength='200', required, name='email', type='email', ng-model='form.email')
                   div(ng-messages='registerForm.email.$error')
-                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='required', qemy-i18n='required')
                     div(ng-message='md-maxlength') Введите не больше 200 символов
 
             div.contest-creation__row
-              div.contest-creation__row-title Данные пользователя для входа
+              div.contest-creation__row-title(qemy-i18n='auth-register-login-data')
               div(layout)
                 md-input-container(flex)
-                  label Логин
+                  label(qemy-i18n='auth-register-login')
                   input(md-maxlength='200', required, name='username', ng-model='form.username')
                   div(ng-messages='registerForm.username.$error')
-                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='required', qemy-i18n='required')
                     div(ng-message='md-maxlength') Введите не больше 200 символов
                 md-input-container(flex)
-                  label Пароль
+                  label(qemy-i18n='auth-register-password')
                   input(md-maxlength='200', required, name='password', ng-model='form.password')
                   div(ng-messages='registerForm.password.$error')
-                    div(ng-message='required') Поле не может быть пустым.
+                    div(ng-message='required', qemy-i18n='required')
                     div(ng-message='md-maxlength') Введите не больше 200 символов
 
             div.contest-creation__row.contest-creation__row_type_create
-              md-button.md-primary.md-raised(ng-disabled='!registerForm.$valid', aria-label='Send', ng-click='submitForm()') Зарегистрироваться
+              md-button.md-primary.md-raised(ng-disabled='!registerForm.$valid', aria-label='Send', ng-click='submitForm()', qemy-i18n='auth-register-action')
 
           form.contest-creation__form(name='registerForm', ng-if='!isLoading && user && user.id')
             div(style='padding: 24px; border: 1px solid rgba(0,0,0,.1); border-radius: 4px;', layout='column', layout-align='center center')
-              div(style='margin-bottom: 12px; text-align: center;') Вступить в группу как <br><b>{{user.fullName}}</b>
-              md-button.md-primary.md-raised(aria-label='Send', ng-click='submitForm()') Вступить
+              div(style='margin-bottom: 12px; text-align: center;')
+                span(qemy-i18n='auth-register-join-as')
+                span <br><b>{{user.fullName}}</b>
+              md-button.md-primary.md-raised(aria-label='Send', ng-click='submitForm()', qemy-i18n='auth-register-join')

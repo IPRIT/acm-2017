@@ -6,34 +6,40 @@ div.contests-list__item-layer(ng-click='joinContest(contest)')
         div.search-spin
   div.contests-list__item.contest-item
     div.contest-item__title
-      span.contest-item__rated-label(ng-if='contest.isRated') Рейтинговый
+      span.contest-item__rated-label(ng-if='contest.isRated', qemy-i18n='contests-item-rated')
       span {{contest.name}}
     div.contest-item__groups(ng-if="user.isSupervisor")
-      div.contest-item__groups-for {{contest.allowedGroups.length > 1 ? 'Группы:' : 'Группа:'}}
+      div.contest-item__groups-for
+        span(ng-if='contest.allowedGroups.length > 1', qemy-i18n='contests-item-groups')
+        span(ng-if='contest.allowedGroups.length === 1', qemy-i18n='contests-item-group')
       div.contests-list__groups-item(ng-repeat='group in contest.allowedGroups', style='background-color: {{group.color || "#ccc"}}')
         span {{group.name}}
     div.contest-item__info
       div.contest-item__status-layer
         div.contest-item__status(ng-switch='contest.status')
           div(ng-switch-when='NOT_ENABLED')
-            span.contests-list__item_status_removed Не доступен
+            span.contests-list__item_status_removed(qemy-i18n='contest-status-not-available')
           div(ng-switch-when='REMOVED')
-            span.contests-list__item_status_removed Удален
+            span.contests-list__item_status_removed(qemy-i18n='contest-status-removed')
           div(ng-switch-when='FINISHED')
-            span.contests-list__item_status_success Завершён
+            span.contests-list__item_status_success(qemy-i18n='contest-status-finished')
           div(ng-switch-when='FROZEN')
-            span.contests-list__item_status_neutral Заморозка. Осталось
+            span.contests-list__item_status_neutral
+              span(qemy-i18n='contest-status-frozen')
               my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTimeMs', on-finish='updateContest')
           div(ng-switch-when='WAITING')
-            span Начало через
+            span
+              span(qemy-i18n='contest-status-waiting')
               my-timer-element.contest-item__status-time(finish='contest.startTimeMs', on-finish='updateContest')
           div(ng-switch-when='RUNNING')
-            span.contests-list__item_status_success Контест идет. Осталось
+            span.contests-list__item_status_success
+              span(qemy-i18n='contest-status-running')
               my-timer-element.contest-item__status-time(
-              finish='contest.absoluteDurationTimeMs',
-              on-finish='updateContest',
-              on-other='[{time: contest.absoluteFreezeTimeMs, callback: updateContest}]'
+                finish='contest.absoluteDurationTimeMs',
+                on-finish='updateContest',
+                on-other='[{time: contest.absoluteFreezeTimeMs, callback: updateContest}]'
               )
           div(ng-switch-when='PRACTICE')
-            span.contests-list__item_status_success Дорешивание. Осталось
+            span.contests-list__item_status_success
+              span(qemy-i18n='contest-status-practice')
               my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTimeMs', on-finish='updateContest')
