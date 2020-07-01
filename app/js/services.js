@@ -176,7 +176,37 @@ angular.module('Qemy.services', [
         return data.data;
       });
     }
-    
+
+    function forgetPassword(params) {
+      return $http({
+        method: 'post',
+        url: '/api/user/password/reset',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function changePassword(params) {
+      return $http({
+        method: 'post',
+        url: '/api/user/password/change',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function linkEmail(params) {
+      return $http({
+        method: 'post',
+        url: '/api/user/email',
+        params: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
     return {
       getCurrentUser: getCurrentUser,
       logout: logout,
@@ -187,6 +217,9 @@ angular.module('Qemy.services', [
       getSolutions: getSolutions,
       getUserToken,
       getRegisterGroupInfo,
+      forgetPassword,
+      changePassword,
+      linkEmail,
     }
   }])
   

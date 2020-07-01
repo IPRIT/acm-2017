@@ -15,8 +15,10 @@ div.news-list-item(ng-class="{'mock': isMock}")
         span.news-list-item__author-label(style='font-weight: 400;') Автор:&nbsp;
         span.news-list-item__author-text(style='font-weight: 500; color: rgba(0,0,0,0.8);') {{ item.User.fullName }}
       div.contest-item__groups(ng-if="user.isSupervisor", style='margin: 4px 0 0 -1px;')
-        div.contests-list__groups-item(ng-repeat='group in item.Groups', style='margin-bottom: 0; background-color: {{group.color || "#ccc"}}')
+        div.contests-list__groups-item(ng-repeat='group in item.collapsedGroups', style='margin-bottom: 0; background-color: {{group.color || "#ccc"}}')
           span {{group.name}}
+        div.contests-list__groups-item(ng-if='item.moreGroups.length > 0', style='margin-bottom: 0; background-color: #ccc')
+          span +{{item.moreGroups.length}}
 
   div.news-list-item__remove(ng-if='user && user.isSupervisor && (!item.User.isAdmin || user.isAdmin)')
     md-button.md-accent.md-icon-button.news-list-item__remove-button(ng-click='deleteNewsById($event, item)')

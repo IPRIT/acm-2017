@@ -1,14 +1,14 @@
 div(ng-controller='NewsListController')
   div.news-list(style="margin-bottom: 24px;", ng-if='user.isSupervisor || items.length > 0')
     div.news-list__title-wrapper
-      div.news-list__title Объявления
+      div.news-list__title(qemy-i18n='news-title')
       div.news-list__add(ng-if='user && user.isSupervisor')
         md-button.md-primary.md-icon-button.news-list__add-button(ui-sref='news-create')
           md-icon(md-svg-icon="img/icons/ic_add_24px.svg")
     div.news-list__content(ng-if='isFirstLoaded')
       news-list-item(ng-repeat='item in items', track-by='id', item='item', user='user')
     div.news-list__content(ng-if='isFirstLoaded && !items.length')
-      p(style='text-align: center; color: rgba(0,0,0,0.38);') Объявления отсутствуют
+      p(style='text-align: center; color: rgba(0,0,0,0.38);', qemy-i18n='news-empty')
 
     div.news-list__more(ng-if='isFirstLoaded && showMore', layout='row', layout-align='center center')
       md-button.md-primary(ng-disabled='isMoreLoading', ng-click='loadMore()', aria-label='Load more') Показать еще

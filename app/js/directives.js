@@ -59,6 +59,7 @@ angular.module('Qemy.directives', [])
   .directive('pageFooter', function () {
     return {
       restrict: 'EA',
+      controller: 'FooterCtrl',
       templateUrl: templateUrl('page', 'footer')
     }
   })

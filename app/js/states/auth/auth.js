@@ -32,5 +32,20 @@ angular.module('Qemy.ui.auth', [
           controller: 'AuthRegisterFormController',
           templateUrl: templateUrl('user', 'register-form')
         })
+        .state('auth.forget-password-form', {
+          url: '/forget-password',
+          controller: 'AuthForgetPasswordFormController',
+          templateUrl: templateUrl('user', 'forget-password-form')
+        })
+        .state('auth.reset-password-form', {
+          url: '/reset',
+          controller: 'AuthResetPasswordFormController',
+          templateUrl: templateUrl('user', 'reset-password-form')
+        })
+        .state('auth.link-email', {
+          url: '/link-email',
+          controller: 'AuthLinkEmailController',
+          templateUrl: templateUrl('user', 'link-email')
+        })
     }
   ]);

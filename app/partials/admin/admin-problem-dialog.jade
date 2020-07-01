@@ -2,7 +2,9 @@ md-dialog(aria-label="Problem")
   form
     md-toolbar
       div.md-toolbar-tools
-        h2 Задача «{{condition.title}}»
+        h2
+          span(qemy-i18n='contest-problems-problem')
+          span &nbsp;«{{condition.title}}»
         span(flex)
         md-button.md-icon-button(ng-click="close()")
           md-icon(md-svg-src="/img/icons/ic_close_48px.svg", aria-label="Close dialog")

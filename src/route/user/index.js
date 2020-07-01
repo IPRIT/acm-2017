@@ -11,7 +11,9 @@ router.get('/token', [ userRetriever, rightsAllocator('user', 'moderator') ], us
 router.get('/rating', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getRatingHistoryRequest);
 router.get('/rating/table', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getRatingTableRequest);
 router.get('/solutions', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getSolutionsRequest);
-router.get('/password/reset', user.forgetPasswordRequest);
+router.post('/password/reset', user.forgetPasswordRequest);
+router.post('/password/change', user.changePasswordRequest);
+router.post('/email', [ userRetriever, rightsAllocator('user', 'moderator') ], user.linkEmailRequest);
 
 router.get('/:userId', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getUserByIdRequest);
 router.get('/:userId/groups', [ userRetriever, rightsAllocator('user', 'moderator') ], user.getUserGroupsRequest);

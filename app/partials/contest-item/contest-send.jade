@@ -2,42 +2,42 @@ div.contest
   div.contest__content.contest__min-width(style='padding: 0;')
     div.contest__inner
       div.contest__title-section(style="padding: 5px 22px;")
-        h2 Отправить на проверку
+        h2(qemy-i18n='contest-send-title')
 
       div.send-content
         form
           div.send-content__condition-selector(style='padding: 0 8px;')
             div
               md-input-container(flex)
-                label Выбор задачи
+                label(qemy-i18n='contest-send-choose-problem')
                 md-select(ng-model='selectedCondition')
                   md-option(ng-repeat='condition in conditions', value='{{condition.internalSymbolIndex}}')
                     span {{condition.internalSymbolIndex + ". " + condition.title}}
 
             div
               md-input-container(flex)
-                label Язык
+                label(qemy-i18n='contest-send-choose-lang')
                 md-select(ng-model='selectedLangId')
                   md-option(ng-repeat='lang in currentLangs', value='{{lang.id}}')
                     span {{lang.name}}
 
             div.send-content__submit(ng-if='solution.length > 0')
-              md-button.md-accent.md-raised(style='margin-left: 0;', ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
+              md-button.md-accent.md-raised(qemy-i18n='contest-send-send', style='margin-left: 0;', ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()')
 
           div.send-content__textarea(style='padding: 0 8px;')
             div.ace-editor__key-rules
-              span Нажмите <b>«Ctrl+Alt+H/⌘+Alt+H»</b> в редакторе для просмотра всех возможностей.
+              span(qemy-i18n='contest-send-editor-info')
               br
-              span <b>«Ctrl+,/⌘+,»</b> — настройка редактора.
+              span(qemy-i18n='contest-send-editor-settings')
             textarea.textarea.send-content__textarea-element(id='text_area_editor', ng-model='solution')
 
           div.send-content__file-upload-button(ng-if='solution.length === 0')
             form(name='form')
               md-button.md-raised.md-primary(ngf-select="upload($file)", name="file", ngf-max-size="20MB")
                 md-icon(md-svg-src='/img/icons/ic_file_upload_48px.svg')
-                | Выбрать файл
+                span(qemy-i18n='contest-send-file')
 
           div.send-content__submit
-            md-button.md-accent(ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()') Отправить
+            md-button.md-accent(qemy-i18n='contest-send-send', ng-disabled='solution.length === 0 || !selectedCondition || sent', ng-click='submitSolution()')
 
   page-footer

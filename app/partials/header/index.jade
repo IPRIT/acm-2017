@@ -9,21 +9,10 @@ div.header__wrapper
 div.header__contest-menu.contest-menu(ng-if='headerMenu.contest')
   div.contest-menu__layer
     div.contest-menu__items
-      a.contest-menu__item(ui-sref='^.item', ui-sref-active='contest-menu__item_state_active') Информация
+      a.contest-menu__item(ui-sref='^.item', ui-sref-active='contest-menu__item_state_active', qemy-i18n='contest-about-title')
       a.contest-menu__item(ui-sref='^.table', ui-sref-active='contest-menu__item_state_active', ng-class='{"contest-menu__item_state_active": $state.includes("contest.table")}', qemy-i18n='contest-table-title')
-      a.contest-menu__item(ui-sref='^.problems', ui-sref-active='contest-menu__item_state_active') Условия задач
-      a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isSupervisor') Отправить
-      a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}') Решения
-      a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isSupervisor') Оповестить
-      a.contest-menu__item(ui-sref='admin.edit-contest({contestId: headerMenu.contest.id})', ng-if='user.isSupervisor') Редактировать
-      //a.contest-menu__item(ui-sref='^.monitor', ui-sref-active='contest-menu__item_state_active', ng-if='user.isSupervisor') Таблица (устарев.)
-      //a.contest-menu__item(ng-if='user.isSupervisor')
-        .contest-fab-menu(layout='row', layout-align='center center')
-          md-fab-speed-dial.md-scale.md-fab-top-right(md-direction='down', md-open='contestMenu.opened', ng-mouseenter='contestMenu.opened = true', ng-mouseleave='contestMenu.opened = false')
-            md-fab-trigger
-              md-button.md-fab.md-warn(aria-label='menu')
-                md-icon(md-svg-src='/img/icons/ic_tune_48px.svg', aria-label='menu')
-            md-fab-actions
-              div(ng-repeat='item in contestMenu.items')
-                md-button.md-fab.md-raised.md-mini(aria-label='{{item.name}}', ui-sref='{{item.action}}')
-                  md-icon(md-svg-src='{{item.icon}}', aria-label='{{item.name}}')
+      a.contest-menu__item(ui-sref='^.problems', ui-sref-active='contest-menu__item_state_active', qemy-i18n='contest-problems-title')
+      a.contest-menu__item(ui-sref='^.send', ng-class='{"contest-menu__item_state_active": $state.includes("contest.send-item") || $state.includes("contest.send")}', ng-if='headerMenu.contest.status !== "FINISHED" || user.isSupervisor', qemy-i18n='contest-send-title')
+      a.contest-menu__item(ui-sref='^.solutions({select: "my"})', ng-class='{"contest-menu__item_state_active": $state.includes("contest.solutions")}', qemy-i18n='contest-solutions-title')
+      a.contest-menu__item(ui-sref='^.messages', ng-class='{"contest-menu__item_state_active": $state.includes("contest.messages")}', ng-if='user.isSupervisor', qemy-i18n='contest-notifications-title')
+      a.contest-menu__item(ui-sref='admin.edit-contest({contestId: headerMenu.contest.id})', ng-if='user.isSupervisor', qemy-i18n='contest-edit-title')

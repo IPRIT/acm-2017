@@ -13,8 +13,8 @@
 
 angular.module('Qemy.controllers.contest-item.table', [])
 
-  .controller('ContestTable', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'ContestsManager', 'UserManager', 'Storage', '$mdDialog', 'AdminManager', '$q', '$timeout', 'ErrorService',
-    function ($scope, $rootScope, $state, ContestItemManager, ContestsManager, UserManager, Storage, $mdDialog, AdminManager, $q, $timeout, ErrorService) {
+  .controller('ContestTable', ['$scope', '_', '$rootScope', '$state', 'ContestItemManager', 'ContestsManager', 'UserManager', 'Storage', '$mdDialog', 'AdminManager', '$q', '$timeout', 'ErrorService',
+    function ($scope, _, $rootScope, $state, ContestItemManager, ContestsManager, UserManager, Storage, $mdDialog, AdminManager, $q, $timeout, ErrorService) {
       var contestId = $state.params.contestId;
 
       $scope.params = {
@@ -215,11 +215,11 @@ angular.module('Qemy.controllers.contest-item.table', [])
 
       $scope.updateRewindingTimeline = function () {
         $scope.timelineIntervals = [{
-          name: 'Показать шкалу от начала до конца основного времени',
+          name: _('contest-table-time-main'), // 'Показать шкалу от начала до конца основного времени',
           minTimeMs: $scope.contest.startTimeMs,
           maxTimeMs: Math.min($scope.contest.absoluteDurationTimeMs, $scope.currentTimeMs)
         }, {
-          name: 'Показать шкалу от начала до последнего решения',
+          name: _('contest-table-time-full'), // 'Показать шкалу от начала до последнего решения',
           minTimeMs: $scope.contest.startTimeMs,
           maxTimeMs: Math.max($scope.table.lastSolutionSentAtMs + 10000, $scope.contest.startTimeMs)
         }];

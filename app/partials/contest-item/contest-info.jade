@@ -2,7 +2,7 @@ div.contest
   div.contest__content.contest__min-width
     div.contest__inner
       div.contest__title-section
-        h2(style='text-align: center') Информация о контесте
+        h2(style='text-align: center', qemy-i18n='contest-about-title')
 
       div.contest__info-layer
         h3(ng-bind='"«" + contest.name + "»"')
@@ -10,55 +10,60 @@ div.contest
         div.contest__info
           div.contest__info-row
             div.contest__info-cell
-              span Время начала
+              span(qemy-i18n='contest-start-date')
             div.contest__info-cell
               span(ng-bind='contest.startDate')
 
           div.contest__info-row
             div.contest__info-cell
-              span Время окончания
+              span(qemy-i18n='contest-finish-date')
             div.contest__info-cell
               span(ng-bind='contest.finishDate')
 
           div.contest__info-row
             div.contest__info-cell
-              span Дорешивание
+              span(qemy-i18n='contest-practice')
             div.contest__info-cell
-              span(ng-bind='contest.hasPracticeTime ? "Есть" : "Нет"')
+              span(ng-if='contest.hasPracticeTime', qemy-i18n='contest-practice-yes')
+              span(ng-if='!contest.hasPracticeTime', qemy-i18n='contest-practice-no')
 
           div.contest__info-row(ng-if='contest.hasPracticeTime')
             div.contest__info-cell
-              span Время окончания дорешивания
+              span(qemy-i18n='contest-practice-finish-date')
             div.contest__info-cell
               span(ng-bind='contest.finishPracticeDate')
 
           div.contest__info-row
             div.contest__info-cell
-              span Статус
+              span(qemy-i18n='contest-status')
             div.contest__info-cell
               span
                 div.contest-item__status(ng-switch='contest.status')
                   div(ng-switch-when='NOT_ENABLED')
-                    span.contests-list__item_status_removed Не доступен
+                    span.contests-list__item_status_removed(qemy-i18n='contest-status-not-available')
                   div(ng-switch-when='REMOVED')
-                    span.contests-list__item_status_removed Удален
+                    span.contests-list__item_status_removed(qemy-i18n='contest-status-removed')
                   div(ng-switch-when='FINISHED')
-                    span.contests-list__item_status_success Завершён
+                    span.contests-list__item_status_success(qemy-i18n='contest-status-finished')
                   div(ng-switch-when='FROZEN')
-                    span.contests-list__item_status_neutral Заморозка. Осталось
+                    span.contests-list__item_status_neutral
+                      span(qemy-i18n='contest-status-frozen')
                       my-timer-element.contest-item__status-time(finish='contest.absoluteDurationTimeMs', on-finish='updateContest')
                   div(ng-switch-when='WAITING')
-                    span Начало через
+                    span
+                      span(qemy-i18n='contest-status-waiting')
                       my-timer-element.contest-item__status-time(finish='contest.startTimeMs', on-finish='updateContest')
                   div(ng-switch-when='RUNNING')
-                    span.contests-list__item_status_success Контест идет. Осталось
+                    span.contests-list__item_status_success
+                      span(qemy-i18n='contest-status-running')
                       my-timer-element.contest-item__status-time(
                       finish='contest.absoluteDurationTimeMs',
                       on-finish='updateContest',
                       on-other='[{time: contest.absoluteFreezeTimeMs, callback: updateContest}]'
                       )
                   div(ng-switch-when='PRACTICE')
-                    span.contests-list__item_status_success Дорешивание. Осталось
+                    span.contests-list__item_status_success
+                      span(qemy-i18n='contest-status-practice')
                       my-timer-element.contest-item__status-time(finish='contest.absolutePracticeDurationTimeMs', on-finish='updateContest')
 
   page-footer

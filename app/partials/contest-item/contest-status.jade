@@ -2,7 +2,7 @@ div.contest
   div.contest__content
     div.contest__inner
       div.contest__title-section(style='padding: 0; text-align: center;')
-        h2 Решения
+        h2(qemy-i18n='contest-solutions-title')
 
       div(ng-if='currentUser.isSupervisor', ng-style='{"padding": "10px 0"}')
         md-fab-toolbar(md-open="toolbar.isOpen", md-direction="left")
@@ -17,8 +17,10 @@ div.contest
       div.status-content
         md-content
           md-nav-bar.md-primary(md-selected-nav-item="selectedTabIndex", nav-bar-aria-label="Solutions")
-            md-nav-item.md-primary(md-nav-click="showSolutions('my')", name="0", ng-if='currentUser.isSupervisor') Мои решения
-            md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="1", ng-if='currentUser.isSupervisor') Все решения
+            md-nav-item.md-primary(md-nav-click="showSolutions('my')", name="0", ng-if='currentUser.isSupervisor')
+              span(qemy-i18n='contest-solutions-my')
+            md-nav-item.md-primary(md-nav-click="showSolutions('all')", name="1", ng-if='currentUser.isSupervisor')
+              span(qemy-i18n='contest-solutions-all')
             socket-status.contest__socket-status(ng-class='{"contest__socket-status_my": !currentUser.isSupervisor}')
           include contest-status/contest-status-tab-content
           include ./pagination

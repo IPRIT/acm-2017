@@ -33,5 +33,9 @@
   "ejudge": {
     "host": "10.1.88.254",
     "protocol": "http"
+  },
+  "email": {
+    "login": "ipritoflex",
+    "auth": "gpqrnqkwdoysuwlh"
   }
 }

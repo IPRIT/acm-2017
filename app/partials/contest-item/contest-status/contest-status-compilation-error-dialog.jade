@@ -2,7 +2,7 @@ md-dialog(aria-label="Verdict selection")
   form
     md-toolbar
       div.md-toolbar-tools
-        h2 Ошибка компиляции
+        h2(qemy-i18n='contest-solutions-compilation-error')
         span(flex)
         md-button.md-icon-button(ng-click="close()")
           md-icon(md-svg-src="/img/icons/ic_close_48px.svg", aria-label="Close dialog")
@@ -13,4 +13,4 @@ md-dialog(aria-label="Verdict selection")
           div.markdown(style='white-space: pre;', marked='"``` " + solution.compilationError + " ```"')
 
     div.md-actions(layout="row")
-      md-button(ng-click="close()") Закрыть
+      md-button(ng-click="close()", qemy-i18n='close')

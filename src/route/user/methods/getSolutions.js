@@ -206,7 +206,7 @@ export async function getSolutions(params) {
   return Promise.all(promises).then(([solutions, [ count ]]) => {
     return {
       solutions,
-      solutionsNumber: count.get({ plain: true }).solutionsNumber
+      solutionsNumber: count && count.get({ plain: true }).solutionsNumber || 0
     }
   });
 }

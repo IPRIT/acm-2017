@@ -7,3 +7,5 @@ export * from './getRatingTable';
 export * from './getUserById';
 export * from './getSolutions';
 export * from './forgetPassword';
+export * from './changePassword';
+export * from './linkEmail';

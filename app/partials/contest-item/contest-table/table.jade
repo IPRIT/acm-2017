@@ -14,14 +14,12 @@ div.acm-contest-table(
           md-indeterminate="rowsSelected.length !== table.rowsNumber && rowsSelected.length > 0",
           aria-label='Toggle All'
         )
-        span {{ rowsSelected.length }} выбрано
+        span {{ rowsSelected.length }}
+        span(qemy-i18n='contest-table-items-selected')
       div.acm-contest-table__selection-buttons
-        md-button.md-primary(ng-if='selectionStateFor === "refresh"', ng-click='refreshSolutionsForRows($event, rowsSelected)', ng-disabled='isActionExecuting || !rowsSelected.length')
-          | Переотправить
-        md-button.md-accent(ng-if='selectionStateFor === "delete"', ng-click='deleteRowsFromContest($event, rowsSelected)', ng-disabled='isActionExecuting || !rowsSelected.length')
-          | Удалить из контеста
-        md-button(ng-click='toggleSelectionState()', ng-disabled='isActionExecuting')
-          | Отменить
+        md-button.md-primary(qemy-i18n='contest-table-resend', ng-if='selectionStateFor === "refresh"', ng-click='refreshSolutionsForRows($event, rowsSelected)', ng-disabled='isActionExecuting || !rowsSelected.length')
+        md-button.md-accent(qemy-i18n='contest-table-remove', ng-if='selectionStateFor === "delete"', ng-click='deleteRowsFromContest($event, rowsSelected)', ng-disabled='isActionExecuting || !rowsSelected.length')
+        md-button(qemy-i18n='contest-table-cancel', ng-click='toggleSelectionState()', ng-disabled='isActionExecuting')
 
     div.acm-contest-table__header-timeline
       div.acm-contest-table__timeline-row
@@ -35,7 +33,7 @@ div.acm-contest-table(
           md-button.md-icon-button(ng-click='toggleRewindingLine()', aria-label="Close Timeline")
             md-icon(md-svg-src='/img/icons/ic_close_48px.svg')
       div.acm-contest-table__timeline-row
-        md-select(ng-model='intervalIndex', placeholder='Выбрать интервал')
+        md-select(ng-model='intervalIndex', placeholder='Select time interval')
           md-option(value='{{ $index }}', ng-repeat='interval in timelineIntervals') {{ interval.name }}
 
     div.acm-contest-table__title
@@ -44,8 +42,7 @@ div.acm-contest-table(
       div
         md-button.md-icon-button(ng-click='toggleRewindingLine()', aria-label='Rewind')
           md-icon(md-svg-src='/img/icons/ic_straighten_48px.svg')
-          md-tooltip
-            | Показать линию времени
+          md-tooltip(qemy-i18n='contest-table-time-line')
       div(ng-if='user.isSupervisor')
         md-menu(md-position-mode="target-right target")
           md-button.md-icon-button(aria-label='Open table menu', ng-click='$mdMenu.open($event)')
@@ -55,13 +52,13 @@ div.acm-contest-table(
               md-button(ng-click='setSelectionStateFor("refresh")')
                 div(layout='row', flex)
                   md-icon(md-svg-src='/img/icons/ic_history_48px.svg')
-                  p(flex, md-menu-align-target) Переотправить выбранное
+                  p(flex, md-menu-align-target, qemy-i18n='contest-table-resend-selected')
             md-menu-divider
             md-menu-item
               md-button.md-accent(ng-click='setSelectionStateFor("delete")')
                 div(layout='row', flex)
                   md-icon(md-svg-src='/img/icons/ic_delete_sweep_48px.svg')
-                  p(flex, md-menu-align-target) Удалить из контеста
+                  p(flex, md-menu-align-target, qemy-i18n='contest-table-remove-user')
 
   div.acm-contest-table__inner
     div.acm-contest-table__overlay(ng-show='isRowsLoading')

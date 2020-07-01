@@ -18,6 +18,7 @@ import RatingChange from './RatingChange';
 import ProblemVersionControl from './ProblemVersionControl';
 import RegisterLink from './RegisterLink';
 import News from './News';
+import ResetPasswordLink from './ResetPasswordLink';
 import Error from './Error';
 
 /*
@@ -41,6 +42,9 @@ sequelize.sync(/**{ force: true }/**/).then(() => {
  */
 User.hasMany(AuthToken, { foreignKey: 'userId', targetKey: 'id' });
 AuthToken.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
+User.hasMany(ResetPasswordLink, { foreignKey: 'userId', targetKey: 'id' });
+ResetPasswordLink.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
 User.hasMany(Message, { foreignKey: 'userId', targetKey: 'id' });
 Message.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
@@ -178,7 +182,7 @@ export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,
   ChatMessage, Message, MessageRead, Solution, Language, SystemAccount, RatingChange,
-  ProblemVersionControl, Error, RegisterLink, News
+  ProblemVersionControl, Error, RegisterLink, News, ResetPasswordLink
 
   /*OldUser, OldLanguage, OldContest, OldProblem,
   OldProblemToContest, OldUsersToGroups, OldSystemAccount,

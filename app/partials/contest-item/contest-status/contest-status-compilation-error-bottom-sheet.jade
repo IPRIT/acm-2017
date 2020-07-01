@@ -1,4 +1,5 @@
 md-bottom-sheet.md-grid(layout='column')
-  md-subheader(ng-cloak) Ошибка компиляции
+  md-subheader(ng-cloak)
+    span(qemy-i18n='contest-solutions-compilation-error')
   div(ng-cloak='')
     div.markdown(style='white-space: pre;', marked='"``` " + solution.compilationError + " ```"')

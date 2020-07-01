@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import Promise from 'bluebird';
 
-function generateCryptoToken(bufferLength = 48) {
+export function generateCryptoToken(bufferLength = 48) {
   let getRandomBytes = Promise.promisify(crypto.randomBytes);
   return getRandomBytes(bufferLength).then(buffer => {
     return buffer.toString('hex');

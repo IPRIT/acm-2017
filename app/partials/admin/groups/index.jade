@@ -4,7 +4,7 @@ div.admin-content-layer(style='background-color: #ECECEC;')
     div.contests-list
       div(layout='row', layout-align="space-between center")
         div(flex).contests-title Мои группы
-        md-button(flex="nogrow").md-raised.md-primary(ui-sref='admin.groups.create') + Создать группу
+        md-button.md-raised.md-primary(flex="nogrow", ui-sref='admin.groups.create') + Создать группу
 
       div.contests-list__pagination(ng-if='pageNumber !== 1')
         include ./pagination

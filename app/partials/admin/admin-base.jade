@@ -1,8 +1,8 @@
 div.contest
   div.contest__content
     div.contest__inner
-      div.contest__title-section
-        h2.contests-title.admin-title
+      div.contest__title-section(style='padding-left: 0;')
+        h2.contests-title.admin-title(style='padding-left: 0;')
           span(ng-if='user.isAdmin') Панель администратора
           span(ng-if='user.isModerator') Панель управления
 

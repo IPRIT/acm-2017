@@ -3,5 +3,5 @@ div.socket-status
     div.socket-status__indicator(ng-class='{"on": status === "on", "off": status === "off"}')
     div.socket-status__label
       span(ng-switch='status')
-        span(ng-switch-when='on') Соединение установлено
-        span(ng-switch-default) Соединение отсутствует. Переподключение...
+        span(ng-switch-when='on', qemy-i18n='contest-connection-on')
+        span(ng-switch-default, qemy-i18n='contest-connection-off')

@@ -97,7 +97,12 @@ angular.module('Qemy.controllers', [
           $rootScope.$broadcast('data loaded');
           if (!user || !user.id) {
             $rootScope.$broadcast('user updated', { user: null });
-            if ($state.current.name !== 'auth.register-form') {
+            if (
+              $state.current.name !== 'auth.register-form'
+              && $state.current.name !== 'auth.forget-password-form'
+              && $state.current.name !== 'auth.reset-password-form'
+              && $state.current.name !== 'auth.link-email'
+            ) {
               $state.go('auth.form');
             }
             return;
@@ -107,7 +112,12 @@ angular.module('Qemy.controllers', [
           return user;
         } catch (err) {
           $rootScope.$broadcast('data loaded');
-          if ($state.current.name !== 'auth.register-form') {
+          if (
+            $state.current.name !== 'auth.register-form'
+            && $state.current.name !== 'auth.forget-password-form'
+            && $state.current.name !== 'auth.reset-password-form'
+            && $state.current.name !== 'auth.link-email'
+          ) {
             $state.go('auth.form');
           }
         }
@@ -253,6 +263,9 @@ angular.module('Qemy.controllers', [
           case 'profile':
             $state.go('user.solutions', { select: 'all' });
             break;
+          case 'auth.link-email':
+            $state.go('auth.link-email');
+            break;
           case 'chat.peer':
             $state.go('chat.peer', { peerId: 'admin' });
             break;
@@ -318,6 +331,32 @@ angular.module('Qemy.controllers', [
         $scope.allMessagesNumber = typeof args.allMessagesNumber !== 'undefined' ?
           args.allMessagesNumber : $scope.allMessagesNumber;
       });
+
+      $scope.$watch('user', (user) => {
+        const emailItem = $scope.menuList.findIndex(item => item.id === 'auth.link-email');
+
+        if (!user || !user.id || user.email) {
+          if (emailItem !== -1) {
+            $scope.menuList.splice(emailItem, 1);
+          }
+          safeApply($scope);
+
+          return;
+        }
+
+        if (emailItem !== -1) {
+          return;
+        }
+
+        $scope.menuList.unshift({
+          type: 'item',
+          id: 'auth.link-email',
+          name: 'Привязать E-mail',
+          iconSrc: '/img/icons/ic_alternate_email_24px.svg'
+        });
+
+        safeApply($scope);
+      });
     }
   ])
   
@@ -336,6 +375,29 @@ angular.module('Qemy.controllers', [
     $scope.$on('data loaded', function (ev, args) {
       $scope.pageLoading = false;
       $scope.progress = 100;
+    });
+  }])
+
+  .controller('FooterCtrl', ['$scope', '$rootScope', '$timeout', '$interval', function ($scope, $rootScope, $timeout, $interval) {
+    $scope.language = Config.I18n.locale;
+
+    $scope.languages = Object.keys(Config.I18n.languages).map(id => {
+      return {
+        id,
+        name: Config.I18n.languages[id]
+      };
+    });
+
+    $scope.$watch('language', (id) => {
+      if (!id) {
+        return;
+      }
+
+      localStorage.setItem('i18n_locale', id);
+
+      if (Config.I18n.locale !== id) {
+        location.href = location.href;
+      }
     });
   }])
 ;

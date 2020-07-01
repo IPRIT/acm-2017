@@ -23,7 +23,6 @@ angular.module('Qemy.controllers.auth', [
       $scope.form = {};
 
       $scope.submitForm = function () {
-        console.log($scope.form);
         $rootScope.$broadcast('data loading');
         var authProcess = $http.post('/api/user/authenticate/sign-in', $scope.form);
         authProcess.then(function (data) {
@@ -84,6 +83,76 @@ angular.module('Qemy.controllers.auth', [
       $scope.$watch('registerForm.$valid', newVal => {
         $scope.valid = newVal;
       });
+    }
+  ])
+  .controller('AuthForgetPasswordFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
+    function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
+      $scope.$emit('change_title', {
+        title: 'Забыли пароль | ' + _('app_name')
+      });
+
+      $scope.form = {};
+      $scope.sent = false;
+
+      $scope.submitForm = function () {
+        $rootScope.$broadcast('data loading');
+        UserManager.forgetPassword($scope.form).then(data => {
+          $scope.sent = true;
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
+
+      $scope.valid = false;
+      $scope.$watch('forgetPasswordForm.$valid', newVal => {
+        $scope.valid = newVal;
+      });
+    }
+  ])
+  .controller('AuthResetPasswordFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
+    function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
+      $scope.$emit('change_title', {
+        title: 'Сменить пароль | ' + _('app_name')
+      });
+
+      $scope.form = {
+        resetKey: extractQueryStringParam('resetKey')
+      };
+      $scope.sent = false;
+
+      $scope.submitForm = function () {
+        $rootScope.$broadcast('data loading');
+        UserManager.changePassword($scope.form).then(data => {
+          $scope.sent = true;
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
+    }
+  ])
+  .controller('AuthLinkEmailController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
+    function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
+      $scope.$emit('change_title', {
+        title: 'Сменить пароль | ' + _('app_name')
+      });
+
+      $scope.form = {};
+      $scope.sent = false;
+
+      $scope.submitForm = () => {
+        $rootScope.$broadcast('data loading');
+        UserManager.linkEmail($scope.form).then(data => {
+          $scope.sent = true;
+        }).catch(result => {
+          ErrorService.show(result);
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
     }
   ])
 ;

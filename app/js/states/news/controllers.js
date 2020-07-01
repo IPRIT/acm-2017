@@ -92,17 +92,21 @@ angular.module('Qemy.controllers.news', [])
 
       function wrapItems (items) {
         return items.map(item => {
-          console.log();
           const createdAt = new Date( item.createdAt );
           const monthIndex = createdAt.getMonth();
           const day = zeroPad( createdAt.getDate() );
           const monthRu = resolveMonthRu( monthIndex );
 
+          const collapsedGroups = item.Groups.slice(0, 6);
+          const moreGroups = item.Groups.slice(6);
+
           const customProps = {
             dateCircle: {
               day, monthRu
             },
-            createdAt
+            createdAt,
+            collapsedGroups,
+            moreGroups
           };
 
           return Object.assign( item, customProps );

@@ -1,11 +1,12 @@
 div.acm-table-footer
-  div.acm-table-footer__block.acm-table-footer__rows-number-label
-    | Показать на странице:
+  div.acm-table-footer__block.acm-table-footer__rows-number-label(qemy-i18n='contest-table-count')
   div.acm-table-footer__block.acm-table-footer__rows-number
-    md-select.md-no-underline(ng-model='count', placeholder='Количество')
+    md-select.md-no-underline(ng-model='count', placeholder='Number')
       md-option(value='{{ number }}', ng-repeat='number in rowNumbers track by $index') {{ number }}
-  div.acm-table-footer__block.acm-table-footer__rows-showing(ng-show='table')
-    | {{ params.offset + 1 }}-{{ Math.min(params.offset + table.rows.length, table.rowsNumber) }} из {{ table.rowsNumber }}
+  div.acm-table-footer__block.acm-table-footer__rows-showing(ng-show='table', style='white-space: nowrap; display: flex; flex-direction: row; align-items: center;')
+    span {{ params.offset + 1 }}-{{ Math.min(params.offset + table.rows.length, table.rowsNumber) }}&nbsp;
+    span(qemy-i18n='contest-table-of')
+    span &nbsp;{{ table.rowsNumber }}
   div.acm-table-footer__block.acm-table-footer__pagination-control
     div.acm-table-footer__pagination-button
       md-button.md-icon-button(

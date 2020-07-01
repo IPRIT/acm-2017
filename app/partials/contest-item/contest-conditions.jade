@@ -2,7 +2,7 @@ div.contest
   div.contest__content.contest__min-width(style='padding: 0;')
     div.contest__inner
       div.contest__title-section(style="padding: 5px 22px;")
-        h2 Условия задач
+        h2(qemy-i18n='contest-problems-title')
 
       div.contest__conditions
 
@@ -26,24 +26,24 @@ div.contest
                 span(ng-switch-when='yandexOfficial') Яндекс.Контест (Official)
           div.contest__condition-send-button-wrap(layout, layout-align='center center')
             md-button.md-icon-button.md-primary(aria-label='Отправить решение', ng-if='contest.status !== "FINISHED" || user.isSupervisor', ui-sref='contest.send-item({problemIndex: condition.internalSymbolIndex})')
-              md-tooltip(md-direction="left") Отправить решение
+              md-tooltip(md-direction="left", qemy-i18n='contest-problems-send')
               md-icon(md-svg-src='/img/icons/ic_send_48px.svg')
           div.contest__condition-view-button-wrap(layout, layout-align='center center')
             md-button.md-icon-button(aria-label='View problem', ng-click="showProblem($event, condition)")
-              md-tooltip(md-direction="left") Быстрый просмотр
+              md-tooltip(md-direction="left", qemy-i18n='contest-problems-fast-view')
               md-icon(md-svg-src='/img/icons/ic_visibility_48px.svg')
           div.contest__condition-status-button-wrap(layout, layout-align='center center')
             div(aria-label='Problem status')
               div.problem-status.problem-status__accepted(ng-if='condition.verdictStatus.accepted')
-                md-tooltip(md-direction="left") Задача решена
+                md-tooltip(md-direction="left", qemy-i18n='contest-problems-solved')
                 md-icon(md-svg-src='/img/icons/ic_done_48px.svg')
               div.problem-status.problem-status__wrong(ng-if='!condition.verdictStatus.accepted && condition.verdictStatus.wrongsNumber > 0')
-                md-tooltip(md-direction="left") Задача не решена
+                md-tooltip(md-direction="left", qemy-i18n='contest-problems-not-solved')
                 span {{condition.verdictStatus.wrongsNumber}}
 
         div.contest__conditions_add(ng-if='user.isSupervisor')
           md-button(md-no-ink, ng-click='addNewProblemDialog($event)')
             md-icon(md-svg-src='/img/icons/ic_add_48px.svg')
-            span(style='margin-left: 10px;') Добавить задачу
+            span(style='margin-left: 10px;', qemy-i18n='contest-problems-add-task')
 
   page-footer

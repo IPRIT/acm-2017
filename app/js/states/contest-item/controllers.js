@@ -65,8 +65,11 @@ angular.module('Qemy.controllers.contest-item', [
           if (num < 0 || num > 12) {
             num = 0;
           }
-          var month = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
-            'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+          var month = Config.I18n.locale === 'ru-ru'
+            ? ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
+              'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря']
+            : ['January', 'February', 'March', 'April', 'May', 'June',
+              'July', 'August', 'September', 'October', 'November', 'December'];
           return month[num];
         }
         
