@@ -3270,3 +3270,8 @@ md-sidenav {
   background-color: rgb(255,82,82);
   color: #fff;
 }
+.admin-contest-item {
+  .md-label {
+    width: calc(100% - 30px);
+  }
+}

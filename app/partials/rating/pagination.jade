@@ -1,0 +1,38 @@
+div.pagination(ng-if='pagination.length > 1')
+   div.pagination__buttons
+      md-button.pagination__item(
+         ng-if='pageNumber !== 1'
+         ui-sref='rating.index-pagination({pageNumber: 1})',
+         aria-label='Button prev fast'
+      )
+         md-icon(md-svg-src="/img/icons/ic_fast_rewind_48px.svg")
+
+      md-button.pagination__item(
+         ng-if='pageNumber !== 1'
+         ui-sref='rating.index-pagination({pageNumber: pageNumber - 1})',
+         aria-label='Button prev'
+      )
+         md-icon(md-svg-src="/img/icons/ic_skip_previous_48px.svg")
+
+      //repeat-start
+      md-button.pagination__item(
+         ng-repeat='page in pagination',
+         ui-sref='rating.index-pagination({pageNumber: page.number})'
+         ng-class='{"md-primary md-raised": page.active}',
+         aria-label='Button'
+      ) {{page.number}}
+      //repeat-end
+
+      md-button.pagination__item(
+         ng-if='pageNumber !== pagination[pagination.length - 1].number'
+         ui-sref='rating.index-pagination({pageNumber: pageNumber + 1})',
+         aria-label='Button next'
+      )
+         md-icon(md-svg-src="/img/icons/ic_skip_next_48px.svg")
+
+      md-button.pagination__item(
+         ng-if='pageNumber !== pagination[pagination.length - 1].number'
+         ui-sref='rating.index-pagination({pageNumber: allPages})',
+         aria-label='Button next fast'
+      )
+         md-icon(md-svg-src="/img/icons/ic_fast_forward_48px.svg")

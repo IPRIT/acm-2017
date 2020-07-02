@@ -30,14 +30,30 @@ async function signIn(req, res) {
   }
   log.info('Received user:', user && user.get({ plain: true }).fullName);
   
-  let tokenInstance = await rememberUser(user);
-  res.cookie(AUTH_COOKIE_NAME, tokenInstance.token, {
-    expires: new Date(Date.now() + 1e3 * 3600 * 24 * 365),
-    httpOnly: true
-  });
+  const tokenInstance = await rememberUser(user);
+
+  updateSession(res, user, tokenInstance.token);
+
   req.session.userId = user.id;
+
   await user.update({
     lastLoggedTimeMs: Date.now()
   });
+
   return tokenInstance.token;
+}
+
+export function updateSession(res, user, token) {
+  if (!token) {
+    return;
+  }
+  const AUTH_COOKIE_NAME = config.auth.cookieName;
+  const expires = user.isSupervisor
+    ? new Date(Date.now() + 1e3 * 1800)
+    : new Date(Date.now() + 1e3 * 3600 * 24 * 365);
+
+  res.cookie(AUTH_COOKIE_NAME, token, {
+    expires,
+    httpOnly: true
+  });
 }

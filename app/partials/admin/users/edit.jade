@@ -26,7 +26,7 @@ div.admin-content-layer
             div(layout)
               md-input-container(flex)
                 label E-mail
-                input(md-maxlength='200', required, name='email', type='email', ng-model='currentUser.email')
+                input(md-maxlength='200', name='email', type='email', ng-model='currentUser.email')
                 div(ng-messages='userForm.email.$error')
                   div(ng-message='required') Поле не может быть пустым.
                   div(ng-message='md-maxlength') Введите не больше 200 символов

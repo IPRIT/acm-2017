@@ -1,0 +1,71 @@
+style.
+  .page__inner, .standart-layer {
+    width: 100%;
+  }
+
+div
+  div.standart-layer
+    div.standart-layer__content
+      div.task__title
+        div.task__title-delimiter(style='margin-left: -5px;')
+          md-icon(md-svg-src='/img/icons/ic_chevron_left_48px.svg')
+        a.task__title-link(ui-sref='^.index', qemy-i18n='rating-back-to-create')
+
+      div.rating-table-settings(layout='row')
+        div.contest-creation__row(flex)
+          div.contest-creation__row-title(qemy-i18n='rating-create-score-per-problem')
+          md-input-container
+            label(qemy-i18n='rating-create-score-per-problem')
+            input(type="number", ng-model='scoreInTime')
+
+        div.contest-creation__row(flex)
+          div.contest-creation__row-title(qemy-i18n='rating-create-score-per-problem-practice')
+          md-input-container
+            label(qemy-i18n='rating-create-score-per-problem-practice')
+            input(type="number", ng-model='scoreInPractice')
+
+        div.contest-creation__row(flex='3')
+          md-input-container
+            md-button.md-primary.md-raised(aria-label='Create rating', ng-click='updateRatingTable()', qemy-i18n='rating-create-refresh')
+
+      div.monitor-content__table.rating-table
+        div.monitor-content__row.monitor-content__row_type_header
+          div.monitor-content__cell
+            span(qemy-i18n='rating-create-place')
+          div.monitor-content__cell.monitor-content__cell-participant
+            span(qemy-i18n='rating-create-participant')
+          div.monitor-content__cell.monitor-content__cell-result.rating-table__header-cell(
+            ng-repeat='headerCell in table.header.row', title='{{headerCell.name}}', layout="column")
+            div.rating-table__top-cell
+              a.link(target='_blank', ui-sref='contest.item({contestId: headerCell.id})', ng-bind='"#" + headerCell.id', title='{{headerCell.name}}')
+            div.rating-table__subheader-cells(layout='row', layout-fill)
+              div(flex, qemy-i18n='rating-create-score-in-contest')
+              div(flex, qemy-i18n='rating-create-score-after')
+          div.monitor-content__cell.monitor-content__cell-solutions.rating-table__header-cell(layout='column')
+            div.rating-table__top-cell
+              span(qemy-i18n='rating-create-score-common')
+            div.rating-table__subheader-cells(layout='row', layout-fill)
+              div(flex, qemy-i18n='rating-create-score-in-contest')
+              div(flex, qemy-i18n='rating-create-score-after')
+              div(flex, qemy-i18n='rating-create-score-sum')
+
+        div.monitor-content__row(ng-repeat='row in table.rows',
+          ng-class='{"monitor-content__row_group_even": row.group % 2 === 0}')
+          div.monitor-content__cell
+            span(ng-bind='$index + 1')
+          div.monitor-content__cell.monitor-content__cell-participant
+            span(ng-bind='row.user.fullName')
+          div.monitor-content__cell.rating-table__results(ng-repeat='cell in row.row')
+            div.monitor-content__cell
+              span(ng-bind='cell[0]')
+            div.monitor-content__cell
+              span(ng-bind='cell[1]')
+          div.monitor-content__cell.rating-table__results.rating-table__results-sum
+            div.monitor-content__cell
+              span(ng-bind='row.scoreInTime | mathRound')
+            div.monitor-content__cell
+              span(ng-bind='row.scoreInPractice | mathRound')
+            div.monitor-content__cell
+              span(ng-bind='row.scoreSum | mathRound')
+
+  page-footer

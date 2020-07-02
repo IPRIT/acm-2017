@@ -107,6 +107,7 @@
   "menu-profile": "Profile",
   "menu-my-solutions": "My solutions",
   "menu-user-solutions": "All solutions",
+  "menu-rating": "Ratings",
   "menu-admin-chat": "Chat with admin",
   "menu-user-messages": "Chat with users",
   "menu-admin-panel": "Admin panel",
@@ -167,5 +168,19 @@
   "profile-change-email": "Change E-mail",
   "profile-telegram": "Connected Telegram",
   "profile-telegram-link": "Connect Telegram",
-  "profile-telegram-disconnect": "Disconnect"
+  "profile-telegram-disconnect": "Disconnect",
+
+  "rating-back-to-create": "Back to contests",
+
+  "rating-index-title": "Creating rating table from contests",
+
+  "rating-create-score-per-problem": "Score per solved problem in time",
+  "rating-create-score-per-problem-practice": "Score per solved problem in practice",
+  "rating-create-refresh": "Refresh",
+  "rating-create-place": "Place",
+  "rating-create-participant": "Participant",
+  "rating-create-score-in-contest": "Main time",
+  "rating-create-score-after": "Practice",
+  "rating-create-score-common": "Score",
+  "rating-create-score-sum": "Sum"
 }

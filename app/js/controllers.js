@@ -219,6 +219,11 @@ angular.module('Qemy.controllers', [
         iconSrc: '/img/icons/ic_rule_24px.svg'
       }, {
         type: 'item',
+        id: 'ratings',
+        name: _('menu-rating'), // 'Таблицы рейтинга',
+        iconSrc: '/img/icons/ic_table_chart_24px.svg'
+      }, {
+        type: 'item',
         id: 'chat.peer',
         onlyFor: [256],
         name: _('menu-admin-chat'), // 'Написать администратору',
@@ -257,6 +262,9 @@ angular.module('Qemy.controllers', [
         switch (item.id) {
           case 'profile':
             $state.go('profile');
+            break;
+          case 'ratings':
+            $state.go('rating.index');
             break;
           case 'solutions':
             $state.go('user.solutions', { select: 'all' });

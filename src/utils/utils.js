@@ -29,6 +29,10 @@ export function getIntegerIndex(symbolIndex) {
   return index - 1;
 }
 
+export function clearRussianCComments(rawCode = '') {
+  return rawCode.replace(/([а-яА-ЯёЁ]+)/gi, '');
+}
+
 export function makeSourceWatermark({ solutionInstance, commentLiteral = SYNTAX_C_LIKE_LITERAL_COMMENT, whitespace = false } = {}) {
   if (whitespace) {
     let whitespacesNumber = Math.floor(Math.random() * 100) + 1;

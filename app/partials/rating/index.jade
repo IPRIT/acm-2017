@@ -1,0 +1,21 @@
+div
+  div.standart-layer
+    div.standart-layer__content
+      div(ng-controller='AdminRatingCreateController')
+        div.contests-list
+          div.contests-title(qemy-i18n='rating-index-title')
+          div.contests-list__pagination(ng-if='pageNumber !== 1')
+            include pagination
+          div.contests-list__items
+            div.contests-list__item-layer(ng-repeat='contest in contestsList')
+              contest-list-item-admin-rating(contest='contest')
+            div(ng-if='contestsList.length === 0')
+              div.contests-list__no-items Список контестов пуст
+
+
+        include pagination
+
+        div.contest-creation__row.contest-creation__row_type_create
+          md-button.md-primary.md-raised(ng-disabled='!selectedContests.length', aria-label='Create rating', ng-click='createRating()') Посмотреть рейтинг
+
+  page-footer

@@ -1,7 +1,7 @@
 import * as models from '../../../models';
 import Promise from 'bluebird';
 import * as contests from './index';
-import { makeSourceWatermark, SYNTAX_PYTHON_LITERAL_COMMENT } from '../../../utils';
+import { clearRussianCComments, makeSourceWatermark, SYNTAX_PYTHON_LITERAL_COMMENT } from '../../../utils';
 import deap from 'deap';
 import * as sockets from '../../../socket';
 import filter from "../../../utils/filter";
@@ -61,6 +61,10 @@ export async function sendSolution(params) {
   if (problem.systemType === 'acmp' && solution.length <= 12) {
     throw new HttpError('ACMP restriction: ' +
       'Solution is too short. Please send solution with more than 12 characters.');
+  }
+
+  if (problem.systemType === 'ejudge') {
+    solution = clearRussianCComments(solution);
   }
   
   let solutionInstance = await contest.createSolution({

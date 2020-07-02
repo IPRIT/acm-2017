@@ -6,7 +6,7 @@ div
 
       div.contests-title(qemy-i18n='index-title')
 
-      div.contests-sort(ng-show='all_items_count >= 5')
+      div.contests-sort(ng-show='curSearchQuery.length > 0 || all_items_count >= 5')
 
         div(style='flex: 1; margin-right: 20px;')
           md-input-container

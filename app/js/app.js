@@ -21,6 +21,7 @@ angular.module('Qemy', [
   'Qemy.ui.user',
   'Qemy.ui.profile',
   'Qemy.ui.problems',
+  'Qemy.ui.rating',
   'Qemy.ui.auth',
   'Qemy.ui.contest-item',
   'Qemy.ui.admin',

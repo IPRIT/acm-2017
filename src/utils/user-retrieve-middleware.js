@@ -1,6 +1,7 @@
 import { User, AuthToken } from '../models';
 import Promise from 'bluebird';
 import { config } from '../utils';
+import { updateSession } from "../route/user/methods/authenticate/form/sign-in";
 
 export default async (req, res, next) => {
   return Promise.resolve().then(() => {
@@ -18,9 +19,11 @@ async function retrieveUser(req, res, next) {
   
   let session = req.session || {};
   let cookies = req.cookies;
+
   let { token = req.query && req.query.token || req.body && req.body.token } = req.params;
   token = req.header('X-Token') || token || cookies[ AUTH_COOKIE_NAME ];
   req.token = token;
+
   let user;
   
   if (session && session.userId) {
@@ -33,11 +36,18 @@ async function retrieveUser(req, res, next) {
   if (!user) {
     return next();
   }
+
   session.userId = user.id;
   req.user = user;
+
   await user.update({
     recentActivityTimeMs: Date.now()
   });
+
+  if (user.isSupervisor) {
+    updateSession(res, user, token);
+  }
+
   next();
 }
 
