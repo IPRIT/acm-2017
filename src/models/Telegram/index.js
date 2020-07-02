@@ -9,7 +9,6 @@ export const Telegram = sequelize.define('Telegram', {
   },
   username: {
     type: Sequelize.STRING,
-    unique: true
   },
   telegramId: {
     type: Sequelize.BIGINT(15),

@@ -1,6 +1,7 @@
 @import "../helpers/all";
 
-@include bem(contest-table) {
+$bem-use-namespaces: true;
+@include block('contest-table', 'component') {
   width: 100%;
   height: 100%;
   display: block;
@@ -9,7 +10,7 @@
   min-width: 900px;
   box-shadow: $block-shadow;
 
-  @include bem-element(header) {
+  @include element('header') {
     width: 100%;
     display: flex;
     flex-direction: row !important;
@@ -20,13 +21,9 @@
     position: relative;
 
     @include transition-only-for(.4s, (height));
-
-    #{get-bem-block-full(contest-table_state_timeline)} & {
-      height: 2 * 64px;
-    }
   }
 
-  @include bem-element(title) {
+  @include element('title') {
     flex: 3;
     display: flex;
     flex-direction: column !important;
@@ -37,7 +34,7 @@
     font-weight: 500;
   }
 
-  @include bem-element(actions) {
+  @include element('actions') {
     flex: 1;
     display: flex;
     flex-direction: row !important;
@@ -45,11 +42,11 @@
     justify-content: flex-end;
   }
 
-  @include bem-element(inner) {
+  @include element('inner') {
     position: relative;
   }
 
-  @include bem-element(overlay) {
+  @include element('overlay') {
     @extend %ab-layer-absolute-fill;
     z-index: 100;
     background-color: transparentize(white, .5);
@@ -58,7 +55,7 @@
     justify-content: center;
   }
 
-  @include bem-element(header-overlay) {
+  @include element('header-overlay') {
     @extend %ab-layer-absolute-fill;
     display: none;
     flex-direction: row !important;
@@ -66,13 +63,9 @@
     justify-content: flex-start;
     background-color: white;
     border-bottom: 1px solid #e0e0e0;
-
-    #{get-bem-block-full(contest-table_state_select)} & {
-      display: flex;
-    }
   }
 
-  @include bem-element(selection-number-label) {
+  @include element('selection-number-label') {
     margin-left: 24px;
     color: #2196f3;
 
@@ -85,13 +78,13 @@
     }
   }
 
-  @include bem-element(selection-buttons) {
+  @include element('selection-buttons') {
     margin-left: 24px;
     position: relative;
     top: 2px;
   }
 
-  @include bem-element(header-timeline) {
+  @include element('header-timeline') {
     @extend %ab-layer-absolute-fill;
     display: none;
     flex-direction: column !important;
@@ -101,30 +94,26 @@
     padding: 0 0 0 24px;
     box-sizing: border-box;
 
-    #{get-bem-block-full(contest-table_state_timeline)} & {
-      display: flex;
-    }
-
     md-slider {
       width: 100%;
     }
   }
 
-  @include bem-element(timeline-row) {
+  @include element('timeline-row') {
     display: flex;
     flex-direction: row !important;
     align-items: center;
     height: 100%;
   }
 
-  @include bem-element(timeline) {
+  @include element('timeline') {
     width: 100%;
     box-sizing: border-box;
     padding-right: 24px;
     position: relative;
   }
 
-  @include bem-element(timeline-labels) {
+  @include element('timeline-labels') {
     display: flex;
     flex-direction: row !important;
     justify-content: space-between;
@@ -134,6 +123,22 @@
     padding-right: 20px;
     top: 40px;
     width: 100%;
+  }
+
+  @include modifier('state_timeline') {
+    @include modifies-element('header') {
+      height: 2 * 64px;
+    }
+
+    @include modifies-element('header-timeline') {
+      display: flex;
+    }
+  }
+
+  @include modifier('state_select') {
+    @include modifies-element('header-overlay') {
+      display: flex;
+    }
   }
 }
 
@@ -145,7 +150,8 @@ table-row {
     border-bottom: 1px solid #e0e0e0;
   }
 }
-@include bem(table-row) {
+
+@include block('table-row', 'component') {
   @extend %ab-layer-flex;
   flex-direction: row !important;
   justify-content: space-around;
@@ -162,17 +168,19 @@ table-row {
     background-color: #eee;
   }
 
-  @include bem-element(type_even) {
-    background-color: transparentize(#607d8b, .95);
-  }
+  @include element('type') {
+    @include modifier('even') {
+      background-color: transparentize(#607d8b, .95);
+    }
 
-  @include bem-element(type_selected) {
-    #{get-bem-block-full(contest-table_state_select)} & {
-      background-color: #E8F0FE;
+    @include modifier('selected') {
+      #{get-bem-block-full(contest-table_state_select)} & {
+        background-color: #E8F0FE;
+      }
     }
   }
 
-  @include bem-element(block) {
+  @include element('block') {
     @extend %ab-layer-flex;
     flex-direction: row !important;
     align-items: stretch;
@@ -195,7 +203,7 @@ table-row {
     }
   }
 
-  @include bem-element(cell) {
+  @include element('cell') {
     @extend %ab-layer-flex;
     align-items: center;
     justify-content: center;
@@ -204,12 +212,12 @@ table-row {
     text-overflow: ellipsis;
   }
 
-  @include bem-element(rank) {
+  @include element('rank') {
     max-width: 50px;
     align-items: flex-start;
   }
 
-  @include bem-element(contestant) {
+  @include element('contestant') {
     min-width: 150px;
     max-width: 150px;
     align-items: flex-start;
@@ -230,20 +238,20 @@ table-row {
     }
   }
 
-  @include bem-element(accepted-solutions) {
+  @include element('accepted-solutions') {
     min-width: 80px;
     max-width: 80px;
     align-items: flex-end;
   }
 
-  @include bem-element(penalty) {
+  @include element('penalty') {
     min-width: 80px;
     max-width: 80px;
     align-items: flex-end;
     margin-left: 10px;
   }
 
-  @include bem-element(select-overlay) {
+  @include element('select-overlay') {
     @extend %ab-layer-absolute-fill;
     display: none;
     z-index: 99;
@@ -267,13 +275,13 @@ table-row {
     }
   }
 
-  @include bem-element(blocks) {
+  @include element('blocks') {
     width: 100%;
     display: flex;
     flex-direction: row !important;
   }
 
-  @include bem-element(selection-space) {
+  @include element('selection-space') {
     width: 0;
     @include transition-only-for(.3s, (width));
 
@@ -283,7 +291,7 @@ table-row {
   }
 }
 
-@include bem(table-header-row) {
+@include block('table-header-row', 'component') {
   font-size: 14px;
   font-weight: 500;
   color: #757575;
@@ -292,7 +300,7 @@ table-row {
     background: none;
   }
 
-  @include bem-element(cell) {
+  @include element('cell') {
     min-width: 5px !important;
     text-decoration: none;
     color: inherit;
@@ -308,7 +316,7 @@ table-cell {
   min-width: 5px !important;
   outline: none;
 }
-@include bem(table-cell) {
+@include block('table-cell', 'component') {
   @extend %ab-layer-flex;
   flex-direction: column !important;
   align-items: center;
@@ -316,31 +324,33 @@ table-cell {
   position: relative;
   outline: none;
 
-  @include bem-element(result) {
+  @include element('result') {
     font-size: 1em;
   }
 
-  @include bem-element(accepted-at) {
+  @include element('accepted-at') {
     font-size: .7em;
   }
 
-  @include bem-element(type_clickable) {
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  @include element('type') {
+    @include modifier('clickable') {
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @include modifier('practice') {
+      color: #009688;
+    }
+
+    @include modifier('frozen') {
+      color: #FF9800;
+    }
   }
 
-  @include bem-element(type_practice) {
-    color: #009688;
-  }
-
-  @include bem-element(type_frozen) {
-    color: #FF9800;
-  }
-
-  @include bem-element(loading-overlay) {
+  @include element('loading-overlay') {
     @extend %ab-layer-absolute-fill;
     z-index: 100;
     background-color: transparentize(white, .3);
@@ -353,7 +363,8 @@ table-cell {
 table-footer {
   display: block;
 }
-@include bem(table-footer) {
+
+@include block('table-footer', 'component') {
   @extend %ab-layer-flex;
   flex-direction: row !important;
   align-items: stretch;
@@ -362,24 +373,24 @@ table-footer {
   font-size: 13px;
   color: #757575;
 
-  @include bem-element(block) {
+  @include element('block') {
     @extend %ab-layer-flex;
     justify-content: center;
     width: auto;
   }
 
-  @include bem-element(pagination-control) {
+  @include element('pagination-control') {
     @extend %ab-layer-flex;
     flex-direction: row !important;
     align-items: center;
     width: auto;
   }
 
-  @include bem-element(rows-showing) {
+  @include element('rows-showing') {
     margin-right: 18px;
   }
 
-  @include bem-element(rows-number) {
+  @include element('rows-number') {
     margin-right: 32px;
 
     md-select {
@@ -391,7 +402,8 @@ table-footer {
     }
   }
 
-  @include bem-element(rows-number-label) {
+  @include element('rows-number-label') {
     margin-right: 40px;
   }
 }
+$bem-use-namespaces: false;

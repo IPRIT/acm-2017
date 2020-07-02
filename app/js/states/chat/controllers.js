@@ -166,6 +166,9 @@ angular.module('Qemy.controllers.chat', [])
       function createIndex(dialogs) {
         const dialogsIndex = SearchIndexManager.createIndex();
         for (let i = 0; i < dialogs.length; ++i) {
+          if (!dialogs[i].peer) {
+            continue;
+          }
           SearchIndexManager.indexObject(dialogs[i].peer.id, dialogs[i].peer.fullName, dialogsIndex);
         }
         $scope.dialogsIndex = dialogsIndex;

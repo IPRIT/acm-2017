@@ -30,11 +30,11 @@ export async function resolvePeer(params) {
   const adminId = 2;
   const admin = await models.User.findByPrimary(adminId);
 
-  if (user.isAdmin) {
+  if (user.isSupervisor) {
     user = admin;
     userId = adminId;
   }
-  if (peerUser.isAdmin) {
+  if (peerUser.isSupervisor) {
     peerUser = admin;
     peerUserId = adminId;
   }

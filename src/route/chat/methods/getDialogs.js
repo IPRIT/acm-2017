@@ -25,7 +25,7 @@ export async function getDialogs(params) {
   }
 
   const adminId = 2;
-  if (user.isAdmin) {
+  if (user.isSupervisor) {
     user = await models.User.findByPrimary(adminId);
     userId = adminId;
   }
@@ -80,6 +80,8 @@ export async function getDialogs(params) {
   for (let peer of peers) {
     peersMapping.set(peer.id, peer.get({ plain: true }));
   }
+
+  peersMapping.set(user.id, user.get({ plain: true }));
 
   let readyDialogs = [];
   for (let message of headMessages) {

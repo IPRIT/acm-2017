@@ -91,7 +91,9 @@ angular.module('Qemy.controllers.auth', [
         title: 'Забыли пароль • ' + _('app_name')
       });
 
-      $scope.form = {};
+      $scope.form = {
+        language: Config.I18n.aliases_back[Config.I18n.locale] || 'en',
+      };
       $scope.sent = false;
 
       $scope.submitForm = function () {

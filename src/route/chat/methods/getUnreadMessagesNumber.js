@@ -26,7 +26,7 @@ export async function getUnreadMessagesNumber(params) {
   }
 
   const adminId = 2;
-  if (user.isAdmin) {
+  if (user.isSupervisor) {
     user = await models.User.findByPrimary(adminId);
     userId = adminId;
   }
