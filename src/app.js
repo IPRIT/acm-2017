@@ -41,7 +41,6 @@ app.use(session({
 app.use(express.static(path.join(__dirname, '../app')));
 
 systems.worker.run();
-bot.startPolling(2, 1000, ['message']);
 
 /*
  * Connecting routers
@@ -62,6 +61,10 @@ app.use('/api', apiRouter);
 app.use('/files', filesRouter);
 app.use('/upload', uploadRouter);
 app.use('/polygon', polygonRouter);
+
+if (isProduction) {
+  app.use(bot.webhookCallback('/tg-webhook'));
+}
 
 app.all('/*', function(req, res, next) {
   // Just send the index.jade for other files to support html5 mode in angular routing
