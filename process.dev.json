@@ -1,7 +1,8 @@
 {
   "apps" : [{
     "name"        : "acm2",
-    "script"      : "./server.js",
+    "script": "npm",
+    "args": "start",
     "exec_mode"   : "cluster",
     "max_memory_restart": "800M",
     "env": { "NODE_ENV": "development" }
