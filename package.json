@@ -12,7 +12,8 @@
     "server:prod": "run-s server:build server:start",
     "open": "open-cli http://localhost:3002 -- chrome",
     "dev": "run-p client:dev server:dev open",
-    "prod": "run-p client:prod server:prod"
+    "prod": "run-p client:prod server:prod",
+    "prod:build": "run-p client:prod server:build"
   },
   "keywords": [
     "angular",
