@@ -146,6 +146,8 @@ bot.on('message', (ctx) => {
   if (message.reply_to_message) {
     return handleReply(ctx, message, message.reply_to_message);
   }
+
+  return ctx.replyWithDice();
 });
 
 bot.catch((err, ctx) => {
