@@ -41,7 +41,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, '../app')));
 
 systems.worker.run();
-bot.startPolling(2, 30);
+bot.startPolling(2, 1000, ['message']);
 
 /*
  * Connecting routers

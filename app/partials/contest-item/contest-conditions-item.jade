@@ -2,15 +2,24 @@ div.contest
   div.contest__content.contest__min-width
     div.contest__inner
       div.task
-        div.task__title
+        div.task__title(layout='row', layout-align='start center')
           a.task__title-link(ui-sref='^.problems', qemy-i18n='contest-problems-title')
           div.task__title-delimiter
             md-icon(md-svg-src='/img/icons/ic_chevron_right_48px.svg')
-          div.task__title-index
+          div.task__title-index(layout='row', layout-align='start center', flex)
             span(ng-bind='condition.internalSymbolIndex + ". " + condition.title + ""')
-            md-button.md-icon-button(ng-if='user.isSupervisor', style='margin-left: 5px; top: -2px; position: relative;', ui-sref='problems.item({problemId: condition.id})')
-              md-icon(md-svg-src='/img/icons/ic_history_48px.svg')
-              md-tooltip Версии условия
+
+            div(layout, layout-align='end center', flex, ng-show='user.isSupervisor')
+              md-button.md-icon-button(ui-sref='problems.item-version({problemId: condition.id, versionNumber: versionNumber})', aria-label='show')
+                md-icon(md-svg-src='/img/icons/ic_visibility_48px.svg')
+                md-tooltip Посмотреть версию {{versionNumber}}
+
+              div(layout, layout-align='center center', ng-show='user.isAdmin', style='margin-left: 12px;')
+                md-select(ng-model='versionId', style='margin: 0;', data-version-id="{{versionId}}", aria-label='versions')
+                  md-option(ng-repeat='version in versions', value='{{version.uuid}}', ng-bind='version.name || ("Версия #" + version.versionNumber)')
+
+                md-button.md-icon-button(ng-click='saveVersion()', aria-label='save')
+                  md-icon(md-svg-src='/img/icons/ic_save_48px.svg')
 
         div.task__own(ng-if='condition.attachments')
           div(ng-if='condition.attachments.files && condition.attachments.files.length > 0 && condition.attachments.config.files_location === "top"')

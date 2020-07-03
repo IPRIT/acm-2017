@@ -173,6 +173,7 @@
   "rating-back-to-create": "Back to contests",
 
   "rating-index-title": "Creating rating table from contests",
+  "rating-index-empty": "You have no contests yet",
 
   "rating-create-score-per-problem": "Score per solved problem in time",
   "rating-create-score-per-problem-practice": "Score per solved problem in practice",

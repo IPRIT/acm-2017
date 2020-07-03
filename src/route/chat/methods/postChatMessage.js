@@ -156,5 +156,5 @@ async function notifyTelegram(data) {
     }
   }
 
-  return Promise.all(promises);
+  return Promise.all(promises).catch(console.log);
 }

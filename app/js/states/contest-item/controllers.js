@@ -432,10 +432,16 @@ angular.module('Qemy.controllers.contest-item', [
       $scope.$emit('change_title', {
         title: 'Условие • ' + _('app_name')
       });
-      var contestId = $state.params.contestId;
+      var contestId = Number($state.params.contestId);
       var problemId = $state.params.problemIndex;
+
       $scope.condition = {};
+      $scope.versionId = null;
+      $scope.versions = [];
+      $scope.versionNumber = null;
+
       $rootScope.$broadcast('data loading');
+
       ContestItemManager.getCondition({ contestId: contestId, symbolIndex: problemId }).then(function (result) {
         $rootScope.$broadcast('data loaded');
         if (result.attachments
@@ -474,11 +480,67 @@ angular.module('Qemy.controllers.contest-item', [
         $timeout(_ => {
           MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathJax"]);
         }, 100);
+
+        return ContestItemManager.getProblemVersions({ problemId: result.id });
+      }).then(versions => {
+        const problemToContest = $scope.condition.ProblemToContest;
+        const lastVersion = versions.length && versions[versions.length - 1];
+
+        $scope.versions = versions;
+        // don't delete '-', it's an uuid
+        $scope.versionId = problemToContest && problemToContest.versionId || '-';
+
+        if (versions.length) {
+          const index = versions.findIndex(version => version.uuid === $scope.versionId);
+          const version = versions[index];
+
+          if (version) {
+            $scope.versionNumber = version.versionNumber;
+          }
+
+          $scope.versions.unshift({
+            uuid: '-',
+            name: 'По умолчанию',
+            versionNumber: versions[versions.length - 1].versionNumber
+          });
+        }
+
+        safeApply($scope);
       }).catch(function (result) {
-        $rootScope.$broadcast('data loaded');
         ErrorService.show(result);
         $state.go('^.problems');
+      }).finally(() => {
+        $rootScope.$broadcast('data loaded');
       });
+
+      $scope.$watch('versionId', (id) => {
+        const versions = $scope.versions;
+
+        if (!versions.length) {
+          return;
+        }
+
+        const index = versions.findIndex(version => version.uuid === id);
+        const version = versions[index];
+
+        if (version) {
+          $scope.versionNumber = version.versionNumber;
+        }
+
+        safeApply($scope);
+      });
+
+      $scope.saveVersion = () => {
+        const versionId = $scope.versionId;
+        const problemId = $scope.condition.id;
+
+        $rootScope.$broadcast('data loading');
+        return ContestItemManager.saveProblemVersion({ versionId, problemId, contestId }).then(() => {
+          location.href = location.href;
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
       
       $scope.openImage = function (ev, file) {
         let useFullScreen = $mdMedia('sm') || $mdMedia('xs');

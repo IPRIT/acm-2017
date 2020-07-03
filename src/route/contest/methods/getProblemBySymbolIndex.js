@@ -37,7 +37,7 @@ export async function getProblemBySymbolIndex(params) {
       });
       return filter(problem, {
         exclude: [
-          'ProblemToContest', 'ProblemToContests', 'textStatement'
+          /*'ProblemToContest', */'ProblemToContests', 'textStatement'
         ]
       })
     });
@@ -46,5 +46,18 @@ export async function getProblemBySymbolIndex(params) {
       throw new HttpError('Problem not found');
     }
     return problemsArray[0];
+  }).then(async problem => {
+    const versionId = problem.ProblemToContest.versionId;
+    if (!versionId) {
+      return problem;
+    }
+
+    const version = await models.ProblemVersionControl.findByPrimary(problem.ProblemToContest.versionId);
+
+    problem.title = version.title;
+    problem.htmlStatement = version.htmlStatement;
+    problem.attachments = version.attachments;
+
+    return problem;
   });
 }

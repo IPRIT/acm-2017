@@ -137,6 +137,25 @@ angular.module('Qemy.services.contest-item', [
         return data.data;
       });
     }
+
+    function getProblemVersions(params) {
+      return $http({
+        method: 'get',
+        url: '/api/problems/' + params.problemId + '/versions'
+      }).then(function (data) {
+        return data.data;
+      });
+    }
+
+    function saveProblemVersion(params) {
+      return $http({
+        method: 'post',
+        url: '/api/problems/' + params.problemId + '/versions',
+        data: params
+      }).then(function (data) {
+        return data.data;
+      });
+    }
     
     return {
       getConditions: getConditions,
@@ -151,7 +170,9 @@ angular.module('Qemy.services.contest-item', [
       getMessages: getMessages,
       markAsRead: markAsRead,
       sendMessage: sendMessage,
-      getParticipants: getParticipants
+      getParticipants: getParticipants,
+      getProblemVersions,
+      saveProblemVersion,
     }
   }])
 ;

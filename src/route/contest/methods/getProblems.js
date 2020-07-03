@@ -49,7 +49,7 @@ export async function getProblems(params) {
     });
     return filter(problem, {
       exclude: [
-        'ProblemToContest', 'ProblemToContests', 'textStatement'
+        /*'ProblemToContest', */'ProblemToContests', 'textStatement'
       ],
       replace: [
         ['Solutions', 'verdictStatus', (fromValue) => {
@@ -69,5 +69,38 @@ export async function getProblems(params) {
         }]
       ]
     })
+  }).then(async problems => {
+    const versionsIds = problems.map(problem => problem.ProblemToContest.versionId).filter(Boolean);
+    const versions = await models.ProblemVersionControl.findAll({
+      where: {
+        uuid: {
+          $in: versionsIds
+        }
+      }
+    });
+
+    const versionsMapping = new Map();
+    for (const version of versions) {
+      versionsMapping.set(version.uuid, version);
+    }
+
+    return problems.map(problem => {
+      const versionId = problem.ProblemToContest.versionId;
+      if (!versionId) {
+        return problem;
+      }
+
+      const version = versionsMapping.get(versionId);
+
+      if (!version) {
+        return problem;
+      }
+
+      problem.title = version.title;
+      problem.htmlStatement = version.htmlStatement;
+      problem.attachments = version.attachments;
+
+      return problem;
+    });
   });
 }

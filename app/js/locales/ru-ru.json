@@ -173,6 +173,7 @@
   "rating-back-to-create": "Назад к списку контестов",
 
   "rating-index-title": "Создать рейтинг из контестов",
+  "rating-index-empty": "Список контестов пуст",
 
   "rating-create-score-per-problem": "Балл за задачу на контесте",
   "rating-create-score-per-problem-practice": "Балл за задачу на дорешивании",

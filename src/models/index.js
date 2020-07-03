@@ -182,6 +182,9 @@ Group.belongsTo(User, { foreignKey: 'authorId', targetKey: 'id', as: 'GroupCreat
 User.hasOne(Telegram, { foreignKey: 'userId', targetKey: 'id' });
 Telegram.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
+ProblemVersionControl.hasMany(ProblemToContest, { foreignKey: 'versionId', targetKey: 'id' });
+ProblemToContest.belongsTo(ProblemVersionControl, { foreignKey: 'versionId', targetKey: 'uuid' });
+
 export {
   User, AuthToken, Group, Verdict,
   UserContestEnter, Contest, Problem, ProblemToContest,

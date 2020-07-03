@@ -132,7 +132,7 @@ bot.on('message', (ctx) => {
   } = ctx;
 
   if (!message || !account) {
-    return;
+    return ctx.replyWithDice();
   }
 
   if (message.reply_to_message) {

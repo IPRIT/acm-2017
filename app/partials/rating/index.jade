@@ -10,7 +10,7 @@ div
             div.contests-list__item-layer(ng-repeat='contest in contestsList')
               contest-list-item-admin-rating(contest='contest')
             div(ng-if='contestsList.length === 0')
-              div.contests-list__no-items Список контестов пуст
+              div.contests-list__no-items(qemy-i18n='rating-index-empty')
 
 
         include pagination
