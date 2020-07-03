@@ -12,7 +12,7 @@ div.contest
             div(layout, layout-align='end center', flex, ng-show='user.isSupervisor')
               md-button.md-icon-button(ui-sref='problems.item-version({problemId: condition.id, versionNumber: versionNumber})', aria-label='show')
                 md-icon(md-svg-src='/img/icons/ic_visibility_48px.svg')
-                md-tooltip Посмотреть версию {{versionNumber}}
+                md-tooltip(ng-if='user.isAdmin') Посмотреть версию {{versionNumber}}
 
               div(layout, layout-align='center center', ng-show='user.isAdmin', style='margin-left: 12px;')
                 md-select(ng-model='versionId', style='margin: 0;', data-version-id="{{versionId}}", aria-label='versions')
