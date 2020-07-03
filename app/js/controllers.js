@@ -173,7 +173,7 @@ angular.module('Qemy.controllers', [
       $scope.$state = $state;
       $scope.user = {};
       $scope.isAuth = false;
-      $scope.isMainLogo = location.host.indexOf('contest.misis.ru') !== -1;
+      $scope.isMainLogo = location.host.indexOf('contest.misis.ru') !== -1 || location.host.indexOf('localhost') !== -1;
       
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
