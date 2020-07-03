@@ -2,7 +2,7 @@
   "apps" : [{
     "name"        : "acm2",
     "script": "npm",
-    "args": "start",
+    "args": "dev",
     "exec_mode"   : "cluster",
     "max_memory_restart": "800M",
     "env": { "NODE_ENV": "development" }
