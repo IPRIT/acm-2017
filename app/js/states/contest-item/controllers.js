@@ -427,8 +427,8 @@ angular.module('Qemy.controllers.contest-item', [
     }
   ])
   
-  .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', '_', '$mdMedia', '$mdDialog', 'ErrorService', '$sce', '$timeout',
-    function ($scope, $rootScope, $state, ContestItemManager, _, $mdMedia, $mdDialog, ErrorService, $sce, $timeout) {
+  .controller('ConditionsItemController', ['$scope', '$rootScope', '$state', 'ContestItemManager', 'ProblemsManager', '_', '$mdMedia', '$mdDialog', 'ErrorService', '$sce', '$timeout',
+    function ($scope, $rootScope, $state, ContestItemManager, ProblemsManager, _, $mdMedia, $mdDialog, ErrorService, $sce, $timeout) {
       $scope.$emit('change_title', {
         title: 'Условие • ' + _('app_name')
       });
@@ -440,10 +440,7 @@ angular.module('Qemy.controllers.contest-item', [
       $scope.versions = [];
       $scope.versionNumber = null;
 
-      $rootScope.$broadcast('data loading');
-
-      ContestItemManager.getCondition({ contestId: contestId, symbolIndex: problemId }).then(function (result) {
-        $rootScope.$broadcast('data loaded');
+      function transformProblem(result) {
         if (result.attachments
           && Array.isArray( result.attachments.files )) {
           result.attachments.files = result.attachments.files.map(file => {
@@ -472,47 +469,81 @@ angular.module('Qemy.controllers.contest-item', [
         }
         result.htmlStatement = (result.htmlStatement || '')
           .replace(/(\<\!\–\–\s?google_ad_section_(start|end)\s?\–\–\>)/gi, '');
-        $scope.condition = result;
-        $scope.$emit('change_title', {
-          title: problemId + '. ' + result.title + ' • ' + _('app_name')
-        });
 
-        $timeout(_ => {
-          MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathJax"]);
-        }, 100);
+        return result;
+      }
 
-        return ContestItemManager.getProblemVersions({ problemId: result.id });
-      }).then(versions => {
-        const problemToContest = $scope.condition.ProblemToContest;
+      $scope.loadProblem = () => {
+        $rootScope.$broadcast('data loading');
 
-        $scope.versions = versions;
-        // don't delete '-', it's an uuid
-        $scope.versionId = problemToContest && problemToContest.versionId || '-';
+        return ContestItemManager.getCondition({ contestId: contestId, symbolIndex: problemId }).then(function (result) {
+          $scope.condition = transformProblem(result);
 
-        $scope.versions.unshift({
-          uuid: '-',
-          name: 'По умолчанию',
-          versionNumber: versions.length ? versions[versions.length - 1].versionNumber : null
-        });
+          $scope.$emit('change_title', {
+            title: problemId + '. ' + result.title + ' • ' + _('app_name')
+          });
 
-        if (versions.length) {
-          const index = versions.findIndex(version => version.uuid === $scope.versionId);
-          const version = versions[index];
+          $timeout(_ => {
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathJax"]);
+          }, 100);
 
-          if (version) {
-            $scope.versionNumber = version.versionNumber;
+          return ContestItemManager.getProblemVersions({ problemId: result.id });
+        }).then(versions => {
+          const problemToContest = $scope.condition.ProblemToContest;
+
+          $scope.versions = versions;
+          // don't delete '-', it's an uuid
+          $scope.versionId = problemToContest && problemToContest.versionId || '-';
+
+          $scope.versions.unshift({
+            uuid: '-',
+            name: 'По умолчанию',
+            versionNumber: versions.length ? versions[versions.length - 1].versionNumber : null
+          });
+
+          if (versions.length) {
+            const index = versions.findIndex(version => version.uuid === $scope.versionId);
+            const version = versions[index];
+
+            if (version) {
+              $scope.versionNumber = version.versionNumber;
+            }
           }
-        }
 
-        safeApply($scope);
-      }).catch(function (result) {
-        ErrorService.show(result);
-        $state.go('^.problems');
-      }).finally(() => {
-        $rootScope.$broadcast('data loaded');
-      });
+          safeApply($scope);
+        }).catch(function (result) {
+          ErrorService.show(result);
+          $state.go('^.problems');
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
 
-      $scope.$watch('versionId', (id) => {
+      $scope.loadProblem();
+
+      $scope.loadProblemVersion = ({ problemId, versionNumber }) => {
+        $rootScope.$broadcast('data loading');
+
+        return ProblemsManager.getProblem({ problemId: $scope.condition.id, versionNumber }).then(function (result) {
+          const problem = transformProblem(result);
+
+          $scope.condition.title = problem.title;
+          $scope.condition.htmlStatement = problem.htmlStatement;
+          $scope.condition.attachments = problem.attachments;
+
+          $timeout(_ => {
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathJax"]);
+          }, 100);
+
+          safeApply($scope);
+        }).catch(function (result) {
+          ErrorService.show(result);
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+        });
+      };
+
+      $scope.$watch('versionId', (id, prevId) => {
         const versions = $scope.versions;
 
         if (!versions.length) {
@@ -525,6 +556,8 @@ angular.module('Qemy.controllers.contest-item', [
         if (version) {
           $scope.versionNumber = version.versionNumber;
         }
+
+        prevId && $scope.loadProblemVersion({ problemId, versionNumber: $scope.versionNumber });
 
         safeApply($scope);
       });

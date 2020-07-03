@@ -1,6 +1,5 @@
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
 
 export function getProblemRequest(req, res, next) {
   return Promise.resolve().then(() => {
