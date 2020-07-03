@@ -484,11 +484,16 @@ angular.module('Qemy.controllers.contest-item', [
         return ContestItemManager.getProblemVersions({ problemId: result.id });
       }).then(versions => {
         const problemToContest = $scope.condition.ProblemToContest;
-        const lastVersion = versions.length && versions[versions.length - 1];
 
         $scope.versions = versions;
         // don't delete '-', it's an uuid
         $scope.versionId = problemToContest && problemToContest.versionId || '-';
+
+        $scope.versions.unshift({
+          uuid: '-',
+          name: 'По умолчанию',
+          versionNumber: versions.length ? versions[versions.length - 1].versionNumber : null
+        });
 
         if (versions.length) {
           const index = versions.findIndex(version => version.uuid === $scope.versionId);
@@ -497,12 +502,6 @@ angular.module('Qemy.controllers.contest-item', [
           if (version) {
             $scope.versionNumber = version.versionNumber;
           }
-
-          $scope.versions.unshift({
-            uuid: '-',
-            name: 'По умолчанию',
-            versionNumber: versions[versions.length - 1].versionNumber
-          });
         }
 
         safeApply($scope);
