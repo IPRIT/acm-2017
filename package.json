@@ -12,8 +12,7 @@
     "server:prod": "run-s server:build server:start",
     "open": "open-cli http://localhost:3002 -- chrome",
     "dev": "run-p client:dev server:dev open",
-    "prod": "run-p client:prod server:prod",
-    "start": "pm2 startOrReload process.json"
+    "prod": "run-p client:prod server:prod"
   },
   "keywords": [
     "angular",
