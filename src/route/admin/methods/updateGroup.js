@@ -1,7 +1,6 @@
-import * as models from "../../../models";
 import Promise from 'bluebird';
-import userGroups from './../../../models/User/userGroups';
-import * as contests from '../../contest/methods';
+import * as models from "../../../models";
+import { extractAllParams } from "../../../utils";
 
 export function updateGroupRequest(req, res, next) {
   let params = Object.assign(
@@ -10,7 +9,7 @@ export function updateGroupRequest(req, res, next) {
     }
   );
   return Promise.resolve().then(() => {
-    return updateGroup(params);
+    return updateGroup(extractAllParams(req));
   }).then(result => res.json(result)).catch(next);
 }
 
@@ -18,10 +17,22 @@ export async function updateGroup(params) {
   let {
     groupId,
     name, color,
-    userIds
+    userIds = [],
+    user
   } = params;
   
-  let group = await models.Group.findByPrimary(groupId);
+  const group = await models.Group.findByPrimary(groupId);
+
+  if (!group) {
+    throw new HttpError('Group not found');
+  }
+
+  if (user.isModerator) {
+    if (!userIds.includes(user.id)) {
+      userIds.push(user.id);
+    }
+  }
+
   await group.setUsers(userIds);
   
   return group.update({ name, color });

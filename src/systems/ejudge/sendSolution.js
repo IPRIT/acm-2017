@@ -10,7 +10,8 @@ const ACM_SOLUTIONS_ENDPOINT = '/cgi-bin/new-judge';
 
 export async function sendSolution(solution, systemAccount) {
   return Promise.resolve().then(async () => {
-    await login(solution, systemAccount).delay(1000);
+    await login(solution, systemAccount);
+    await Promise.delay(1000);
     
     let endpoint = getEndpoint(ACM_SOLUTIONS_ENDPOINT);
     let { sid, jar } = systemAccount;

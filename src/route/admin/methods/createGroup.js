@@ -11,7 +11,7 @@ export async function createGroup(params) {
   const {
     name,
     color,
-    userIds,
+    userIds = [],
     user
   } = params;
 

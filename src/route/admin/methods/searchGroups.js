@@ -34,6 +34,7 @@ export async function searchGroups(params) {
     where, limit, offset,
     include: [{
       model: models.User,
+      required: !user.isAdmin,
       association: models.Group.associations.Author
     }],
     order: [['id', 'DESC']]

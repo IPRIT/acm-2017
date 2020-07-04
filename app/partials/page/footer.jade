@@ -4,4 +4,6 @@ div.footer
 
   div.footer__language
     md-select.md-no-underline(ng-model='language', placeholder='Выбрать язык')
-      md-option(ng-repeat='language in languages track by $index', value='{{ language.id }}', ng-bind='language.name')
+      md-option(ng-repeat='language in languages track by $index', value='{{ language.id }}')
+        md-icon(md-svg-src="{{language.icon}}", aria-label="Language", style='margin-right: 8px; position: relative; top: -1px;')
+        span {{language.name}}

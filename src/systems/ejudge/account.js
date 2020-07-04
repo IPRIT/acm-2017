@@ -1,5 +1,5 @@
-import request from 'request-promise';
 import Promise from 'bluebird';
+import request from 'request-promise';
 import { config, extractParam } from '../../utils';
 
 export async function login(solution, systemAccount) {

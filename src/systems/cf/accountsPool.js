@@ -104,7 +104,7 @@ export async function tryLogin( accounts ) {
 export async function tryLoginUntilDone( accounts, { repeat = Infinity, delay = 1000 } = {} ) {
   let result = {};
   do {
-    await Promise.resolve().delay( delay );
+    await Promise.delay( delay );
     result = await tryLogin( accounts );
     if (result.success.length > 0) {
       isInitialized = true;

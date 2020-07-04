@@ -53,7 +53,7 @@ export async function handle(solution) {
 async function handleError(error, solution, systemAccount) {
   console.log(`[System report] Refreshing ACMP account [${systemAccount.instance.systemLogin}]...`);
   await login(systemAccount);
-  await Promise.resolve().delay(30 * 1000);
+  await Promise.delay(30 * 1000);
   
   systemAccount.free();
   solution.retriesNumber++;

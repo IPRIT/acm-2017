@@ -390,7 +390,8 @@ angular.module('Qemy.controllers', [
     $scope.languages = Object.keys(Config.I18n.languages).map(id => {
       return {
         id,
-        name: Config.I18n.languages[id]
+        name: Config.I18n.languages[id],
+        icon: `/img/icons/${id}.svg`,
       };
     });
 
