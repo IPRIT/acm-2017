@@ -22,6 +22,9 @@ export async function restart(params = {}) {
 
         pm2.disconnect();
         console.log('Restarted!', apps);
+        resolve({
+          ok: true
+        });
       });
     });
   });
