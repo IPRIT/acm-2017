@@ -4,8 +4,7 @@ import Promise from 'bluebird';
 import * as contests from './index';
 import deap from 'deap';
 import userGroups from './../../../models/User/userGroups';
-import Sequelize from 'sequelize';
-import {RatingsStore} from "../../../utils/ratings-store";
+import { RatingsStore } from "../../../utils/ratings-store";
 
 export function getSolutionsForCellRequest(req, res, next) {
   return Promise.resolve().then(() => {

@@ -5,6 +5,7 @@ import stringToStream from 'string-to-stream';
 import * as models from '../../models';
 import { login, parseProblemIdentifier } from "./account";
 import { getSymbolIndex } from "../../utils";
+import config from "../../utils/config";
 
 const ACM_SOLUTIONS_ENDPOINT = '/cgi-bin/new-judge';
 

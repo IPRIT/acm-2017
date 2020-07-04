@@ -6,6 +6,7 @@ import { sendSolution } from "./sendSolution";
 import { getVerdict } from "./getVerdict";
 import { getCompilationError } from "./getCompilationError";
 import { ensureNumber } from "../../utils";
+import filter from "../../utils/filter";
 
 const maxAttemptsNumber = 3;
 const nextAttemptAfterMs = 10 * 1000;

@@ -1,8 +1,6 @@
 import { filterEntity as filter } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import * as contests from '../../contest/methods';
-import * as deap from "deap/lib/deap";
 
 export function getUserRequest(req, res, next) {
   return Promise.resolve().then(() => {

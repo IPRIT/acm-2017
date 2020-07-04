@@ -2,8 +2,6 @@ import { filterEntity as filter, getSymbolIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
 import * as contests from './index';
-import * as usersMethods from '../../user/methods';
-import * as lodash from "lodash";
 import {RatingsStore} from "../../../utils/ratings-store";
 
 const PENALTY_TIME = 20; // minutes

@@ -1,4 +1,4 @@
-import { filterEntity as filter, getSymbolIndex, getIntegerIndex } from '../../../utils';
+import { filterEntity as filter, getIntegerIndex } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
 

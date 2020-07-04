@@ -3,10 +3,7 @@ import * as models from "../../../models";
 import Promise from 'bluebird';
 import Sequelize from 'sequelize';
 import deap from "deap";
-import userGroups from './../../../models/User/userGroups';
 import { RatingsStore } from "../../../utils/ratings-store";
-import { extractAllParams } from "../../../utils";
-import * as contests from '../../contest/methods/index';
 import {getSymbolIndex} from "../../../utils/utils";
 
 export function getSolutionsRequest(req, res, next) {

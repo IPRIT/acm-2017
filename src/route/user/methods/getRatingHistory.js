@@ -1,8 +1,6 @@
 import { filterEntity as filter } from '../../../utils';
 import * as models from "../../../models";
 import Promise from 'bluebird';
-import deap from "deap";
-import { extractAllParams } from "../../../utils";
 
 export function getRatingHistoryRequest(req, res, next) {
   return Promise.resolve().then(() => {
