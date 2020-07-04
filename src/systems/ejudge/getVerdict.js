@@ -5,6 +5,7 @@ import * as models from '../../models';
 import { getEjudgeSolutionId } from "./sendSolution";
 import { parseProblemIdentifier } from "./account";
 import { ensureNumber } from "../../utils";
+import config from "../../utils/config";
 
 const terminalStatesMapping = {
   'OK': 1,
