@@ -32,7 +32,7 @@ function initApplication () {
   }
   $(document.body).addClass(classes.join(' '));
 
-  Config.I18n.locale = Config.I18n.aliases[navigator.language || navigator.languages[0]];
+  Config.I18n.locale = Config.I18n.aliases[navigator.language || navigator.languages[0]] || 'en-us';
 
   let locale = localStorage.getItem('i18n_locale'),
     defaultLocale = Config.I18n.locale,
