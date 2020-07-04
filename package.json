@@ -13,7 +13,7 @@
     "open": "open-cli http://localhost:3002 -- chrome",
     "dev": "run-p client:dev server:dev open",
     "prod": "run-p client:prod server:prod",
-    "prod:build": "run-p client:prod server:build"
+    "build": "run-p client:prod server:build"
   },
   "keywords": [
     "angular",
