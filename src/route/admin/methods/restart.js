@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import * as pm2 from 'pm2';
+import pm2 from 'pm2';
 
 export function restartRequest(req, res, next) {
   return Promise.resolve().then(() => {
@@ -8,15 +8,21 @@ export function restartRequest(req, res, next) {
 }
 
 export async function restart(params = {}) {
-  pm2.connect(function(err, a) {
-    if (err) {
-      console.error(err);
-      return process.exit(2);
-    }
-    console.log('Connected. Restarting...');
-    pm2.restart('acm2', function(err, apps) {
-      pm2.disconnect();
-      console.log('Restarted!');
+  return new Promise((resolve, reject) => {
+    pm2.connect((err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      console.log('Connected. Restarting...');
+      pm2.reload('acm2', (err, apps) => {
+        if (err) {
+          return reject(err);
+        }
+
+        pm2.disconnect();
+        console.log('Restarted!', apps);
+      });
     });
   });
 }
