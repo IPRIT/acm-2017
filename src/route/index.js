@@ -7,7 +7,7 @@ import indexRouter from './index/index';
 import cdnRouter from './cdn';
 import filesRouter from './files';
 import uploadRouter from './upload';
-import { repairDb, rightsAllocator, userRetriever } from '../utils';
+import { canJoinContest, repairDb, rightsAllocator, userRetriever } from '../utils';
 
 import cors from './cors';
 import test from './test';
@@ -18,6 +18,7 @@ import news from './news';
 import problems from './problems';
 import admin from './admin';
 import * as adminMethods from "./admin/methods";
+import { filePipeRequest } from "./contest/methods";
 
 const multer = require("multer");
 
@@ -27,6 +28,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.post('/admin/users-groups', [ upload.single('file'), userRetriever, rightsAllocator('moderator') ], adminMethods.createUsersIntoGroupsRequest);
+router.post('/contest/:contestId/pipe', [ upload.single('file'), userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can', 'joined') ], filePipeRequest);
 
 
 router.use(bodyParser.json());

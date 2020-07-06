@@ -46,7 +46,7 @@ export async function searchUsers(params) {
     where,
     offset,
     limit,
-    order: [['accessGroup', 'DESC']]
+    order: [['accessGroup', 'DESC'], ['id', 'ASC']]
   }).then(async users => {
     return {
       users,

@@ -8,7 +8,7 @@ router.get('/all', [ userRetriever, rightsAllocator('user', 'moderator') ], cont
 router.get('/:contestId', [ userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can') ], contest.getByIdRequest);
 router.get('/:contestId/canJoin', [ userRetriever, rightsAllocator('user', 'moderator') ], contest.canJoinRequest);
 router.post('/:contestId/join', [ userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can') ], contest.joinRequest);
-router.post('/:contestId/pipe', [ userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can', 'joined') ], contest.filePipeRequest);
+// router.post('/:contestId/pipe', [ userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can', 'joined') ], contest.filePipeRequest);
 
 router.get('/:contestId/problems', [ userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can', 'joined') ], contest.getProblemsRequest);
 router.get('/:contestId/problems/:symbolIndex', [ userRetriever, rightsAllocator('user', 'moderator'), canJoinContest('can', 'joined') ], contest.getProblemBySymbolIndexRequest);
