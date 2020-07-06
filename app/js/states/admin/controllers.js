@@ -232,7 +232,9 @@ angular.module('Qemy.controllers.admin', [])
 
       $scope.$watch('curSearchQuery', debounce((newVal, oldVal) => {
         $scope.params.query = newVal;
-        $scope.params.offset = 0;
+        if (typeof oldVal !== 'undefined') {
+          $scope.params.offset = 0;
+        }
         updateContestsList(false);
       }));
 
