@@ -1,14 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import formData from 'express-form-data';
-import requestRestrict from 'express-light-limiter';
+import * as formData from 'express-form-data';
 import { HttpError } from '../utils/http-error';
 
 import indexRouter from './index/index';
 import cdnRouter from './cdn';
 import filesRouter from './files';
 import uploadRouter from './upload';
-import { repairDb } from '../utils';
+import { repairDb, rightsAllocator, userRetriever } from '../utils';
 
 import cors from './cors';
 import test from './test';
@@ -18,8 +17,17 @@ import chat from './chat';
 import news from './news';
 import problems from './problems';
 import admin from './admin';
+import * as adminMethods from "./admin/methods";
+
+const multer = require("multer");
 
 const router = express.Router();
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.post('/admin/users-groups', [ upload.single('file'), userRetriever, rightsAllocator('moderator') ], adminMethods.createUsersIntoGroupsRequest);
+
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));

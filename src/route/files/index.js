@@ -1,7 +1,7 @@
 import express from 'express';
 import { rightsAllocator, userRetriever } from '../../utils';
 import * as adminMethods from '../admin/methods';
-import formData from 'express-form-data';
+import * as formData from 'express-form-data';
 
 const router = express.Router();
 

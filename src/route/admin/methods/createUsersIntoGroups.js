@@ -8,6 +8,8 @@ import iconv from 'iconv-lite';
 import latinize from 'latinize';
 import { ensureNumber } from "../../../utils/utils";
 
+const streamifier = require("streamifier");
+
 export function createUsersIntoGroupsRequest(req, res, next) {
   return Promise.resolve().then(() => {
     return createUsersIntoGroups(
@@ -34,8 +36,10 @@ export async function createUsersIntoGroups(params) {
       next(error);
     }
   }).on('error', next);
+
+  const file = streamifier.createReadStream(req.file.buffer);
   
-  req.stream.file
+  file
     .pipe(iconv.decodeStream('win1251'))
     .pipe(iconv.encodeStream('utf8'))
     .pipe(csvStream);

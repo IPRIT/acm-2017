@@ -1,7 +1,7 @@
 import * as yandex from './yandex';
 import * as models from '../models';
 import express from 'express';
-import formData from 'express-form-data';
+import * as formData from 'express-form-data';
 import Promise from 'bluebird';
 import * as socket from '../socket';
 
