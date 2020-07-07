@@ -17,7 +17,7 @@ angular.module('Qemy.controllers.chat', [])
   .controller('ChatBaseController', ['$scope', '$rootScope', '$state', '_', 'UserManager', 'SocketService', 'ChatManager', '$timeout', 'ErrorService',
     function ($scope, $rootScope, $state, _, UserManager, SocketService, ChatManager, $timeout, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Чат с администрацией • ' + _('app_name')
+        title: _('chat-user-title') + ' • ' + _('app_name')
       });
 
       $scope.user = {};

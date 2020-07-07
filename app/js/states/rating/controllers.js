@@ -32,7 +32,7 @@ angular.module('Qemy.controllers.rating', [])
   .controller('RatingIndexController', ['$scope', '$rootScope', '$state', '_', 'ContestsManager',
     function ($scope, $rootScope, $state, _, ContestsManager) {
       $scope.$emit('change_title', {
-        title: 'Создать рейтинг • ' + _('app_name')
+        title: _('rating-index-title') + ' • ' + _('app_name')
       });
 
       const defaultCount = 10;
@@ -139,7 +139,7 @@ angular.module('Qemy.controllers.rating', [])
   .controller('RatingCreateController', ['$scope', '$rootScope', '$state', '_', 'AdminManager',
     function ($scope, $rootScope, $state, _, AdminManager) {
       $scope.$emit('change_title', {
-        title: 'Рейтинг участников • ' + _('app_name')
+        title: _('rating-index-title') + ' • ' + _('app_name')
       });
 
       var contestIds = ( $state.params.contests || '' ).split( ',' ) || [ ];

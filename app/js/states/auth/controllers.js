@@ -17,7 +17,7 @@ angular.module('Qemy.controllers.auth', [
   .controller('AuthFormController', ['$scope', '_', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
     function($scope, _, $rootScope, $http, $state, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Авторизация • ' + _('app_name')
+        title:  _('auth-sign-in') + ' • ' + _('app_name')
       });
 
       $scope.form = {};
@@ -43,7 +43,7 @@ angular.module('Qemy.controllers.auth', [
   .controller('AuthRegisterFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
     function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Регистрация • ' + _('app_name')
+        title:  _('auth-register-title') + ' • ' + _('app_name')
       });
 
       const groupKey = extractQueryStringParam('groupKey');
@@ -88,7 +88,7 @@ angular.module('Qemy.controllers.auth', [
   .controller('AuthForgetPasswordFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
     function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Забыли пароль • ' + _('app_name')
+        title:  _('auth-forget-title') + ' • ' + _('app_name')
       });
 
       $scope.form = {
@@ -116,7 +116,7 @@ angular.module('Qemy.controllers.auth', [
   .controller('AuthResetPasswordFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
     function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Сменить пароль • ' + _('app_name')
+        title:  _('auth-reset-title') + ' • ' + _('app_name')
       });
 
       $scope.form = {
@@ -139,7 +139,7 @@ angular.module('Qemy.controllers.auth', [
   .controller('AuthLinkEmailController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',
     function($scope, _, UserManager, $rootScope, $http, $state, $mdDialog, ErrorService) {
       $scope.$emit('change_title', {
-        title: 'Сменить пароль • ' + _('app_name')
+        title: _('auth-reset-title') + ' • ' + _('app_name')
       });
 
       $scope.form = {};

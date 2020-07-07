@@ -16,7 +16,7 @@ angular.module('Qemy.controllers.profile', [])
   .controller('ProfileBaseController', ['$scope', '$rootScope', '$state', '_', 'SocketService', '$mdToast', '$mdSidenav', '$log', '$timeout', 'ErrorService', 'UserManager',
     function ($scope, $rootScope, $state, _, SocketService, $mdToast, $mdSidenav, $log, $timeout, ErrorService, UserManager) {
       $scope.$emit('change_title', {
-        title: 'Профиль • ' + _('app_name')
+        title: _('profile') + ' • ' + _('app_name')
       });
 
       $scope.user = {};

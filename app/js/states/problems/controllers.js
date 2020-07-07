@@ -32,7 +32,7 @@ angular.module('Qemy.controllers.problems', [])
     function ($scope, $rootScope, $state, _, $element, UserManager, AdminManager, ErrorService, $mdDialog, $timeout, ProblemsManager, SocketService, $mdToast, $sce) {
 
       $scope.$emit('change_title', {
-        title: 'Условие • ' + _('app_name')
+        title: _('contest-problems-problem') + ' • ' + _('app_name')
       });
 
       var problemId = $state.params.problemId;

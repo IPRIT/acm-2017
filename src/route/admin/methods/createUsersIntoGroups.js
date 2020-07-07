@@ -21,7 +21,11 @@ export function createUsersIntoGroupsRequest(req, res, next) {
 }
 
 export async function createUsersIntoGroups(params) {
-  let { user, req, res, next } = params;
+  const { req, res, next } = params;
+
+  if (!req.file) {
+    throw new Error('File doesn\'t exist');
+  }
   
   let lines = [];
   const csvStream = csv().on('data', data => {
