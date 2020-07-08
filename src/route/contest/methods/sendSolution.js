@@ -57,6 +57,10 @@ export async function sendSolution(params) {
   if (!language) {
     throw new HttpError('Language not found');
   }
+
+  if (language.nonactive) {
+    throw new HttpError('Language is not supported');
+  }
   
   if (problem.systemType === 'acmp' && solution.length <= 12) {
     throw new HttpError('ACMP restriction: ' +
