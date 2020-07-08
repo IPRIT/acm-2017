@@ -724,9 +724,10 @@ angular.module('Qemy.controllers.contest-item', [
           $state.go('^.solutions', { select: 'my' });
           clearBackup();
         }).catch(function (result) {
-          $scope.sent = false;
-          $rootScope.$broadcast('data loaded');
           ErrorService.show(result);
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
+          $scope.sent = false;
         });
       };
       
