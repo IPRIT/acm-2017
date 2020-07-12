@@ -25,6 +25,8 @@ export async function login(systemAccount) {
     if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
       throw new Error('Service unavailable');
     }
+
+    console.log(response.body);
     
     const $loginFailedException = new Error('Login failed');
   
