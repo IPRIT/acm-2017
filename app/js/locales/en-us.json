@@ -14,8 +14,8 @@
 
   "contest-start-date": "Start",
   "contest-finish-date": "Finish",
-  "contest-practice": "Practice",
-  "contest-practice-finish-date": "Practice ends on",
+  "contest-practice": "Upsolving",
+  "contest-practice-finish-date": "Upsolving ends on",
   "contest-status": "Status",
   "contest-status-not-available": "Not available",
   "contest-status-removed": "Removed",
@@ -23,7 +23,7 @@
   "contest-status-frozen": "Freeze time:",
   "contest-status-waiting": "Starting in",
   "contest-status-running": "Started. Ends in",
-  "contest-status-practice": "Practice time. Ends in",
+  "contest-status-practice": "Upsolving. Ends in",
   "contest-practice-yes": "Yes",
   "contest-practice-no": "No",
 
@@ -95,7 +95,7 @@
   "index-filter-active": "Active",
   "index-filter-freeze": "Frozen",
   "index-filter-finished": "Finished",
-  "index-filter-practice": "Practice",
+  "index-filter-practice": "Upsolving",
   "index-filter-available": "Only available",
   "index-filter-not-available": "Only not available",
   "index-filter-removed": "Archived",
@@ -181,7 +181,7 @@
   "rating-create-place": "Place",
   "rating-create-participant": "Participant",
   "rating-create-score-in-contest": "Main time",
-  "rating-create-score-after": "Practice",
+  "rating-create-score-after": "Upsolving",
   "rating-create-score-common": "Score",
   "rating-create-score-sum": "Sum"
 }
