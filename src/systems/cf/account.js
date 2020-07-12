@@ -16,7 +16,7 @@ export async function login(systemAccount) {
 
     let response = await request({
       method: 'GET',
-      uri: 'https://codeforces.com/gyms',
+      uri: 'https://codeforces.com/',
       simple: false,
       resolveWithFullResponse: true,
       followAllRedirects: true,
@@ -27,9 +27,12 @@ export async function login(systemAccount) {
     }
 
     const [ cookie, qs ] = getProtectionCookie(response.body);
+    console.log('https://codeforces.com/?' + qs, cookie, response.body);
 
     if (cookie) {
       jar.setCookie(cookie, 'https://codeforces.com');
+
+      console.log(jar);
 
       response = await request({
         method: 'GET',

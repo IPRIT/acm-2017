@@ -25,7 +25,7 @@ function buildProtectionCookie(first, second, third) {
 }
 
 export function getProtectionCookie(responseText = '') {
-  if (!responseText.includes('Redirecting... Please, wait.')) {
+  if (!responseText.includes('Redirecting...')) {
     return null;
   }
 
