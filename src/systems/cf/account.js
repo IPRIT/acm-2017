@@ -25,9 +25,9 @@ export async function login(systemAccount) {
     if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
       throw new Error('Service unavailable');
     }
-
+    console.log(response.body);
     const [ cookie, qs ] = getProtectionCookie(response.body);
-    console.log('https://codeforces.com/?' + qs, cookie, response.body);
+    console.log('https://codeforces.com/?' + qs, cookie);
 
     if (cookie) {
       jar.setCookie(cookie, 'https://codeforces.com');
