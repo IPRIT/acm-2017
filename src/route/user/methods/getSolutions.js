@@ -88,7 +88,19 @@ export async function getSolutions(params) {
 
   const ratingsStore = RatingsStore.getInstance();
 
-  const promises = [models.Solution.findAll({
+  const updateRatings = () => {
+    if (withRatings) {
+      if (ratingsStore && !ratingsStore.isReady) {
+        return ratingsStore.retrieve().then(() => {
+          return ratingsStore;
+        });
+      }
+    }
+
+    return ratingsStore;
+  };
+
+  const promises = [updateRatings(), models.Solution.findAll({
     include: [ includeUsers, {
       model: models.Verdict
     }, {
@@ -117,13 +129,6 @@ export async function getSolutions(params) {
     limit: count,
     offset,
     where
-  }).then(async solutions => {
-    if (withRatings) {
-      if (ratingsStore && !ratingsStore.isReady) {
-        await ratingsStore.retrieve();
-      }
-    }
-    return solutions;
   }).map(async solution => {
     let problems = solution.Contest.Problems;
     let problemsMapping = new Map();
@@ -134,24 +139,6 @@ export async function getSolutions(params) {
       );
     });
 
-    let rating = 0;
-    if (withRatings && ratingsStore) {
-      try {
-        const contestsGroups = solution.Contest.Groups;
-
-        let userId = solution.User.id;
-        for (let contestGroup of contestsGroups) {
-          let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, userId);
-          if (ratingValue) {
-            rating = ratingValue;
-            break;
-          }
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
     solution = filter(solution.get({ plain: true }), {
       replace: [
         [ 'User', 'author' ],
@@ -161,8 +148,6 @@ export async function getSolutions(params) {
         [ 'Contest', 'contest' ]
       ]
     });
-
-    deap.extend(solution.author, { rating });
 
     let symbolIndex = problemsMapping.get( solution.problemId ) || '';
     return deap.extend(solution, {
@@ -200,9 +185,36 @@ export async function getSolutions(params) {
     where,
   })];
 
-  return Promise.all(promises).then(([solutions, [ count ]]) => {
+  const transformSolutions = solutions => {
+    return Promise.resolve(solutions).map(async solution => {
+      let rating = 0;
+
+      if (withRatings && ratingsStore) {
+        try {
+          const contestsGroups = solution.contest.Groups;
+
+          let userId = solution.author.id;
+          for (let contestGroup of contestsGroups) {
+            let ratingValue = await ratingsStore.getRatingValue(contestGroup.id, userId);
+            if (ratingValue) {
+              rating = ratingValue;
+              break;
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      deap.extend(solution.author, { rating });
+
+      return solution;
+    });
+  };
+
+  return Promise.all(promises).then(async ([ratings, solutions, [ count ]]) => {
     return {
-      solutions,
+      solutions: await transformSolutions(solutions),
       solutionsNumber: count && count.get({ plain: true }).solutionsNumber || 0
     }
   });
