@@ -30,9 +30,14 @@ export function getProtectionCookie(responseText = '') {
   }
 
   const regex = /toNumbers\("(\w+)"\)/gi;
+  const regexQs = /https:\/\/codeforces\.com\/\?(\w+=\d+)/i;
   const match = responseText.matchAll(regex);
+  const qs = responseText.match(regexQs)[1];
 
   const [first, second, third] = [...match].map(value => value[1]);
 
-  return buildProtectionCookie(first, second, third);
+  return [
+    buildProtectionCookie(first, second, third),
+    qs
+  ];
 }

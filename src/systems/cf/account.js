@@ -16,7 +16,7 @@ export async function login(systemAccount) {
 
     let response = await request({
       method: 'GET',
-      uri: csrfEndpoint,
+      uri: 'https://codeforces.com',
       simple: false,
       resolveWithFullResponse: true,
       followAllRedirects: true,
@@ -26,14 +26,15 @@ export async function login(systemAccount) {
       throw new Error('Service unavailable');
     }
 
-    const cookie = getProtectionCookie(response.body);
+    const [ cookie, qs ] = getProtectionCookie(response.body);
+    console.log('https://codeforces.com?' + qs, cookie, response.body);
+
     if (cookie) {
-      console.log(cookie);
       jar.setCookie(cookie, 'https://codeforces.com');
 
       response = await request({
         method: 'GET',
-        uri: csrfEndpoint + '?f0a28=1',
+        uri: 'https://codeforces.com?' + qs,
         simple: false,
         resolveWithFullResponse: true,
         followAllRedirects: true,
@@ -43,8 +44,6 @@ export async function login(systemAccount) {
         throw new Error('Service unavailable');
       }
     }
-
-    console.log(response.body);
     
     const $loginFailedException = new Error('Login failed');
   
