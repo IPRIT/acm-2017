@@ -28,6 +28,7 @@ export async function login(systemAccount) {
 
     const cookie = getProtectionCookie(response.body);
     if (cookie) {
+      console.log(cookie);
       jar.setCookie(cookie, 'https://codeforces.com');
 
       response = await request({
@@ -42,6 +43,8 @@ export async function login(systemAccount) {
         throw new Error('Service unavailable');
       }
     }
+
+    console.log(jar);
     
     const $loginFailedException = new Error('Login failed');
   
