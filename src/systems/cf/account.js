@@ -2,6 +2,7 @@ import cheerio from 'cheerio';
 import request from 'request-promise';
 import Promise from 'bluebird';
 import { Error as ErrorReporter } from '../../models';
+import { getProtectionCookie } from "./lib/protection";
 
 const ACM_PROTOCOL = 'http';
 const ACM_HOST = 'codeforces.com';
@@ -12,11 +13,10 @@ export async function login(systemAccount) {
     let csrfEndpoint = getEndpoint();
 
     let jar = request.jar();
-    jar.setCookie('RCPC=b92d6d635988a587292e3dfeb704c540', 'https://codeforces.com');
 
     let response = await request({
       method: 'GET',
-      uri: csrfEndpoint,
+      uri: csrfEndpoint + '?f0a28=1',
       simple: false,
       resolveWithFullResponse: true,
       followAllRedirects: true,
@@ -26,7 +26,22 @@ export async function login(systemAccount) {
       throw new Error('Service unavailable');
     }
 
-    console.log(response.body);
+    const cookie = getProtectionCookie(response.body);
+    if (cookie) {
+      jar.setCookie(cookie, 'https://codeforces.com');
+
+      response = await request({
+        method: 'GET',
+        uri: csrfEndpoint + '?f0a28=1',
+        simple: false,
+        resolveWithFullResponse: true,
+        followAllRedirects: true,
+        jar
+      });
+      if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
+        throw new Error('Service unavailable');
+      }
+    }
     
     const $loginFailedException = new Error('Login failed');
   
