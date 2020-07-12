@@ -107,7 +107,8 @@
     "telegraf": "^3.38.0",
     "type-check": "^0.3.2",
     "unirest": "0.4.2",
-    "uuid": "^2.0.3"
+    "uuid": "^2.0.3",
+    "tough-cookie": "latest"
   },
   "nodemonConfig": {
     "watch": [
