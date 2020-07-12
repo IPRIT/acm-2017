@@ -158,6 +158,8 @@ bot.catch((err, ctx) => {
   )
 });
 
-bot.launch();
+if (isProduction) {
+  bot.launch();
+}
 
 export { bot };

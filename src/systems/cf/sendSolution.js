@@ -109,8 +109,8 @@ function buildSolutionForm(solution, systemAccount) {
 }
 
 export async function authVerify(systemAccount) {
-  let isAuth = await isAuth( systemAccount );
-  if (!isAuth) {
+  let hasAuth = await isAuth( systemAccount );
+  if (!hasAuth) {
     throw new Error('Account is not logged in');
   }
 }
@@ -131,7 +131,7 @@ async function getContextRow(solution, systemAccount) {
     attemptsNumber = 0, maxAttemptsNumber = 10;
   
   while ((!userStatus || !found) && attemptsNumber < maxAttemptsNumber) {
-    await Promise.delay(1000 + attemptsNumber * 500);
+    await Promise.delay(100 + attemptsNumber * 50);
     attemptsNumber++;
     console.log(`Attempt number: ${attemptsNumber}`);
     userStatus = await getUserStatus({

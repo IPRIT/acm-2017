@@ -25,7 +25,7 @@ export async function handle(solution) {
   
   try {
     let contextRow = await sendSolution(solution, systemAccount);
-    
+
     let verdict;
     while (!verdict || !verdict.isTerminal) {
       if (systemAccount.lastSentSolutionAtMs + maxAccountWaitingMs < Date.now()) {
@@ -55,8 +55,8 @@ export async function handle(solution) {
 }
 
 async function handleError(error, solution, systemAccount) {
-  let isAuth = await isAuth(systemAccount);
-  if (!isAuth) {
+  let hasAuth = await isAuth(systemAccount);
+  if (!hasAuth) {
     console.log(`[System report] Refreshing Codeforces account [${systemAccount.instance.systemLogin}]...`);
     await login(systemAccount);
   }
