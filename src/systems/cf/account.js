@@ -10,8 +10,8 @@ const ACM_AUTH_ENDPOINT = '/enter';
 export async function login(systemAccount) {
   return Promise.resolve().then(async () => {
     let csrfEndpoint = getEndpoint();
-    let jar = request.jar();
 
+    let jar = request.jar();
     jar.setCookie('RCPC=b92d6d635988a587292e3dfeb704c540', 'https://codeforces.com');
 
     let response = await request({
