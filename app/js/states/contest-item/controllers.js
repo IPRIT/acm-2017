@@ -20,44 +20,84 @@ angular.module('Qemy.controllers.contest-item', [
       $scope.$emit('change_title', {
         title: _('app_name')
       });
-      var contestId = $state.params.contestId;
+
+      const contestId = $state.params.contestId;
+
       $scope.contest = {};
+
+      function join() {
+        return ContestsManager.joinContest(contestId);
+      }
+
+      function openContest() {
+        return ContestsManager.canJoin({ contestId }).then(function (result) {
+          if (!result.can) {
+            var alert = $mdDialog.alert()
+              .clickOutsideToClose(true)
+              .title('Уведомление')
+              .ariaLabel('Alert Dialog')
+              .ok('Ок');
+
+            if (result.reason === 'NOT_IN_TIME') {
+              alert.content('Контест еще не начат или уже завершен.');
+            } else {
+              alert.content(
+                'Доступ запрещен. Вы не состоите в нужной группе, контест недоступен или удален.'
+              );
+            }
+
+            return $mdDialog.show(alert).finally(() => {
+              $state.go('contests.list');
+            });
+          }
+
+          if (result.confirm) {
+            var confirm = $mdDialog.confirm()
+              .title('Предупреждение')
+              .content('Вы действительно хотите войти в контест? Вы будете добавлены в таблицу результатов.')
+              .clickOutsideToClose(true)
+              .ariaLabel('Confirm dialog')
+              .ok('Да')
+              .cancel('Отмена');
+            return $mdDialog.show(confirm).then(function() {
+              return join();
+            });
+          } else if (!result.joined) {
+            return join();
+          }
+        });
+      }
       
       function updateContest() {
         $rootScope.$broadcast('data loading');
-        ContestsManager.canJoin({contestId: contestId}).then(function (response) {
-          if (!response || !response.can || !response.joined) {
-            $rootScope.$broadcast('data loaded');
-            $state.go('index');
-            return ErrorService.showMessage('You have no permissions');
-          }
-          console.log('Доступ к контесту разрешен. Идет загрузка данных...');
-          ContestsManager.getContest({contestId: contestId}).then(function (response) {
-            $rootScope.$broadcast('data loaded');
-            if (!response) {
-              $state.go('contests.list');
-            }
-            $scope.contest = contestFill(response.contest);
-            $scope.$broadcast('contest loaded', {
-              contest: response.contest
-            });
-            $rootScope.$broadcast('header expand open', {
-              contest: response.contest
-            });
-          }).catch(function (result) {
-            $rootScope.$broadcast('data loaded');
-            $state.go('index');
-            ErrorService.show(result);
-          });
+
+        return openContest().then(() => {
+          return fetchContest();
         }).catch(function (result) {
-          $rootScope.$broadcast('data loaded');
-          $state.go('index');
+          $state.go('contests.list');
           ErrorService.show(result);
+        }).finally(() => {
+          $rootScope.$broadcast('data loaded');
         });
       }
-      updateContest();
-      
+
+      function fetchContest() {
+        return ContestsManager.getContest({contestId: contestId}).then(function (response) {
+          $scope.contest = contestFill(response.contest);
+          $scope.$broadcast('contest loaded', {
+            contest: response.contest
+          });
+          $rootScope.$broadcast('header expand open', {
+            contest: response.contest
+          });
+
+          return $scope.contest;
+        })
+      }
+
       $scope.updateContest = updateContest;
+
+      updateContest();
       
       function contestFill(contest) {
         function getMonthName(num) {
@@ -156,7 +196,7 @@ angular.module('Qemy.controllers.contest-item', [
           unreadMessagesNumber: 0,
           allMessagesNumber: 0
         });
-        SocketService.leaveContest(contestId, $scope.user.id);
+        $scope.user && SocketService.leaveContest(contestId, $scope.user.id);
         removeEvents();
       });
       
@@ -227,7 +267,6 @@ angular.module('Qemy.controllers.contest-item', [
       $scope.$emit('change_title', {
         title: _('contest-about-title') + ' • ' + _('app_name')
       });
-      console.log('Основной контроллер для контеста. Информация.');
     }
   ])
   
@@ -2076,7 +2115,7 @@ angular.module('Qemy.controllers.contest-item', [
       $scope.$on('inbox.messages.update', function (ev, args) {
         $timeout(function () {
           $scope.updateMessages();
-        }, 200);
+        }, 2000);
       });
       
       var toastInstance;
