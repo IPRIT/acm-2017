@@ -16,7 +16,7 @@ export async function login(systemAccount) {
 
     let response = await request({
       method: 'GET',
-      uri: csrfEndpoint + '?f0a28=1',
+      uri: csrfEndpoint,
       simple: false,
       resolveWithFullResponse: true,
       followAllRedirects: true,
@@ -44,7 +44,7 @@ export async function login(systemAccount) {
       }
     }
 
-    console.log(jar);
+    console.log(response.body);
     
     const $loginFailedException = new Error('Login failed');
   
