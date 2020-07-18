@@ -25,23 +25,23 @@ export async function login(systemAccount) {
     if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
       throw new Error('Service unavailable');
     }
-    const [ cookie, qs ] = getProtectionCookie(response.body);
-
-    if (cookie) {
-      jar.setCookie(cookie, 'https://codeforces.com');
-
-      response = await request({
-        method: 'GET',
-        uri: 'https://codeforces.com/?' + qs,
-        simple: false,
-        resolveWithFullResponse: true,
-        followAllRedirects: true,
-        jar
-      });
-      if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
-        throw new Error('Service unavailable');
-      }
-    }
+    // const [ cookie, qs ] = getProtectionCookie(response.body);
+    //
+    // if (cookie) {
+    //   jar.setCookie(cookie, 'https://codeforces.com');
+    //
+    //   response = await request({
+    //     method: 'GET',
+    //     uri: 'https://codeforces.com/?' + qs,
+    //     simple: false,
+    //     resolveWithFullResponse: true,
+    //     followAllRedirects: true,
+    //     jar
+    //   });
+    //   if (!response.body || ![ 200, 302 ].includes( response.statusCode )) {
+    //     throw new Error('Service unavailable');
+    //   }
+    // }
     
     const $loginFailedException = new Error('Login failed');
   

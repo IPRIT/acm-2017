@@ -44,12 +44,6 @@ async function getYandexProblemId(solution, systemAccount) {
     return problem.text.startsWith(`${parsedProblemIdentifier.symbolIndex}.`);
   });
 
-  if (!requiredProblem) {
-    console.log($.html());
-
-    // console.log(Array.from($('select[name=problemId]').find('option')), `${parsedProblemIdentifier.symbolIndex}.`);
-  }
-
   return requiredProblem.value;
 }
 
