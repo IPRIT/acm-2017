@@ -518,7 +518,9 @@ export async function retrieveCfProblem(taskMeta, deepLevel = 0) {
       let hrefThis = $(this),
         href = hrefThis.attr('href');
       if (href && href.indexOf('http://codeforces.com') === -1) {
-        hrefThis.attr('href', 'http://codeforces.com' + href);
+        if (!href.startsWith('http')) {
+          hrefThis.attr('href', 'http://codeforces.com' + href);
+        }
       }
       attachments.files.push({
         type: "pdf",
@@ -532,7 +534,9 @@ export async function retrieveCfProblem(taskMeta, deepLevel = 0) {
     let $img = $(this),
       src = $img.attr('src');
     if (src && src.indexOf('http://codeforces.com') === -1) {
-      $img.attr('src', 'http://codeforces.com' + src);
+      if (!src.startsWith('http')) {
+        $img.attr('src', 'http://codeforces.com' + src);
+      }
     }
   });
   content.find('*').each(function () {
