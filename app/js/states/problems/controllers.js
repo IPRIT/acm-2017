@@ -74,6 +74,9 @@ angular.module('Qemy.controllers.problems', [])
           $scope.$emit('change_title', {
             title: 'Версия #' + result.versionNumber + ' [' + result.systemType.toUpperCase() + '] ' + result.title + ' • ' + _('app_name')
           });
+          $timeout(_ => {
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,"MathJax"]);
+          }, 100);
         }).catch(function (result) {
           ErrorService.show(result);
         }).finally(function () {
