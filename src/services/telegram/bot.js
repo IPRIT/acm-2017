@@ -11,7 +11,7 @@ export const telegram = new Telegram(config.telegram.token);
 const isProduction = process.env.NODE_ENV !== 'development';
 
 if (isProduction) {
-  // bot.telegram.setWebhook(`https://${config.domain}/tg-webhook`, null, 5000);
+  bot.telegram.setWebhook(`https://${config.domain}/tg-webhook`);
 } else {
   // bot.startPolling(2, 50, ['message']);
 }
