@@ -11,7 +11,11 @@ export const telegram = new Telegram(config.telegram.token);
 const isProduction = process.env.NODE_ENV !== 'development';
 
 if (isProduction) {
-  bot.telegram.setWebhook(`https://${config.domain}/tg-webhook`);
+  // bot.telegram.setWebhook(`https://${config.domain}/tg-webhook`);
+
+  // fetch('https://api.telegram.org/bot114633843:AAEY4WnV8kcCC4jRsvkkDwSjMlHMeKj60-Y/setWebhook', { method: 'POST', headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded",
+  //   }, body: 'url=https://contest.misis.ru/tg-webhook' }).then(res => res.json()).then(console.log)
 } else {
   // bot.startPolling(2, 50, ['message']);
 }
