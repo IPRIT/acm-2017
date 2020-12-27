@@ -23,7 +23,7 @@ export async function getRatingTable(params) {
       },
       verdictId: 1
     },
-    group: [ 'problemId', 'userId' ],
+    group: [ 'contestId', 'problemId', 'userId' ],
     order: [
       [ 'userId', 'ASC' ],
       [ 'problemId', 'ASC' ]
@@ -42,7 +42,7 @@ export async function getRatingTable(params) {
       }
     }, models.Contest]
   });
-  
+
   let contestsMap = new Map();
   for (let currentSolution of solutions) {
     let currentContest = currentSolution.Contest.get({ plain: true });
@@ -74,12 +74,13 @@ export async function getRatingTable(params) {
     return [ acceptsInBasicTime.length, acceptedArray.length - acceptsInBasicTime.length ];
   }
   
-  var tempTable = {
+  const tempTable = {
     header: {
       row: [ ]
     },
     users: new Map()
   };
+
   contestsMap.forEach((contest, contestId) => {
     tempTable.header.row.push( contest.info );
     let contestants = contest.users;
