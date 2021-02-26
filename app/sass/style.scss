@@ -7,7 +7,8 @@
 $media: screen;
 $laptop_min_width: 1024px;
 $phone_max_width: 799px;
-$primary-color-theme: #00acec;
+$default-color-theme: #00acec;
+$nlogn-color-theme: #610fc9;
 
 @mixin box-shadow($shadows...) {
   -moz-box-shadow: $shadows;
@@ -34,6 +35,38 @@ body, html {
 html {
   width: 100vw;
   overflow-x: hidden;
+}
+.theme {
+  &_default {
+    --theme-color: #{$default-color-theme};
+  }
+
+  &_nlogn {
+    --theme-color: #{$nlogn-color-theme};
+  }
+}
+.md-button.md-primary,
+md-option[selected][class],
+md-option[selected][class]:focus {
+  color: var(--theme-color);
+}
+.status-content md-nav-bar .md-button.md-default-theme.md-primary[class],
+.status-content md-nav-bar .md-button.md-primary[class] {
+  color: var(--theme-color) !important;
+}
+.status-content md-nav-bar.md-default-theme md-nav-ink-bar[class],
+.status-content md-nav-bar md-nav-ink-bar[class] {
+  background: var(--theme-color) !important;
+}
+.md-button.md-primary.md-raised:not([disabled]) {
+  background: var(--theme-color);
+  box-shadow: 0 2px 12px -1px var(--theme-color) !important;
+
+  &:hover,
+  &:focus {
+    background: var(--theme-color);
+    box-shadow: 0 2px 12px -1px var(--theme-color) !important;
+  }
 }
 .debug {
   @include box-sizing(border-box);
@@ -89,7 +122,7 @@ md-dialog {
   box-shadow: 0 2px 12px -1px rgb(255, 82, 82);
 }
 .md-button.md-primary.md-raised:not([disabled]) {
-  box-shadow: 0 2px 12px -1px #219CF5;
+  box-shadow: 0 2px 12px -1px var(--theme-color);
 }
 .header__wrapper {
   height: 100%;
@@ -99,31 +132,37 @@ md-dialog {
   background: #fff;
 }
 .header__inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
   height: 100%;
   padding: 14px 32px 15px 4%;
   box-sizing: border-box;
   min-width: 800px;
 }
 .link {
-  color: #219CF5;
+  color: var(--theme-color);
 }
 .link:hover {
-  color: rgba(45, 126, 180, 0.78);
+  color: var(--theme-color);
 }
 h1, h2, h3 {
   font-weight: 500;
 }
 .logo {
-  text-decoration: none;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
-  top: 6px
+  text-decoration: none;
 }
 .img {
   border: 0;
 }
 .logo__img {
-  width: 164px;
+  height: 52px;
   position: relative;
 }
 .logo__text, .logo__image-wrapper {
@@ -145,7 +184,7 @@ h1, h2, h3 {
   padding: 8px 12px;
   cursor: pointer;
   border-radius: 32px;
-  color: #00acec;
+  color: var(--theme-color);
   user-select: none;
   position: relative;
   top: 10px;
@@ -156,7 +195,6 @@ h1, h2, h3 {
   box-shadow: 0 0px 18px -11px;
 }
 .profile__panel:active {
-  background-color: rgba(3, 169, 244, 0.03);
   box-shadow: none;
   transform: scale(0.95);
 }
@@ -171,7 +209,7 @@ h1, h2, h3 {
     position: relative;
     top: -1px;
     margin-right: 6px;
-    color: #03acec;
+    color: var(--theme-color);
   }
 }
 .profile__unread-messages {
@@ -484,8 +522,8 @@ h1, h2, h3 {
     top: 90px;
     left: 0;
     height: 2px;
-    background: #00acec;
-    box-shadow: 0 0 10px rgba(#00acec,0.7);
+    background: var(--theme-color);
+    box-shadow: 0 0 10px rgba(var(--theme-color),0.7);
     -webkit-transition: width 4s ease;
     transition: width 4s ease;
     will-change: width;
@@ -511,10 +549,6 @@ h1, h2, h3 {
   min-width: 36px;
   margin: 4px;
   border-radius: 32px;
-
-  &.md-button.md-raised:not([disabled]) {
-    box-shadow: 0 5px 21px -4px rgba(33, 150, 243, 0.83) !important;
-  }
 }
 .contests-sort__item {
   display: inline-block;
@@ -597,7 +631,7 @@ contest-list-item {
   font-size: 1.2em;
   margin-bottom: 10px;
   font-weight: bold;
-  color: #2196F3;
+  color: var(--theme-color);
 }
 my-timer-element {
   display: inline-block;
@@ -676,7 +710,7 @@ my-timer-element {
 }
 .contest-menu__item {
   text-decoration: none;
-  color: $primary-color-theme;
+  color: var(--theme-color);
   font-weight: bold;
   padding: 13px 20px 16px;
   display: inline-block;
@@ -696,7 +730,7 @@ my-timer-element {
     height: 3.5px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    background-color: $primary-color-theme;
+    background-color: var(--theme-color);
     margin: 0 30%;
     transition: .2s ease-in-out;
     transform: scale(.3) translateY(4px);
@@ -823,7 +857,7 @@ my-timer-element {
   }
 }
 .contest__info-layer h3 {
-  color: $primary-color-theme;
+  color: var(--theme-color);
   text-align: center;
 }
 .contest__info-cell {
@@ -881,7 +915,7 @@ my-timer-element {
 .task__title-link {
   display: inline-block;
   text-decoration: none;
-  color: $primary-color-theme;
+  color: var(--theme-color);
   font-size: 18px;
 }
 .task__title-delimiter {
@@ -971,10 +1005,10 @@ my-timer-element {
     line-height: 1.6;
   }
   .problem_subtitle {
-    color: $primary-color-theme;
+    color: var(--theme-color);
   }
   .problem_title {
-    color: $primary-color-theme;
+    color: var(--theme-color);
     margin: 0;
     padding: 20px 0;
     text-align: center;
@@ -1014,7 +1048,7 @@ my-timer-element {
   .task__my-problem-statement {
 
     .task__my-title {
-      color: $primary-color-theme;
+      color: var(--theme-color);
       margin: 0;
       padding: 20px 0;
       text-align: center;
@@ -1047,7 +1081,7 @@ my-timer-element {
       .task__my-section-title {
         font-size: 20px;
         text-align: left;
-        color: $primary-color-theme;
+        color: var(--theme-color);
         margin: 0;
         padding: 20px 0;
         font-weight: bold;
@@ -1075,7 +1109,7 @@ my-timer-element {
 .task__problem-sgu {
   h3, h4 {
     width: 100%;
-    color: $primary-color-theme;
+    color: var(--theme-color);
     margin: 0;
     padding: 10px 0 5px;
     text-align: center;
@@ -1108,7 +1142,7 @@ my-timer-element {
 .task__problem-acmp {
   h1, h3, h4 {
     width: 100%;
-    color: $primary-color-theme;
+    color: var(--theme-color);
     margin: 0;
     padding: 10px 0 5px;
     text-align: center;
@@ -1117,7 +1151,7 @@ my-timer-element {
   }
   h2 {
     width: 100%;
-    color: $primary-color-theme;
+    color: var(--theme-color);
     margin: 0;
     padding: 10px 0 5px;
     font-size: 20px;
@@ -1141,7 +1175,7 @@ my-timer-element {
 }
 .task__problem-yandex, .task__problem-yandexOfficial {
   .task__my-title {
-    color: $primary-color-theme;
+    color: var(--theme-color);
     margin: 0;
     padding: 20px 0;
     text-align: center;
@@ -1208,7 +1242,7 @@ my-timer-element {
   h2 {
     font-size: 20px;
     text-align: left;
-    color: $primary-color-theme;
+    color: var(--theme-color);
     margin: 0;
     padding: 20px 0;
     font-weight: 500;
@@ -1218,7 +1252,7 @@ my-timer-element {
     .task__my-section-title {
       font-size: 20px;
       text-align: left;
-      color: $primary-color-theme;
+      color: var(--theme-color);
       margin: 0;
       padding: 20px 0;
       font-weight: bold;
@@ -1349,7 +1383,7 @@ my-timer-element {
   color: #777;
 }
 .contest__condition-name {
-  color: $primary-color-theme;
+  color: var(--theme-color);
   margin-left: 10px;
 }
 .contest__sytem {
@@ -1390,7 +1424,7 @@ my-timer-element {
   }
   .ace-editor {
     &__key-rules {
-      background: #03A9F4;
+      background: var(--theme-color);
       border-radius: 3px;
       color: white;
       padding: 8px 10px;
@@ -1794,7 +1828,7 @@ md-toolbar.md-theme-light {
 }
 .task__send {
   text-align: center;
-  border-top: 1px solid $primary-color-theme;
+  border-top: 1px solid var(--theme-color);
   padding: 20px 0 0;
   margin-top: 20px;
   .md-button {
@@ -1840,7 +1874,7 @@ md-toolbar.md-theme-light {
 .monitor-content__cell_type_in-practice {
   background-color: #00BCD4;
   color: white;
-  box-shadow: inset 0 0 0px 1px #03A9F4;
+  box-shadow: inset 0 0 0px 1px var(--theme-color);
   & > span:first-of-type {
     font-weight: bold;
   }
@@ -2091,10 +2125,10 @@ md-input-container {
     font-size: 0.9em;
     letter-spacing: 1px;
     padding: 9px 15px;
-    color: $primary-color-theme;
+    color: var(--theme-color);
   }
   a {
-    color: #2196f3;
+    color: var(--theme-color);
     text-decoration: none;
     text-align: center;
     display: block;
@@ -2145,7 +2179,7 @@ md-input-container {
     -o-transition: all .1s ease-out;
     transition: all .1s ease-out;
     &:focus {
-      border: 2px solid $primary-color-theme !important;
+      border: 2px solid var(--theme-color) !important;
 
       .md-errors-spacer {
         display: none;
@@ -2182,7 +2216,7 @@ md-input-container {
 #ace_settingsmenu, #kbshortcutmenu {
   font-family: Roboto,Helvetica Neue,sans-serif;
   h1 {
-    color: #03A9F4;
+    color: var(--theme-color);
   }
 }
 @media screen and (max-width: 450px) {
@@ -2248,7 +2282,7 @@ md-input-container {
     width: 20px;
   }
   .search-spin {
-    border: 3px solid #2196F3;
+    border: 3px solid var(--theme-color);
     border-top-color: rgba(0, 0, 0, 0);
   }
 }
@@ -2587,7 +2621,7 @@ ui-view, [ui-view] {
   }
   h1, h2, h3, h4, h5 {
     font-weight: 500;
-    color: $primary-color-theme;
+    color: var(--theme-color);
   }
   h1 {
     margin-top: 40px;
@@ -3100,7 +3134,7 @@ md-sidenav {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #00acec;
+    background-color: var(--theme-color);
     margin: 20px;
     position: relative;
     display: block;
@@ -3111,7 +3145,7 @@ md-sidenav {
     transition: all .15s ease-in-out;
 
     &:hover {
-      box-shadow: 0 0 0 4px #00acec;
+      box-shadow: 0 0 0 4px var(--theme-color);
 
       &.problem-info__version_current {
         box-shadow: 0 0 0 4px #4caf50;
@@ -3119,7 +3153,7 @@ md-sidenav {
     }
 
     &_selected {
-      box-shadow: 0 0 0 4px #00acec;
+      box-shadow: 0 0 0 4px var(--theme-color);
 
       &.problem-info__version_current {
         box-shadow: 0 0 0 4px #4caf50;
@@ -3137,7 +3171,7 @@ md-sidenav {
       width: 30px;
       left: 13px;
       top: 4px;
-      background-color: #00acec;
+      background-color: var(--theme-color);
     }
 
     &:not(:first-of-type):after {
@@ -3147,7 +3181,7 @@ md-sidenav {
       width: 30px;
       top: 4px;
       left: -33px;
-      background-color: #00acec;
+      background-color: var(--theme-color);
     }
 
     &-number {

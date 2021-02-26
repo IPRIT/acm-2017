@@ -43,7 +43,7 @@
   &__date-circle {
     .news-list-item:not(.mock) & {
       border-radius: 50px;
-      background-color: rgba(3, 169, 244, 1);
+      background-color: var(--theme-color);
       color: white;
       width: 46px;
       height: 46px;
@@ -84,7 +84,7 @@
     .news-list-item:not(.mock) & {
       width: 8px;
       height: 8px;
-      background-color: #03a9f4;
+      background-color: var(--theme-color);
       border-radius: 20px;
     }
   }

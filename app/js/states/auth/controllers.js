@@ -38,6 +38,8 @@ angular.module('Qemy.controllers.auth', [
       $scope.$watch('authForm.$valid', function(newVal) {
         $scope.valid = newVal;
       });
+
+      $scope.logo = $scope.isContestNlogn ? '/img/nlogn-logo.svg' : '/img/acm-logo-blue-circle-filled.png';
     }
   ])
   .controller('AuthRegisterFormController', ['$scope', '_', 'UserManager', '$rootScope', '$http', '$state', '$mdDialog', 'ErrorService',

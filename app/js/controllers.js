@@ -11,6 +11,16 @@ angular.module('Qemy.controllers', [
       $scope.title = args.title !== undefined && args.title.length ? args.title : defaultTitle;
     });
     $scope.isPageReady = true;
+
+    const isContestMisis = location.host.indexOf('contest.misis.ru') !== -1;
+    const isContestNlogn = location.host.indexOf('contest.nlogn.info') !== -1 || location.host.indexOf('localhost') !== -1;
+    const isSchoolMisis = location.host.indexOf('school.misis.ru') !== -1;
+
+    $scope.isContestMisis = isContestMisis;
+    $scope.isContestNlogn = isContestNlogn;
+    $scope.isSchoolMisis = isSchoolMisis;
+
+    $scope.theme = isContestNlogn ? 'nlogn' : 'default';
   }])
   
   .controller('AppCtrl', ['$scope', '$rootScope', 'UserManager', '$state', 'SocketService', '$timeout', 'ErrorService', 'ChatManager',
@@ -173,8 +183,19 @@ angular.module('Qemy.controllers', [
       $scope.$state = $state;
       $scope.user = {};
       $scope.isAuth = false;
-      $scope.isMainLogo = location.host.indexOf('contest.misis.ru') !== -1 || location.host.indexOf('localhost') !== -1;
-      
+
+      const contestMisisLogo = '/img/acm-logo-2.svg';
+      const schoolMisisLogo = '/img/school-misis.png';
+      const contestNlognLogo = '/img/nlogn-logo.svg';
+
+      $scope.headerLogo = $scope.isContestMisis
+        ? contestMisisLogo
+        : $scope.isContestNlogn
+          ? contestNlognLogo
+          : $scope.isSchoolMisis
+            ? schoolMisisLogo
+            : contestMisisLogo;
+
       $scope.$on('user updated', function (ev, args) {
         if (!args.user) {
           $scope.user = {};

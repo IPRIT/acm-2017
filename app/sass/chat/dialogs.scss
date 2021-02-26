@@ -20,7 +20,7 @@
       box-sizing: border-box;
       transition: all .2s ease-in-out;
       border-radius: 3px;
-      outline-color: #2196f3;
+      outline-color: var(--theme-color);
 
       &:focus {
         background: white;

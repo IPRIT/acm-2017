@@ -25,7 +25,7 @@
 
   &_active &__inner,
   &:active &__inner {
-    background: #2196f3;
+    background: var(--theme-color);
 
     &, * {
       color: white;
@@ -87,8 +87,8 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background-color: #00acec;
-    box-shadow: 0 0 4px 0px #00acec;
+    background-color: var(--theme-color);
+    box-shadow: 0 0 4px 0px var(--theme-color);
     display: inline-block;
     margin-left: 6px;
     margin-right: 2px;

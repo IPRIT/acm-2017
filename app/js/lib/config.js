@@ -10,6 +10,7 @@ Config.App = {
         'pat1.misis.ru:5048',
         'contest.misis.ru',
         'school.misis.ru',
+        'contest.nlogn.info'
     ],
 };
 

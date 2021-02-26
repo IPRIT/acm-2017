@@ -6,7 +6,7 @@ html(ng-controller='PageCtrl', manifest='#{manifest}')
     base(href='/')
     include index/head
     // include metrics/yandex
-  body(ng-controller='AppCtrl', insert-chat-sidenav)
+  body(ng-controller='AppCtrl', insert-chat-sidenav, class='{{ "theme_" + theme }}')
     block content
 
     div.notifications

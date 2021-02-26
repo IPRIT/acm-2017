@@ -67,7 +67,7 @@ $bem-use-namespaces: true;
 
   @include element('selection-number-label') {
     margin-left: 24px;
-    color: #2196f3;
+    color: var(--theme-color);
 
     > md-checkbox {
       margin: 0;

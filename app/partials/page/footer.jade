@@ -1,6 +1,6 @@
 div.footer
   div.footer__author
-    span MISIS Acm 2.0.0
+    span {{ isContestMisis ? 'MISIS Acm' : 'NlogN' }} 2.0.0
 
   div.footer__language
     md-select.md-no-underline(ng-model='language', placeholder='Выбрать язык')
