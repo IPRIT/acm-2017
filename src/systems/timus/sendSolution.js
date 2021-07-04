@@ -5,7 +5,7 @@ import * as models from '../../models';
 import Promise from 'bluebird';
 
 const ACM_PROTOCOL = 'https';
-const ACM_HOST = 'acm.timus.ru';
+const ACM_HOST = 'timus.online';
 const ACM_SOLUTIONS_POST_ENDPOINT = '/submit.aspx?space=1';
 
 export async function sendSolution(solution, systemAccount) {
