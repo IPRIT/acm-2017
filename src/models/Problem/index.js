@@ -8,7 +8,7 @@ const CF_PROBLEMSET_PROBLEM_PATH = '/problemset/problem/:contestNumber/:symbolIn
 const CF_GYM_PROBLEM_PATH = '/gym/:contestNumber/problem/:symbolIndex';
 
 // timus
-const TIMUS_HOST = 'acm.timus.ru';
+const TIMUS_HOST = 'timus.online';
 const TIMUS_PROBLEM_PATH = '/problem.aspx';
 
 // acmp
