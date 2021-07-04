@@ -4,7 +4,7 @@ import { extractParam, ensureNumber } from "../../utils/utils";
 import Promise from 'bluebird';
 
 const ACM_PROTOCOL = 'https';
-const ACM_HOST = 'acm.timus.ru';
+const ACM_HOST = 'timus.online';
 const ACM_AUTHORS_SOLUTIONS_ENDPOINT = '/status.aspx';
 
 const terminalStatesMapping = {
