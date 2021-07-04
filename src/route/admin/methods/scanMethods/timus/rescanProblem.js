@@ -7,7 +7,7 @@ import { retrieveTimusProblem } from "./timus";
 
 const SYSTEM_TYPE = 'timus';
 const ACM_PROTOCOL = 'http';
-const ACM_HOST = 'acm.timus.ru';
+const ACM_HOST = 'timus.online';
 const ACM_PROBLEMSET_PATH = '/problemset.aspx';
 
 export async function rescanTimusProblem(params) {
